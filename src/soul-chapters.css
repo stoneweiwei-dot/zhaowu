@@ -26,7 +26,7 @@
   flex-direction: column;
   gap: 0.5rem;
   padding: 1rem 1.125rem;
-  border-radius: 14px;
+  border-radius: 3px;
   border: 1px solid var(--zw-line, #e5dcc8);
   background: var(--zw-paper, #faf3e3);
   cursor: pointer;
@@ -115,7 +115,7 @@
   gap: 0.75rem;
   margin-top: 1.25rem;
   padding: 1rem 1.125rem;
-  border-radius: 12px;
+  border-radius: 3px;
   background: var(--zw-paper, #faf3e3);
 }
 
@@ -160,7 +160,7 @@
 
 .sc-detail-try {
   padding: 0.875rem 1rem;
-  border-radius: 12px;
+  border-radius: 3px;
   background: var(--zw-paper, #faf3e3);
   border: 1px solid var(--zw-line, #e5dcc8);
 }
@@ -178,7 +178,7 @@
   gap: 0.625rem;
   margin: 0 0 0.75rem;
   padding: 0.875rem 1.125rem;
-  border-radius: 14px;
+  border-radius: 3px;
   border: 1px solid var(--zw-line, #e5dcc8);
   background: var(--zw-cream, #f7efdf);
   text-decoration: none;

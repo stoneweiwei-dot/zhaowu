@@ -1,7 +1,7 @@
 /* Public guest-first entry with genuine editable member fields. No fake video inputs. */
 html body #root .zw-painted-home .zw-visitor-entry {
   position: relative; isolation: isolate; overflow: hidden; width: 100%;
-  min-height: min(100svh, 880px); color: #24382f; background: #e8e6d9;
+  min-height: min(100svh, 880px); color: #312e2b; background: #e8e6d9;
 }
 html body #root .zw-visitor-entry .zw-visitor-art {
   position: absolute; inset: 0; z-index: -3; display: block; width: 100%; height: 100%;
@@ -9,21 +9,21 @@ html body #root .zw-visitor-entry .zw-visitor-art {
 }
 html body #root .zw-visitor-entry-shade {
   position: absolute; inset: 0; z-index: -2; pointer-events: none;
-  background: linear-gradient(180deg, rgba(243,238,222,.38), rgba(243,238,222,.07) 35%, rgba(30,48,42,.32) 92%);
+  background: linear-gradient(180deg, rgba(243,238,222,.38), rgba(243,238,222,.07) 35%, rgba(42, 39, 36,.32) 92%);
 }
 html body #root .zw-visitor-entry-content {
   width: 100%; max-width: 920px; margin: auto; min-height: min(100svh, 880px);
   display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start;
   padding: 20px clamp(15px,4vw,38px) 27px; gap: 24px;
 }
-html body #root .zw-visitor-entry-brand { display: flex; flex-direction: column; text-shadow: 0 2px 16px rgba(255,250,237,.9); color: #22483d; }
+html body #root .zw-visitor-entry-brand { display: flex; flex-direction: column; text-shadow: 0 2px 16px rgba(255,250,237,.9); color: #3c352e; }
 html body #root .zw-visitor-entry-brand strong { font: 600 clamp(30px,5vw,42px)/1.22 "Songti TC","Noto Serif TC",serif; letter-spacing: .17em; }
 html body #root .zw-visitor-entry-brand span { font: 600 10px/1.5 system-ui,sans-serif; letter-spacing: .23em; }
 html body #root .zw-visitor-auth-card {
   width: min(100%, 420px); padding: clamp(18px,3.6vw,30px);
   background: rgba(250,247,238,.97); border: 1px solid rgba(141,121,83,.65);
-  box-shadow: 0 12px 40px rgba(12,26,23,.28); border-radius: 9px; color: #24382f;
-  backdrop-filter: blur(12px);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06); border-radius: 9px; color: #312e2b;
+  backdrop-filter: none;
 }
 html body #root .zw-visitor-auth-card :is(h2,p,strong,span,label,button,a) { color: inherit !important; -webkit-text-fill-color: currentColor !important; }
 html body #root .zw-visitor-auth-card .zw-visitor-eyebrow { display: block; color: #836a3d !important; font: 600 11px/1.5 system-ui,sans-serif; letter-spacing: .13em; }
@@ -31,24 +31,24 @@ html body #root .zw-visitor-auth-card h2 { font-size: clamp(25px,6vw,33px) !impo
 html body #root .zw-visitor-subtitle { font-size: 12px; line-height: 1.65; margin: 0 0 15px !important; }
 html body #root .zw-visitor-tabs { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #c7b698; margin-bottom: 12px; }
 html body #root .zw-visitor-tabs button { min-height: 44px; border-radius: 0; font-weight: 500; background: none; border-bottom: 2px solid transparent; }
-html body #root .zw-visitor-tabs button.is-active { border-bottom-color: #35624e; font-weight: 700; }
+html body #root .zw-visitor-tabs button.is-active { border-bottom-color: #534c44; font-weight: 700; }
 html body #root .zw-visitor-form { display: grid; gap: 10px; }
 html body #root .zw-visitor-form label { display: grid; gap: 5px; font: 500 13px/1.5 system-ui,sans-serif; }
 html body #root .zw-visitor-form input {
   box-sizing: border-box; width: 100%; height: 47px; font: 400 16px/1.3 system-ui,sans-serif;
-  color: #172f28 !important; -webkit-text-fill-color: #172f28 !important;
+  color: #27231f !important; -webkit-text-fill-color: #27231f !important;
   background: #fffef8 !important; border: 1px solid #aaaf9e; border-radius: 5px;
   outline: 0; padding: 10px 12px; box-shadow: none;
 }
-html body #root .zw-visitor-form input:focus { border-color: #315d4e; outline: 2px solid #92b5a4; outline-offset: 1px; }
+html body #root .zw-visitor-form input:focus { border-color: #4f483f; outline: 2px solid #92b5a4; outline-offset: 1px; }
 html body #root .zw-visitor-auth-card .zw-visitor-submit {
-  min-height: 48px; width: 100%; margin-top: 3px; background: #315d4e !important;
+  min-height: 48px; width: 100%; margin-top: 3px; background: #4f483f !important;
   color: #fff8e8 !important; -webkit-text-fill-color: #fff8e8 !important;
-  border: 1px solid #315d4e; border-radius: 5px; font-size: 16px; font-weight: 700;
+  border: 1px solid #4f483f; border-radius: 5px; font-size: 16px; font-weight: 700;
 }
 html body #root .zw-visitor-auth-card button:disabled { opacity: .66; cursor: not-allowed; }
 html body #root .zw-visitor-auth-card button:focus-visible,
-html body #root .zw-visitor-auth-card a:focus-visible { outline: 2px solid #36705a; outline-offset: 3px; }
+html body #root .zw-visitor-auth-card a:focus-visible { outline: 2px solid #5d5449; outline-offset: 3px; }
 html body #root .zw-visitor-reset { text-align: right; margin-top: 9px; }
 html body #root .zw-visitor-reset button { background: none; min-height: 32px; padding: 3px; font-size: 12px; text-decoration: underline; }
 html body #root .zw-visitor-entry-links { display: flex; flex-direction: column; gap: 7px; padding-top: 12px; border-top: 1px solid #d3c8af; }
@@ -57,13 +57,13 @@ html body #root .zw-visitor-entry-links a {
   min-height: 44px; padding: 7px 12px; border: 1px solid #b2b9a8; border-radius: 5px;
   text-decoration: none; background: #f8f8f1; font: 600 14px/1.5 system-ui,sans-serif;
 }
-html body #root .zw-visitor-entry-links a:first-child { border-color: #315d4e; }
+html body #root .zw-visitor-entry-links a:first-child { border-color: #4f483f; }
 html body #root .zw-visitor-auth-card .zw-visitor-error { font: 500 13px/1.5 system-ui,sans-serif; color: #9a3535 !important; }
-html body #root .zw-visitor-auth-card .zw-visitor-notice { font: 500 13px/1.5 system-ui,sans-serif; color: #315d4e !important; }
+html body #root .zw-visitor-auth-card .zw-visitor-notice { font: 500 13px/1.5 system-ui,sans-serif; color: #4f483f !important; }
 html body #root .zw-visitor-hint { font: 400 12px/1.65 system-ui,sans-serif; margin: 10px 0 0 !important; }
 html body #root .zw-visitor-signed { font-size: 13px; padding: 15px 0; }
 html body #root .zw-visitor-signed strong { display: block; margin-top: 6px; overflow-wrap: anywhere; }
-html body #root .zw-visitor-logout { min-height: 44px; border: 1px solid #315d4e !important; border-radius: 5px; padding: 7px 17px; background: none; }
+html body #root .zw-visitor-logout { min-height: 44px; border: 1px solid #4f483f !important; border-radius: 5px; padding: 7px 17px; background: none; }
 @media(min-width:700px) {
   html body #root .zw-visitor-entry-content { align-items: flex-end; }
   html body #root .zw-visitor-entry-brand { align-self: flex-start; }

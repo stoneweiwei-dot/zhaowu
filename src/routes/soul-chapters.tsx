@@ -202,7 +202,7 @@ function SoulChaptersPage() {
       <div className="flex justify-center">
         <Link
           to="/"
-          className="inline-flex min-h-12 items-center rounded-full border border-line bg-paper px-5 py-3 text-sm text-ink"
+          className="inline-flex min-h-12 items-center rounded-sm border border-line bg-paper px-5 py-3 text-sm text-ink"
         >
           {copy.back}
         </Link>

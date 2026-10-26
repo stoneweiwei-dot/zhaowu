@@ -55,7 +55,7 @@
   overflow: hidden;
   min-height: 420px;
   border: 1px solid rgba(118, 111, 98, 0.18);
-  border-radius: 34px;
+  border-radius: 3px;
   padding: 26px 28px 22px;
   color: var(--daily-ink);
   background:
@@ -63,7 +63,7 @@
     radial-gradient(circle at 96% 39%, rgba(150, 177, 158, 0.42), transparent 31%),
     radial-gradient(circle at 24% 98%, rgba(255, 255, 255, 0.92), transparent 38%),
     linear-gradient(145deg, rgba(247, 247, 244, 0.98), rgba(229, 228, 224, 0.98));
-  box-shadow: 0 24px 58px rgba(52, 50, 44, 0.10), inset 0 1px rgba(255, 255, 255, 0.82);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .zhaowu-daily-almanac::before {
@@ -249,7 +249,7 @@
   align-items: center;
   gap: 10px;
   border: 1px solid rgba(255, 255, 255, 0.82);
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 5px 6px 5px 15px;
   color: #4f504c;
   background: rgba(255, 255, 255, 0.42);
@@ -279,10 +279,10 @@
 .zhaowu-home-fun-section {
   overflow: hidden;
   border: 1px solid rgba(151, 111, 62, 0.24) !important;
-  border-radius: 26px !important;
+  border-radius: 3px !important;
   padding: 22px !important;
   background: rgba(251, 245, 233, 0.96) !important;
-  box-shadow: 0 14px 34px rgba(76, 55, 31, 0.07) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 .zhaowu-home-layout .zhaowu-home-portals-heading,
@@ -326,7 +326,7 @@
 .zhaowu-home-fun-card {
   min-width: 0;
   border: 1px solid rgba(151, 111, 62, 0.15);
-  border-radius: 17px;
+  border-radius: 3px;
   color: #302d28;
   background: rgba(255, 251, 243, 0.66);
 }
@@ -404,7 +404,7 @@
 
   .zhaowu-daily-almanac {
     min-height: 455px;
-    border-radius: 30px;
+    border-radius: 3px;
     padding: 23px 21px 19px;
   }
 
@@ -465,7 +465,7 @@
 
   .zhaowu-home-layout .zhaowu-home-portals-block,
   .zhaowu-home-fun-section {
-    border-radius: 22px !important;
+    border-radius: 3px !important;
     padding: 17px !important;
   }
 
@@ -498,8 +498,8 @@
   display: grid;
   gap: 8px;
   text-align: left;
-  border: 1px solid rgba(79, 101, 83, 0.16);
-  border-radius: 12px;
+  border: 1px solid rgba(94, 90, 86, 0.16);
+  border-radius: 3px;
   background: rgba(251, 248, 240, 0.88);
 }
 
@@ -508,7 +508,7 @@
   grid-template-columns: 30px minmax(0, 1fr);
   align-items: center;
   gap: 10px;
-  color: #1f2a26;
+  color: #262523;
   font-size: 1.0625rem;
   line-height: 1.55;
 }
@@ -519,8 +519,8 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  border: 1px solid rgba(36, 79, 67, 0.45);
-  color: #244f43;
+  border: 1px solid rgba(65, 58, 50, 0.45);
+  color: #413a32;
   background: rgba(251, 248, 240, 0.94);
   font-weight: 700;
   font-size: 1rem;
@@ -536,7 +536,7 @@
 
 .zw-home-more-title {
   margin: 0 16px 10px;
-  color: rgba(31, 42, 38, 0.78);
+  color: rgba(38, 37, 35, 0.78);
   font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.08em;

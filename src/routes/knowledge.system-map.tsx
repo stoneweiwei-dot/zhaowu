@@ -58,8 +58,8 @@ function SystemMapPage() {
         {SYSTEM_CAPABILITIES.map((item) => (
           <article key={item.id} id={item.id} className="seal-border rounded-2xl bg-paper p-5 sm:p-6" data-capability-id={item.id} data-capability-status={item.status}>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-cinnabar/25 bg-cream px-3 py-1 text-[11px] font-semibold tracking-[0.12em] text-cinnabar">{item.priority}</span>
-              <span className={`rounded-full border px-3 py-1 text-[11px] font-semibold ${STATUS_CLASS[item.status]}`}>{statusLabel(locale, item.status)}</span>
+              <span className="rounded-sm border border-cinnabar/25 bg-cream px-3 py-1 text-[11px] font-semibold tracking-[0.12em] text-cinnabar">{item.priority}</span>
+              <span className={`rounded-sm border px-3 py-1 text-[11px] font-semibold ${STATUS_CLASS[item.status]}`}>{statusLabel(locale, item.status)}</span>
             </div>
             <h2 className="mt-4 font-display text-2xl leading-tight text-ink">{text(locale, item.title)}</h2>
             <p className="mt-3 text-sm leading-7 text-ink-soft">{text(locale, item.summary)}</p>
@@ -69,7 +69,7 @@ function SystemMapPage() {
             </div>
             <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-ink-mute">
               <span>{text(locale,["證據層級","证据层级","Evidence layer"])}：{item.evidence}</span>
-              {item.route ? <a href={item.route} className="inline-flex min-h-10 items-center rounded-full border border-line bg-cream px-4 text-cinnabar">{text(locale,["前往現有入口","前往现有入口","Open current route"])} →</a> : null}
+              {item.route ? <a href={item.route} className="inline-flex min-h-10 items-center rounded-sm border border-line bg-cream px-4 text-cinnabar">{text(locale,["前往現有入口","前往现有入口","Open current route"])} →</a> : null}
             </div>
           </article>
         ))}

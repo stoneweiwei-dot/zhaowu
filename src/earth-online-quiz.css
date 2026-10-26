@@ -1,12 +1,12 @@
 .earth-online-shell {
-  --eo-ink: #18372f;
-  --eo-ink-soft: #4d655e;
+  --eo-ink: #2d2822;
+  --eo-ink-soft: #5d5955;
   --eo-paper: #f5efdf;
   --eo-paper-deep: #e7ddc5;
   --eo-gold: #b99245;
   --eo-gold-light: #dbc782;
   --eo-cinnabar: #9c332c;
-  --eo-jade: #285c4d;
+  --eo-jade: #4b4339;
   position: relative;
   isolation: isolate;
   width: min(100% - 28px, 860px);
@@ -23,7 +23,7 @@
   pointer-events: none;
   background:
     radial-gradient(circle at 12% 12%, rgba(185,146,69,.14), transparent 27rem),
-    radial-gradient(circle at 90% 24%, rgba(40,92,77,.10), transparent 25rem),
+    radial-gradient(circle at 90% 24%, rgba(75, 67, 57,.10), transparent 25rem),
     linear-gradient(180deg, #f7f2e5 0%, #eee4cf 100%);
 }
 
@@ -35,8 +35,8 @@
   pointer-events: none;
   opacity: .28;
   background-image:
-    linear-gradient(rgba(24,55,47,.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(24,55,47,.035) 1px, transparent 1px);
+    linear-gradient(rgba(45, 40, 34,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45, 40, 34,.035) 1px, transparent 1px);
   background-size: 34px 34px;
   mask-image: linear-gradient(to bottom, rgba(0,0,0,.72), transparent 72%);
 }
@@ -54,7 +54,7 @@
   position: absolute;
   font-family: var(--font-display, serif);
   font-size: clamp(4rem, 15vw, 9rem);
-  color: rgba(40,92,77,.045);
+  color: rgba(75, 67, 57,.045);
   line-height: 1;
   transform: rotate(-8deg);
 }
@@ -77,18 +77,18 @@
 .earth-online-back,
 .earth-online-footer a { color: var(--eo-jade); text-decoration: none; font-weight: 650; }
 .earth-online-status { display: inline-flex; align-items: center; gap: 7px; color: var(--eo-ink-soft); letter-spacing: .12em; font-size: 10px; }
-.earth-online-status i { width: 7px; height: 7px; border-radius: 999px; background: #4c8e66; box-shadow: 0 0 0 5px rgba(76,142,102,.12); }
+.earth-online-status i { width: 7px; height: 7px; border-radius: 3px; background: #796e61; box-shadow: 0 0 0 5px rgba(121, 110, 97,.12); }
 
 .earth-online-hero {
   position: relative;
   overflow: hidden;
   padding: clamp(26px, 6vw, 58px);
   border: 1px solid rgba(116,92,40,.35);
-  border-radius: 28px;
+  border-radius: 3px;
   background:
     linear-gradient(135deg, rgba(255,255,255,.55), transparent 45%),
     rgba(248,243,231,.92);
-  box-shadow: 0 24px 80px rgba(60,47,22,.11), inset 0 0 0 5px rgba(255,255,255,.28);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .earth-online-hero::before,
@@ -161,7 +161,7 @@
   content: "";
   position: absolute;
   border-radius: inherit;
-  border: 1px solid rgba(40,92,77,.17);
+  border: 1px solid rgba(75, 67, 57,.17);
 }
 .earth-online-orbit::before { inset: 18%; }
 .earth-online-orbit::after { inset: 35%; }
@@ -184,7 +184,7 @@
   border: 0;
   cursor: pointer;
   min-height: 50px;
-  border-radius: 999px;
+  border-radius: 3px;
   font: inherit;
   font-weight: 750;
 }
@@ -196,8 +196,8 @@
   margin-top: 30px;
   padding: 14px 22px;
   color: #fff9e9;
-  background: linear-gradient(135deg, #214f42, #17372f);
-  box-shadow: 0 10px 28px rgba(24,55,47,.18);
+  background: linear-gradient(135deg, #403930, #2d2721);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 .earth-online-primary span { color: var(--eo-gold-light); font-size: 19px; }
 .earth-online-primary:hover { transform: translateY(-1px); }
@@ -211,9 +211,9 @@
 .earth-online-quiz-card {
   padding: clamp(22px, 5vw, 42px);
   border: 1px solid rgba(116,92,40,.28);
-  border-radius: 24px;
+  border-radius: 3px;
   background: rgba(249,245,235,.94);
-  box-shadow: 0 18px 58px rgba(59,45,20,.08);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .earth-online-progress-row {
@@ -224,7 +224,7 @@
   letter-spacing: .07em;
 }
 .earth-online-progress-row strong { color: var(--eo-jade); }
-.earth-online-progress { height: 5px; margin-top: 10px; overflow: hidden; border-radius: 99px; background: #ded4bd; }
+.earth-online-progress { height: 5px; margin-top: 10px; overflow: hidden; border-radius: 3px; background: #ded4bd; }
 .earth-online-progress i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--eo-cinnabar), var(--eo-gold)); transition: width .28s ease; }
 .earth-online-level { margin-top: 28px; }
 .earth-online-quiz-card h2 {
@@ -246,7 +246,7 @@
   min-height: 62px;
   padding: 12px 14px;
   border: 1px solid rgba(90,74,39,.2);
-  border-radius: 15px;
+  border-radius: 3px;
   background: rgba(255,252,243,.9);
   color: var(--eo-ink);
   text-align: left;
@@ -258,7 +258,7 @@
   height: 34px;
   display: grid;
   place-items: center;
-  border-radius: 11px;
+  border-radius: 3px;
   background: #e9dfc8;
   color: var(--eo-cinnabar);
   font-family: ui-monospace, monospace;
@@ -277,13 +277,13 @@
   overflow: hidden;
   padding: clamp(28px, 6vw, 54px);
   border: 1px solid rgba(185,146,69,.56);
-  border-radius: 26px;
+  border-radius: 3px;
   background:
     radial-gradient(circle at 50% -12%, rgba(219,199,130,.32), transparent 36%),
-    linear-gradient(145deg, #173a31 0%, #204d40 58%, #15352e 100%);
+    linear-gradient(145deg, #2f2922 0%, #3e372f 58%, #2b251f 100%);
   color: #fbf5e4;
   text-align: left;
-  box-shadow: 0 30px 78px rgba(17,45,38,.24);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 .earth-online-loot-card::before { border-color: rgba(219,199,130,.35); }
 .earth-online-loot-shine {
@@ -304,7 +304,7 @@
   place-items: center;
   margin-top: 28px;
   border: 1px solid rgba(219,199,130,.48);
-  border-radius: 18px;
+  border-radius: 3px;
   color: #ecd996;
   background: rgba(4,27,23,.22);
   font-family: var(--font-display, serif);
@@ -318,21 +318,21 @@
 .earth-online-summary { max-width: 680px; margin: 22px 0 0; color: rgba(255,248,233,.88); font-size: 15px; line-height: 1.9; }
 .earth-online-drop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 28px; }
 .earth-online-drop-grid > div,
-.earth-online-action { border: 1px solid rgba(219,199,130,.22); border-radius: 15px; background: rgba(7,29,25,.22); padding: 15px; }
+.earth-online-action { border: 1px solid rgba(219,199,130,.22); border-radius: 3px; background: rgba(7,29,25,.22); padding: 15px; }
 .earth-online-drop-grid span,
 .earth-online-action > span { display: block; color: #cdbb79; font-size: 10px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
 .earth-online-drop-grid strong { display: block; margin-top: 5px; color: #fff5dc; font-family: var(--font-display, serif); font-size: 18px; }
 .earth-online-action { margin-top: 10px; }
 .earth-online-action p { margin: 7px 0 0; color: rgba(255,248,233,.9); line-height: 1.75; font-size: 14px; }
-.earth-online-secondary { margin-top: 14px; padding: 12px 21px; border: 1px solid rgba(24,55,47,.24); background: rgba(248,243,231,.85); color: var(--eo-jade); }
+.earth-online-secondary { margin-top: 14px; padding: 12px 21px; border: 1px solid rgba(45, 40, 34,.24); background: rgba(248,243,231,.85); color: var(--eo-jade); }
 
 .earth-online-article {
   position: relative;
   padding: clamp(28px, 6vw, 58px);
   border: 1px solid rgba(116,92,40,.3);
-  border-radius: 28px;
+  border-radius: 3px;
   background: rgba(249,245,235,.92);
-  box-shadow: 0 20px 65px rgba(58,45,22,.08);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 .earth-online-article > h2 {
   max-width: 690px;
@@ -344,19 +344,19 @@
 }
 .earth-online-article-lead { max-width: 700px; margin: 20px 0 0; color: var(--eo-ink-soft); font-size: 16px; line-height: 1.9; }
 .earth-online-article-body { max-width: 680px; margin: 38px auto 0; }
-.earth-online-article-body p { margin: 0 0 24px; color: #3f554f; font-size: 16px; line-height: 2; }
+.earth-online-article-body p { margin: 0 0 24px; color: #4e4a46; font-size: 16px; line-height: 2; }
 .earth-online-article-body h3 { margin: 36px 0 12px; color: var(--eo-ink); font-family: var(--font-display, serif); font-size: 24px; line-height: 1.45; }
 .earth-online-pullquote,
 .earth-online-final-line {
   margin: 34px 0;
   padding: 24px;
-  border-radius: 18px;
+  border-radius: 3px;
   color: var(--eo-ink);
   font-family: var(--font-display, serif);
   font-size: clamp(1.25rem, 4vw, 1.75rem);
   line-height: 1.65;
 }
-.earth-online-pullquote { border: 1px solid rgba(185,146,69,.32); background: linear-gradient(135deg, rgba(219,199,130,.18), rgba(40,92,77,.05)); }
+.earth-online-pullquote { border: 1px solid rgba(185,146,69,.32); background: linear-gradient(135deg, rgba(219,199,130,.18), rgba(75, 67, 57,.05)); }
 .earth-online-final-line { border-left: 4px solid var(--eo-cinnabar); background: #eee5d1; }
 .earth-online-disclaimer { margin: 36px 0 0; padding-top: 20px; border-top: 1px solid rgba(90,74,39,.16); color: #76847f; font-size: 12px; line-height: 1.75; }
 .earth-online-footer { margin-top: 26px; padding: 0 5px; color: #74837d; letter-spacing: .08em; }
@@ -364,18 +364,18 @@
 @media (max-width: 640px) {
   .earth-online-shell { width: min(100% - 20px, 860px); padding-top: 10px; }
   .earth-online-nav { margin-bottom: 16px; }
-  .earth-online-hero { border-radius: 22px; padding: 26px 20px 28px; }
+  .earth-online-hero { border-radius: 3px; padding: 26px 20px 28px; }
   .earth-online-orbit { width: 142px; right: -54px; top: -54px; opacity: .55; }
   .earth-online-hero h1 { max-width: 78%; }
   .earth-online-lead { margin-top: 18px; }
   .earth-online-hero blockquote { margin-top: 20px; }
   .earth-online-primary { width: 100%; justify-content: space-between; }
-  .earth-online-quiz-card { padding: 22px 16px; border-radius: 20px; }
+  .earth-online-quiz-card { padding: 22px 16px; border-radius: 3px; }
   .earth-online-options button { min-height: 68px; }
-  .earth-online-loot-card { padding: 28px 20px; border-radius: 22px; }
+  .earth-online-loot-card { padding: 28px 20px; border-radius: 3px; }
   .earth-online-loot-top { align-items: flex-start; flex-direction: column; gap: 6px; }
   .earth-online-drop-grid { grid-template-columns: 1fr; }
-  .earth-online-article { padding: 30px 20px; border-radius: 22px; }
+  .earth-online-article { padding: 30px 20px; border-radius: 3px; }
   .earth-online-article-body { margin-top: 28px; }
   .earth-online-article-body p { font-size: 15.5px; line-height: 1.95; }
   .earth-online-footer { flex-direction: column; align-items: flex-start; }

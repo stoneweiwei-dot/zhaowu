@@ -7,10 +7,10 @@
 .zhaowu-specialist-sheet {
   overflow: hidden;
   border: 1px solid rgba(88, 69, 43, .15);
-  border-radius: 28px;
+  border-radius: 3px;
   padding: clamp(26px, 5vw, 44px);
   background: linear-gradient(145deg, rgba(253,249,239,.97), rgba(245,236,218,.92));
-  box-shadow: 0 20px 58px rgba(57, 45, 29, .075);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .zhaowu-specialist-hero {
@@ -47,7 +47,7 @@
 .zhaowu-specialist-birth {
   margin-top: 20px;
   padding: 18px 19px;
-  border-left: 3px solid rgba(42, 76, 63, .58);
+  border-left: 3px solid rgba(74, 64, 53, .58);
   border-radius: 4px 15px 15px 4px;
   background: rgba(239, 241, 230, .72);
 }
@@ -72,7 +72,7 @@
   margin: 18px 0 0;
   padding: 15px 16px;
   border: 1px solid rgba(143, 47, 39, .17);
-  border-radius: 14px;
+  border-radius: 3px;
   background: rgba(143, 47, 39, .045);
   color: #5b3832;
   font-size: 15px;
@@ -92,10 +92,10 @@
   min-height: 46px;
   place-items: center;
   padding: 0 18px;
-  border: 1px solid rgba(42, 76, 63, .24);
-  border-radius: 12px;
+  border: 1px solid rgba(74, 64, 53, .24);
+  border-radius: 3px;
   color: #fffaf0;
-  background: #294b3f;
+  background: #504d49;
   font-size: 15px;
   font-weight: 700;
   text-decoration: none;
@@ -146,8 +146,8 @@
 .zhaowu-specialist-overview {
   margin-bottom: 4px;
   padding: 22px 21px 24px !important;
-  border: 1px solid rgba(42, 76, 63, .15) !important;
-  border-radius: 17px;
+  border: 1px solid rgba(74, 64, 53, .15) !important;
+  border-radius: 3px;
   background: rgba(237, 241, 229, .68) !important;
 }
 
@@ -240,7 +240,7 @@
   }
 
   .zhaowu-specialist-sheet {
-    border-radius: 22px;
+    border-radius: 3px;
     padding: 25px 19px 32px;
   }
 

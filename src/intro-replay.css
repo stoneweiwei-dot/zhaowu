@@ -7,7 +7,7 @@
   min-height: 2.25rem;
   padding: 0 1rem;
   border: 1px solid color-mix(in srgb, var(--zws-gold, #b8934d) 55%, transparent);
-  border-radius: 999px;
+  border-radius: 3px;
   background: color-mix(in srgb, var(--zws-card, #fffaf0) 82%, transparent);
   color: var(--zws-ink, #2b2418);
   font-size: 0.78rem;
@@ -15,7 +15,7 @@
   line-height: 1;
   white-space: nowrap;
   cursor: pointer;
-  backdrop-filter: blur(6px);
+  backdrop-filter: none;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 html[lang="en"] .zw-intro-replay { letter-spacing: 0.02em; }
@@ -26,8 +26,8 @@ html[lang="en"] .zw-intro-replay { letter-spacing: 0.02em; }
   place-items: center;
   width: 1.35rem;
   height: 1.35rem;
-  border-radius: 999px;
-  background: var(--zws-accent, #285044);
+  border-radius: 3px;
+  background: var(--zws-accent, #433c35);
   color: #fffaf0;
   font-size: 0.55rem;
   padding-left: 0.08rem;

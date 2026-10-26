@@ -36,10 +36,10 @@ export function SongBeastPromptDisclosure({
       </p>
       {guardianBeast ? (
         <div className="mt-3 flex flex-wrap gap-2">
-          <button type="button" aria-pressed={selection === "inner"} onClick={() => { setSelection("inner"); setStatus(""); }} className={`min-h-11 rounded-lg border px-3 text-sm ${selection === "inner" ? "border-[#315e50] bg-[#315e50] text-white" : "border-line bg-paper text-ink"}`}>
+          <button type="button" aria-pressed={selection === "inner"} onClick={() => { setSelection("inner"); setStatus(""); }} className={`min-h-11 rounded-lg border px-3 text-sm ${selection === "inner" ? "border-[#4a4035] bg-[#4a4035] text-white" : "border-line bg-paper text-ink"}`}>
             {tx("內在動物", "内在动物", "Inner animal")}
           </button>
-          <button type="button" aria-pressed={selection === "guardian"} onClick={() => { setSelection("guardian"); setStatus(""); }} className={`min-h-11 rounded-lg border px-3 text-sm ${selection === "guardian" ? "border-[#315e50] bg-[#315e50] text-white" : "border-line bg-paper text-ink"}`}>
+          <button type="button" aria-pressed={selection === "guardian"} onClick={() => { setSelection("guardian"); setStatus(""); }} className={`min-h-11 rounded-lg border px-3 text-sm ${selection === "guardian" ? "border-[#4a4035] bg-[#4a4035] text-white" : "border-line bg-paper text-ink"}`}>
             {tx("命局瑞獸", "命局瑞兽", "Chart guardian")}
           </button>
         </div>
@@ -55,7 +55,7 @@ export function SongBeastPromptDisclosure({
       </label>
       <textarea readOnly aria-label={tx("宋式異獸生成指令", "宋式异兽生成指令", "Image prompt")} value={prompt} rows={6} className="mt-3 block w-full resize-y rounded-lg border border-line bg-paper p-3 text-sm leading-6 text-ink" />
       <div className="mt-3 flex flex-wrap items-center gap-3">
-        <button type="button" onClick={() => void navigator.clipboard.writeText(prompt).then(() => setStatus(tx("已複製", "已复制", "Copied"))).catch(() => setStatus(tx("請手動選取並複製", "请手动选取并复制", "Select and copy manually")))} className="min-h-11 rounded-lg bg-[#315e50] px-4 text-sm text-white">
+        <button type="button" onClick={() => void navigator.clipboard.writeText(prompt).then(() => setStatus(tx("已複製", "已复制", "Copied"))).catch(() => setStatus(tx("請手動選取並複製", "请手动选取并复制", "Select and copy manually")))} className="min-h-11 rounded-lg bg-[#4a4035] px-4 text-sm text-white">
           {tx("複製指令", "复制指令", "Copy prompt")}
         </button>
         <span role="status" className="text-sm text-ink-soft">{status}</span>

@@ -97,10 +97,10 @@ export function ReportEditor({ reportId, sections, onChanged }: { reportId: stri
   return (
     <div className="mb-4 rounded-lg border border-line bg-paper/50 p-3" data-owner-report-editor>
       <div className="flex flex-wrap items-center gap-2">
-        <button type="button" disabled={busy || !sections.length} onClick={open ? () => setOpen(false) : begin} className="min-h-11 rounded-full border border-line bg-cream/80 px-4 text-sm text-ink-soft disabled:opacity-50">
+        <button type="button" disabled={busy || !sections.length} onClick={open ? () => setOpen(false) : begin} className="min-h-11 rounded-sm border border-line bg-cream/80 px-4 text-sm text-ink-soft disabled:opacity-50">
           {open ? "取消編輯" : "編輯報告文字"}
         </button>
-        <button type="button" disabled={busy} onClick={() => void (history ? setHistory(null) : loadHistory())} className="min-h-11 rounded-full border border-line bg-cream/80 px-4 text-sm text-ink-soft disabled:opacity-50">
+        <button type="button" disabled={busy} onClick={() => void (history ? setHistory(null) : loadHistory())} className="min-h-11 rounded-sm border border-line bg-cream/80 px-4 text-sm text-ink-soft disabled:opacity-50">
           {history ? "收起修改紀錄" : "修改紀錄／還原"}
         </button>
       </div>
@@ -123,7 +123,7 @@ export function ReportEditor({ reportId, sections, onChanged }: { reportId: stri
           <label className="block text-xs text-ink-mute">這次修改的備註（選填）
             <input value={note} onChange={(event) => setNote(event.target.value)} maxLength={200} className="mt-1 min-h-11 w-full rounded-lg border border-line bg-cream/80 px-3 text-base text-ink" />
           </label>
-          <button type="button" disabled={busy} onClick={() => void save()} className="min-h-11 rounded-full bg-wood px-6 text-sm font-medium text-cream disabled:opacity-50">
+          <button type="button" disabled={busy} onClick={() => void save()} className="min-h-11 rounded-sm bg-wood px-6 text-sm font-medium text-cream disabled:opacity-50">
             {busy ? "儲存中…" : "儲存修改"}
           </button>
         </div>
@@ -137,8 +137,8 @@ export function ReportEditor({ reportId, sections, onChanged }: { reportId: stri
               <span className="font-medium text-ink">{item.version === 0 ? "原始版本" : `第 ${item.version} 版`}</span>
               <span className="text-ink-mute">{KIND[item.kind]}・{when(item.created_at)}</span>
               {item.note ? <span className="text-ink-soft">{item.note}</span> : null}
-              {item.version === latest ? <span className="rounded-full border border-wood/40 bg-wood/10 px-2 py-0.5 text-[11px] text-wood">目前使用</span> : (
-                <button type="button" disabled={busy} onClick={() => void restore(item.version)} className="ml-auto min-h-11 rounded-full border border-line px-4 text-sm text-ink-soft disabled:opacity-50">還原到這版</button>
+              {item.version === latest ? <span className="rounded-sm border border-wood/40 bg-wood/10 px-2 py-0.5 text-[11px] text-wood">目前使用</span> : (
+                <button type="button" disabled={busy} onClick={() => void restore(item.version)} className="ml-auto min-h-11 rounded-sm border border-line px-4 text-sm text-ink-soft disabled:opacity-50">還原到這版</button>
               )}
             </li>
           ))}

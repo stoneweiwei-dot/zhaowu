@@ -67,7 +67,7 @@ export function PromoPanel() {
   }
 
   const field = "min-h-11 w-full rounded-lg border border-line bg-paper px-3 text-sm text-ink";
-  const btn = "min-h-11 rounded-full border border-line bg-paper/70 px-4 text-sm text-ink-soft disabled:opacity-40";
+  const btn = "min-h-11 rounded-sm border border-line bg-paper/70 px-4 text-sm text-ink-soft disabled:opacity-40";
 
   return (
     <div className="space-y-6">
@@ -117,7 +117,7 @@ export function PromoPanel() {
               <li key={c.id} className="rounded-lg border border-line bg-paper/30 p-3">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="break-all font-mono text-base">{c.code}</span>
-                  <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${STATUS[c.status].cls}`}>{STATUS[c.status].text}</span>
+                  <span className={`inline-flex items-center rounded-sm border px-2.5 py-0.5 text-[11px] font-medium ${STATUS[c.status].cls}`}>{STATUS[c.status].text}</span>
                 </div>
                 <p className="mt-1 text-xs leading-5 text-ink-mute">{scopeText(c)}・已兌換 {c.redeemedCount}／{c.maxRedemptions ?? "不限"}・到期 {dateText(c.expiresAt)}</p>
                 {c.note ? <p className="mt-1 text-xs text-ink-soft">{c.note}</p> : null}

@@ -167,18 +167,18 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
           <p className="text-[10px] tracking-[0.22em] text-wood">CONTENT LIBRARY</p>
           <h2 className="mt-1 font-display text-xl leading-tight">{copy.title}</h2>
         </div>
-        <span className="shrink-0 rounded-full border border-line bg-paper/70 px-3 py-1 text-xs text-ink-mute">{libraryAssets.length}</span>
+        <span className="shrink-0 rounded-sm border border-line bg-paper/70 px-3 py-1 text-xs text-ink-mute">{libraryAssets.length}</span>
       </div>
 
       <p className="mt-3 text-sm leading-6 text-ink-mute">{copy.homeBackgroundHint}</p>
       <p className="mt-2 text-xs leading-5 text-ink-mute" data-bundled-report-count="22">{copy.bundledSummary}</p>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <label className={`inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full bg-[#1f4e3a] px-4 text-sm text-[#faf8f1] ${busy || SUPABASE_STORAGE_WRITES_PAUSED ? "pointer-events-none opacity-50" : ""}`}>
+        <label className={`inline-flex min-h-11 cursor-pointer items-center justify-center rounded-sm bg-[#4a4035] px-4 text-sm text-[#faf8f1] ${busy || SUPABASE_STORAGE_WRITES_PAUSED ? "pointer-events-none opacity-50" : ""}`}>
           {busy ? copy.uploading : copy.upload}
           <input type="file" multiple disabled={SUPABASE_STORAGE_WRITES_PAUSED} accept="image/jpeg,image/png,image/webp,image/avif" className="hidden" onChange={(e) => void onUpload(e)} />
         </label>
-        <button type="button" className="min-h-11 rounded-full border border-line bg-paper/70 px-4 text-sm text-ink-soft" onClick={() => setOpen((value) => !value)}>
+        <button type="button" className="min-h-11 rounded-sm border border-line bg-paper/70 px-4 text-sm text-ink-soft" onClick={() => setOpen((value) => !value)}>
           {open ? copy.closeGallery : copy.openGallery}
         </button>
       </div>
@@ -195,7 +195,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
                 type="button"
                 onClick={() => switchGroup(item)}
                 aria-pressed={group === item}
-                className={`flex min-h-11 items-center justify-between gap-2 rounded-xl border px-3 text-left text-sm ${group === item ? "border-[#315f51] bg-[#315f51] text-[#fffaf0]" : "border-line bg-paper/55 text-ink-soft"}`}
+                className={`flex min-h-11 items-center justify-between gap-2 rounded-xl border px-3 text-left text-sm ${group === item ? "border-[#504940] bg-[#504940] text-[#fffaf0]" : "border-line bg-paper/55 text-ink-soft"}`}
               >
                 <span className="min-w-0 leading-tight">{groupLabel(item)}</span>
                 <span className="shrink-0 text-[11px] opacity-70">{groupCounts[item]}</span>
@@ -218,7 +218,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
                     {!isBundledReportArt(asset) ? <button
                       type="button"
                       disabled={Boolean(backgroundBusyId) || SUPABASE_STORAGE_WRITES_PAUSED || qcBlockedAsset(asset)}
-                      className="min-h-10 rounded-full bg-[#315f51] px-3 text-xs font-medium text-[#fffaf0] disabled:opacity-40"
+                      className="min-h-10 rounded-sm bg-[#504940] px-3 text-xs font-medium text-[#fffaf0] disabled:opacity-40"
                       onClick={() => void setAsHomepageBackground(asset)}
                     >
                       {backgroundBusyId === asset.id ? copy.settingHomeBackground : qcBlockedAsset(asset) ? copy.qcBlocked : copy.setHomeBackground}
@@ -233,7 +233,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
                         } catch (error) {
                           setMessage(error instanceof Error ? error.message : copy.failed);
                         }
-                      }} className="min-h-9 rounded-full border border-cinnabar/25 px-3 text-xs text-cinnabar">{copy.remove}</button>
+                      }} className="min-h-9 rounded-sm border border-cinnabar/25 px-3 text-xs text-cinnabar">{copy.remove}</button>
                     ) : null}
                   </div>
                 </div>
@@ -243,7 +243,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
 
           {shown < visibleAssets.length ? (
             <div className="mt-5 flex justify-center">
-              <button type="button" className="min-h-10 rounded-full border border-line bg-cream px-5 text-sm text-ink-soft" onClick={() => setShown((current) => current + PAGE_SIZE)}>{copy.more}</button>
+              <button type="button" className="min-h-10 rounded-sm border border-line bg-cream px-5 text-sm text-ink-soft" onClick={() => setShown((current) => current + PAGE_SIZE)}>{copy.more}</button>
             </div>
           ) : null}
         </div>
@@ -254,7 +254,7 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
           <div className="max-h-[86vh] w-full max-w-lg overflow-hidden rounded-2xl border border-line bg-cream p-4" onClick={(event) => event.stopPropagation()}>
             <div className="flex items-center justify-between gap-3">
               <p className="truncate font-display text-lg">{preview.title}</p>
-              <button type="button" className="rounded-full border border-line px-3 py-1 text-xs" onClick={() => setPreview(null)}>{copy.closePreview}</button>
+              <button type="button" className="rounded-sm border border-line px-3 py-1 text-xs" onClick={() => setPreview(null)}>{copy.closePreview}</button>
             </div>
             <div className="mt-3 overflow-hidden rounded-xl bg-paper">
               <img className="max-h-[70vh] w-full object-contain" src={assetSrc(preview)} alt={preview.title} />

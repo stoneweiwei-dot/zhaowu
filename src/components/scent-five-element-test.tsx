@@ -245,12 +245,12 @@ export function ScentFiveElementTest({ result }: { result: AnalysisResult | null
           type="button"
           disabled={selected.length < 3}
           onClick={() => setRevealed(true)}
-          className="min-h-11 rounded-full bg-cinnabar px-5 py-2.5 text-sm font-semibold text-cream disabled:cursor-not-allowed disabled:opacity-40"
+          className="min-h-11 rounded-sm bg-cinnabar px-5 py-2.5 text-sm font-semibold text-cream disabled:cursor-not-allowed disabled:opacity-40"
         >
           {copy.submit}
         </button>
         {selected.length ? (
-          <button type="button" onClick={reset} className="min-h-11 rounded-full border border-line bg-paper px-5 py-2.5 text-sm text-ink">
+          <button type="button" onClick={reset} className="min-h-11 rounded-sm border border-line bg-paper px-5 py-2.5 text-sm text-ink">
             {copy.reset}
           </button>
         ) : null}

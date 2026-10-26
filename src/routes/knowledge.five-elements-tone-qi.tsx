@@ -106,7 +106,7 @@ function FiveElementsToneQiArticle() {
           {ELEMENTS.map((item) => (
             <article key={item.key} className={`rounded-xl border p-4 ${item.className}`}>
               <div className="flex items-start gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line bg-paper font-display text-2xl text-ink">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-sm border border-line bg-paper font-display text-2xl text-ink">
                   {item.glyph}
                 </span>
                 <div className="min-w-0 flex-1">
@@ -165,7 +165,7 @@ function FiveElementsToneQiArticle() {
             "Colour, music, seasons, materials and surroundings can serve as reminders or aesthetic choices. They are not methods for changing fate, treating illness, supplying a useful element or guaranteeing an outcome."
           )}</p>
         </div>
-        <a href="/#birth-form" className="mt-5 inline-flex min-h-11 items-center rounded-full border border-cinnabar/25 bg-paper px-4 py-2 text-sm text-cinnabar">
+        <a href="/#birth-form" className="mt-5 inline-flex min-h-11 items-center rounded-sm border border-cinnabar/25 bg-paper px-4 py-2 text-sm text-cinnabar">
           {tr(locale, "查看命盤與功能訓練", "查看命盘与功能训练", "Open chart and functional training")} →
         </a>
       </section>
@@ -189,10 +189,10 @@ function FiveElementsToneQiArticle() {
       </section>
 
       <footer className="flex justify-between gap-3">
-        <Link to="/knowledge" className="inline-flex min-h-11 items-center rounded-full border border-line bg-paper px-4 py-2 text-sm text-ink">
+        <Link to="/knowledge" className="inline-flex min-h-11 items-center rounded-sm border border-line bg-paper px-4 py-2 text-sm text-ink">
           {tr(locale, "← 返回知識庫", "← 返回知识库", "← Back to Knowledge")}
         </Link>
-        <a href="/#birth-form" className="inline-flex min-h-11 items-center rounded-full bg-pine px-4 py-2 text-sm text-white">
+        <a href="/#birth-form" className="inline-flex min-h-11 items-center rounded-sm bg-pine px-4 py-2 text-sm text-white">
           {tr(locale, "開始分析", "开始分析", "Start an analysis")}
         </a>
       </footer>

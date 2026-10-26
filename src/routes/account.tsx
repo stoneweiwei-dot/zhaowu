@@ -340,7 +340,7 @@ function AccountPage() {
               <h1 className="mt-1 font-display text-3xl">{c.ownerTitle}</h1>
 
             </div>
-            <button type="button" onClick={() => void signOut()} className="shrink-0 rounded-full border border-line bg-paper/70 px-4 py-2 text-xs text-ink-soft">
+            <button type="button" onClick={() => void signOut()} className="shrink-0 rounded-sm border border-line bg-paper/70 px-4 py-2 text-xs text-ink-soft">
               {tr(locale, "登出", "登出", "Sign out")}
             </button>
           </div>
@@ -359,11 +359,11 @@ function AccountPage() {
             <h1 className="mt-1 font-display text-3xl">{c.ownerTitle}</h1>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <a href="/history" className="inline-flex min-h-11 items-center rounded-full border border-line bg-paper/70 px-4 text-sm text-ink-soft">{tr(locale, "本機報告", "本机报告", "My saved reports")}</a>
-            <button type="button" disabled={refreshBusy} onClick={() => void refreshAll()} className="min-h-11 rounded-full border border-line bg-paper/70 px-4 text-sm text-ink-soft disabled:opacity-50">
+            <a href="/history" className="inline-flex min-h-11 items-center rounded-sm border border-line bg-paper/70 px-4 text-sm text-ink-soft">{tr(locale, "本機報告", "本机报告", "My saved reports")}</a>
+            <button type="button" disabled={refreshBusy} onClick={() => void refreshAll()} className="min-h-11 rounded-sm border border-line bg-paper/70 px-4 text-sm text-ink-soft disabled:opacity-50">
               {refreshBusy ? c.refreshing : c.refreshAll}
             </button>
-            <button type="button" onClick={() => void signOut()} className="min-h-11 rounded-full border border-line bg-paper/70 px-4 text-sm text-ink-soft">
+            <button type="button" onClick={() => void signOut()} className="min-h-11 rounded-sm border border-line bg-paper/70 px-4 text-sm text-ink-soft">
               {tr(locale, "登出", "登出", "Sign out")}
             </button>
           </div>
@@ -390,7 +390,7 @@ function AccountPage() {
                 event.preventDefault();
                 selectConsoleView(view);
               }}
-              className={`flex min-h-11 min-w-0 items-center justify-center whitespace-normal rounded-xl border px-2.5 py-2 text-center text-sm font-medium leading-5 transition sm:rounded-full sm:px-4 ${consoleView === view ? "border-wood bg-wood text-cream" : "border-line bg-paper/60 text-ink-soft"}`}
+              className={`flex min-h-11 min-w-0 items-center justify-center whitespace-normal rounded-xl border px-2.5 py-2 text-center text-sm font-medium leading-5 transition sm:rounded-sm sm:px-4 ${consoleView === view ? "border-wood bg-wood text-cream" : "border-line bg-paper/60 text-ink-soft"}`}
             >{label}</a>
           ))}
         </nav>
@@ -407,14 +407,14 @@ function AccountPage() {
             <p className="text-xs tracking-[0.28em] text-cinnabar">REPORTS</p>
             <h2 className="mt-1 font-display text-2xl">{c.customerReports}</h2>
           </div>
-          <input value={query} onChange={(e) => setQuery(e.target.value)} className="h-10 min-w-52 rounded-full border border-line bg-cream px-4 text-sm outline-none focus:border-cinnabar" placeholder={c.search} />
+          <input value={query} onChange={(e) => setQuery(e.target.value)} className="h-10 min-w-52 rounded-sm border border-line bg-cream px-4 text-sm outline-none focus:border-cinnabar" placeholder={c.search} />
         </div>
 
         <details><summary className="min-h-11 py-3 text-sm">{c.batchManage} ＋</summary><div data-owner-bulk-toolbar="reports" className="mt-4 flex flex-wrap items-center gap-1.5 border-y border-line/70 py-2.5">
           <span className="mr-auto font-display text-sm text-ink">{selectedReportIds.length ? c.selected(selectedReportIds.length) : c.batchManage}</span>
-          <button type="button" disabled={refreshBusy || !filtered.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedReportIds(filtered.map((row) => row.id))}>{c.selectAllShown}</button>
-          <button type="button" disabled={refreshBusy || !selectedReportIds.length} className="min-h-9 rounded-full border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedReportIds([])}>{c.clearSelection}</button>
-          <button type="button" disabled={refreshBusy || !selectedReportIds.length} className="min-h-9 rounded-full bg-cinnabar px-3 text-[11px] text-cream disabled:opacity-35" onClick={() => void deleteSelectedReports()}>{c.deleteSelected}</button>
+          <button type="button" disabled={refreshBusy || !filtered.length} className="min-h-9 rounded-sm border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedReportIds(filtered.map((row) => row.id))}>{c.selectAllShown}</button>
+          <button type="button" disabled={refreshBusy || !selectedReportIds.length} className="min-h-9 rounded-sm border border-line bg-paper/55 px-3 text-[11px] text-ink-soft disabled:opacity-35" onClick={() => setSelectedReportIds([])}>{c.clearSelection}</button>
+          <button type="button" disabled={refreshBusy || !selectedReportIds.length} className="min-h-9 rounded-sm bg-cinnabar px-3 text-[11px] text-cream disabled:opacity-35" onClick={() => void deleteSelectedReports()}>{c.deleteSelected}</button>
         </div></details>
 
         {busy ? <div className="mt-5 h-20 animate-pulse rounded-lg bg-paper-deep" /> : null}
@@ -440,7 +440,7 @@ function AccountPage() {
 
             return (
               <article key={row.id} data-owner-selectable-file="report" className={`relative rounded-xl border bg-paper/35 p-3.5 ${selectedReportIds.includes(row.id) ? "border-wood/45 ring-1 ring-wood/15" : "border-line"}`}>
-                <button type="button" aria-pressed={selectedReportIds.includes(row.id)} onClick={() => setSelectedReportIds((current) => current.includes(row.id) ? current.filter((id) => id !== row.id) : [...current, row.id])} className={`absolute left-2 top-2 inline-flex min-h-9 items-center justify-center rounded-full border px-2.5 text-[10px] font-medium ${selectedReportIds.includes(row.id) ? "border-wood bg-wood text-cream" : "border-line bg-cream/95 text-ink-soft"}`} aria-label={`${c.select} ${row.alias || c.reportFallback}`}>
+                <button type="button" aria-pressed={selectedReportIds.includes(row.id)} onClick={() => setSelectedReportIds((current) => current.includes(row.id) ? current.filter((id) => id !== row.id) : [...current, row.id])} className={`absolute left-2 top-2 inline-flex min-h-9 items-center justify-center rounded-sm border px-2.5 text-[10px] font-medium ${selectedReportIds.includes(row.id) ? "border-wood bg-wood text-cream" : "border-line bg-cream/95 text-ink-soft"}`} aria-label={`${c.select} ${row.alias || c.reportFallback}`}>
                   {selectedReportIds.includes(row.id) ? `✓ ${c.selectedOne}` : c.select}
                 </button>
                 <div className="pl-16 text-left">
@@ -451,8 +451,8 @@ function AccountPage() {
                 </div>
 
                 <div data-report-primary-actions className="mt-3 flex flex-wrap justify-center gap-2">
-                  <button type="button" onClick={() => void toggleReport(row)} className="rounded-full border border-line bg-cream px-4 py-2 text-sm text-ink-soft">{open ? c.collapse : c.open}</button>
-                  <button type="button" disabled={rowBusy} onClick={() => void refreshDetail(row.id)} className="rounded-full border border-line bg-paper/70 px-4 py-2 text-sm text-ink-soft disabled:opacity-50">
+                  <button type="button" onClick={() => void toggleReport(row)} className="rounded-sm border border-line bg-cream px-4 py-2 text-sm text-ink-soft">{open ? c.collapse : c.open}</button>
+                  <button type="button" disabled={rowBusy} onClick={() => void refreshDetail(row.id)} className="rounded-sm border border-line bg-paper/70 px-4 py-2 text-sm text-ink-soft disabled:opacity-50">
                     {detailBusyId === row.id ? c.refreshing : c.refreshOne}
                   </button>
                 </div>
@@ -465,7 +465,7 @@ function AccountPage() {
                         <div className="mb-4 rounded-lg border border-line bg-cream/70 p-3">
                           <p className="text-[11px] tracking-[0.18em] text-cinnabar">{c.finalSource}</p>
                           <div className="mt-3 flex flex-wrap gap-2">
-                            {[chartState, answerState, reportState].map((s) => <span key={s.label} className={`rounded-full border px-2.5 py-1 text-[11px] ${s.className}`}>{s.label}</span>)}
+                            {[chartState, answerState, reportState].map((s) => <span key={s.label} className={`rounded-sm border px-2.5 py-1 text-[11px] ${s.className}`}>{s.label}</span>)}
                           </div>
                         </div>
 
@@ -481,8 +481,8 @@ function AccountPage() {
                         <details data-report-secondary-actions className="mb-5 rounded-lg border border-line bg-paper/50 p-3">
                           <summary className="cursor-pointer list-none text-center text-xs font-medium text-ink-soft [&::-webkit-details-marker]:hidden">{c.manageActions} ＋</summary>
                           <div className="mt-3 flex flex-wrap justify-center gap-2 border-t border-line/70 pt-3">
-                            {displayAnswer ? <button type="button" className="rounded-full border border-line bg-cream px-3 py-1.5 text-xs text-ink-soft" onClick={() => void copyFinalAnswer(row.id, displayAnswer)}>{c.copyAnswer}</button> : null}
-                            <button type="button" className="rounded-full px-3 py-1.5 text-xs text-cinnabar" onClick={async () => {
+                            {displayAnswer ? <button type="button" className="rounded-sm border border-line bg-cream px-3 py-1.5 text-xs text-ink-soft" onClick={() => void copyFinalAnswer(row.id, displayAnswer)}>{c.copyAnswer}</button> : null}
+                            <button type="button" className="rounded-sm px-3 py-1.5 text-xs text-cinnabar" onClick={async () => {
                               if (!window.confirm(c.deleteRecordConfirm)) return;
                               await deleteReportRecord(session, row.id);
                               setOpenId(null);
@@ -518,7 +518,7 @@ function AccountPage() {
             );
           })}
         </div>
-        {nextOffset !== null ? <button type="button" disabled={moreBusy} className="mt-5 min-h-11 rounded-full border border-line px-5" onClick={() => void loadMoreReports()}>{moreBusy ? c.refreshing : tr(locale, "載入更早的報告", "加载更早的报告", "Load older reports")}</button> : null}
+        {nextOffset !== null ? <button type="button" disabled={moreBusy} className="mt-5 min-h-11 rounded-sm border border-line px-5" onClick={() => void loadMoreReports()}>{moreBusy ? c.refreshing : tr(locale, "載入更早的報告", "加载更早的报告", "Load older reports")}</button> : null}
         {query ? <p className="mt-3 text-sm">{tr(locale, "搜尋目前已載入的報告；可載入更早紀錄繼續查找。", "搜索目前已加载的报告；可加载更早记录继续查找。", "Searching loaded reports. Load older reports to search further.")}</p> : null}
       </section>
 
@@ -548,7 +548,7 @@ function AccountPage() {
         {visitedViews.has("devices") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入裝置…", "加载设备…", "Loading devices…")}</p>}><OwnerDevicesManager locale={locale} /></Suspense> : null}
       </div>
 
-      <Link to="/" className="inline-flex h-11 items-center rounded-full border border-line bg-cream px-5 text-ink">{t("backHome")}</Link>
+      <Link to="/" className="inline-flex h-11 items-center rounded-sm border border-line bg-cream px-5 text-ink">{t("backHome")}</Link>
     </main>
   );
 }

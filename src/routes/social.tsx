@@ -288,7 +288,7 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
     <main className="mx-auto max-w-xl">
       <section className="seal-border rounded-xl bg-cream/95 p-6">
         <h1 className="font-display text-3xl">{tx("請先登入站主帳號", "请先登录站主账号", "Owner sign-in required")}</h1>
-        <Link to="/login" className="mt-5 inline-flex min-h-11 items-center rounded-full bg-cinnabar px-5 text-cream">{tx("登入", "登录", "Sign in")}</Link>
+        <Link to="/login" className="mt-5 inline-flex min-h-11 items-center rounded-sm bg-cinnabar px-5 text-cream">{tx("登入", "登录", "Sign in")}</Link>
       </section>
     </main>
   );
@@ -296,7 +296,7 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
     <main className="mx-auto max-w-xl">
       <section className="seal-border rounded-xl bg-cream/95 p-6">
         <h1 className="font-display text-3xl">{tx("社交發布僅限站主", "社交发布仅限站主", "Social publishing is owner-only")}</h1>
-        <Link to="/" className="mt-5 inline-flex min-h-11 items-center rounded-full border border-line bg-paper px-5">← {tx("首頁", "首页", "Home")}</Link>
+        <Link to="/" className="mt-5 inline-flex min-h-11 items-center rounded-sm border border-line bg-paper px-5">← {tx("首頁", "首页", "Home")}</Link>
       </section>
     </main>
   );
@@ -310,7 +310,7 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
             <Title className="mt-1 font-display text-3xl">{tx("一次發到多個帳號", "一次发到多个账号", "Publish to multiple accounts")}</Title>
             <p className="mt-2 text-sm leading-6 text-ink-soft">{tx("寫一次，可同時送到 Instagram、Facebook 粉絲專頁與多個 Threads。", "写一次，可同时发送到 Instagram、Facebook 粉丝专页与多个 Threads。", "Write once, then publish to Instagram, Facebook Pages, and multiple Threads accounts.")}</p>
           </div>
-          {!embedded ? <Link to="/account" className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-line bg-paper/70 px-4 text-sm text-ink-soft">← {tx("後台", "后台", "Console")}</Link> : null}
+          {!embedded ? <Link to="/account" className="inline-flex min-h-11 shrink-0 items-center rounded-sm border border-line bg-paper/70 px-4 text-sm text-ink-soft">← {tx("後台", "后台", "Console")}</Link> : null}
         </div>
 
         <div className="mt-5 grid grid-cols-3 gap-2" aria-label={tx("平台連接", "平台连接", "Platform connections")}>
@@ -332,7 +332,7 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
                 <p className="text-sm font-medium text-ink">Facebook + Instagram</p>
                 <p className="mt-1 text-xs text-ink-mute">{tx("授權一次，自動讀取粉絲專頁與其 Instagram 專業帳號。", "授权一次，自动读取粉丝专页及其 Instagram 专业账号。", "Authorize once to load Pages and linked Instagram professional accounts.")}</p>
               </div>
-              <button type="button" disabled={busy} onClick={() => void connectMeta()} className="inline-flex min-h-11 shrink-0 items-center rounded-full bg-[#315f51] px-4 text-xs font-medium text-[#fffaf0] disabled:opacity-45">
+              <button type="button" disabled={busy} onClick={() => void connectMeta()} className="inline-flex min-h-11 shrink-0 items-center rounded-sm bg-[#504940] px-4 text-xs font-medium text-[#fffaf0] disabled:opacity-45">
                 {configuration.metaAccounts.length ? tx("重新授權", "重新授权", "Reconnect") : tx("＋連接 Meta", "＋连接 Meta", "+ Connect Meta")}
               </button>
             </div>
@@ -359,7 +359,7 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
                 <p className="text-sm font-medium text-ink">{tx("Threads 帳號", "Threads 账号", "Threads accounts")}</p>
                 <p className="mt-1 text-xs text-ink-mute">{tx("可連接多個帳號，發布時自由勾選。", "可连接多个账号，发布时自由勾选。", "Connect multiple accounts and choose targets for each post.")}</p>
               </div>
-              <button type="button" disabled={busy} onClick={() => void connectThreads()} className="inline-flex min-h-11 shrink-0 items-center rounded-full bg-[#315f51] px-4 text-xs font-medium text-[#fffaf0] disabled:opacity-45">
+              <button type="button" disabled={busy} onClick={() => void connectThreads()} className="inline-flex min-h-11 shrink-0 items-center rounded-sm bg-[#504940] px-4 text-xs font-medium text-[#fffaf0] disabled:opacity-45">
                 {tx("＋連接帳號", "＋连接账号", "+ Connect")}
               </button>
             </div>
@@ -405,7 +405,7 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
                   disabled={!connected || busy}
                   aria-pressed={selected}
                   onClick={() => toggle(channel)}
-                  className={`min-h-12 rounded-xl border px-4 text-left text-sm font-medium ${selected ? "border-[#315f51] bg-[#315f51] text-[#fffaf0]" : connected ? "border-line bg-paper/55 text-ink" : "cursor-not-allowed border-line/60 bg-paper/25 text-ink-mute opacity-55"}`}
+                  className={`min-h-12 rounded-xl border px-4 text-left text-sm font-medium ${selected ? "border-[#504940] bg-[#504940] text-[#fffaf0]" : connected ? "border-line bg-paper/55 text-ink" : "cursor-not-allowed border-line/60 bg-paper/25 text-ink-mute opacity-55"}`}
                 >
                   {CHANNEL_LABEL[channel]}<span className="block text-[11px] font-normal opacity-75">{connected ? tx(selected ? "已選" : "可發布", selected ? "已选" : "可发布", selected ? "Selected" : "Ready") : tx("未連接", "未连接", "Not connected")}</span>
                 </button>
@@ -431,7 +431,7 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
               <p className="text-sm font-medium text-ink">小紅書半自動發布</p>
               <p className="mt-1 text-xs leading-5 text-ink-mute">自動整理標題、正文與標籤；複製後在小紅書貼上，再選擇上方圖片發布。</p>
             </div>
-            <span className="shrink-0 rounded-full bg-[#c65b45]/10 px-2 py-1 text-[10px] text-[#9e402f]">半自動</span>
+            <span className="shrink-0 rounded-sm bg-[#c65b45]/10 px-2 py-1 text-[10px] text-[#9e402f]">半自動</span>
           </div>
           <div className="mt-3 rounded-lg border border-line/70 bg-cream/70 p-3">
             <p className="text-sm font-medium text-ink">{xhsTitle}</p>
@@ -439,8 +439,8 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
             <p className="mt-2 text-xs text-[#9e402f]">{xhsTags}</p>
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
-            <button type="button" onClick={() => void copyXhsContent()} className="min-h-10 rounded-full bg-[#c65b45] px-4 text-xs font-medium text-white">复制小红书内容</button>
-            <button type="button" onClick={openXhs} className="min-h-10 rounded-full border border-[#c65b45]/40 bg-cream px-4 text-xs text-[#9e402f]">打开小红书</button>
+            <button type="button" onClick={() => void copyXhsContent()} className="min-h-10 rounded-sm bg-[#c65b45] px-4 text-xs font-medium text-white">复制小红书内容</button>
+            <button type="button" onClick={openXhs} className="min-h-10 rounded-sm border border-[#c65b45]/40 bg-cream px-4 text-xs text-[#9e402f]">打开小红书</button>
           </div>
           {xhsNotice ? <p className="mt-2 text-xs text-[#9e402f]" role="status">{xhsNotice}</p> : null}
         </section>
@@ -451,7 +451,7 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
               <p className="text-sm font-medium text-ink">{tx("3 · 選圖片", "3 · 选图片", "3 · Choose image")}</p>
               <p className="mt-1 text-xs text-ink-mute">{tx("直接從昭梧圖庫選，或從手機上傳。", "直接从昭梧图库选，或从手机上传。", "Choose from the Zhaowu gallery or upload from your phone.")}</p>
             </div>
-            <label className={`inline-flex min-h-11 shrink-0 cursor-pointer items-center rounded-full bg-[#315f51] px-4 text-sm text-[#fffaf0] ${galleryBusy || SUPABASE_STORAGE_WRITES_PAUSED || !session ? "pointer-events-none opacity-45" : ""}`}>
+            <label className={`inline-flex min-h-11 shrink-0 cursor-pointer items-center rounded-sm bg-[#504940] px-4 text-sm text-[#fffaf0] ${galleryBusy || SUPABASE_STORAGE_WRITES_PAUSED || !session ? "pointer-events-none opacity-45" : ""}`}>
               {galleryBusy ? tx("處理中…", "处理中…", "Working…") : tx("＋上傳", "＋上传", "+ Upload")}
               <input type="file" accept="image/jpeg,image/png,image/webp,image/avif" className="hidden" onChange={(event) => void onUpload(event)} />
             </label>
@@ -471,7 +471,7 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
                       type="button"
                       aria-pressed={selected}
                       onClick={() => chooseAsset(asset)}
-                      className={`overflow-hidden rounded-xl border bg-paper/40 p-1 text-left ${selected ? "border-[#315f51] ring-2 ring-[#315f51]/20" : "border-line"}`}
+                      className={`overflow-hidden rounded-xl border bg-paper/40 p-1 text-left ${selected ? "border-[#504940] ring-2 ring-[#504940]/20" : "border-line"}`}
                     >
                       <img src={src} alt={asset.title || tx("圖庫圖片", "图库图片", "Gallery image")} loading="lazy" className="aspect-square w-full rounded-lg object-cover" />
                       <span className="mt-1 block truncate px-1 pb-1 text-[10px] text-ink-mute">{asset.title}</span>
@@ -479,7 +479,7 @@ export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }
                   );
                 })}
               </div>
-              {assets.length > GALLERY_LIMIT ? <button type="button" onClick={() => setShowAllAssets((value) => !value)} className="mt-3 min-h-10 rounded-full border border-line bg-paper/55 px-4 text-xs text-ink-soft">{showAllAssets ? tx("收起圖庫", "收起图库", "Show less") : tx(`查看更多（${assets.length}）`, `查看更多（${assets.length}）`, `Show all (${assets.length})`)}</button> : null}
+              {assets.length > GALLERY_LIMIT ? <button type="button" onClick={() => setShowAllAssets((value) => !value)} className="mt-3 min-h-10 rounded-sm border border-line bg-paper/55 px-4 text-xs text-ink-soft">{showAllAssets ? tx("收起圖庫", "收起图库", "Show less") : tx(`查看更多（${assets.length}）`, `查看更多（${assets.length}）`, `Show all (${assets.length})`)}</button> : null}
             </>
           ) : null}
 

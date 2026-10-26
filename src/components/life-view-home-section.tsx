@@ -243,7 +243,7 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                 <span className="min-w-0">
                   <span className="flex flex-wrap items-center gap-2 text-[10px] font-semibold tracking-[0.14em] text-cinnabar">
                     <span>{index === 0 ? copy.latest : article.publishedAt}</span>
-                    <span className="rounded-full border border-line bg-cream px-2 py-0.5 tracking-[0.08em] text-ink-mute">{kindLabel}</span>
+                    <span className="rounded-sm border border-line bg-cream px-2 py-0.5 tracking-[0.08em] text-ink-mute">{kindLabel}</span>
                   </span>
                   <span className="mt-1 flex items-start justify-between gap-3">
                     <strong className="min-w-0 font-display text-[1.05rem] font-semibold leading-6 text-ink sm:text-lg">{article.title[locale]}</strong>
@@ -258,8 +258,8 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
 
               {isOwner ? (
                 <div className="mt-2 flex flex-wrap gap-2">
-                  <a href={`/account?view=articles&edit=${encodeURIComponent(article.id)}`} className="inline-flex min-h-11 items-center rounded-full border border-line px-4 text-xs text-ink">{locale === "en" ? "Edit" : locale === "zh-Hans" ? "编辑" : "編輯"}</a>
-                  <button type="button" onClick={() => void removeArticle(article.id)} className="min-h-11 rounded-full border border-cinnabar/30 px-4 text-xs text-cinnabar">{locale === "en" ? "Remove" : locale === "zh-Hans" ? "删除" : "刪除"}</button>
+                  <a href={`/account?view=articles&edit=${encodeURIComponent(article.id)}`} className="inline-flex min-h-11 items-center rounded-sm border border-line px-4 text-xs text-ink">{locale === "en" ? "Edit" : locale === "zh-Hans" ? "编辑" : "編輯"}</a>
+                  <button type="button" onClick={() => void removeArticle(article.id)} className="min-h-11 rounded-sm border border-cinnabar/30 px-4 text-xs text-cinnabar">{locale === "en" ? "Remove" : locale === "zh-Hans" ? "删除" : "刪除"}</button>
                 </div>
               ) : null}
               {isOpen ? (
@@ -295,7 +295,7 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                     );
                   })}
                   {article.id === "strength-overdrive-five-elements" ? (
-                    <Link to="/quiz/five-element-overdrive" className="mt-6 inline-flex min-h-11 items-center rounded-full border border-cinnabar/30 bg-cream px-5 py-2 text-sm font-medium text-cinnabar">
+                    <Link to="/quiz/five-element-overdrive" className="mt-6 inline-flex min-h-11 items-center rounded-sm border border-cinnabar/30 bg-cream px-5 py-2 text-sm font-medium text-cinnabar">
                       {copy.quizCta} →
                     </Link>
                   ) : null}

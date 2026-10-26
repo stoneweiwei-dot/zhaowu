@@ -44,7 +44,7 @@
     linear-gradient(90deg, rgba(39, 36, 31, .034) 1px, transparent 1px),
     radial-gradient(circle at 50% 38%, rgba(255,255,255,.72), transparent 28%),
     radial-gradient(circle at 84% 18%, rgba(167,53,43,.08), transparent 26%),
-    radial-gradient(circle at 16% 86%, rgba(47,111,95,.055), transparent 28%),
+    radial-gradient(circle at 16% 86%, rgba(90, 80, 68,.055), transparent 28%),
     linear-gradient(180deg, #fbf8f1, #f1e6d3);
   background-size: 30px 30px, 30px 30px, auto, auto, auto, auto;
 }
@@ -402,11 +402,11 @@ body,
   --color-cinnabar: #a7352b;
   --color-cinnabar-deep: #76251f;
   --color-line: #d8c7a4;
-  --color-wood: #2f6f5f;
+  --color-wood: #352e26;
   --color-fire: #a7352b;
   --color-earth: #9b7745;
   --color-metal: #756f64;
-  --color-water: #314f58;
+  --color-water: #4b453e;
 }
 
 html,
@@ -420,7 +420,7 @@ body {
     linear-gradient(90deg, rgba(116, 100, 75, .035) 1px, transparent 1px),
     radial-gradient(circle at 14% 7%, rgba(255,255,255,.96), transparent 28%),
     radial-gradient(circle at 88% 18%, rgba(167,53,43,.06), transparent 24%),
-    radial-gradient(circle at 12% 82%, rgba(47,111,95,.055), transparent 28%),
+    radial-gradient(circle at 12% 82%, rgba(90, 80, 68,.055), transparent 28%),
     linear-gradient(180deg, #fbf8f1, #f1e6d3);
   background-size: 32px 32px, 32px 32px, auto, auto, auto, auto;
 }
@@ -467,15 +467,15 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-has-wallpaper .seal-border,
 .zhaowu-has-wallpaper section.seal-border {
   background: rgba(255,253,248,.56) !important;
-  backdrop-filter: blur(10px) saturate(108%);
+  backdrop-filter: none;
 }
 
 body:has(.zhaowu-has-wallpaper) .zhaowu-home-hero {
   background:
     radial-gradient(circle at 86% 12%, rgba(213,181,111,.12), transparent 25%),
-    radial-gradient(circle at 10% 90%, rgba(59,135,119,.08), transparent 27%),
+    radial-gradient(circle at 10% 90%, rgba(110, 98, 84,.08), transparent 27%),
     linear-gradient(145deg, rgba(255,253,248,.42), rgba(249,243,231,.34)) !important;
-  backdrop-filter: blur(8px);
+  backdrop-filter: none;
 }
 
 body:has(.zhaowu-has-wallpaper) .zhaowu-motif-strip,
@@ -489,15 +489,15 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-tool-card {
   isolation: isolate;
   overflow: hidden;
   border: 1px solid rgba(139, 115, 77, .30);
-  border-radius: 18px;
+  border-radius: 3px;
   background:
     linear-gradient(rgba(39, 36, 31, .035) 1px, transparent 1px),
     linear-gradient(90deg, rgba(39, 36, 31, .026) 1px, transparent 1px),
     radial-gradient(circle at 86% 12%, rgba(167, 53, 43, .10), transparent 25%),
-    radial-gradient(circle at 10% 90%, rgba(47,111,95,.08), transparent 27%),
+    radial-gradient(circle at 10% 90%, rgba(90, 80, 68,.08), transparent 27%),
     linear-gradient(145deg, rgba(255,253,248,.985), rgba(246,240,228,.97));
   background-size: 28px 28px, 28px 28px, auto, auto, auto;
-  box-shadow: 0 22px 66px rgba(74,55,31,.10), inset 0 1px 0 rgba(255,255,255,.72);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .zhaowu-home-hero::before {
@@ -505,7 +505,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-tool-card {
   position: absolute;
   inset: .7rem;
   border: 1px solid rgba(167, 53, 43, .16);
-  border-radius: 12px;
+  border-radius: 3px;
   pointer-events: none;
 }
 
@@ -536,7 +536,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-tool-card {
   border: 1px solid rgba(198,154,75,.30);
   border-radius: 1.15rem;
   background: rgba(255,253,248,.96);
-  box-shadow: 0 12px 34px rgba(74,55,31,.07);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .zhaowu-motif-chip {
@@ -560,7 +560,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-tool-card {
 
 .zhaowu-tool-card {
   background: rgba(255,253,248,.97);
-  backdrop-filter: blur(16px);
+  backdrop-filter: none;
 }
 
 .zhaowu-tool-card-mark {
@@ -608,11 +608,11 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-tool-card {
 .zhaowu-login-language {
   min-height: 2.35rem;
   border: 1px solid rgba(198,154,75,.38);
-  border-radius: 999px;
+  border-radius: 3px;
   background: rgba(255,253,248,.94);
   color: var(--color-ink-soft);
   box-shadow: 0 7px 22px rgba(79,59,31,.08);
-  backdrop-filter: blur(14px);
+  backdrop-filter: none;
 }
 
 .zhaowu-login-home-link {
@@ -635,8 +635,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-tool-card {
   border-radius: 1.6rem;
   background: rgba(255,253,248,.975);
   padding: 1.05rem 1rem .8rem;
-  box-shadow: 0 24px 72px rgba(63,46,24,.18), inset 0 0 0 6px rgba(255,255,255,.22);
-  backdrop-filter: blur(20px) saturate(106%);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
+  backdrop-filter: none;
 }
 
 .zhaowu-login-card::before {
@@ -644,7 +644,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-tool-card {
   position: absolute;
   inset: .48rem;
   pointer-events: none;
-  border: 1px solid rgba(59,135,119,.14);
+  border: 1px solid rgba(110, 98, 84,.14);
   border-radius: 1.2rem;
 }
 
@@ -663,8 +663,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-tool-card {
   height: 3.75rem !important;
   font-size: .78rem !important;
   border-color: #c49b4f !important;
-  background: #3b8777 !important;
-  box-shadow: 0 8px 24px rgba(44,111,95,.16) !important;
+  background: #4a4035 !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.12) !important;
 }
 
 .zhaowu-login-brand-en {
@@ -729,7 +729,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-tool-card {
   min-height: 2.7rem;
   align-items: center;
   justify-content: center;
-  border-radius: 999px;
+  border-radius: 3px;
 }
 
 .zhaowu-login-provider {
@@ -754,9 +754,9 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-tool-card {
   height: 1.45rem;
   flex: 0 0 auto;
   place-items: center;
-  border: 1px solid rgba(79,127,159,.25);
+  border: 1px solid rgba(133, 120, 105,.25);
   border-radius: 50%;
-  background: rgba(79,127,159,.06);
+  background: rgba(133, 120, 105,.06);
   color: var(--color-water);
   font-size: .66rem;
   font-weight: 700;
@@ -795,14 +795,14 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-tool-card {
   grid-template-columns: 1fr 1fr;
   gap: .2rem;
   border: 1px solid rgba(198,154,75,.34);
-  border-radius: 999px;
+  border-radius: 3px;
   background: #f8f0e1;
   padding: .18rem;
 }
 
 .zhaowu-login-tabs button {
   min-height: 2.3rem;
-  border-radius: 999px;
+  border-radius: 3px;
   color: var(--color-ink-soft);
   font-size: .82rem;
 }
@@ -810,7 +810,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-tool-card {
 .zhaowu-login-tabs button.is-active {
   background: var(--color-wood);
   color: #fffdf8;
-  box-shadow: 0 6px 16px rgba(46,112,96,.14);
+  box-shadow: 0 6px 16px rgba(91, 80, 67,.14);
 }
 
 .zhaowu-login-form {
@@ -841,18 +841,18 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-tool-card {
 }
 
 .zhaowu-login-input:focus {
-  border-color: rgba(59,135,119,.68);
-  box-shadow: 0 0 0 3px rgba(59,135,119,.08);
+  border-color: rgba(110, 98, 84,.68);
+  box-shadow: 0 0 0 3px rgba(74,64,53,.08);
 }
 
 .zhaowu-login-primary {
-  border: 1px solid rgba(37,101,88,.20);
-  background: linear-gradient(135deg, #448f7f, #347668);
+  border: 1px solid rgba(74,64,53,.20);
+  background: linear-gradient(135deg, #5a5044, #4a4035);
   padding: 0 1.1rem;
   color: #fffdf8;
   font-size: .84rem;
   letter-spacing: .04em;
-  box-shadow: 0 10px 24px rgba(44,111,95,.16);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .zhaowu-login-message,
@@ -864,8 +864,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-tool-card {
 }
 
 .zhaowu-login-message {
-  border: 1px solid rgba(59,135,119,.24);
-  background: rgba(59,135,119,.05);
+  border: 1px solid rgba(110, 98, 84,.24);
+  background: rgba(110, 98, 84,.05);
   color: var(--color-wood);
 }
 
@@ -941,13 +941,13 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-has-wallpaper .zhaowu-tool-card,
 .zhaowu-has-wallpaper .zhaowu-home-hero {
   background: rgba(255, 252, 244, .88) !important;
-  backdrop-filter: blur(12px) saturate(108%) !important;
-  -webkit-backdrop-filter: blur(12px) saturate(108%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-home-hero {
   border-color: rgba(180,139,76,.36) !important;
-  box-shadow: 0 18px 50px rgba(76,55,25,.10) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 /* Fixed motif strips are retired; sitewide random scatter is owned by SiteShell. */
@@ -984,7 +984,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
     linear-gradient(90deg, rgba(39, 36, 31, .03) 1px, transparent 1px),
     radial-gradient(circle at 18% 22%, rgba(255,255,255,.74), transparent 20%),
     radial-gradient(circle at 82% 31%, rgba(167,53,43,.08), transparent 22%),
-    radial-gradient(circle at 50% 62%, rgba(47,111,95,.06), transparent 28%),
+    radial-gradient(circle at 50% 62%, rgba(90, 80, 68,.06), transparent 28%),
     linear-gradient(180deg, #fbf8f1, #f1e6d3);
   background-size: 28px 28px, 28px 28px, auto, auto, auto, auto;
   mix-blend-mode: normal;
@@ -996,7 +996,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   opacity: .18;
   background-image:
     radial-gradient(circle, rgba(167,53,43,.42) 0 1px, transparent 1.4px),
-    radial-gradient(circle, rgba(47,111,95,.28) 0 1px, transparent 1.3px);
+    radial-gradient(circle, rgba(90, 80, 68,.28) 0 1px, transparent 1.3px);
   background-size: 44px 44px, 67px 67px;
   background-position: 0 0, 21px 13px;
   mask-image: linear-gradient(180deg, #000 0 46%, transparent 76%);
@@ -1063,13 +1063,13 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   gap: .18rem;
   width: 8rem;
   border: 1px solid rgba(216, 199, 164, .24);
-  border-radius: 12px;
+  border-radius: 3px;
   background: rgba(255,253,248,.09);
   padding: .65rem .7rem;
   color: #fff7e3;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 18px 38px rgba(0,0,0,.18);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .stone-login-panel i,
@@ -1120,14 +1120,14 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   display: inline-flex;
   align-items: center;
   border: 1px solid rgba(245,224,172,.54);
-  border-radius: 999px;
+  border-radius: 3px;
   background: rgba(31,24,14,.46);
   padding: 0 .9rem;
   color: #fff7df;
   font-size: .76rem;
   box-shadow: 0 8px 26px rgba(0,0,0,.18);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   transition: transform .2s ease, background .2s ease, border-color .2s ease;
 }
 
@@ -1148,7 +1148,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   max-height: none;
   overflow: hidden;
   border: 1px solid rgba(139,115,77,.32);
-  border-radius: 16px 16px 10px 10px;
+  border-radius: 3px 16px 10px 10px;
   background:
     linear-gradient(rgba(39,36,31,.032) 1px, transparent 1px),
     linear-gradient(90deg, rgba(39,36,31,.024) 1px, transparent 1px),
@@ -1167,7 +1167,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   width: 4.8rem;
   height: 2px;
   transform: translateX(-50%);
-  background: linear-gradient(90deg, transparent, #c89a42 42%, #6fa091 58%, transparent);
+  background: linear-gradient(90deg, transparent, #c89a42 42%, #90887f 58%, transparent);
   box-shadow: 0 0 18px rgba(200,154,66,.34);
 }
 
@@ -1199,13 +1199,13 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   flex-shrink: 0;
   padding: .2rem;
   border: 1px solid #dcc9a2;
-  border-radius: 999px;
+  border-radius: 3px;
   background: #f5ecda;
 }
 
 .stone-login-tabs button {
   min-height: 2rem;
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 0 .72rem;
   color: #6b695f;
   font-size: .72rem;
@@ -1257,13 +1257,13 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   justify-content: center;
   overflow: hidden;
   border: 0;
-  border-radius: 999px;
+  border-radius: 3px;
   background: linear-gradient(180deg, #a7352b, #76251f);
   padding: 0 1.2rem;
   color: #fffdf7;
   font-size: .88rem;
   font-weight: 600;
-  box-shadow: 0 10px 24px rgba(167,53,43,.18);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
   transition: transform .2s ease, box-shadow .2s ease;
 }
 
@@ -1293,8 +1293,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 }
 
 .stone-login-message {
-  background: rgba(47,111,95,.08);
-  color: #2f6f5f;
+  background: rgba(53,46,38,.08);
+  color: #352e26;
 }
 
 .stone-login-error {
@@ -1376,23 +1376,23 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   --zw-paper-soft: #eee9de;
   --zw-ink: #242620;
   --zw-muted: #686a62;
-  --zw-pine: #355e50;
+  --zw-pine: #4a4035;
   --zw-cinnabar: #a64d3e;
   --zw-gold: #c19a55;
-  --zw-blue: #456b72;
+  --zw-blue: #5a5652;
   --zw-wood: #64865d;
   --zw-fire: #b95b49;
   --zw-earth: #af8e55;
   --zw-metal: #c2a25b;
-  --zw-water: #4382a0;
+  --zw-water: #827361;
   overflow: hidden;
   border: 1px solid rgba(128, 103, 66, .26);
-  border-radius: 24px;
+  border-radius: 3px;
   background:
     radial-gradient(circle at 88% 2%, rgba(193, 154, 85, .08), transparent 28%),
     linear-gradient(180deg, rgba(255, 253, 248, .98), rgba(246, 241, 231, .98)),
     var(--zw-paper);
-  box-shadow: 0 16px 42px rgba(65, 52, 33, .07);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
   color: var(--zw-ink);
 }
 
@@ -1433,13 +1433,13 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 
 .zhaowu-time-correction {
   margin: 18px 0 0;
-  border-left: 2px solid rgba(69, 107, 114, .5);
+  border-left: 2px solid rgba(99, 92, 84, .5);
   padding-left: 12px;
   color: var(--zw-muted, #686a62);
   font-size: 14px;
   line-height: 1.7;
 }
-.zhaowu-time-correction strong { display: block; margin-bottom: 4px; color: var(--zw-blue, #456b72); font-size: 14px; }
+.zhaowu-time-correction strong { display: block; margin-bottom: 4px; color: var(--zw-blue, #635c54); font-size: 14px; }
 
 .zhaowu-report-flow { padding: 28px 24px; }
 .zhaowu-report-supporting-flow { padding-top: 4px; }
@@ -1448,13 +1448,13 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-question-contract {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(53, 94, 80, .26);
-  border-radius: 22px;
+  border: 1px solid rgba(81, 74, 66, .26);
+  border-radius: 3px;
   padding: 24px;
   background:
-    linear-gradient(145deg, rgba(53, 94, 80, .055), transparent 44%),
+    linear-gradient(145deg, rgba(81, 74, 66, .055), transparent 44%),
     var(--zw-card, #fffdf8);
-  box-shadow: 0 12px 30px rgba(57, 67, 54, .055);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 .zhaowu-question-contract::after {
   content: "";
@@ -1483,12 +1483,12 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 }
 .zhaowu-direct-answer {
   margin-top: 22px;
-  border-top: 1px solid rgba(53, 94, 80, .16);
+  border-top: 1px solid rgba(81, 74, 66, .16);
   padding-top: 20px;
 }
 .zhaowu-direct-answer > span {
   display: block;
-  color: var(--zw-pine, #355e50);
+  color: var(--zw-pine, #514a42);
   font-size: 14px;
   font-weight: 700;
   letter-spacing: .08em;
@@ -1511,7 +1511,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-answer-meta > div {
   min-width: 0;
   border: 1px solid rgba(128, 103, 66, .16);
-  border-radius: 16px;
+  border-radius: 3px;
   padding: 16px;
   background: rgba(238, 233, 222, .46);
 }
@@ -1538,13 +1538,13 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-decision-card {
   min-width: 0;
   border: 1px solid rgba(128, 103, 66, .18);
-  border-radius: 18px;
+  border-radius: 3px;
   padding: 20px;
   background: var(--zw-card, #fffdf8);
 }
-.zhaowu-decision-card.is-reasons { border-top: 3px solid var(--zw-pine, #355e50); }
+.zhaowu-decision-card.is-reasons { border-top: 3px solid var(--zw-pine, #514a42); }
 .zhaowu-decision-card.is-risks { border-top: 3px solid var(--zw-cinnabar, #a64d3e); }
-.zhaowu-decision-card.is-timing { border-top: 3px solid var(--zw-blue, #456b72); }
+.zhaowu-decision-card.is-timing { border-top: 3px solid var(--zw-blue, #635c54); }
 .zhaowu-decision-card.is-actions { border-top: 3px solid var(--zw-gold, #c19a55); }
 .zhaowu-decision-card h5 {
   margin: 0;
@@ -1572,7 +1572,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--zw-pine, #355e50);
+  background: var(--zw-pine, #514a42);
 }
 
 /* Four-pillar core template */
@@ -1605,15 +1605,15 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-pillar-card {
   min-width: 0;
   border: 1px solid rgba(128, 103, 66, .18);
-  border-radius: 16px;
+  border-radius: 3px;
   padding: 15px 8px 12px;
   background: var(--zw-card, #fffdf8);
   text-align: center;
 }
 .zhaowu-pillar-card.is-day {
-  border-color: rgba(53, 94, 80, .5);
-  box-shadow: inset 0 0 0 1px rgba(53, 94, 80, .12);
-  background: linear-gradient(180deg, rgba(53, 94, 80, .07), var(--zw-card, #fffdf8));
+  border-color: rgba(81, 74, 66, .5);
+  box-shadow: inset 0 0 0 1px rgba(81, 74, 66, .12);
+  background: linear-gradient(180deg, rgba(81, 74, 66, .07), var(--zw-card, #fffdf8));
 }
 .zhaowu-pillar-card.is-pending { opacity: .72; }
 .zhaowu-pillar-label { display: block; color: #7d7468; font-size: 13px; line-height: 1.4; }
@@ -1635,10 +1635,10 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-pillar-stem.is-metal,
 .zhaowu-pillar-branch.is-metal { color: var(--zw-metal, #c2a25b); }
 .zhaowu-pillar-stem.is-water,
-.zhaowu-pillar-branch.is-water { color: var(--zw-water, #4382a0); }
+.zhaowu-pillar-branch.is-water { color: var(--zw-water, #827361); }
 .zhaowu-pillar-card > small { display: block; margin-top: 9px; color: #655f56; font-size: 13px; line-height: 1.4; }
 .zhaowu-pillar-card details { margin-top: 10px; }
-.zhaowu-pillar-card summary { cursor: pointer; color: var(--zw-pine, #355e50); font-size: 13px; font-weight: 600; list-style-position: inside; }
+.zhaowu-pillar-card summary { cursor: pointer; color: var(--zw-pine, #514a42); font-size: 13px; font-weight: 600; list-style-position: inside; }
 .zhaowu-pillar-card details span { display: block; margin-top: 7px; color: #71695f; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
 .zhaowu-pillar-unset { display: block; margin-top: 28px; color: #8b8277; font-size: 14px; line-height: 1.5; }
 .zhaowu-chart-meta {
@@ -1651,13 +1651,13 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   line-height: 1.6;
 }
 .zhaowu-chart-meta span { border-left: 2px solid rgba(193, 154, 85, .45); padding-left: 9px; }
-.zhaowu-chart-meta b { margin-right: 6px; color: var(--zw-pine, #355e50); }
+.zhaowu-chart-meta b { margin-right: 6px; color: var(--zw-pine, #514a42); }
 .zhaowu-chart-meta .is-warning { color: var(--zw-cinnabar, #a64d3e); }
 
 /* Supporting detail remains available but no longer competes with the answer. */
 .zhaowu-report-detail {
   border: 1px solid rgba(128, 103, 66, .18);
-  border-radius: 18px;
+  border-radius: 3px;
   padding: 0 20px;
   background: rgba(255, 253, 248, .72);
 }
@@ -1715,7 +1715,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   padding: 18px 16px 15px;
   overflow: hidden;
   border: 1px solid rgba(73, 63, 51, .22);
-  border-radius: 20px;
+  border-radius: 3px;
   background: #fbefdf;
   display: flex;
   flex-direction: column;
@@ -1724,7 +1724,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-comic-scene { position: relative; flex: 1 1 auto; min-height: 240px; display: flex; align-items: center; justify-content: center; gap: 14px; border-bottom: 1px solid rgba(53, 48, 42, .18); }
 .zhaowu-comic-person { position: relative; width: 62px; height: 118px; }
 .zhaowu-comic-person::before { content: ""; position: absolute; top: 0; left: 50%; width: 52px; height: 52px; transform: translateX(-50%); border: 2px solid #242424; border-radius: 50%; background: currentColor; }
-.zhaowu-comic-person::after { content: ""; position: absolute; top: 47px; left: 50%; width: 48px; height: 66px; transform: translateX(-50%); border: 2px solid #242424; border-radius: 26px 26px 18px 18px; background: currentColor; }
+.zhaowu-comic-person::after { content: ""; position: absolute; top: 47px; left: 50%; width: 48px; height: 66px; transform: translateX(-50%); border: 2px solid #242424; border-radius: 3px 26px 18px 18px; background: currentColor; }
 .zhaowu-comic-person span::before,
 .zhaowu-comic-person span::after { content: ""; position: absolute; z-index: 2; top: 21px; width: 5px; height: 5px; border-radius: 50%; background: #252525; }
 .zhaowu-comic-person span::before { left: 22px; }
@@ -1741,23 +1741,23 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-comic-cloud.is-drifting { opacity: .55; transform: translateY(-28px); }
 .zhaowu-comic-boundary { font-size: 34px; }
 .zhaowu-comic-steps { display: grid; gap: 8px; align-self: center; }
-.zhaowu-comic-steps i { display: block; width: 30px; height: 8px; border-radius: 10px; background: #b8a17e; }
+.zhaowu-comic-steps i { display: block; width: 30px; height: 8px; border-radius: 3px; background: #b8a17e; }
 .zhaowu-comic-steps i:nth-child(2) { margin-left: 12px; }
 .zhaowu-comic-steps i:nth-child(3) { margin-left: 24px; }
 .zhaowu-mind-comic-copy { padding: 15px 2px 10px; }
 .zhaowu-mind-comic-copy p { margin: 0; }
 .zhaowu-mind-comic-zh { color: #24211e; font-size: 17px; font-weight: 700; line-height: 1.6; }
-.zhaowu-mind-comic-en { margin-top: 7px !important; color: #315f86; font-size: 14px; font-weight: 600; line-height: 1.55; }
+.zhaowu-mind-comic-en { margin-top: 7px !important; color: #6a5c4d; font-size: 14px; font-weight: 600; line-height: 1.55; }
 .zhaowu-mind-comic-watermark { position: absolute; right: 16px; bottom: 8px; color: rgba(72, 58, 44, .42); font-size: 13px; font-weight: 700; letter-spacing: .08em; }
 
 @media (max-width: 430px) {
-  .zhaowu-focused-report.zhaowu-report-continuous-sheet { border-radius: 20px; }
+  .zhaowu-focused-report.zhaowu-report-continuous-sheet { border-radius: 3px; }
   .zhaowu-report-header,
   .zhaowu-report-flow { padding-left: 18px; padding-right: 18px; }
   .zhaowu-report-header { padding-top: 24px; padding-bottom: 20px; }
   .zhaowu-report-flow { padding-top: 24px; padding-bottom: 24px; }
   .zhaowu-report-lead { font-size: 16px; }
-  .zhaowu-question-contract { padding: 20px; border-radius: 19px; }
+  .zhaowu-question-contract { padding: 20px; border-radius: 3px; }
   .zhaowu-question-contract > h4 { font-size: 25px; }
   .zhaowu-question-text { font-size: 17px; }
   .zhaowu-direct-answer > p { font-size: 22px; line-height: 1.6; }
@@ -1771,7 +1771,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   .zhaowu-section-heading h4 { font-size: 26px; }
   .zhaowu-section-heading > span { font-size: 16px; }
   .zhaowu-pillar-grid { gap: 7px; }
-  .zhaowu-pillar-card { padding: 13px 5px 11px; border-radius: 14px; }
+  .zhaowu-pillar-card { padding: 13px 5px 11px; border-radius: 3px; }
   .zhaowu-pillar-label { font-size: 13px; }
   .zhaowu-pillar-stem,
   .zhaowu-pillar-branch { font-size: 27px; }
@@ -1801,8 +1801,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   min-width:0;
   align-items:center;
   gap:7px;
-  border:1px solid rgba(53,94,80,.13);
-  border-radius:12px;
+  border:1px solid rgba(81, 74, 66,.13);
+  border-radius: 3px;
   padding:8px 10px;
   background:rgba(255,253,248,.58);
   color:var(--zw-muted,#686a62);
@@ -1811,7 +1811,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 }
 .zhaowu-focused-progress b,
 .zhaowu-report-stage-no{
-  color:var(--zw-pine,#355e50);
+  color:var(--zw-pine,#514a42);
   font-family:Georgia,"Iowan Old Style",serif;
   font-size:11px;
   font-weight:600;
@@ -2006,7 +2006,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   width: 100%;
   height: 48px;
   border: 1px solid #a7352b;
-  border-radius: 999px;
+  border-radius: 3px;
   background: #fffaf1;
   color: #a7352b;
   font-size: 15px;
@@ -2041,7 +2041,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
     linear-gradient(90deg, rgba(39, 36, 31, .03) 1px, transparent 1px),
     radial-gradient(circle at 18% 16%, rgba(255, 255, 255, .70), transparent 28%),
     radial-gradient(circle at 82% 30%, rgba(167, 53, 43, .08), transparent 30%),
-    radial-gradient(circle at 16% 84%, rgba(47, 111, 95, .055), transparent 28%),
+    radial-gradient(circle at 16% 84%, rgba(90, 80, 68, .055), transparent 28%),
     linear-gradient(145deg, #fbf8f1 0%, #f1e6d3 100%);
   background-size: 145% 145%;
   animation: stone-login-background-breathe 28s ease-in-out infinite alternate;
@@ -2065,11 +2065,11 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   right: 0;
   bottom: -.06rem;
   height: 1px;
-  border-radius: 999px;
+  border-radius: 3px;
   opacity: .48;
   transform: scaleX(.32);
   transform-origin: left center;
-  background: linear-gradient(90deg, rgba(167, 53, 43, 0), rgba(167, 53, 43, .86), rgba(47, 111, 95, .54), rgba(167, 53, 43, 0));
+  background: linear-gradient(90deg, rgba(167, 53, 43, 0), rgba(167, 53, 43, .86), rgba(90, 80, 68, .54), rgba(167, 53, 43, 0));
   box-shadow: 0 0 10px rgba(167, 53, 43, .14);
   animation: stone-login-title-line 7.6s ease-in-out infinite;
 }
@@ -2142,7 +2142,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   --palm-ink: #29251f;
   --palm-soft: #5b5044;
   --palm-earth: #8a5d38;
-  --palm-jade: #2f7465;
+  --palm-jade: #5e5245;
   --palm-red: #a33b31;
   width: min(100%, 54rem);
 }
@@ -2151,11 +2151,11 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   isolation: isolate;
   border-color: rgba(151, 111, 62, .3) !important;
   background:
-    radial-gradient(circle at 83% 12%, rgba(47, 116, 101, .08), transparent 29%),
+    radial-gradient(circle at 83% 12%, rgba(94, 82, 69, .08), transparent 29%),
     radial-gradient(circle at 7% 92%, rgba(163, 59, 49, .055), transparent 28%),
     repeating-linear-gradient(8deg, rgba(90, 65, 38, .016) 0 1px, transparent 1px 8px),
     var(--palm-paper) !important;
-  box-shadow: 0 18px 44px rgba(76, 55, 31, .08) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 .palm-standalone .palm-hero-overlay,
@@ -2205,7 +2205,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .palm-result {
   border-color: rgba(151, 111, 62, .3) !important;
   background: var(--palm-paper) !important;
-  box-shadow: 0 16px 40px rgba(76, 55, 31, .08) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 .palm-form {
@@ -2229,8 +2229,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 }
 
 .palm-form .palm-direction label:has(input:checked) {
-  border-color: rgba(47, 116, 101, .52) !important;
-  background: rgba(47, 116, 101, .07) !important;
+  border-color: rgba(94, 82, 69, .52) !important;
+  background: rgba(94, 82, 69, .07) !important;
   box-shadow: inset 4px 0 0 var(--palm-jade) !important;
 }
 
@@ -2264,7 +2264,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .palm-result-head {
   border-color: rgba(151, 111, 62, .22) !important;
   background:
-    radial-gradient(circle at 87% 15%, rgba(47, 116, 101, .07), transparent 28%),
+    radial-gradient(circle at 87% 15%, rgba(94, 82, 69, .07), transparent 28%),
     var(--palm-paper-strong) !important;
 }
 
@@ -2295,7 +2295,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(151, 111, 62, .25);
-  border-radius: 18px;
+  border-radius: 3px;
   padding: 18px 18px 18px 56px;
   background: var(--palm-paper-strong);
 }
@@ -2360,7 +2360,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   .palm-standalone .palm-hero,
   .palm-form-section,
   .palm-result {
-    border-radius: 20px !important;
+    border-radius: 3px !important;
   }
 
   .palm-standalone .palm-hero-copy {
@@ -2405,14 +2405,14 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-has-wallpaper .zhaowu-app-frame {
   background: rgba(251, 247, 239, .38) !important;
   background-image: none !important;
-  backdrop-filter: blur(2px) saturate(102%) !important;
-  -webkit-backdrop-filter: blur(2px) saturate(102%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-has-wallpaper .zhaowu-site-header {
   background: rgba(255, 252, 244, .62) !important;
-  backdrop-filter: blur(7px) saturate(108%) !important;
-  -webkit-backdrop-filter: blur(7px) saturate(108%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 /* Core page sections: translucent enough that the chosen wallpaper remains obvious. */
@@ -2422,8 +2422,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-has-wallpaper .zhaowu-app-frame section.seal-border {
   background: rgba(255, 252, 244, .60) !important;
   background-image: none !important;
-  backdrop-filter: blur(3px) saturate(104%) !important;
-  -webkit-backdrop-filter: blur(3px) saturate(104%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 /* Inputs need a little more body than their parent panels for legibility. */
@@ -2441,22 +2441,22 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-card.is-tea {
   background: rgba(255, 252, 244, .58) !important;
   background-image: none !important;
-  backdrop-filter: blur(3px) saturate(104%) !important;
-  -webkit-backdrop-filter: blur(3px) saturate(104%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-specialist-action {
   background: rgba(255, 252, 246, .58) !important;
-  backdrop-filter: blur(2px) !important;
-  -webkit-backdrop-filter: blur(2px) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 /* Full report keeps the aubergine identity, but no longer becomes an opaque wall. */
 .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report {
   background: rgba(31, 12, 43, .46) !important;
   background-image: none !important;
-  backdrop-filter: blur(2px) saturate(106%) !important;
-  -webkit-backdrop-filter: blur(2px) saturate(106%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report .zhaowu-report-visual {
@@ -2469,23 +2469,23 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 
 .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report .zhaowu-auspicious-rail {
   background: rgba(20, 8, 31, .60) !important;
-  backdrop-filter: blur(2px) !important;
-  -webkit-backdrop-filter: blur(2px) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report .zhaowu-report-section {
   background:
     radial-gradient(circle at 96% 96%, rgba(185, 103, 198, .10), transparent 30%),
     rgba(38, 16, 52, .68) !important;
-  backdrop-filter: blur(2px) saturate(104%) !important;
-  -webkit-backdrop-filter: blur(2px) saturate(104%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-customer-status,
 .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-report-basis {
   background: rgba(232, 214, 178, .60) !important;
-  backdrop-filter: blur(2px) !important;
-  -webkit-backdrop-filter: blur(2px) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 /* Login remains readable while still visibly sharing the selected site wallpaper. */
@@ -2493,8 +2493,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-has-wallpaper .stone-login-sheet {
   background: rgba(255, 252, 244, .62) !important;
   background-image: none !important;
-  backdrop-filter: blur(5px) saturate(106%) !important;
-  -webkit-backdrop-filter: blur(5px) saturate(106%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-has-wallpaper .zhaowu-login-home-link,
@@ -2514,8 +2514,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   .zhaowu-has-wallpaper .zhaowu-app-frame .seal-border,
   .zhaowu-has-wallpaper .zhaowu-app-frame section.seal-border {
     background: rgba(255, 252, 244, .62) !important;
-    backdrop-filter: blur(2px) saturate(103%) !important;
-    -webkit-backdrop-filter: blur(2px) saturate(103%) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 
   .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report .zhaowu-report-section {
@@ -2548,17 +2548,17 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   height: 4rem;
   place-items: center;
   border: 1px solid color-mix(in oklab, var(--color-wood) 42%, white);
-  border-radius: 999px;
+  border-radius: 3px;
   background: rgb(255 253 247 / .94);
   padding: .24rem;
   color: var(--color-wood);
-  box-shadow: 0 14px 38px rgb(26 61 52 / .22);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   touch-action: none;
   cursor: grab;
 }
-.zhaowu-dragon-guide.is-dragging .zhaowu-dragon-guide-trigger { cursor: grabbing; box-shadow: 0 18px 46px rgb(26 61 52 / .28); }
+.zhaowu-dragon-guide.is-dragging .zhaowu-dragon-guide-trigger { cursor: grabbing; box-shadow: 0 1px 3px rgba(55,44,29,.06); }
 .zhaowu-dragon-guide-trigger:active { transform: scale(.98); }
 .zhaowu-dragon-guide-label {
   position: absolute;
@@ -2575,7 +2575,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   width: .62rem;
   height: .62rem;
   border: 2px solid rgb(255 253 247 / .95);
-  border-radius: 999px;
+  border-radius: 3px;
   background: var(--color-cinnabar);
   box-shadow: 0 0 0 2px rgb(176 67 54 / .12);
 }
@@ -2585,7 +2585,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   width: 3.35rem;
   aspect-ratio: 1;
   flex: 0 0 auto;
-  border-radius: 999px;
+  border-radius: 3px;
   background-image: url('/mascot/report-dragons/volume-01.webp');
   background-size: 300% 300%;
   background-position: 100% 0%;
@@ -2606,9 +2606,9 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   background: linear-gradient(160deg, rgb(255 253 247 / .985), rgb(239 247 240 / .985));
   padding: .85rem;
   color: var(--color-ink);
-  box-shadow: 0 24px 70px rgb(32 42 35 / .28);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 .zhaowu-dragon-guide-panel[hidden] { display: none !important; }
 .zhaowu-dragon-guide.is-right .zhaowu-dragon-guide-panel { right: 0; left: auto; }
@@ -2624,7 +2624,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   align-self: flex-start;
   min-width: 2.75rem;
   min-height: 2.75rem;
-  border-radius: 999px;
+  border-radius: 3px;
   color: var(--color-ink-soft);
   font-size: 1.35rem;
 }
@@ -2639,9 +2639,9 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   background: rgb(255 253 247 / .97);
   padding: .48rem;
   color: var(--color-ink);
-  box-shadow: 0 14px 42px rgb(32 42 35 / .2);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   animation: zhaowu-dragon-bubble-in .22s ease-out both;
 }
 .zhaowu-dragon-guide.is-right .zhaowu-dragon-bubble { right: 0; left: auto; }
@@ -2664,8 +2664,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   min-width: 2.75rem;
   min-height: 2.75rem;
   place-items: center;
-  border: 1px solid rgb(47 111 95 / .18);
-  border-radius: 999px;
+  border: 1px solid rgb(53 46 38 / .18);
+  border-radius: 3px;
   background: rgb(255 255 255 / .78);
   color: var(--color-wood);
 }
@@ -2676,7 +2676,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 
 .zhaowu-dragon-music {
   margin-top: .75rem;
-  border: 1px solid rgb(47 111 95 / .14);
+  border: 1px solid rgb(53 46 38 / .14);
   border-radius: 1rem;
   background: rgb(255 255 255 / .72);
   padding: .72rem;
@@ -2684,7 +2684,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-dragon-music-meta { min-width: 0; }
 .zhaowu-dragon-music-title { display: flex; align-items: center; gap: .38rem; font-size: .69rem; color: var(--color-ink-soft); }
 .zhaowu-dragon-music-title strong { color: var(--color-wood); font-size: .73rem; }
-.zhaowu-dragon-music-dot { width: .48rem; height: .48rem; flex: 0 0 auto; border-radius: 999px; background: var(--color-line); }
+.zhaowu-dragon-music-dot { width: .48rem; height: .48rem; flex: 0 0 auto; border-radius: 3px; background: var(--color-line); }
 .zhaowu-dragon-music-dot.is-playing { background: var(--color-cinnabar); }
 .zhaowu-dragon-music-meta > p { margin-top: .28rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .76rem; color: var(--color-ink); }
 .zhaowu-dragon-music-controls { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .28rem; margin-top: .58rem; }
@@ -2692,7 +2692,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 
 .zhaowu-dragon-guide-answer {
   margin-top: .72rem;
-  border: 1px solid rgb(47 111 95 / .14);
+  border: 1px solid rgb(53 46 38 / .14);
   border-radius: 1rem;
   background: rgb(255 255 255 / .75);
   padding: .8rem;
@@ -2721,7 +2721,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 }
 .zhaowu-dragon-guide-shortcuts button {
   min-height: 3rem;
-  border: 1px solid rgb(47 111 95 / .22);
+  border: 1px solid rgb(53 46 38 / .22);
   border-radius: .75rem;
   background: rgb(255 255 255 / .68);
   padding: .4rem .3rem;
@@ -2743,7 +2743,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   font-size: 1rem;
   outline: none;
 }
-.zhaowu-dragon-guide-panel input:focus { border-color: var(--color-wood); box-shadow: 0 0 0 3px rgb(47 111 95 / .12); }
+.zhaowu-dragon-guide-panel input:focus { border-color: var(--color-wood); box-shadow: 0 0 0 3px rgb(53 46 38 / .12); }
 .zhaowu-dragon-guide-panel form button {
   min-width: 4.3rem;
   min-height: 2.75rem;
@@ -2784,7 +2784,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 
 /* ─── report-history.css ─── */
 .history-page {
-  --history-jade: #2f7465;
+  --history-jade: #5e5245;
   --history-red: #9d342c;
   --history-line: rgba(151, 111, 62, .28);
   display: grid;
@@ -2804,32 +2804,32 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .history-entry {
   border: 1px solid var(--history-line);
   background: #fbf5e9;
-  box-shadow: 0 18px 48px rgba(65, 47, 27, .1);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
-.history-hero { border-radius: 28px; padding: 28px 24px; }
+.history-hero { border-radius: 3px; padding: 28px 24px; }
 .history-hero > p:first-child,
 .history-cloud-card > div > p { margin: 0; color: #966c38; font-size: 11px; font-weight: 750; letter-spacing: .22em; }
 .history-hero h1 { margin: 8px 0 0; font-family: var(--font-display); font-size: clamp(32px, 9vw, 50px); font-weight: 600; letter-spacing: .04em; }
 .history-hero > p:last-child { max-width: 620px; margin: 14px 0 0; color: #61584d; font-size: 15px; line-height: 1.9; }
 
-.history-cloud-card { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 18px; border-radius: 22px; padding: 20px; }
+.history-cloud-card { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 18px; border-radius: 3px; padding: 20px; }
 .history-cloud-card h2 { margin: 6px 0 0; font-family: var(--font-display); font-size: 21px; }
 .history-cloud-card span { display: block; margin-top: 7px; color: #6a6054; font-size: 13px; line-height: 1.7; }
-.history-cloud-card > a { display: inline-flex; min-height: 48px; align-items: center; gap: 16px; border-radius: 999px; background: var(--history-jade); padding: 0 18px; color: #fffaf0; font-size: 13px; font-weight: 700; white-space: nowrap; }
+.history-cloud-card > a { display: inline-flex; min-height: 48px; align-items: center; gap: 16px; border-radius: 3px; background: var(--history-jade); padding: 0 18px; color: #fffaf0; font-size: 13px; font-weight: 700; white-space: nowrap; }
 
-.history-empty { border-radius: 24px; padding: 32px 20px; text-align: center; }
-.history-empty > span { display: grid; width: 58px; height: 58px; place-items: center; margin: 0 auto; border: 1px solid rgba(47, 116, 101, .35); border-radius: 50%; color: var(--history-jade); font-family: var(--font-display); font-size: 23px; }
+.history-empty { border-radius: 3px; padding: 32px 20px; text-align: center; }
+.history-empty > span { display: grid; width: 58px; height: 58px; place-items: center; margin: 0 auto; border: 1px solid rgba(94, 82, 69, .35); border-radius: 50%; color: var(--history-jade); font-family: var(--font-display); font-size: 23px; }
 .history-empty h2 { max-width: 520px; margin: 18px auto 0; font-family: var(--font-display); font-size: 20px; line-height: 1.7; }
 .history-empty > p { margin-top: 8px; color: #776b5e; font-size: 13px; }
 .history-empty > div { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 22px; }
-.history-empty a { display: grid; min-height: 52px; place-items: center; border: 1px solid var(--history-line); border-radius: 14px; background: #fffaf1; padding: 8px; color: #554a3d; font-size: 12px; font-weight: 700; }
+.history-empty a { display: grid; min-height: 52px; place-items: center; border: 1px solid var(--history-line); border-radius: 3px; background: #fffaf1; padding: 8px; color: #554a3d; font-size: 12px; font-weight: 700; }
 
 .history-list { display: grid; gap: 14px; }
-.history-entry { overflow: clip; border-radius: 22px; }
+.history-entry { overflow: clip; border-radius: 3px; }
 .history-entry summary { position: relative; display: block; min-height: 188px; cursor: pointer; list-style: none; padding: 22px 22px 64px; }
 .history-entry summary::-webkit-details-marker { display: none; }
-.history-kind { display: inline-flex; min-height: 28px; align-items: center; border-radius: 999px; padding: 0 11px; background: rgba(47, 116, 101, .09); color: var(--history-jade); font-size: 11px; font-weight: 750; letter-spacing: .05em; }
+.history-kind { display: inline-flex; min-height: 28px; align-items: center; border-radius: 3px; padding: 0 11px; background: rgba(94, 82, 69, .09); color: var(--history-jade); font-size: 11px; font-weight: 750; letter-spacing: .05em; }
 .history-kind.is-ziwei { background: rgba(157, 52, 44, .08); color: var(--history-red); }
 .history-kind.is-yizhangjing { background: rgba(151, 111, 62, .1); color: #825b31; }
 .history-entry summary h2 { margin: 12px 0 0; font-family: var(--font-display); font-size: 22px; font-weight: 600; line-height: 1.35; }
@@ -2847,10 +2847,10 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .history-entry-report article > i { color: #a57a45; font-size: 11px; font-style: normal; letter-spacing: .1em; }
 .history-entry-report h3 { margin: 0; font-family: var(--font-display); font-size: 17px; }
 .history-entry-report p { margin: 7px 0 0; color: #51483e; font-size: 14px; line-height: 1.85; white-space: pre-line; }
-.history-entry-report blockquote { margin: 20px 0 0; border-left: 3px solid var(--history-jade); background: rgba(47, 116, 101, .055); padding: 14px 16px; color: #3e544b; font-size: 14px; line-height: 1.8; }
+.history-entry-report blockquote { margin: 20px 0 0; border-left: 3px solid var(--history-jade); background: rgba(94, 82, 69, .055); padding: 14px 16px; color: #4d4945; font-size: 14px; line-height: 1.8; }
 .history-entry-actions { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-top: 20px; }
 .history-entry-actions a,
-.history-entry-actions button { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; border-radius: 999px; padding: 0 18px; font-size: 13px; font-weight: 700; }
+.history-entry-actions button { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; border-radius: 3px; padding: 0 18px; font-size: 13px; font-weight: 700; }
 .history-entry-actions a { background: var(--history-jade); color: #fffaf0; }
 .history-entry-actions button { border: 1px solid rgba(157, 52, 44, .3); color: var(--history-red); }
 .history-clear { min-height: 48px; justify-self: center; padding: 0 18px; color: var(--history-red); font-size: 12px; text-decoration: underline; text-underline-offset: 4px; }
@@ -2860,11 +2860,11 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .palm-history-note { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 22px; border-top: 1px solid rgba(130, 91, 50, .18); padding-top: 17px; color: rgba(49, 40, 31, .62); font-size: 12px; }
 .qz-report-history a,
 .ziwei-report-history a,
-.palm-history-note a { display: inline-flex; min-height: 44px; align-items: center; gap: 14px; border-radius: 999px; background: #2f7465; padding: 0 16px; color: #fffaf1; font-size: 12px; font-weight: 750; white-space: nowrap; }
+.palm-history-note a { display: inline-flex; min-height: 44px; align-items: center; gap: 14px; border-radius: 3px; background: #5e5245; padding: 0 16px; color: #fffaf1; font-size: 12px; font-weight: 750; white-space: nowrap; }
 
 @media (max-width: 520px) {
   .history-page { gap: 14px; }
-  .history-hero { border-radius: 22px; padding: 24px 19px; }
+  .history-hero { border-radius: 3px; padding: 24px 19px; }
   .history-hero > p:last-child { font-size: 14px; }
   .history-cloud-card { grid-template-columns: 1fr; padding: 18px; }
   .history-cloud-card > a { justify-content: space-between; }
@@ -2891,10 +2891,10 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   border-color: rgba(133, 92, 44, .34);
   background:
     radial-gradient(circle at 14% 8%, rgba(147, 105, 53, .10), transparent 22rem),
-    radial-gradient(circle at 90% 92%, rgba(77, 111, 82, .09), transparent 24rem),
+    radial-gradient(circle at 90% 92%, rgba(100, 94, 88, .09), transparent 24rem),
     repeating-linear-gradient(7deg, rgba(98, 69, 38, .018) 0 1px, transparent 1px 7px),
     linear-gradient(150deg, rgba(249, 241, 222, .98), rgba(230, 214, 184, .98));
-  box-shadow: 0 22px 54px rgba(66, 45, 24, .13), inset 0 0 0 1px rgba(255, 252, 240, .55);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .tea-guardian-report::before,
@@ -2970,12 +2970,12 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   border: 1px solid rgba(129, 88, 43, .29);
   border-radius: 1rem;
   background: #fbf5e9;
-  box-shadow: 0 12px 28px rgba(60, 41, 22, .09);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .tea-result-card.is-featured {
   border-color: rgba(151, 84, 38, .46);
-  box-shadow: 0 16px 34px rgba(94, 55, 25, .15);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .tea-result-image-wrap {
@@ -3069,10 +3069,10 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   justify-content: center;
   gap: .8rem;
   border: 1px solid rgba(108, 65, 31, .34);
-  border-radius: 999px;
+  border-radius: 3px;
   color: #fffaf0;
   background: linear-gradient(180deg, #8e5535, #6e3f29);
-  box-shadow: 0 10px 24px rgba(91, 53, 27, .17), inset 0 1px rgba(255,255,255,.18);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
   font-size: .82rem;
   font-weight: 700;
 }
@@ -3135,16 +3135,16 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 }
 
 .tea-chart-status.is-ready {
-  border-color: rgba(54, 116, 86, .27);
-  color: #3f715a;
-  background: rgba(71, 123, 92, .07);
+  border-color: rgba(96, 86, 74, .27);
+  color: #61594f;
+  background: rgba(106, 98, 88, .07);
 }
 
 .tea-quiz-progress {
   overflow: hidden;
   height: .32rem;
   margin-bottom: 1.25rem;
-  border-radius: 999px;
+  border-radius: 3px;
   background: rgba(117, 82, 45, .13);
 }
 
@@ -3152,7 +3152,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #9d603a, #547b65);
+  background: linear-gradient(90deg, #9d603a, #6e6861);
   transition: width .2s ease;
 }
 
@@ -3250,7 +3250,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   min-height: 2.8rem;
   margin-top: 1rem;
   border: 1px solid rgba(123, 81, 43, .29);
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 0 1rem;
   color: #704b32;
   background: rgba(255, 251, 240, .6);
@@ -3342,8 +3342,8 @@ body:has(.zhaowu-has-wallpaper) {
 .zhaowu-site-header,
 body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   background: rgba(255, 252, 244, .78) !important;
-  backdrop-filter: blur(16px) saturate(112%);
-  -webkit-backdrop-filter: blur(16px) saturate(112%);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .zhaowu-has-wallpaper .zhaowu-home-hero,
@@ -3352,12 +3352,12 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-has-wallpaper section.seal-border {
   background: rgba(255, 252, 244, .88) !important;
   background-image: none !important;
-  backdrop-filter: blur(12px) saturate(108%) !important;
-  -webkit-backdrop-filter: blur(12px) saturate(108%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-home-hero {
-  border-radius: 22px !important;
+  border-radius: 3px !important;
   border-color: rgba(152, 117, 70, .28) !important;
 }
 
@@ -3373,8 +3373,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   --zv-ivory: #fbf7ef;
   --zv-paper: rgba(255, 253, 248, .86);
   --zv-paper-strong: rgba(255, 253, 248, .94);
-  --zv-jade: #1f3932;
-  --zv-jade-soft: #477865;
+  --zv-jade: #312c27;
+  --zv-jade-soft: #686057;
   --zv-ink: #292925;
   --zv-muted: #78756d;
   --zv-gold: #b99c67;
@@ -3432,11 +3432,11 @@ body:has(.zhaowu-has-wallpaper) {
   margin: 10px auto 22px !important;
   padding: 10px 10px 20px !important;
   border: 1px solid rgba(255,255,255,.62);
-  border-radius: 30px;
+  border-radius: 3px;
   background: rgba(251, 247, 239, .72);
-  box-shadow: 0 24px 80px rgba(28, 42, 34, .14);
-  backdrop-filter: blur(14px) saturate(104%);
-  -webkit-backdrop-filter: blur(14px) saturate(104%);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 /* Header follows the app width instead of spanning like a desktop website. */
@@ -3448,8 +3448,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   border: 0 !important;
   background: rgba(251, 247, 239, .76) !important;
   box-shadow: 0 1px 0 var(--zv-line);
-  backdrop-filter: blur(18px) saturate(105%);
-  -webkit-backdrop-filter: blur(18px) saturate(105%);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .zhaowu-site-header > div {
@@ -3475,13 +3475,13 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   position: relative;
   overflow: hidden;
   border: 0 !important;
-  border-radius: 24px !important;
+  border-radius: 3px !important;
   padding: 34px 20px 28px !important;
   background: rgba(255, 253, 248, .58) !important;
   background-image: none !important;
   box-shadow: none !important;
-  backdrop-filter: blur(7px) saturate(102%) !important;
-  -webkit-backdrop-filter: blur(7px) saturate(102%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-home-hero::before {
@@ -3510,7 +3510,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   border: 0 !important;
   background: linear-gradient(180deg, var(--zv-red), var(--zv-red-deep)) !important;
   color: #fffaf4 !important;
-  box-shadow: 0 10px 24px rgba(139,44,36,.16) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 .zhaowu-home-hero a[href="/login"],
@@ -3529,12 +3529,12 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-has-wallpaper section.seal-border,
 .zhaowu-has-wallpaper .zhaowu-tool-card {
   border: 1px solid var(--zv-line) !important;
-  border-radius: 20px !important;
+  border-radius: 3px !important;
   background: var(--zv-paper) !important;
   background-image: none !important;
-  box-shadow: 0 10px 34px rgba(54, 47, 35, .07) !important;
-  backdrop-filter: blur(10px) saturate(102%) !important;
-  -webkit-backdrop-filter: blur(10px) saturate(102%) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 #birth-form {
@@ -3549,7 +3549,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 #birth-form textarea,
 #birth-form select {
   border-color: rgba(119, 104, 81, .24) !important;
-  border-radius: 12px !important;
+  border-radius: 3px !important;
   background: rgba(255, 254, 251, .86) !important;
   box-shadow: none !important;
 }
@@ -3563,10 +3563,10 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 
 #birth-form button[type="submit"] {
   border: 0 !important;
-  border-radius: 13px !important;
+  border-radius: 3px !important;
   background: linear-gradient(180deg, var(--zv-red), var(--zv-red-deep)) !important;
   color: #fffaf4 !important;
-  box-shadow: 0 10px 22px rgba(139,44,36,.14) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 /* The former two giant illustrated cards are reduced to simple app tool rows. */
@@ -3619,14 +3619,14 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
 .zhaowu-specialist-card.is-tea {
   min-height: 0 !important;
   border: 1px solid var(--zv-line) !important;
-  border-radius: 18px !important;
+  border-radius: 3px !important;
   padding: 16px !important;
   color: var(--zv-ink) !important;
   background: rgba(255, 253, 248, .78) !important;
   background-image: none !important;
   box-shadow: 0 8px 24px rgba(54,47,35,.06) !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-specialist-card::before,
@@ -3688,7 +3688,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header {
   min-height: 44px !important;
   margin-top: 14px !important;
   border: 1px solid rgba(169,54,43,.34) !important;
-  border-radius: 12px !important;
+  border-radius: 3px !important;
   padding-inline: 14px !important;
   color: var(--zv-red-deep) !important;
   background: rgba(255, 252, 246, .72) !important;
@@ -3727,7 +3727,7 @@ footer {
   background: rgba(255,253,248,.78) !important;
   color: var(--zv-ink) !important;
   box-shadow: none !important;
-  backdrop-filter: blur(12px) !important;
+  backdrop-filter: none !important;
 }
 
 .stone-login-topbar [role="group"] {
@@ -3753,14 +3753,14 @@ footer {
   min-height: 0 !important;
   margin: 0 auto !important;
   border: 1px solid rgba(255,255,255,.62) !important;
-  border-radius: 28px !important;
+  border-radius: 3px !important;
   padding: 28px 20px 20px !important;
   background: rgba(251,247,239,.80) !important;
   background-image: none !important;
   color: var(--zv-ink) !important;
-  box-shadow: 0 24px 70px rgba(28,42,34,.14) !important;
-  backdrop-filter: blur(16px) saturate(104%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(104%) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .stone-login-kicker {
@@ -3773,24 +3773,24 @@ footer {
 
 .stone-login-form input {
   border: 1px solid var(--zv-line) !important;
-  border-radius: 12px !important;
+  border-radius: 3px !important;
   background: rgba(255,254,251,.86) !important;
   color: var(--zv-ink) !important;
 }
 
 .stone-login-primary {
   border: 0 !important;
-  border-radius: 12px !important;
+  border-radius: 3px !important;
   background: linear-gradient(180deg, var(--zv-red), var(--zv-red-deep)) !important;
   color: #fffaf4 !important;
-  box-shadow: 0 10px 22px rgba(139,44,36,.14) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 @media (max-width: 640px) {
   .zhaowu-app-frame {
     width: calc(100% - 12px) !important;
     margin-top: 6px !important;
-    border-radius: 24px;
+    border-radius: 3px;
     padding: 8px 8px 18px !important;
   }
 
@@ -3838,7 +3838,7 @@ footer {
   --zv2-shadow: 0 14px 42px rgba(67, 52, 31, .075);
   --zv2-red: #b2352a;
   --zv2-red-deep: #962c24;
-  --zv2-jade: #2e7564;
+  --zv2-jade: #5e5245;
 }
 
 body:has(.zhaowu-has-wallpaper) {
@@ -3861,11 +3861,11 @@ body:has(.zhaowu-has-wallpaper) {
   width: min(calc(100% - 12px), 560px) !important;
   margin: 6px auto 22px !important;
   border: 1px solid rgba(255, 250, 239, .52) !important;
-  border-radius: 26px !important;
+  border-radius: 3px !important;
   background: rgba(244, 234, 215, .20) !important;
-  box-shadow: 0 22px 72px rgba(54, 42, 25, .10) !important;
-  backdrop-filter: blur(1.5px) saturate(104%) !important;
-  -webkit-backdrop-filter: blur(1.5px) saturate(104%) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-site-header,
@@ -3874,8 +3874,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   border-bottom: 1px solid rgba(153, 122, 77, .18) !important;
   background: rgba(248, 240, 225, .54) !important;
   box-shadow: 0 8px 24px rgba(61, 48, 29, .035) !important;
-  backdrop-filter: blur(8px) saturate(106%) !important;
-  -webkit-backdrop-filter: blur(8px) saturate(106%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-site-header .bg-wood {
@@ -3887,12 +3887,12 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
 .zhaowu-has-wallpaper .zhaowu-home-hero,
 .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-home-hero {
   border: 1px solid var(--zv2-line) !important;
-  border-radius: 22px !important;
+  border-radius: 3px !important;
   background: rgba(248, 240, 225, .44) !important;
   background-image: none !important;
   box-shadow: var(--zv2-shadow) !important;
-  backdrop-filter: blur(2px) saturate(103%) !important;
-  -webkit-backdrop-filter: blur(2px) saturate(103%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 /* Main content cards retain the owner wallpaper in view. */
@@ -3908,13 +3908,13 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   background: var(--zv2-paper) !important;
   background-image: none !important;
   box-shadow: var(--zv2-shadow) !important;
-  backdrop-filter: blur(2.5px) saturate(103%) !important;
-  -webkit-backdrop-filter: blur(2.5px) saturate(103%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 #birth-form,
 .zhaowu-app-frame .zhaowu-result-card {
-  border-radius: 22px !important;
+  border-radius: 3px !important;
 }
 
 #birth-form input,
@@ -3927,8 +3927,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   background: var(--zv2-paper-field) !important;
   color: var(--zv-ink) !important;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.28) !important;
-  backdrop-filter: blur(2px) !important;
-  -webkit-backdrop-filter: blur(2px) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 #birth-form button[type="submit"],
@@ -3936,7 +3936,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   border: 0 !important;
   background: linear-gradient(180deg, var(--zv2-red), var(--zv2-red-deep)) !important;
   color: #fff9ef !important;
-  box-shadow: 0 10px 22px rgba(130, 41, 31, .13) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 /* Direct answer + action stack from the approved mobile mockup. */
@@ -3961,15 +3961,15 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
 .zhaowu-result-secondary {
   width: 100%;
   min-height: 48px;
-  border-radius: 999px !important;
+  border-radius: 3px !important;
 }
 
 .zhaowu-result-secondary {
   border-color: var(--zv2-line-strong) !important;
   background: rgba(249, 242, 229, .50) !important;
   box-shadow: none !important;
-  backdrop-filter: blur(2px) !important;
-  -webkit-backdrop-filter: blur(2px) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-result-reset {
@@ -3980,7 +3980,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
 .zhaowu-result-message {
   margin-inline: 4px;
   border: 1px solid rgba(178, 53, 42, .20);
-  border-radius: 14px;
+  border-radius: 3px;
   padding: 10px 12px;
   background: rgba(250, 238, 224, .42);
   line-height: 1.65;
@@ -3992,7 +3992,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
   gap: 16px;
   overflow: hidden;
-  border-radius: 22px !important;
+  border-radius: 3px !important;
   padding: 18px !important;
 }
 
@@ -4033,7 +4033,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   justify-content: space-between;
   gap: 10px;
   border: 1px solid rgba(178, 53, 42, .62);
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 0 14px;
   color: var(--zv2-red-deep);
   background: rgba(250, 240, 225, .40);
@@ -4076,7 +4076,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   min-width: 0;
   overflow: hidden;
   border: 1px solid rgba(154, 121, 74, .30);
-  border-radius: 10px;
+  border-radius: 3px;
   background: rgba(231, 216, 189, .50);
   box-shadow: 0 7px 18px rgba(66, 48, 26, .09);
 }
@@ -4099,7 +4099,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   bottom: 5px;
   overflow: hidden;
   border: 1px solid rgba(255,248,235,.38);
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 3px 5px;
   color: #fff9ec;
   background: rgba(72, 51, 31, .55);
@@ -4108,8 +4108,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .zhaowu-decree-preview-skeleton {
@@ -4130,8 +4130,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   background: rgba(247, 239, 224, .44) !important;
   background-image: none !important;
   box-shadow: var(--zv2-shadow) !important;
-  backdrop-filter: blur(2px) saturate(103%) !important;
-  -webkit-backdrop-filter: blur(2px) saturate(103%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-specialist-action,
@@ -4143,7 +4143,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   .zhaowu-has-wallpaper .zhaowu-app-frame {
     width: calc(100% - 8px) !important;
     padding: 7px 7px 18px !important;
-    border-radius: 22px !important;
+    border-radius: 3px !important;
     background: rgba(244, 234, 215, .16) !important;
   }
 
@@ -4208,7 +4208,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   --zv3-ink-mute: #8b806f;
   --zv3-red: #b4372b;
   --zv3-red-deep: #982d25;
-  --zv3-jade: #2f7465;
+  --zv3-jade: #5e5245;
   --zv3-earth: #9a713d;
   --zv3-shadow: 0 14px 38px rgba(74, 54, 31, .065);
   --zv3-shadow-soft: 0 8px 24px rgba(74, 54, 31, .045);
@@ -4236,11 +4236,11 @@ body:has(.zhaowu-has-wallpaper) {
   margin: 6px auto 24px !important;
   padding: 8px 8px 20px !important;
   border: 1px solid rgba(255, 250, 240, .34) !important;
-  border-radius: 28px !important;
+  border-radius: 3px !important;
   background: rgba(244, 233, 212, .075) !important;
-  box-shadow: 0 18px 48px rgba(69, 51, 29, .045) !important;
-  backdrop-filter: blur(.7px) saturate(102%) !important;
-  -webkit-backdrop-filter: blur(.7px) saturate(102%) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-site-header,
@@ -4249,8 +4249,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   border-bottom: 1px solid var(--zv3-line-soft) !important;
   background: rgba(249, 241, 226, .72) !important;
   box-shadow: 0 8px 24px rgba(62, 47, 29, .035) !important;
-  backdrop-filter: blur(8px) saturate(104%) !important;
-  -webkit-backdrop-filter: blur(8px) saturate(104%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-site-header > div {
@@ -4303,8 +4303,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   background:
     linear-gradient(180deg, rgba(255, 249, 238, .24), rgba(240, 226, 200, .11)),
     var(--zv3-paper) !important;
-  backdrop-filter: blur(1.4px) saturate(102%) !important;
-  -webkit-backdrop-filter: blur(1.4px) saturate(102%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-home-hero,
@@ -4313,7 +4313,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
 .zhaowu-decree-gallery,
 .zhaowu-focused-report,
 .zhaowu-tools-section {
-  border-radius: 26px !important;
+  border-radius: 3px !important;
 }
 
 .zhaowu-home-hero {
@@ -4330,7 +4330,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   position: absolute;
   inset: 12px;
   border: 1px solid rgba(150, 111, 64, .18);
-  border-radius: 19px;
+  border-radius: 3px;
   pointer-events: none;
 }
 
@@ -4377,7 +4377,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   border: 0 !important;
   background: linear-gradient(180deg, var(--zv3-red), var(--zv3-red-deep)) !important;
   color: #fff9ef !important;
-  box-shadow: 0 10px 22px rgba(131, 43, 32, .13) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 .zhaowu-home-hero a[href="/login"],
@@ -4400,18 +4400,18 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   background: var(--zv3-paper-field) !important;
   color: var(--zv3-ink) !important;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.24) !important;
-  backdrop-filter: blur(1.5px) !important;
-  -webkit-backdrop-filter: blur(1.5px) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 #birth-form textarea {
   min-height: 10rem;
-  border-radius: 18px !important;
+  border-radius: 3px !important;
 }
 
 #birth-form input,
 #birth-form select {
-  border-radius: 14px !important;
+  border-radius: 3px !important;
 }
 
 #birth-form .bg-paper\/45,
@@ -4489,8 +4489,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   border-color: rgba(150, 111, 64, .18) !important;
   background: rgba(247, 238, 220, .76) !important;
   color: var(--zv3-ink) !important;
-  backdrop-filter: blur(2px) !important;
-  -webkit-backdrop-filter: blur(2px) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 /* Homepage tools all join the same visual civilization. */
@@ -4668,7 +4668,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   opacity: .16 !important;
   background-image:
     radial-gradient(circle, rgba(142, 103, 58, .22) 0 1px, transparent 1.2px),
-    radial-gradient(circle, rgba(47, 116, 101, .16) 0 1px, transparent 1.2px) !important;
+    radial-gradient(circle, rgba(94, 82, 69, .16) 0 1px, transparent 1.2px) !important;
 }
 
 .dual-page::after {
@@ -4730,8 +4730,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
 
 .dual-input-card,
 .dual-results {
-  backdrop-filter: blur(1.4px) saturate(102%) !important;
-  -webkit-backdrop-filter: blur(1.4px) saturate(102%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .dual-tabs {
@@ -4747,7 +4747,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
 .dual-tabs button[aria-selected="true"] {
   color: #fffaf0 !important;
   background: var(--zv3-jade) !important;
-  box-shadow: 0 7px 18px rgba(47, 116, 101, .10) !important;
+  box-shadow: 0 7px 18px rgba(94, 82, 69, .10) !important;
 }
 
 .dual-fields label {
@@ -4767,25 +4767,25 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
 }
 
 .dual-direction button[aria-pressed="true"] {
-  border-color: rgba(47, 116, 101, .42) !important;
+  border-color: rgba(94, 82, 69, .42) !important;
   color: var(--zv3-jade) !important;
-  background: rgba(47, 116, 101, .07) !important;
+  background: rgba(94, 82, 69, .07) !important;
 }
 
 .dual-auto {
-  border-color: rgba(47, 116, 101, .22) !important;
+  border-color: rgba(94, 82, 69, .22) !important;
   color: var(--zv3-jade) !important;
-  background: rgba(47, 116, 101, .055) !important;
+  background: rgba(94, 82, 69, .055) !important;
 }
 
 .dual-auto i {
-  border-color: rgba(47, 116, 101, .32) !important;
+  border-color: rgba(94, 82, 69, .32) !important;
 }
 
 .dual-submit {
   color: #fff9ef !important;
   background: linear-gradient(180deg, var(--zv3-red), var(--zv3-red-deep)) !important;
-  box-shadow: 0 10px 22px rgba(131, 43, 32, .12) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 .dual-error {
@@ -4803,7 +4803,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
 }
 
 .dual-orbit-ring::after {
-  border-color: rgba(47, 116, 101, .18) !important;
+  border-color: rgba(94, 82, 69, .18) !important;
 }
 
 .dual-orbit-core {
@@ -4830,7 +4830,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   border-color: var(--zv3-jade) !important;
   color: #fffaf0 !important;
   background: var(--zv3-jade) !important;
-  box-shadow: 0 0 12px rgba(47, 116, 101, .16) !important;
+  box-shadow: 0 0 12px rgba(94, 82, 69, .16) !important;
 }
 
 .dual-reading {
@@ -4855,9 +4855,9 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   border-color: var(--zv3-line) !important;
   background: rgba(249, 241, 226, .82) !important;
   color: var(--zv3-ink) !important;
-  box-shadow: 0 12px 34px rgba(58, 45, 28, .10) !important;
-  backdrop-filter: blur(8px) saturate(103%) !important;
-  -webkit-backdrop-filter: blur(8px) saturate(103%) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-dragon-guide-trigger {
@@ -4875,7 +4875,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
     width: calc(100% - 6px) !important;
     margin-top: 3px !important;
     padding: 6px 6px 18px !important;
-    border-radius: 22px !important;
+    border-radius: 3px !important;
     background: rgba(244, 233, 212, .055) !important;
   }
 
@@ -4890,7 +4890,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   .zhaowu-decree-gallery,
   .zhaowu-focused-report,
   .zhaowu-tools-section {
-    border-radius: 22px !important;
+    border-radius: 3px !important;
   }
 
   .zhaowu-home-hero {
@@ -4918,11 +4918,11 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   }
 
   .zhaowu-report-section {
-    border-radius: 16px !important;
+    border-radius: 3px !important;
   }
 
   .dual-page {
-    border-radius: 22px !important;
+    border-radius: 3px !important;
   }
 
   .dual-shell {
@@ -4933,7 +4933,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   .dual-results,
   .dual-engine-card,
   .dual-fusion {
-    border-radius: 18px !important;
+    border-radius: 3px !important;
   }
 }
 
@@ -4986,8 +4986,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   background-color: var(--zv4-surface) !important;
   background-image: linear-gradient(180deg, rgba(255, 252, 246, .20), rgba(239, 224, 198, .06)) !important;
   border-color: var(--zv4-line) !important;
-  backdrop-filter: blur(1px) saturate(101%) !important;
-  -webkit-backdrop-filter: blur(1px) saturate(101%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 /* Same readable material also applies when there is no owner wallpaper loaded yet. */
@@ -5026,8 +5026,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   background-color: var(--zv4-surface-strong) !important;
   background-image: linear-gradient(180deg, rgba(255, 252, 246, .16), rgba(238, 222, 195, .05)) !important;
   border-color: var(--zv4-line) !important;
-  backdrop-filter: blur(1px) saturate(101%) !important;
-  -webkit-backdrop-filter: blur(1px) saturate(101%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-has-wallpaper .zhaowu-app-frame .zhaowu-focused-report .zhaowu-report-visual,
@@ -5117,8 +5117,8 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
 .zhaowu-has-wallpaper .stone-login-sheet {
   background-color: rgba(250, 245, 236, .94) !important;
   background-image: linear-gradient(180deg, rgba(255, 252, 246, .12), rgba(239, 224, 198, .04)) !important;
-  backdrop-filter: blur(1px) !important;
-  -webkit-backdrop-filter: blur(1px) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 @media (max-width: 430px) {
@@ -5169,7 +5169,7 @@ body:has(.zhaowu-has-wallpaper) .zhaowu-site-header,
   --zv5-line-soft: rgba(151, 111, 62, 0.18);
   --zv5-red: #b53a2e;
   --zv5-red-deep: #992c24;
-  --zv5-jade: #2f7465;
+  --zv5-jade: #5e5245;
   --zv5-earth: #98703d;
   --zv5-shadow: 0 8px 22px rgba(76, 55, 31, 0.055);
 }
@@ -5270,7 +5270,7 @@ body:has(.zhaowu-login-shell),
 .zhaowu-home-sheet-shell .zhaowu-decree-gallery,
 .zhaowu-home-sheet-shell .zhaowu-tools-section,
 .zhaowu-home-sheet-shell .zhaowu-focused-report {
-  border-radius: 17px !important;
+  border-radius: 3px !important;
 }
 
 .zhaowu-home-sheet-shell #birth-form,
@@ -5320,8 +5320,8 @@ body:has(.zhaowu-login-shell),
 .zhaowu-home-sheet-shell .zhaowu-result-primary {
   background: linear-gradient(
     180deg,
-    #426852,
-    #2e503e
+    #5c554e,
+    #453f39
   ) !important;
   border-color: transparent !important;
   color: #fffaf2 !important;
@@ -5385,7 +5385,7 @@ body:has(.zhaowu-login-shell),
   .zhaowu-home-sheet-shell .zhaowu-decree-gallery,
   .zhaowu-home-sheet-shell .zhaowu-tools-section,
   .zhaowu-home-sheet-shell .zhaowu-focused-report {
-    border-radius: 16px !important;
+    border-radius: 3px !important;
   }
 
   .zhaowu-home-sheet-shell #birth-form,
@@ -5486,7 +5486,7 @@ body:has(.zhaowu-login-shell),
   align-items: center;
   gap: 10px;
   border: 1px solid var(--zv5-line);
-  border-radius: 16px;
+  border-radius: 3px;
   padding: 9px 12px;
   color: var(--zv5-ink);
   background: #fbf5e9;
@@ -5570,7 +5570,7 @@ body:has(.zhaowu-login-shell),
   flex: 0 0 auto;
   align-items: center;
   gap: 5px;
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 0 8px;
   color: var(--zv5-earth);
   font-size: 12px;
@@ -5623,7 +5623,7 @@ body:has(.zhaowu-login-shell),
   align-items: center;
   gap: 7px;
   border: 1px solid rgba(151, 111, 62, 0.3);
-  border-radius: 13px;
+  border-radius: 3px;
   padding: 8px 10px;
   color: var(--zv5-ink-soft);
   background: #fffaf1;
@@ -5926,7 +5926,7 @@ html[lang="en"] .zhaowu-home-sheet-shell nav {
 .zhaowu-quiz-choice {
   min-height: 44px;
   border: 1px solid rgba(151, 111, 62, 0.32);
-  border-radius: 14px;
+  border-radius: 3px;
   padding: 10px 12px;
   color: var(--zv5-ink, #29251f);
   background: #fffaf1 !important;
@@ -5947,8 +5947,8 @@ html[lang="en"] .zhaowu-home-sheet-shell nav {
 
 .zhaowu-quiz-chip.is-on,
 .zhaowu-quiz-choice.is-on {
-  border-color: rgba(47, 116, 101, 0.7) !important;
-  color: #1f4d44 !important;
+  border-color: rgba(94, 82, 69, 0.7) !important;
+  color: #3e372e !important;
   background: #e7f1ed !important;
 }
 
@@ -5972,9 +5972,9 @@ html[lang="en"] .zhaowu-home-sheet-shell nav {
   right: 14px;
   width: 42px;
   height: 42px;
-  border: 1px solid rgba(47, 116, 101, 0.55);
+  border: 1px solid rgba(94, 82, 69, 0.55);
   border-radius: 50%;
-  color: #2f7465;
+  color: #5e5245;
   content: "答";
   font-family: var(--font-display, serif);
   font-size: 15px;
@@ -6137,7 +6137,7 @@ html[lang="en"] .zhaowu-home-sheet-shell nav {
 .zhaowu-home-sheet-shell .zhaowu-personal-art,
 .zhaowu-home-sheet-shell .zhaowu-bazi-chart,
 .zhaowu-home-sheet-shell section.seal-border {
-  border:1px solid #baa482 !important; border-radius:18px !important;
+  border:1px solid #baa482 !important; border-radius: 3px !important;
   background:rgba(250,243,230,.73) !important; box-shadow:inset 0 1px 0 #fff8e9,0 5px 18px #5b442908 !important;
   padding:24px !important; color:#342f26 !important;
 }
@@ -6150,14 +6150,14 @@ html[lang="en"] .zhaowu-home-sheet-shell nav {
 .zhaowu-home-sheet-shell #birth-form form { margin-top:24px !important; }
 .zhaowu-home-sheet-shell #birth-form form > :not([hidden]) ~ :not([hidden]) { margin-top:22px !important; }
 .zhaowu-home-sheet-shell #birth-form label,.zhaowu-home-sheet-shell .zhaowu-quiz-legend { font-size:16px !important; font-weight:600; }
-.zhaowu-home-sheet-shell #birth-form input,.zhaowu-home-sheet-shell #birth-form select,.zhaowu-home-sheet-shell #birth-form textarea { font-size:16px !important; background:rgba(250,243,230,.70) !important; border-color:#baa482 !important; border-radius:12px !important; min-width:0; }
+.zhaowu-home-sheet-shell #birth-form input,.zhaowu-home-sheet-shell #birth-form select,.zhaowu-home-sheet-shell #birth-form textarea { font-size:16px !important; background:rgba(250,243,230,.70) !important; border-color:#baa482 !important; border-radius: 3px !important; min-width:0; }
 .zhaowu-home-sheet-shell #birth-form textarea { min-height:112px !important; }
 .zhaowu-home-sheet-shell #birth-form button[type=submit],
 .zhaowu-home-sheet-shell .zhaowu-result-primary,
 .zhaowu-login-shell button[type=submit],
 .zhaowu-personal-art-actions button:first-child {
   min-height:48px; background:#a73727 !important; color:#fff9ec !important;
-  border:1px solid #a73727 !important; border-radius:999px !important; box-shadow:none !important; font-size:16px; font-weight:600;
+  border:1px solid #a73727 !important; border-radius: 3px !important; box-shadow:none !important; font-size:16px; font-weight:600;
 }
 .zhaowu-time-warning { margin-block:12px; padding:12px 14px; border-left:3px solid #946347; background:#eee2ce; color:#59432f; font-size:14px !important; line-height:1.8 !important; }
 .zhaowu-section-kicker { color:#815d43; font-size:12px; font-weight:600; letter-spacing:.2em; }
@@ -6166,14 +6166,14 @@ html[lang="en"] .zhaowu-home-sheet-shell nav {
 .zhaowu-pillar-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
 .zhaowu-pillar-grid section { border:1px solid #c7b598; border-radius:6px; background:rgba(243,232,212,.73); padding:14px 8px; text-align:center; min-width:0; overflow-wrap:anywhere; }
 .zhaowu-pillar-grid h3 { font-size:15px; color:#735d43; margin-bottom:12px; }
-.zhaowu-pillar-grid strong { display:block; color:#294e3c; font-family:serif; font-size:26px; margin-bottom:8px; }
+.zhaowu-pillar-grid strong { display:block; color:#423c35; font-family:serif; font-size:26px; margin-bottom:8px; }
 .zhaowu-pillar-grid p { font-size:15px; }
 .zhaowu-pillar-grid small { display:block; margin-top:8px; font-size:13px; }
 .zhaowu-chart-details { margin-top:20px; border-top:1px solid #cfbea3; padding-top:16px; }
-.zhaowu-chart-details summary { cursor:pointer; min-height:40px; font-size:16px; font-weight:600; color:#365b46; }
+.zhaowu-chart-details summary { cursor:pointer; min-height:40px; font-size:16px; font-weight:600; color:#4f4942; }
 .zhaowu-pillar-detail-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin:14px 0 20px; }
 .zhaowu-pillar-detail-grid section { min-width:0; padding:14px; background:rgba(242,231,212,.73); border-radius:6px; overflow-wrap:anywhere; }
-.zhaowu-pillar-detail-grid h3 { margin-bottom:12px; color:#365b46; }
+.zhaowu-pillar-detail-grid h3 { margin-bottom:12px; color:#4f4942; }
 .zhaowu-pillar-detail-grid dt { margin-top:12px; font-size:13px; color:#79654d; }
 .zhaowu-pillar-detail-grid dd { margin-top:4px; font-size:15px; line-height:1.8; }
 .zhaowu-cycle-list { list-style:none; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:12px 0; padding:0; }
@@ -6181,27 +6181,27 @@ html[lang="en"] .zhaowu-home-sheet-shell nav {
 .zhaowu-facts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 24px; margin:16px 0 24px; }
 .zhaowu-facts>div { padding:14px 0; border-bottom:1px solid #d5c6ae; min-width:0; }
 .zhaowu-facts dt { color:#78674f; font-size:14px; }
-.zhaowu-facts dd { margin:8px 0 0; font-size:18px; color:#365b46; font-weight:600; overflow-wrap:anywhere; }
+.zhaowu-facts dd { margin:8px 0 0; font-size:18px; color:#4f4942; font-weight:600; overflow-wrap:anywhere; }
 .zhaowu-personal-art figure { margin:0; }
 .zhaowu-personal-art figure img { display:block; width:100%; max-width:380px; aspect-ratio:9/16; object-fit:contain; margin:0 auto; background:#ecdfc7; border-radius:6px; }
 .zhaowu-personal-art figcaption { padding-top:20px; }
-.zhaowu-personal-art figcaption h3 { font-size:18px; color:#365b46; }
+.zhaowu-personal-art figcaption h3 { font-size:18px; color:#4f4942; }
 .zhaowu-personal-art figcaption p { margin-top:10px; font-size:16px; }
 .zhaowu-personal-art-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
-.zhaowu-personal-art-actions button { min-height:48px; padding:10px 20px; border-radius:8px; border:1px solid #a7a589; color:#365b46; font-size:15px; }
+.zhaowu-personal-art-actions button { min-height:48px; padding:10px 20px; border-radius:8px; border:1px solid #a7a589; color:#4f4942; font-size:15px; }
 .zhaowu-personal-art-actions button:disabled { opacity:.55; }
 .zhaowu-single-art { width:100%; max-width:340px; margin-inline:auto; }
 .zhaowu-single-art article { border-radius:8px; background:#efe3cd; }
 .zhaowu-single-art img { width:100%; }
 .zhaowu-home-sheet-shell .zhaowu-home-portals { display:grid !important; grid-template-columns:1fr !important; gap:12px !important; }
-.zhaowu-home-sheet-shell .zhaowu-home-portal { min-height:0 !important; display:block !important; padding:20px !important; border:1px solid #cbbb9e !important; border-radius:10px !important; background:rgba(250,243,230,.73) !important; box-shadow:none !important; }
+.zhaowu-home-sheet-shell .zhaowu-home-portal { min-height:0 !important; display:block !important; padding:20px !important; border:1px solid #cbbb9e !important; border-radius: 3px !important; background:rgba(250,243,230,.73) !important; box-shadow:none !important; }
 .zhaowu-home-sheet-shell .zhaowu-home-portal-art,.zhaowu-home-sheet-shell .zhaowu-home-portal-frame,.zhaowu-home-sheet-shell .zhaowu-home-portal-mark { display:none !important; }
 .zhaowu-home-sheet-shell .zhaowu-home-portal-copy { position:static !important; padding:0 !important; }
-.zhaowu-home-sheet-shell .zhaowu-home-portal-copy strong { font-size:22px !important; color:#365b46 !important; }
+.zhaowu-home-sheet-shell .zhaowu-home-portal-copy strong { font-size:22px !important; color:#4f4942 !important; }
 .zhaowu-home-sheet-shell .zhaowu-home-portal-copy small { font-size:15px !important; line-height:1.8 !important; color:#504735 !important; }
 .zhaowu-home-sheet-shell #life-view summary { padding-block:6px; min-height:44px; }
 .zhaowu-home-sheet-shell #life-view .life-view-prose { font-size:16px; line-height:1.95; border-left:0; padding-left:0; }
-.zhaowu-login-shell .stone-login-sheet,.zhaowu-login-shell .stone-login-panel { background:rgba(250,243,230,.73) !important; box-shadow:0 8px 30px #5b44290b !important; border:1px solid #baa482 !important; border-radius:20px !important; }
+.zhaowu-login-shell .stone-login-sheet,.zhaowu-login-shell .stone-login-panel { background:rgba(250,243,230,.73) !important; box-shadow:0 8px 30px #5b44290b !important; border:1px solid #baa482 !important; border-radius: 3px !important; }
 @media(max-width:430px){
   .zhaowu-home-sheet-shell:has(.zhaowu-home-sheet-page) .zhaowu-home-app-frame { padding:16px 12px 30px !important; }
   .zhaowu-home-sheet-page { gap:22px !important; }
@@ -6221,7 +6221,7 @@ html[lang="en"] .zhaowu-home-sheet-shell nav {
 .zhaowu-home-sheet-shell .zhaowu-specialist-card,
 .zhaowu-home-sheet-shell .zhaowu-tool-card {
   background:rgba(250,243,230,.73) !important; border:1px solid #baa482 !important;
-  border-radius:18px !important; color:#342f26 !important;
+  border-radius: 3px !important; color:#342f26 !important;
 }
 .zhaowu-login-shell .stone-login-title { color:#342f26; font-weight:600; font-size:26px; }
 .zhaowu-login-shell .stone-login-title::after { display:none; }
@@ -6247,8 +6247,8 @@ html[lang="en"] .zhaowu-home-sheet-shell nav {
   --zw-paper-card-strong: rgba(252, 248, 239, .94);
   --zw-ink: #302f28;
   --zw-ink-soft: #666052;
-  --zw-green: #315d43;
-  --zw-green-dark: #254c36;
+  --zw-green: #4a5a3a;
+  --zw-green-dark: #3f3932;
   --zw-green-soft: #6f866e;
   --zw-red: #a73727;
   --zw-gold: #b89f6a;
@@ -6297,7 +6297,7 @@ body::before {
 .zhaowu-home-sheet-page .seal-border,
 #birth-form.zhaowu-quiz-sheet {
   border: 1px solid var(--zw-line) !important;
-  border-radius: 18px !important;
+  border-radius: 3px !important;
   background: var(--zw-paper-card) !important;
   box-shadow: var(--zw-shadow) !important;
   backdrop-filter: none !important;
@@ -6343,7 +6343,7 @@ body::before {
 .zhaowu-home-portals .zhaowu-home-portal-action {
   background: linear-gradient(180deg, var(--zw-green), var(--zw-green-dark)) !important;
   color: #fbf6e9 !important;
-  border: 1px solid rgba(33, 70, 47, .32) !important;
+  border: 1px solid rgba(74, 64, 53, .32) !important;
   box-shadow: none !important;
 }
 
@@ -6359,8 +6359,8 @@ body::before {
 .zhaowu-home-sheet-page input:focus,
 .zhaowu-home-sheet-page textarea:focus,
 .zhaowu-home-sheet-page select:focus {
-  outline: 2px solid rgba(49, 93, 67, .18) !important;
-  border-color: rgba(49, 93, 67, .55) !important;
+  outline: 2px solid rgba(74, 64, 53, .18) !important;
+  border-color: rgba(74, 64, 53, .55) !important;
 }
 
 /* Four lenses / fun-test cards: flatter, quieter, like catalogue panels */
@@ -6374,21 +6374,21 @@ body::before {
 .zhaowu-home-sheet-page button.seal-border {
   background: var(--zw-paper-card-strong) !important;
   border: 1px solid var(--zw-line) !important;
-  border-radius: 16px !important;
+  border-radius: 3px !important;
   box-shadow: none !important;
 }
 
 .zhaowu-home-portal:hover,
 .zhaowu-home-sheet-page a.seal-border:hover,
 .zhaowu-home-sheet-page button.seal-border:hover {
-  border-color: rgba(49, 93, 67, .46) !important;
+  border-color: rgba(74, 64, 53, .46) !important;
   transform: translateY(-1px);
 }
 
 .zhaowu-home-portal-mark {
   background: var(--zw-green) !important;
   color: #f7f0df !important;
-  border-color: rgba(49,93,67,.32) !important;
+  border-color: rgba(79, 72, 63,.32) !important;
 }
 
 /* Page 2 — /fun-tests. Target current route wrapper without changing its runtime logic. */
@@ -6410,7 +6410,7 @@ main.mx-auto.max-w-3xl.space-y-6.pb-16 > header {
   padding: clamp(28px, 6vw, 64px) clamp(24px, 7vw, 72px) !important;
   background: var(--zw-paper-card-strong) !important;
   border: 1px solid var(--zw-line) !important;
-  border-radius: 18px !important;
+  border-radius: 3px !important;
   box-shadow: var(--zw-shadow) !important;
 }
 
@@ -6449,7 +6449,7 @@ main.mx-auto.max-w-3xl.space-y-6.pb-16 > article,
 main.mx-auto.max-w-3xl.space-y-6.pb-16 .seal-border {
   background: var(--zw-paper-card-strong) !important;
   border: 1px solid var(--zw-line) !important;
-  border-radius: 16px !important;
+  border-radius: 3px !important;
   box-shadow: var(--zw-shadow) !important;
 }
 
@@ -6458,7 +6458,7 @@ main.mx-auto.max-w-3xl.space-y-6.pb-16 button {
 }
 
 main.mx-auto.max-w-3xl.space-y-6.pb-16 button:hover {
-  border-color: rgba(49, 93, 67, .55) !important;
+  border-color: rgba(74, 64, 53, .55) !important;
 }
 
 main.mx-auto.max-w-3xl.space-y-6.pb-16 button .text-cinnabar,
@@ -6471,7 +6471,7 @@ main.mx-auto.max-w-3xl.space-y-6.pb-16 .bg-cinnabar {
 }
 
 main.mx-auto.max-w-3xl.space-y-6.pb-16 .border-cinnabar\/25 {
-  border-color: rgba(49, 93, 67, .28) !important;
+  border-color: rgba(74, 64, 53, .28) !important;
 }
 
 /* keep the red seal as a small accent instead of the main CTA */
@@ -6496,7 +6496,7 @@ header[role='banner'] {
    used to hit EVERY <nav> in the app (owner-console section tabs, knowledge
    page nav, sky-events nav, etc.), forcing their text/border to ink/green
    with !important and clobbering unrelated components' own colors
-   (e.g. the owner-console REPORTS tab's bg-[#315f51]/text-[#fffaf0]
+   (e.g. the owner-console REPORTS tab's bg-[#504940]/text-[#fffaf0]
    became unreadable dark-green-on-dark-green). */
 .zhaowu-header-nav a,
 .zhaowu-header-nav button {
@@ -6537,7 +6537,7 @@ header[role='banner'] {
   main.mx-auto.max-w-3xl.space-y-6.pb-16 > header,
   main.mx-auto.max-w-3xl.space-y-6.pb-16 > section,
   main.mx-auto.max-w-3xl.space-y-6.pb-16 .seal-border {
-    border-radius: 14px !important;
+    border-radius: 3px !important;
   }
 }
 
@@ -6631,7 +6631,7 @@ body::before {
   padding: 22px;
   overflow: hidden;
   border: 1px solid rgba(128, 103, 66, .22);
-  border-radius: 22px;
+  border-radius: 3px;
   background:
     radial-gradient(circle at 88% 6%, rgba(193, 154, 85, .07), transparent 30%),
     linear-gradient(180deg, rgba(255, 253, 248, .98), rgba(246, 241, 231, .97));
@@ -6698,7 +6698,7 @@ body::before {
   flex: 0 0 auto;
   min-height: 44px;
   border: 1px solid rgba(128, 103, 66, .2);
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 10px 15px;
   background: rgba(255, 253, 248, .82);
   color: #5f625b;
@@ -6707,8 +6707,8 @@ body::before {
   white-space: nowrap;
 }
 .zhaowu-visual-tabs button.is-active {
-  border-color: rgba(53, 94, 80, .62);
-  background: #355e50;
+  border-color: rgba(81, 74, 66, .62);
+  background: #514a42;
   color: #fffdf8;
 }
 
@@ -6717,10 +6717,10 @@ body::before {
   min-width: 0;
   overflow: hidden;
   border: 1px solid rgba(128, 103, 66, .19);
-  border-radius: 19px;
+  border-radius: 3px;
   padding: 20px;
   background: rgba(255, 253, 248, .82);
-  box-shadow: 0 10px 28px rgba(75, 57, 34, .045);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .zhaowu-visual-card-title h5,
@@ -6748,7 +6748,7 @@ body::before {
   margin: 17px 0 0;
   overflow: hidden;
   border: 1px solid rgba(128, 103, 66, .24);
-  border-radius: 15px;
+  border-radius: 3px;
   background: #eee9de;
 }
 .zhaowu-visual-artwork img {
@@ -6771,7 +6771,7 @@ body::before {
   right: 9px;
   bottom: 8px;
   max-width: calc(100% - 18px);
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 5px 9px;
   background: rgba(255, 253, 248, .9);
   color: #686a62;
@@ -6788,7 +6788,7 @@ body::before {
 .zhaowu-visual-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 .zhaowu-visual-tags span {
   border: 1px solid rgba(128, 103, 66, .18);
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 7px 11px;
   background: rgba(238, 233, 222, .7);
   color: #555850;
@@ -6802,7 +6802,7 @@ body::before {
   margin: 17px 0 0;
   overflow: hidden;
   border: 1px solid rgba(128, 103, 66, .16);
-  border-radius: 14px;
+  border-radius: 3px;
   background: rgba(128, 103, 66, .12);
 }
 .zhaowu-visual-facts div {
@@ -6837,7 +6837,7 @@ body::before {
   min-width: 0;
   min-height: 96px;
   border: 1px solid rgba(128, 103, 66, .2);
-  border-radius: 15px;
+  border-radius: 3px;
   padding: 14px;
   background: rgba(255, 253, 248, .86);
   color: #2f322d;
@@ -6880,21 +6880,21 @@ body::before {
   margin: 8px auto 2px;
   overflow: visible;
 }
-.zhaowu-wheel-generation line { stroke: rgba(53, 94, 80, .44); stroke-width: 2.4; }
+.zhaowu-wheel-generation line { stroke: rgba(81, 74, 66, .44); stroke-width: 2.4; }
 .zhaowu-wheel-control line { stroke: rgba(166, 77, 62, .22); stroke-width: 1.2; stroke-dasharray: 4 4; }
 .zhaowu-wheel-node circle { stroke-width: 1.6; }
 .zhaowu-wheel-node.is-wood circle { fill: rgba(100, 134, 93, .18); stroke: #64865d; }
 .zhaowu-wheel-node.is-fire circle { fill: rgba(185, 91, 73, .17); stroke: #b95b49; }
 .zhaowu-wheel-node.is-earth circle { fill: rgba(175, 142, 85, .18); stroke: #af8e55; }
 .zhaowu-wheel-node.is-metal circle { fill: rgba(194, 162, 91, .18); stroke: #c2a25b; }
-.zhaowu-wheel-node.is-water circle { fill: rgba(67, 130, 160, .17); stroke: #4382a0; }
+.zhaowu-wheel-node.is-water circle { fill: rgba(130, 115, 97, .17); stroke: #827361; }
 .zhaowu-wheel-name { fill: #242620; font-size: 15px; font-family: var(--font-display, serif); font-weight: 700; }
 .zhaowu-wheel-dots circle { fill: rgba(128, 103, 66, .2); }
 .zhaowu-wheel-node.is-wood .zhaowu-wheel-dots circle.is-on { fill: #64865d; }
 .zhaowu-wheel-node.is-fire .zhaowu-wheel-dots circle.is-on { fill: #b95b49; }
 .zhaowu-wheel-node.is-earth .zhaowu-wheel-dots circle.is-on { fill: #af8e55; }
 .zhaowu-wheel-node.is-metal .zhaowu-wheel-dots circle.is-on { fill: #c2a25b; }
-.zhaowu-wheel-node.is-water .zhaowu-wheel-dots circle.is-on { fill: #4382a0; }
+.zhaowu-wheel-node.is-water .zhaowu-wheel-dots circle.is-on { fill: #827361; }
 
 .zhaowu-element-bars { display: grid; gap: 11px; margin-top: 6px; }
 .zhaowu-element-bar {
@@ -6926,7 +6926,7 @@ body::before {
 .zhaowu-element-judgement > div {
   min-width: 0;
   border: 1px solid rgba(128, 103, 66, .16);
-  border-radius: 14px;
+  border-radius: 3px;
   padding: 13px;
   background: rgba(238, 233, 222, .52);
 }
@@ -6934,7 +6934,7 @@ body::before {
 .zhaowu-element-judgement b { display: block; margin-top: 6px; overflow-wrap: anywhere; font-family: var(--font-display, serif); font-size: 16px; line-height: 1.5; }
 .zhaowu-visual-note {
   margin: 14px 0 0;
-  border-left: 2px solid rgba(53, 94, 80, .5);
+  border-left: 2px solid rgba(81, 74, 66, .5);
   padding-left: 11px;
   color: #686a62;
   font-size: 14px;
@@ -6944,12 +6944,12 @@ body::before {
 .zhaowu-visual-watermark { margin: 13px 2px -2px; color: rgba(76, 59, 40, .38); font-size: 13px; font-weight: 700; letter-spacing: .08em; text-align: right; }
 
 @media (max-width: 430px) {
-  .zhaowu-visual-book { margin: 0 18px 32px; padding: 18px; border-radius: 19px; }
+  .zhaowu-visual-book { margin: 0 18px 32px; padding: 18px; border-radius: 3px; }
   .zhaowu-visual-book-head h4 { font-size: 26px; }
   .zhaowu-visual-book-head > span { font-size: 16px; line-height: 1.72; }
   .zhaowu-visual-tabs { margin-top: 15px; }
   .zhaowu-visual-tabs button { min-height: 44px; padding-inline: 13px; font-size: 14px; }
-  .zhaowu-visual-card { padding: 18px; border-radius: 17px; }
+  .zhaowu-visual-card { padding: 18px; border-radius: 3px; }
   .zhaowu-visual-card-title h5,
   .zhaowu-visual-overview h5 { font-size: 22px; }
   .zhaowu-visual-summary { font-size: 17px; line-height: 1.8; }
@@ -6978,7 +6978,7 @@ body::before {
   padding: 18px;
   overflow: hidden;
   border: 1px solid rgba(154, 111, 60, .24);
-  border-radius: 20px;
+  border-radius: 3px;
   background:
     linear-gradient(145deg, rgba(244, 233, 212, .62), transparent 44%),
     linear-gradient(180deg, rgba(252, 247, 236, .98), rgba(246, 236, 217, .97));
@@ -7036,7 +7036,7 @@ body::before {
   min-width: 0;
   min-height: 126px;
   border: 1px solid rgba(143, 109, 67, .22);
-  border-radius: 14px;
+  border-radius: 3px;
   padding: 13px;
   background: rgba(255, 251, 242, .76);
 }
@@ -7122,7 +7122,7 @@ body::before {
   min-height: 112px;
   scroll-snap-align: start;
   border: 1px solid rgba(143,109,67,.2);
-  border-radius: 13px;
+  border-radius: 3px;
   padding: 13px 10px 10px;
   background: rgba(250,243,229,.86);
 }
@@ -7139,11 +7139,11 @@ body::before {
 }
 
 .zhaowu-luck-period.is-current {
-  border-color: rgba(64,93,78,.55);
+  border-color: rgba(84, 79, 73,.55);
   background: linear-gradient(180deg, rgba(227,237,228,.88), rgba(248,242,229,.94));
 }
 
-.zhaowu-luck-period.is-current > i { border-color: #405d4e; background: #405d4e; }
+.zhaowu-luck-period.is-current > i { border-color: #544f49; background: #544f49; }
 .zhaowu-luck-period b {
   display: block;
   color: #302b25;
@@ -7166,9 +7166,9 @@ body::before {
 .zhaowu-luck-period em {
   display: inline-block;
   margin-top: 8px;
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 3px 7px;
-  background: #405d4e;
+  background: #544f49;
   color: #fff8ec;
   font-size: 7px;
   font-style: normal;
@@ -7179,7 +7179,7 @@ body::before {
 .zhaowu-luck-unavailable {
   margin-top: 10px;
   border: 1px dashed rgba(143,109,67,.25);
-  border-radius: 12px;
+  border-radius: 3px;
   padding: 13px;
   background: rgba(255,250,241,.56);
 }
@@ -7192,7 +7192,7 @@ body::before {
 
 .zhaowu-luck-boundary {
   margin: 12px 0 0;
-  border-left: 2px solid rgba(69,93,77,.46);
+  border-left: 2px solid rgba(85, 81, 77,.46);
   padding-left: 9px;
   color: #716354;
   font-size: 9.5px;
@@ -7209,7 +7209,7 @@ body::before {
 }
 
 @media (max-width: 430px) {
-  .zhaowu-luck-book { margin: 0 0 19px; padding: 14px; border-radius: 17px; }
+  .zhaowu-luck-book { margin: 0 0 19px; padding: 14px; border-radius: 3px; }
   .zhaowu-luck-head h4 { font-size: 1.28rem; }
   .zhaowu-luck-head > span { font-size: 10.8px; line-height: 1.68; }
   .zhaowu-luck-current-card { min-height: 118px; padding: 11px; }
@@ -7229,7 +7229,7 @@ body::before {
   padding: 18px;
   overflow: hidden;
   border: 1px solid rgba(154,111,60,.24);
-  border-radius: 20px;
+  border-radius: 3px;
   background:
     radial-gradient(circle at 12% 8%, rgba(146,113,69,.08), transparent 30%),
     linear-gradient(180deg, rgba(252,247,236,.98), rgba(246,236,217,.97));
@@ -7268,9 +7268,9 @@ body::before {
   margin: 16px auto 0;
   overflow: hidden;
   border: 1px solid rgba(143,109,67,.28);
-  border-radius: 17px;
+  border-radius: 3px;
   background: #eadfc9;
-  box-shadow: 0 12px 28px rgba(76,57,34,.09);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .zhaowu-share-preview img {
@@ -7329,7 +7329,7 @@ body::before {
 
 .zhaowu-share-actions button {
   min-height: 43px;
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 9px 17px;
   font-size: 11px;
   font-weight: 700;
@@ -7338,8 +7338,8 @@ body::before {
 .zhaowu-share-actions button:disabled { opacity: .55; }
 
 .zhaowu-share-primary {
-  border: 1px solid #26352d;
-  background: #2f493d;
+  border: 1px solid #302e2b;
+  background: #413c37;
   color: #fff8ed;
 }
 
@@ -7368,7 +7368,7 @@ body::before {
 }
 
 @media (max-width: 430px) {
-  .zhaowu-share-card-panel { margin: 0 0 19px; padding: 14px; border-radius: 17px; }
+  .zhaowu-share-card-panel { margin: 0 0 19px; padding: 14px; border-radius: 3px; }
   .zhaowu-share-card-panel > header h4 { font-size: 1.28rem; }
   .zhaowu-share-card-panel > header span { font-size: 10.8px; line-height: 1.68; }
   .zhaowu-share-preview,
@@ -7390,7 +7390,7 @@ body::before {
   --z41-muted: #777064;
   --z41-line: rgba(108, 89, 57, .20);
   --z41-gold: #b59a68;
-  --z41-jade: #254b3e;
+  --z41-jade: #4a4035;
   --z41-red: #9f342b;
 }
 
@@ -7423,7 +7423,7 @@ body::before {
 }
 
 .zhaowu-site-header nav a[href="/login"] {
-  border-radius: 10px !important;
+  border-radius: 3px !important;
   padding-inline: 14px !important;
   background: var(--z41-jade) !important;
 }
@@ -7454,7 +7454,7 @@ body::before {
 .zhaowu-app-frame section.seal-border,
 .zhaowu-app-frame .zhaowu-tool-card {
   border: 1px solid var(--z41-line) !important;
-  border-radius: 14px !important;
+  border-radius: 3px !important;
   background: var(--z41-paper) !important;
   background-image: none !important;
   box-shadow: 0 8px 24px rgba(60, 48, 31, .045) !important;
@@ -7477,7 +7477,7 @@ body::before {
 
 #birth-form button[type="submit"] {
   min-height: 48px !important;
-  border-radius: 10px !important;
+  border-radius: 3px !important;
   background: var(--z41-jade) !important;
   box-shadow: none !important;
 }
@@ -7550,7 +7550,7 @@ body::before {
 /* Fun tests and lower sections use the same editorial rhythm. */
 .zhaowu-app-frame > main > section.rounded-2xl {
   border: 1px solid var(--z41-line) !important;
-  border-radius: 14px !important;
+  border-radius: 3px !important;
   background: var(--z41-paper) !important;
   box-shadow: 0 8px 24px rgba(60,48,31,.045) !important;
 }
@@ -7573,9 +7573,9 @@ body::before {
   margin: 0 auto !important;
   padding: 30px 22px 22px !important;
   border: 1px solid var(--z41-line) !important;
-  border-radius: 14px !important;
+  border-radius: 3px !important;
   background: var(--z41-paper-2) !important;
-  box-shadow: 0 16px 42px rgba(60,48,31,.07) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
@@ -7644,8 +7644,8 @@ body::before {
 }
 
 .zhaowu-login-shell .stone-login-form input:focus {
-  border-color: rgba(37,75,62,.75) !important;
-  outline: 2px solid rgba(37,75,62,.10) !important;
+  border-color: rgba(74,64,53,.75) !important;
+  outline: 2px solid rgba(74,64,53,.10) !important;
   outline-offset: 1px !important;
 }
 
@@ -7654,7 +7654,7 @@ body::before {
   min-height: 50px !important;
   margin-top: 3px !important;
   border: 0 !important;
-  border-radius: 10px !important;
+  border-radius: 3px !important;
   background: var(--z41-jade) !important;
   color: #fffaf1 !important;
   box-shadow: none !important;
@@ -7733,8 +7733,8 @@ body::before {
   --r47-ink: #2d2a24;
   --r47-ink-soft: #665f53;
   --r47-ink-mute: #897e6d;
-  --r47-jade: #315f50;
-  --r47-jade-deep: #264d42;
+  --r47-jade: #4a4035;
+  --r47-jade-deep: #352e26;
   --r47-cinnabar: #a64333;
   --r47-gold: #9a7444;
   --r47-line: rgba(139, 99, 55, .24);
@@ -7746,8 +7746,8 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
   border-bottom-color: rgba(133, 97, 55, .18) !important;
   background: rgba(242, 232, 212, .86) !important;
   box-shadow: 0 9px 30px rgba(70, 50, 29, .035) !important;
-  backdrop-filter: blur(12px) saturate(105%) !important;
-  -webkit-backdrop-filter: blur(12px) saturate(105%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 body:has(.zhaowu-home-layout) .zhaowu-site-header .bg-wood {
@@ -7768,13 +7768,13 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header [role="group"] {
 /* Daily card becomes warm paper rather than a cool grey app card. */
 .zhaowu-home-layout .zhaowu-daily-almanac {
   border-color: rgba(142, 105, 64, .24) !important;
-  border-radius: 30px !important;
+  border-radius: 3px !important;
   color: var(--r47-ink) !important;
   background:
-    radial-gradient(circle at 89% 12%, rgba(91, 126, 105, .16), transparent 28%),
+    radial-gradient(circle at 89% 12%, rgba(115, 109, 102, .16), transparent 28%),
     radial-gradient(circle at 8% 86%, rgba(171, 111, 70, .08), transparent 34%),
     linear-gradient(145deg, rgba(250, 244, 232, .94), rgba(232, 217, 190, .88)) !important;
-  box-shadow: 0 20px 48px rgba(78, 57, 33, .075), inset 0 0 0 1px rgba(255,255,255,.28) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 .zhaowu-home-layout .zhaowu-daily-almanac::before {
@@ -7811,14 +7811,14 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header [role="group"] {
 }
 
 .zhaowu-home-layout .zhaowu-daily-list li::before {
-  background: rgba(49, 95, 80, .72) !important;
+  background: rgba(74, 64, 53, .72) !important;
 }
 
 .zhaowu-home-layout .zhaowu-daily-cta {
-  border-color: rgba(49, 95, 80, .24) !important;
+  border-color: rgba(74, 64, 53, .24) !important;
   color: #fff9ec !important;
   background: linear-gradient(180deg, var(--r47-jade), var(--r47-jade-deep)) !important;
-  box-shadow: 0 8px 18px rgba(38, 77, 66, .11) !important;
+  box-shadow: 0 1px 3px rgba(55, 44, 29, .11) !important;
 }
 
 .zhaowu-home-layout .zhaowu-daily-cta b {
@@ -7830,14 +7830,14 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header [role="group"] {
   position: relative;
   overflow: hidden;
   border: 1px solid var(--r47-line) !important;
-  border-radius: 28px !important;
+  border-radius: 3px !important;
   padding: 28px 24px !important;
   background:
     linear-gradient(180deg, rgba(255, 249, 238, .24), rgba(232, 216, 188, .09)),
     var(--r47-paper) !important;
-  box-shadow: 0 16px 42px rgba(74, 53, 30, .055), inset 0 0 0 1px rgba(255,255,255,.18) !important;
-  backdrop-filter: blur(1px) saturate(101%) !important;
-  -webkit-backdrop-filter: blur(1px) saturate(101%) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-home-layout #birth-form::before {
@@ -7845,7 +7845,7 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header [role="group"] {
   position: absolute;
   inset: 11px;
   border: 1px solid rgba(143, 103, 59, .10);
-  border-radius: 20px;
+  border-radius: 3px;
   pointer-events: none;
 }
 
@@ -7890,30 +7890,30 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header [role="group"] {
 
 .zhaowu-home-layout #birth-form textarea {
   min-height: 9.5rem !important;
-  border-radius: 18px !important;
+  border-radius: 3px !important;
   font-size: 1rem !important;
   line-height: 1.75 !important;
 }
 
 .zhaowu-home-layout #birth-form input,
 .zhaowu-home-layout #birth-form select {
-  border-radius: 13px !important;
+  border-radius: 3px !important;
 }
 
 .zhaowu-home-layout #birth-form textarea:focus,
 .zhaowu-home-layout #birth-form input:focus,
 .zhaowu-home-layout #birth-form select:focus {
-  border-color: rgba(49, 95, 80, .62) !important;
-  box-shadow: 0 0 0 3px rgba(49, 95, 80, .075) !important;
+  border-color: rgba(74, 64, 53, .62) !important;
+  box-shadow: 0 0 0 3px rgba(74, 64, 53, .075) !important;
 }
 
 .zhaowu-home-layout #birth-form button[type="submit"] {
   min-height: 52px !important;
-  border: 1px solid rgba(38, 77, 66, .76) !important;
-  border-radius: 16px !important;
-  background: linear-gradient(180deg, #386c5b, var(--r47-jade-deep)) !important;
+  border: 1px solid rgba(74, 64, 53, .76) !important;
+  border-radius: 3px !important;
+  background: linear-gradient(180deg, #5a5044, var(--r47-jade-deep)) !important;
   color: #fff9ec !important;
-  box-shadow: 0 10px 22px rgba(38, 77, 66, .13) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
   font-weight: 720 !important;
   letter-spacing: .08em;
 }
@@ -7922,9 +7922,9 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header [role="group"] {
 .zhaowu-home-layout .zhaowu-home-portals-block,
 .zhaowu-home-layout .zhaowu-home-fun-section {
   border-color: var(--r47-line) !important;
-  border-radius: 24px !important;
+  border-radius: 3px !important;
   background: rgba(246, 235, 214, .48) !important;
-  box-shadow: 0 11px 28px rgba(74, 53, 30, .04) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 .zhaowu-home-layout .zhaowu-home-portals-heading,
@@ -7957,7 +7957,7 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header [role="group"] {
 .zhaowu-home-layout .zhaowu-home-portal:hover,
 .zhaowu-home-layout .zhaowu-home-fun-card:hover {
   transform: translateY(-1px);
-  border-color: rgba(49, 95, 80, .30) !important;
+  border-color: rgba(74, 64, 53, .30) !important;
   background: rgba(252, 244, 228, .62) !important;
 }
 
@@ -7976,7 +7976,7 @@ body:has(.zhaowu-home-layout) footer {
 
   .zhaowu-home-layout .zhaowu-daily-almanac {
     min-height: 438px !important;
-    border-radius: 24px !important;
+    border-radius: 3px !important;
     padding: 22px 18px 18px !important;
   }
 
@@ -7995,13 +7995,13 @@ body:has(.zhaowu-home-layout) footer {
   }
 
   .zhaowu-home-layout #birth-form {
-    border-radius: 23px !important;
+    border-radius: 3px !important;
     padding: 22px 17px !important;
   }
 
   .zhaowu-home-layout #birth-form::before {
     inset: 8px;
-    border-radius: 17px;
+    border-radius: 3px;
   }
 
   .zhaowu-home-layout #birth-form input,
@@ -8012,13 +8012,13 @@ body:has(.zhaowu-home-layout) footer {
 
   .zhaowu-home-layout .zhaowu-home-portals-block,
   .zhaowu-home-layout .zhaowu-home-fun-section {
-    border-radius: 20px !important;
+    border-radius: 3px !important;
     padding: 16px !important;
   }
 
   .zhaowu-home-layout .zhaowu-home-portal,
   .zhaowu-home-layout .zhaowu-home-fun-card {
-    border-radius: 15px !important;
+    border-radius: 3px !important;
   }
 }
 
@@ -8030,7 +8030,7 @@ body:has(.zhaowu-home-layout) footer {
 }
 
 /* ─── daily-spirit-slip-r52.css ─── */
-.zhaowu-slip-gate{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px;border-top:1px solid rgba(72,72,66,.12);padding-top:12px}.zhaowu-slip-gate p{margin:0;max-width:34rem;color:#696861;font-size:11px;line-height:1.65}.zhaowu-slip-gate a{flex:0 0 auto;color:#8f342a;font-size:11px;font-weight:700}.zhaowu-spirit-slip{position:relative;width:min(100%,760px);margin:18px auto 0;padding:34px 30px 28px;overflow:hidden;border:1px solid rgba(112,102,87,.16);border-radius:28px;background:linear-gradient(180deg,#f8f8f6,#eeeeec 72%,#f6f6f4);box-shadow:0 24px 58px rgba(45,43,39,.12);color:#4c4c48;text-align:center}.zhaowu-spirit-slip:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 78% 16%,rgba(205,189,159,.2),transparent 26%),radial-gradient(circle at 16% 74%,rgba(183,198,188,.12),transparent 31%)}.zhaowu-spirit-slip>*{position:relative;z-index:1}.zhaowu-spirit-slip-close{position:absolute;right:16px;top:14px;z-index:3;width:40px;height:40px;border:1px solid rgba(255,255,255,.8);border-radius:50%;background:#ffffff85;color:#52524e;font-size:25px;line-height:1}.zhaowu-spirit-slip-art{width:min(52%,300px);aspect-ratio:1.18/1;margin:8px auto 24px;overflow:hidden;border:10px solid rgba(50,47,41,.84);background:#ece8df;clip-path:polygon(24% 0,76% 0,76% 15%,91% 15%,91% 38%,100% 38%,100% 64%,91% 64%,91% 86%,76% 86%,76% 100%,24% 100%,24% 86%,9% 86%,9% 64%,0 64%,0 38%,9% 38%,9% 15%,24% 15%)}.zhaowu-spirit-slip-art img{width:100%;height:100%;object-fit:cover;filter:saturate(.82) contrast(.96)}.zhaowu-spirit-slip-art.is-empty{display:grid;place-items:center;color:#766a5a;font-family:var(--font-display,serif);font-size:2rem;letter-spacing:.12em}.zhaowu-spirit-slip-kicker{margin:0;color:#a33d2f;font-family:var(--font-display,serif);font-size:1.1rem;letter-spacing:.08em}.zhaowu-spirit-slip h2{margin:18px 0 0;color:#555551;font-family:var(--font-display,serif);font-size:clamp(2.15rem,6vw,3.35rem);font-weight:500;line-height:1.15;letter-spacing:.08em}.zhaowu-spirit-slip-copy{max-width:650px;margin:30px auto 0;text-align:left}.zhaowu-spirit-slip-copy p{margin:0;color:#555550;font-size:16px;line-height:1.95}.zhaowu-spirit-slip-copy p+p{margin-top:16px}.zhaowu-spirit-slip-copy strong{font-weight:700}.zhaowu-spirit-slip-rule{width:min(72%,560px);height:1px;margin:38px auto 18px;background:rgba(91,90,84,.18)}.zhaowu-spirit-slip-basis{margin:0;color:#776f64;font-size:11px;line-height:1.6}.zhaowu-spirit-slip-mark{margin:10px 0 0;color:#55504a;font-size:10px;font-weight:700;letter-spacing:.12em}@media(max-width:560px){.zhaowu-spirit-slip{border-radius:24px;padding:28px 20px 24px}.zhaowu-spirit-slip-art{width:min(68%,270px);margin-top:12px}.zhaowu-spirit-slip h2{font-size:2.15rem}.zhaowu-spirit-slip-copy{margin-top:26px}.zhaowu-spirit-slip-copy p{font-size:14.5px;line-height:1.9}.zhaowu-slip-gate{align-items:flex-start;flex-direction:column}.zhaowu-slip-gate a{align-self:flex-end}}
+.zhaowu-slip-gate{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px;border-top:1px solid rgba(72,72,66,.12);padding-top:12px}.zhaowu-slip-gate p{margin:0;max-width:34rem;color:#696861;font-size:11px;line-height:1.65}.zhaowu-slip-gate a{flex:0 0 auto;color:#8f342a;font-size:11px;font-weight:700}.zhaowu-spirit-slip{position:relative;width:min(100%,760px);margin:18px auto 0;padding:34px 30px 28px;overflow:hidden;border:1px solid rgba(112,102,87,.16);border-radius: 3px;background:linear-gradient(180deg,#f8f8f6,#eeeeec 72%,#f6f6f4);box-shadow: 0 1px 3px rgba(55,44,29,.06);color:#4c4c48;text-align:center}.zhaowu-spirit-slip:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 78% 16%,rgba(205,189,159,.2),transparent 26%),radial-gradient(circle at 16% 74%,rgba(183,198,188,.12),transparent 31%)}.zhaowu-spirit-slip>*{position:relative;z-index:1}.zhaowu-spirit-slip-close{position:absolute;right:16px;top:14px;z-index:3;width:40px;height:40px;border:1px solid rgba(255,255,255,.8);border-radius:50%;background:#ffffff85;color:#52524e;font-size:25px;line-height:1}.zhaowu-spirit-slip-art{width:min(52%,300px);aspect-ratio:1.18/1;margin:8px auto 24px;overflow:hidden;border:10px solid rgba(50,47,41,.84);background:#ece8df;clip-path:polygon(24% 0,76% 0,76% 15%,91% 15%,91% 38%,100% 38%,100% 64%,91% 64%,91% 86%,76% 86%,76% 100%,24% 100%,24% 86%,9% 86%,9% 64%,0 64%,0 38%,9% 38%,9% 15%,24% 15%)}.zhaowu-spirit-slip-art img{width:100%;height:100%;object-fit:cover;filter:saturate(.82) contrast(.96)}.zhaowu-spirit-slip-art.is-empty{display:grid;place-items:center;color:#766a5a;font-family:var(--font-display,serif);font-size:2rem;letter-spacing:.12em}.zhaowu-spirit-slip-kicker{margin:0;color:#a33d2f;font-family:var(--font-display,serif);font-size:1.1rem;letter-spacing:.08em}.zhaowu-spirit-slip h2{margin:18px 0 0;color:#555551;font-family:var(--font-display,serif);font-size:clamp(2.15rem,6vw,3.35rem);font-weight:500;line-height:1.15;letter-spacing:.08em}.zhaowu-spirit-slip-copy{max-width:650px;margin:30px auto 0;text-align:left}.zhaowu-spirit-slip-copy p{margin:0;color:#555550;font-size:16px;line-height:1.95}.zhaowu-spirit-slip-copy p+p{margin-top:16px}.zhaowu-spirit-slip-copy strong{font-weight:700}.zhaowu-spirit-slip-rule{width:min(72%,560px);height:1px;margin:38px auto 18px;background:rgba(91,90,84,.18)}.zhaowu-spirit-slip-basis{margin:0;color:#776f64;font-size:11px;line-height:1.6}.zhaowu-spirit-slip-mark{margin:10px 0 0;color:#55504a;font-size:10px;font-weight:700;letter-spacing:.12em}@media(max-width:560px){.zhaowu-spirit-slip{border-radius: 3px;padding:28px 20px 24px}.zhaowu-spirit-slip-art{width:min(68%,270px);margin-top:12px}.zhaowu-spirit-slip h2{font-size:2.15rem}.zhaowu-spirit-slip-copy{margin-top:26px}.zhaowu-spirit-slip-copy p{font-size:14.5px;line-height:1.9}.zhaowu-slip-gate{align-items:flex-start;flex-direction:column}.zhaowu-slip-gate a{align-self:flex-end}}
 
 /* ─── home-background-visibility-r55.css ─── */
 /* ZHAOWU r55 home background visibility lock.
@@ -8054,19 +8054,19 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper .zhaowu-home-app-frame {
 
 body:has(.zhaowu-home-layout) .zhaowu-site-header {
   background: rgba(242, 232, 212, .68) !important;
-  backdrop-filter: blur(7px) saturate(106%) !important;
-  -webkit-backdrop-filter: blur(7px) saturate(106%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 /* Daily slip: still a defined paper object, but no longer an opaque wall over the artwork. */
 .zhaowu-home-layout .zhaowu-daily-almanac {
   background:
-    radial-gradient(circle at 89% 12%, rgba(91, 126, 105, .12), transparent 30%),
+    radial-gradient(circle at 89% 12%, rgba(115, 109, 102, .12), transparent 30%),
     radial-gradient(circle at 8% 86%, rgba(171, 111, 70, .055), transparent 36%),
     linear-gradient(145deg, rgba(250, 244, 232, .57), rgba(232, 217, 190, .48)) !important;
-  box-shadow: 0 16px 38px rgba(66, 48, 29, .065), inset 0 0 0 1px rgba(255,255,255,.22) !important;
-  backdrop-filter: blur(.75px) saturate(102%) !important;
-  -webkit-backdrop-filter: blur(.75px) saturate(102%) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 /* Main BaZi paper: thin xuan-paper instead of the former 0.78 opacity surface. */
@@ -8074,9 +8074,9 @@ body:has(.zhaowu-home-layout) .zhaowu-site-header {
   background:
     linear-gradient(180deg, rgba(255, 249, 238, .13), rgba(232, 216, 188, .055)),
     rgba(246, 236, 216, .54) !important;
-  box-shadow: 0 14px 34px rgba(74, 53, 30, .05), inset 0 0 0 1px rgba(255,255,255,.15) !important;
-  backdrop-filter: blur(.65px) saturate(101%) !important;
-  -webkit-backdrop-filter: blur(.65px) saturate(101%) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 /* Typing controls keep enough paper body for iPhone legibility. */
@@ -8094,8 +8094,8 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 .zhaowu-home-layout .zhaowu-home-fun-section {
   background: rgba(246, 235, 214, .40) !important;
   box-shadow: 0 9px 24px rgba(74, 53, 30, .035) !important;
-  backdrop-filter: blur(.55px) saturate(101%) !important;
-  -webkit-backdrop-filter: blur(.55px) saturate(101%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-home-layout .zhaowu-home-portal,
@@ -8114,8 +8114,8 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 .zhaowu-home-layout .zhaowu-home-stage--notes > div {
   background: rgba(249, 241, 225, .47) !important;
   background-image: none !important;
-  backdrop-filter: blur(.65px) saturate(101%) !important;
-  -webkit-backdrop-filter: blur(.65px) saturate(101%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zhaowu-home-layout #auspicious-atlas article,
@@ -8143,7 +8143,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 
   .zhaowu-home-layout .zhaowu-daily-almanac {
     background:
-      radial-gradient(circle at 89% 12%, rgba(91, 126, 105, .12), transparent 30%),
+      radial-gradient(circle at 89% 12%, rgba(115, 109, 102, .12), transparent 30%),
       radial-gradient(circle at 8% 86%, rgba(171, 111, 70, .055), transparent 36%),
       linear-gradient(145deg, rgba(250, 244, 232, .60), rgba(232, 217, 190, .52)) !important;
   }
@@ -8179,7 +8179,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 .zhaowu-quiz-sheet select,
 .zhaowu-quiz-sheet textarea {
   border: 1px solid rgba(142, 112, 72, 0.28) !important;
-  border-radius: 14px !important;
+  border-radius: 3px !important;
   background:
     linear-gradient(180deg, rgba(255, 252, 246, 0.96), rgba(248, 241, 226, 0.92)) !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
@@ -8198,7 +8198,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   margin: 14px 0 4px;
   padding: 12px 14px;
   border: 1px solid rgba(142, 112, 72, 0.18);
-  border-radius: 14px;
+  border-radius: 3px;
   background: rgba(255, 250, 241, 0.72);
 }
 
@@ -8293,7 +8293,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   margin: 0 0 18px;
   padding: 14px 16px;
   border: 1px solid rgba(142, 112, 72, 0.2);
-  border-radius: 14px;
+  border-radius: 3px;
   background: rgba(255, 250, 241, 0.8);
   color: #5c4632;
   font-size: 13px;
@@ -8319,7 +8319,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   place-items: center;
   padding: 8px 10px;
   border: 1px solid rgba(142, 112, 72, 0.2);
-  border-radius: 12px;
+  border-radius: 3px;
   background: rgba(255, 250, 241, 0.66);
   color: #5c4632;
   font-size: 12px;
@@ -8381,11 +8381,11 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(139, 99, 55, .25);
-  border-radius: 24px;
+  border-radius: 3px;
   background:
     linear-gradient(180deg, rgba(255, 251, 242, .58), rgba(237, 222, 194, .18)),
     rgba(247, 237, 218, .82);
-  box-shadow: 0 14px 36px rgba(70, 51, 29, .07), inset 0 0 0 1px rgba(255, 255, 255, .28);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .zhaowu-question-sheet {
@@ -8445,7 +8445,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   min-height: 126px;
   margin-top: 8px;
   border: 1px solid rgba(127, 96, 57, .34);
-  border-radius: 16px;
+  border-radius: 3px;
   padding: 14px 15px;
   color: #2d2923;
   background: rgba(255, 251, 242, .88);
@@ -8456,8 +8456,8 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 }
 
 .zhaowu-question-sheet textarea:focus {
-  border-color: rgba(49, 95, 80, .7);
-  box-shadow: 0 0 0 3px rgba(49, 95, 80, .09);
+  border-color: rgba(74, 64, 53, .7);
+  box-shadow: 0 0 0 3px rgba(80, 73, 64, .09);
 }
 
 .zhaowu-question-count {
@@ -8470,9 +8470,9 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 
 .zhaowu-bazi-hub {
   padding: 26px 22px 22px;
-  border-color: rgba(49, 95, 80, .28);
+  border-color: rgba(80, 73, 64, .28);
   background:
-    radial-gradient(circle at 90% 5%, rgba(73, 111, 87, .11), transparent 28%),
+    radial-gradient(circle at 90% 5%, rgba(99, 92, 85, .11), transparent 28%),
     linear-gradient(180deg, rgba(255, 251, 242, .62), rgba(233, 221, 197, .18)),
     rgba(247, 237, 218, .84);
 }
@@ -8482,7 +8482,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   position: absolute;
   right: -.35rem;
   bottom: -1.2rem;
-  color: rgba(49, 95, 80, .05);
+  color: rgba(80, 73, 64, .05);
   font-family: var(--font-display, serif);
   font-size: clamp(5rem, 18vw, 9rem);
   line-height: 1;
@@ -8513,10 +8513,10 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  border: 1px solid rgba(49, 95, 80, .38);
-  border-radius: 999px;
+  border: 1px solid rgba(80, 73, 64, .38);
+  border-radius: 3px;
   padding: 0 13px;
-  color: #315f50;
+  color: #4a4035;
   background: rgba(255, 251, 242, .72);
   font-size: 11px;
   font-weight: 700;
@@ -8529,7 +8529,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   display: grid;
   gap: 6px;
   margin-top: 17px;
-  border-left: 3px solid rgba(49, 95, 80, .62);
+  border-left: 3px solid rgba(80, 73, 64, .62);
   padding: 11px 14px;
   background: rgba(235, 241, 231, .52);
 }
@@ -8548,7 +8548,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 .zhaowu-method-birth-ready strong,
 .dual-shared-birth-record strong,
 .tianji-shared-birth-record strong {
-  color: #2f4638;
+  color: #3f3b36;
   font-family: var(--font-display, serif);
   font-size: 15px;
   line-height: 1.55;
@@ -8601,7 +8601,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   min-width: 0;
   min-height: 48px;
   border: 1px solid rgba(127, 96, 57, .32);
-  border-radius: 12px;
+  border-radius: 3px;
   padding: 0 12px;
   color: #2d2923;
   background: rgba(255, 251, 242, .88);
@@ -8639,7 +8639,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 
 .zhaowu-bazi-preview {
   margin-top: 20px;
-  border-top: 1px solid rgba(49, 95, 80, .18);
+  border-top: 1px solid rgba(80, 73, 64, .18);
   padding-top: 18px;
 }
 
@@ -8678,13 +8678,13 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   min-width: 9.5rem;
   min-height: 50px;
   border: 0;
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 0 20px;
   color: #fff9ee;
-  background: linear-gradient(180deg, #386c5b, #264d42);
+  background: linear-gradient(180deg, #5b5349, #403a33);
   font-size: 14px;
   font-weight: 720;
-  box-shadow: 0 10px 22px rgba(38, 77, 66, .16);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .zhaowu-analysis-submit-wrap button:disabled { opacity: .55; }
@@ -8761,7 +8761,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 @media (max-width: 560px) {
   .zhaowu-analysis-flow { gap: 14px; }
   .zhaowu-question-sheet,
-  .zhaowu-bazi-hub { border-radius: 20px; }
+  .zhaowu-bazi-hub { border-radius: 3px; }
   .zhaowu-question-sheet { padding: 20px 16px 17px; }
   .zhaowu-bazi-hub { padding: 21px 16px 18px; }
   .zhaowu-bazi-head { display: block; }
@@ -8811,19 +8811,19 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 /* ─── daily-almanac-r69.css ─── */
 /* R130 — 今日指引：宣紙 × 深墨綠 × 淡金，手機優先。 */
 .zhaowu-home-layout .zhaowu-today-guide {
-  --tg-green: #173f35;
-  --tg-green-2: #214b40;
-  --tg-ink: #233833;
+  --tg-green: #322b24;
+  --tg-green-2: #3d362f;
+  --tg-ink: #312e2a;
   --tg-paper: #f5f0e4;
   --tg-gold: #b99a62;
   --tg-red: #a7473d;
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(164,132,74,.48);
-  border-radius: 24px;
+  border-radius: 3px;
   color: #f5f0e4;
-  background: radial-gradient(circle at 84% 18%, rgba(213,190,132,.12), transparent 28%), #173f35;
-  box-shadow: 0 18px 42px rgba(35,45,38,.13), inset 0 0 0 1px rgba(255,255,255,.025);
+  background: radial-gradient(circle at 84% 18%, rgba(213,190,132,.12), transparent 28%), #322b24;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .zhaowu-home-layout .zhaowu-today-guide::after {
@@ -8877,7 +8877,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   height: 44px;
   place-items: center;
   border: 1px solid rgba(226,198,137,.75);
-  border-radius: 999px;
+  border-radius: 3px;
   color: #f3dfab;
   background: rgba(8,35,29,.26);
   box-shadow: none;
@@ -8910,16 +8910,16 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   min-height: 100px;
   padding: 14px 14px 13px;
   border: 1px solid rgba(185,154,98,.48);
-  border-radius: 15px;
+  border-radius: 3px;
   color: var(--tg-ink);
   background: linear-gradient(rgba(255,253,247,.95),rgba(247,242,230,.95)), var(--tg-paper);
   box-shadow: inset 0 1px rgba(255,255,255,.8);
 }
 .zhaowu-home-layout .zhaowu-today-card small { display:block; margin-bottom:7px; color:#7f6b48; font-size:12px; font-weight:700; letter-spacing:.08em; }
-.zhaowu-home-layout .zhaowu-today-card > strong { display:block; color:#263c35; font-family:var(--font-display, "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif); font-size:16px; font-weight:600; line-height:1.5; }
+.zhaowu-home-layout .zhaowu-today-card > strong { display:block; color:#35312d; font-family:var(--font-display, "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif); font-size:16px; font-weight:600; line-height:1.5; }
 .zhaowu-home-layout .zhaowu-today-card > span { display:block; margin-top:6px; color:#6c756f; font-size:12px; line-height:1.55; }
 .zhaowu-home-layout .zhaowu-today-card.is-date strong { font-size:21px; }
-.zhaowu-home-layout .zhaowu-today-card.is-date span { color:#2f6b5a; font-size:18px; font-weight:650; }
+.zhaowu-home-layout .zhaowu-today-card.is-date span { color:#584e43; font-size:18px; font-weight:650; }
 .zhaowu-home-layout .zhaowu-today-card.is-sacred,
 .zhaowu-home-layout .zhaowu-today-card.is-pillars,
 .zhaowu-home-layout .zhaowu-today-card.is-core,
@@ -8934,22 +8934,22 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   gap: 7px;
   font-family: var(--font-display, "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
 }
-.zhaowu-home-layout .zhaowu-today-pillars > span { display:flex; min-width:0; flex-direction:column; align-items:center; padding:9px 4px; border:1px solid rgba(40,68,58,.12); border-radius:10px; background:rgba(236,231,216,.55); }
-.zhaowu-home-layout .zhaowu-today-pillars b { color:#224a3d; font-size:19px; font-weight:650; white-space:nowrap; }
+.zhaowu-home-layout .zhaowu-today-pillars > span { display:flex; min-width:0; flex-direction:column; align-items:center; padding:9px 4px; border:1px solid rgba(59, 54, 49,.12); border-radius: 3px; background:rgba(236,231,216,.55); }
+.zhaowu-home-layout .zhaowu-today-pillars b { color:#3d362f; font-size:19px; font-weight:650; white-space:nowrap; }
 .zhaowu-home-layout .zhaowu-today-pillars i { margin-top:4px; color:#8a795c; font-size:9px; font-style:normal; letter-spacing:.12em; }
 .zhaowu-home-layout .zhaowu-daily-pillars [data-pillar="year"] b { color: #b23a2f; }
-.zhaowu-home-layout .zhaowu-daily-pillars [data-pillar="hour"] b { color: #2f6b5a; }
+.zhaowu-home-layout .zhaowu-daily-pillars [data-pillar="hour"] b { color: #584e43; }
 
 .zhaowu-home-layout .zhaowu-today-card.is-guidance p,
-.zhaowu-home-layout .zhaowu-today-card.is-hours p { display:flex; gap:9px; margin:6px 0 0; color:#384a43; font-size:13px; line-height:1.55; }
+.zhaowu-home-layout .zhaowu-today-card.is-hours p { display:flex; gap:9px; margin:6px 0 0; color:#44413e; font-size:13px; line-height:1.55; }
 .zhaowu-home-layout .zhaowu-today-card.is-guidance p b,
-.zhaowu-home-layout .zhaowu-today-card.is-hours p b { min-width:34px; color:#2c6c58; }
+.zhaowu-home-layout .zhaowu-today-card.is-hours p b { min-width:34px; color:#574d41; }
 .zhaowu-home-layout .zhaowu-today-card.is-guidance .is-ji b { color: var(--tg-red); }
 
 .zhaowu-home-layout .zhaowu-today-guide__chips { display:grid; grid-column:1 / -1; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
-.zhaowu-home-layout .zhaowu-today-guide__chips article { min-width:0; padding:12px 10px; border:1px solid rgba(185,154,98,.48); border-radius:13px; background:rgba(249,245,235,.96); }
+.zhaowu-home-layout .zhaowu-today-guide__chips article { min-width:0; padding:12px 10px; border:1px solid rgba(185,154,98,.48); border-radius: 3px; background:rgba(249,245,235,.96); }
 .zhaowu-home-layout .zhaowu-today-guide__chips small { display:block; color:#8a7652; font-size:11px; }
-.zhaowu-home-layout .zhaowu-today-guide__chips strong { display:block; margin-top:5px; color:#253b34; font-size:13px; font-weight:650; line-height:1.5; }
+.zhaowu-home-layout .zhaowu-today-guide__chips strong { display:block; margin-top:5px; color:#34302c; font-size:13px; font-weight:650; line-height:1.5; }
 
 /* 2/3 每日穿衣：直接承接既有 DailyColorsModule，不複製計算邏輯。 */
 .zhaowu-home-layout .zhaowu-today-guide__wardrobe { padding: 0 14px 18px; }
@@ -8957,7 +8957,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   margin: 0 !important;
   padding: 18px !important;
   border: 1px solid rgba(225,198,138,.32) !important;
-  border-radius: 17px !important;
+  border-radius: 3px !important;
   color: #f7f0dd !important;
   background: rgba(8,39,32,.38) !important;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.018) !important;
@@ -8967,7 +8967,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors="embed"] p { color:#f2ead7 !important; }
 .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors="embed"] h2 { color:#f2dfad !important; font-family:"Songti TC","Songti SC","STSong",serif !important; }
 .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-choices] { gap:8px !important; }
-.zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-choices] button { min-height:102px !important; border:1px solid rgba(226,204,159,.22) !important; border-radius:13px !important; color:#f4ecda !important; background:rgba(14,54,45,.74) !important; box-shadow:none !important; }
+.zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-choices] button { min-height:102px !important; border:1px solid rgba(226,204,159,.22) !important; border-radius: 3px !important; color:#f4ecda !important; background:rgba(41, 34, 27,.74) !important; box-shadow:none !important; }
 .zhaowu-home-layout .zhaowu-today-guide__wardrobe [data-daily-colors-choices] button[aria-pressed="true"] { border-color:rgba(241,209,139,.78) !important; background:rgba(95,83,47,.42) !important; }
 /* r217 fix: design-system.css sets strong/small to near-black for the light "embed" variant;
    on this card's near-black-green button background that text was unreadable. Force the
@@ -8978,29 +8978,29 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 .zhaowu-home-layout .zhaowu-today-guide__wardrobe a { color:#f0d89e !important; }
 
 /* 3/3 靈籤：定位為當日反思，不作宿命預測。 */
-.zhaowu-home-layout .zhaowu-today-guide__spirit { display:grid; grid-template-columns:86px minmax(0,1fr); gap:18px; margin:0 14px 18px; padding:20px; border:1px solid rgba(185,154,98,.48); border-radius:17px; color:var(--tg-ink); background:linear-gradient(135deg,rgba(255,252,244,.98),rgba(239,231,211,.96)); }
+.zhaowu-home-layout .zhaowu-today-guide__spirit { display:grid; grid-template-columns:86px minmax(0,1fr); gap:18px; margin:0 14px 18px; padding:20px; border:1px solid rgba(185,154,98,.48); border-radius: 3px; color:var(--tg-ink); background:linear-gradient(135deg,rgba(255,252,244,.98),rgba(239,231,211,.96)); }
 .zhaowu-home-layout .zhaowu-today-slip-mark { display:grid; width:74px; height:150px; place-items:center; border:1px solid rgba(160,72,60,.4); border-radius:8px; color:#9a4038; background:#ead8b8; font-family:var(--font-display, "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif); font-size:34px; box-shadow:inset 0 0 0 5px rgba(255,248,231,.52); }
 .zhaowu-home-layout .zhaowu-today-guide__spirit p { margin:0; color:#7c715e; font-size:12px; }
-.zhaowu-home-layout .zhaowu-today-guide__spirit h3 { margin:7px 0 9px; color:#263d35; font-family:var(--font-display, "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif); font-size:26px; font-weight:600; }
+.zhaowu-home-layout .zhaowu-today-guide__spirit h3 { margin:7px 0 9px; color:#36322d; font-family:var(--font-display, "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif); font-size:26px; font-weight:600; }
 .zhaowu-home-layout .zhaowu-today-guide__spirit strong,
-.zhaowu-home-layout .zhaowu-today-guide__spirit span { display:block; color:#34433d; font-size:13px; line-height:1.65; }
+.zhaowu-home-layout .zhaowu-today-guide__spirit span { display:block; color:#3e3c39; font-size:13px; line-height:1.65; }
 .zhaowu-home-layout .zhaowu-today-guide__spirit span { margin-top:6px; color:#68716b; }
-.zhaowu-home-layout .zhaowu-today-guide__spirit button { margin-top:14px; min-height:44px; border:1px solid rgba(39,78,65,.22); border-radius:999px; padding:0 14px; color:#f7f1df; background:#285a4b; box-shadow:none; font-size:12px; font-weight:650; }
+.zhaowu-home-layout .zhaowu-today-guide__spirit button { margin-top:14px; min-height:44px; border:1px solid rgba(74,64,53,.22); border-radius: 3px; padding:0 14px; color:#f7f1df; background:#4a4035; box-shadow:none; font-size:12px; font-weight:650; }
 
 .zhaowu-home-layout .zhaowu-today-guide__footer { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:11px 18px 14px; border-top:1px solid rgba(213,190,132,.17); }
 .zhaowu-home-layout .zhaowu-today-guide__footer > span { max-width:80%; color:rgba(245,240,228,.58); font-size:11px; line-height:1.5; }
 .zhaowu-home-layout .zhaowu-today-guide__footer > div { display:flex; gap:6px; }
-.zhaowu-home-layout .zhaowu-today-guide__footer button { width:7px; height:7px; padding:0; border:0; border-radius:999px; background:rgba(245,240,228,.28); box-shadow:none; }
+.zhaowu-home-layout .zhaowu-today-guide__footer button { width:7px; height:7px; padding:0; border:0; border-radius: 3px; background:rgba(245,240,228,.28); box-shadow:none; }
 .zhaowu-home-layout .zhaowu-today-guide__footer button.is-active { width:18px; background:#e5c988; }
 
 /* 與原有「近日天象」保持同一張首頁編輯系統。 */
 .zhaowu-home-layout .zhaowu-home-stage--daily + .zhaowu-home-stage { margin-top:14px !important; }
-.zhaowu-home-layout .zhaowu-home-stage--daily + .zhaowu-home-stage > section { border-radius:22px !important; }
+.zhaowu-home-layout .zhaowu-home-stage--daily + .zhaowu-home-stage > section { border-radius: 3px !important; }
 
 .zhaowu-home-layout .zhaowu-daily-details {
   display: block;
   min-height: 0 !important;
-  border-radius: 14px !important;
+  border-radius: 3px !important;
 }
 .zhaowu-home-layout .zhaowu-daily-details small:empty { display: none; }
 .zhaowu-home-layout .zhaowu-today-guide__summary {
@@ -9042,7 +9042,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   height: 36px;
   place-items: center;
   border: 1px solid rgba(226,198,137,.75);
-  border-radius: 999px;
+  border-radius: 3px;
   color: #f3dfab;
   font-size: 18px;
   font-weight: 500;
@@ -9093,13 +9093,13 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 .zhaowu-contract-label { position:absolute !important; width:1px !important; height:1px !important; overflow:hidden !important; clip:rect(0 0 0 0) !important; white-space:nowrap !important; }
 
 @media (max-width:560px) {
-  .zhaowu-home-layout .zhaowu-today-guide { border-radius:20px; }
+  .zhaowu-home-layout .zhaowu-today-guide { border-radius: 3px; }
   .zhaowu-home-layout .zhaowu-today-guide__summary { padding:14px 14px 12px; }
   .zhaowu-home-layout .zhaowu-today-guide__summary-head p { font-size:22px; }
   .zhaowu-home-layout .zhaowu-today-guide__hero { padding:19px 16px 13px; }
   .zhaowu-home-layout .zhaowu-today-guide__page-title { padding:13px 16px 11px; }
   .zhaowu-home-layout .zhaowu-today-guide__grid { gap:8px; padding:0 9px 12px; }
-  .zhaowu-home-layout .zhaowu-today-card { min-height:92px; padding:12px 11px; border-radius:12px; }
+  .zhaowu-home-layout .zhaowu-today-card { min-height:92px; padding:12px 11px; border-radius: 3px; }
   .zhaowu-home-layout .zhaowu-today-card.is-date strong { font-size:18px; }
   .zhaowu-home-layout .zhaowu-today-pillars { gap:5px; }
   .zhaowu-home-layout .zhaowu-today-pillars b { font-size:17px; }
@@ -9165,8 +9165,8 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 .zhaowu-home-layout .zhaowu-today-guide[data-personalized="true"] {
   background:
     radial-gradient(circle at 86% 10%, rgba(229, 202, 142, .14), transparent 28%),
-    radial-gradient(circle at 9% 88%, rgba(120, 159, 140, .10), transparent 31%),
-    #173f35;
+    radial-gradient(circle at 9% 88%, rgba(146, 140, 133, .10), transparent 31%),
+    #322b24;
 }
 
 .zhaowu-home-layout .zhaowu-today-guide__summary-meta .is-personal {
@@ -9180,7 +9180,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   min-height: 30px;
   align-items: center;
   border: 1px solid rgba(226, 198, 137, .5);
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 0 11px;
   color: #f0d99c;
   background: rgba(7, 35, 29, .24);
@@ -9215,8 +9215,8 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   justify-items: center;
   gap: 4px;
   padding: 9px 4px;
-  border: 1px solid rgba(42, 82, 68, .14);
-  border-radius: 10px;
+  border: 1px solid rgba(69, 62, 55, .14);
+  border-radius: 3px;
   background: rgba(227, 231, 220, .58);
 }
 
@@ -9232,7 +9232,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 }
 
 .zhaowu-home-layout .zhaowu-today-personal-pillars b {
-  color: #275446;
+  color: #453e36;
   font-family: var(--font-display, "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: clamp(16px, 4vw, 20px);
   font-weight: 650;
@@ -9254,8 +9254,8 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   display: inline-flex;
   min-height: 31px;
   align-items: center;
-  border: 1px solid rgba(67, 92, 81, .16);
-  border-radius: 999px;
+  border: 1px solid rgba(84, 80, 75, .16);
+  border-radius: 3px;
   padding: 5px 10px;
   color: #4b5f56;
   background: rgba(255,255,255,.48);
@@ -9274,7 +9274,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   gap: 8px;
   padding: 16px;
   border: 1px solid rgba(225,198,138,.32);
-  border-radius: 17px;
+  border-radius: 3px;
   background: rgba(8,39,32,.38);
 }
 
@@ -9289,7 +9289,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   width: 100%;
   aspect-ratio: 1.35;
   border: 1px solid rgba(245,233,201,.22);
-  border-radius: 11px;
+  border-radius: 3px;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);
 }
 
@@ -9312,7 +9312,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   min-width: 0;
   padding: 12px;
   border: 1px solid rgba(225,198,138,.22);
-  border-radius: 12px;
+  border-radius: 3px;
   background: rgba(12, 49, 41, .58);
 }
 
@@ -9350,7 +9350,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 }
 
 .zhaowu-home-layout .zhaowu-today-personal-mask strong {
-  color: #285a4b;
+  color: #4a4035;
   font-family: var(--font-display, "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: 16px;
   font-weight: 650;
@@ -9449,14 +9449,14 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   overflow: hidden;
   margin: 0 !important;
   border: 0 !important;
-  border-top: 1px solid rgba(49, 95, 80, .34) !important;
-  border-bottom: 1px solid rgba(49, 95, 80, .24) !important;
+  border-top: 1px solid rgba(80, 73, 64, .34) !important;
+  border-bottom: 1px solid rgba(80, 73, 64, .24) !important;
   border-radius: 0 !important;
   padding: clamp(26px, 5vw, 38px) clamp(12px, 3vw, 26px) 30px !important;
   background:
-    linear-gradient(90deg, rgba(49, 95, 80, .055), transparent 14%, transparent 86%, rgba(154, 113, 61, .04)),
+    linear-gradient(90deg, rgba(80, 73, 64, .055), transparent 14%, transparent 86%, rgba(154, 113, 61, .04)),
     rgba(249, 241, 225, .52) !important;
-  box-shadow: inset 4px 0 0 rgba(49, 95, 80, .44) !important;
+  box-shadow: inset 4px 0 0 rgba(80, 73, 64, .44) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
@@ -9467,7 +9467,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   position: absolute;
   right: .08em;
   top: -.18em;
-  color: rgba(49, 95, 80, .04);
+  color: rgba(80, 73, 64, .04);
   font-family: var(--font-display, "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: clamp(6rem, 20vw, 10rem);
   line-height: 1;
@@ -9478,7 +9478,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 .zhaowu-home-sheet-shell .zhaowu-bazi-hub::before {
   right: .25rem !important;
   bottom: -.15em !important;
-  color: rgba(49, 95, 80, .04) !important;
+  color: rgba(80, 73, 64, .04) !important;
 }
 
 .zhaowu-bazi-head {
@@ -9487,7 +9487,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 }
 
 .zhaowu-bazi-preview {
-  border-top: 1px solid rgba(49, 95, 80, .16) !important;
+  border-top: 1px solid rgba(80, 73, 64, .16) !important;
   margin-top: 24px !important;
   padding-top: 22px !important;
 }
@@ -9658,14 +9658,14 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   margin: 0 auto !important;
   padding: 26px 22px 22px !important;
   border: 1px solid rgba(163, 119, 57, .48) !important;
-  border-radius: 20px !important;
+  border-radius: 3px !important;
   background:
     linear-gradient(180deg, rgba(255, 252, 244, .91), rgba(248, 237, 217, .86)) !important;
   box-shadow:
     0 22px 58px rgba(63, 46, 27, .14),
     inset 0 0 0 1px rgba(255, 255, 255, .34) !important;
-  backdrop-filter: blur(4px) saturate(.94) !important;
-  -webkit-backdrop-filter: blur(4px) saturate(.94) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   animation: stone-login-sheet-enter .46s cubic-bezier(.22, 1, .36, 1) both !important;
 }
 
@@ -9696,7 +9696,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 }
 
 .zhaowu-login-shell .stone-login-brand-name {
-  color: #263f34 !important;
+  color: #37332e !important;
   font-family: var(--font-display, serif) !important;
   font-size: 1.55rem !important;
   font-weight: 650 !important;
@@ -9797,7 +9797,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   width: 100% !important;
   min-height: 48px !important;
   border: 1px solid rgba(151, 111, 62, .34) !important;
-  border-radius: 11px !important;
+  border-radius: 3px !important;
   padding: 0 14px !important;
   color: #302c25 !important;
   background: rgba(255, 251, 242, .82) !important;
@@ -9852,7 +9852,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   width: 100% !important;
   min-height: 49px !important;
   border: 1px solid rgba(145, 106, 58, .36) !important;
-  border-radius: 11px !important;
+  border-radius: 3px !important;
   padding: 0 13px !important;
   color: #2c2924 !important;
   background: rgba(255, 252, 246, .92) !important;
@@ -9871,10 +9871,10 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   min-height: 51px !important;
   margin-top: 3px !important;
   border: 1px solid rgba(126, 40, 34, .42) !important;
-  border-radius: 11px !important;
+  border-radius: 3px !important;
   color: #fff8ed !important;
   background: linear-gradient(180deg, #ac473b 0%, #8f3028 100%) !important;
-  box-shadow: 0 10px 22px rgba(123, 41, 33, .17) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
   font-size: .93rem !important;
   font-weight: 720 !important;
   letter-spacing: .04em !important;
@@ -9918,7 +9918,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   }
   .zhaowu-login-shell .stone-login-sheet {
     padding: 22px 17px 18px !important;
-    border-radius: 18px !important;
+    border-radius: 3px !important;
   }
   .zhaowu-login-shell .stone-login-brand {
     margin-bottom: 13px !important;
@@ -10005,7 +10005,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   bottom: 0;
   width: 2px;
   height: 118px;
-  background: rgba(66, 91, 70, .78);
+  background: rgba(83, 79, 74, .78);
 }
 
 .zhaowu-lotus-intro__leaf {
@@ -10015,7 +10015,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   width: 62px;
   height: 24px;
   border-radius: 70% 30% 65% 35%;
-  background: rgba(71, 99, 76, .6);
+  background: rgba(90, 85, 80, .6);
   transform: rotate(-12deg);
 }
 
@@ -10113,7 +10113,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 :root {
   --zw-brand-ivory: #fbf9f3;
   --zw-brand-gold: #cbb98d;
-  --zw-brand-pine: #365d57;
+  --zw-brand-pine: #4a4035;
   --zw-brand-sage: #91aaab;
   --zw-brand-divider-mountain: url("/brand-ui/divider-mountain.svg");
   --zw-brand-ornament-pine: url("/brand-ui/ornament-pine.svg");
@@ -10189,8 +10189,8 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 .zhaowu-analysis-submit-wrap button {
   min-height: 48px !important;
   border: 1px solid #b79d68 !important;
-  border-radius: 999px !important;
-  color: #365d57 !important;
+  border-radius: 3px !important;
+  color: #4a4035 !important;
   background: #d6c496 !important;
   background-image: none !important;
   box-shadow: 0 8px 18px rgba(181, 158, 108, .20) !important;
@@ -10202,8 +10202,8 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 .zhaowu-home-sheet-shell .zhaowu-specialist-action,
 .zhaowu-home-sheet-shell .zhaowu-ziwei-action {
   border: 1px solid #cbb98d !important;
-  border-radius: 999px !important;
-  color: #365d57 !important;
+  border-radius: 3px !important;
+  color: #4a4035 !important;
   background: #faf8f1 !important;
   box-shadow: none !important;
 }
@@ -10230,7 +10230,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   min-width: 0;
   overflow: hidden;
   border: 1px solid var(--zw-line, rgba(82, 65, 42, .16));
-  border-radius: 16px;
+  border-radius: 3px;
   background: rgba(255, 252, 244, .72);
 }
 
@@ -10301,11 +10301,11 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 :root {
   --zw-brand-ivory: #faf8f1;
   --zw-brand-gold: #d4b074;
-  --zw-brand-pine: #1f4e3a;
+  --zw-brand-pine: #4a4035;
   --zw-brand-sage: #8a9c88;
-  --zw-brand-night: #0b2f26;
-  --zw-brand-jade: #2f5d4f;
-  --zw-brand-mist: #80998b;
+  --zw-brand-night: #1a1814;
+  --zw-brand-jade: #4a4035;
+  --zw-brand-mist: #8a7d68;
   --zw-brand-moon: #eae6d7;
   --zw-brand-black: #0a1311;
 }
@@ -10319,7 +10319,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 }
 
 .zw-brand-icon__ring { stroke: #d4b074; }
-.zw-brand-icon__glyph { fill: #1f4e3a; color: #1f4e3a; }
+.zw-brand-icon__glyph { fill: #4a4035; color: #4a4035; }
 
 .zhaowu-header-login,
 .zhaowu-header-utility,
@@ -10336,16 +10336,16 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   height: 40px;
   place-items: center;
   border: 1px solid #d4b074;
-  border-radius: 999px;
+  border-radius: 3px;
   background: transparent;
-  color: #1f4e3a;
+  color: #4a4035;
   cursor: pointer;
 }
 
 .zhaowu-header-signout {
   background: transparent !important;
   border: 1px solid #d4b074 !important;
-  color: #1f4e3a !important;
+  color: #4a4035 !important;
   box-shadow: none !important;
 }
 
@@ -10380,7 +10380,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 
 .zhaowu-brand-ui-library__section-title {
   margin: 0 0 12px;
-  color: var(--zw-jade, #294b3f);
+  color: var(--zw-jade, #504d49);
   font-family: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif;
   font-size: 15px;
   letter-spacing: .18em;
@@ -10403,9 +10403,9 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 .zhaowu-home-sheet-shell a.zw-btn-ghost {
   min-height: 44px;
   border: 1px solid #d4b074 !important;
-  border-radius: 999px !important;
+  border-radius: 3px !important;
   padding: 0 18px;
-  color: #1f4e3a !important;
+  color: #4a4035 !important;
   background: transparent !important;
   box-shadow: none !important;
 }
@@ -10416,17 +10416,17 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
   align-items: center;
   gap: 6px;
   border: 1px solid #d4b074;
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 0 14px;
-  color: #1f4e3a;
+  color: #4a4035;
   background: #faf8f1;
   font-size: 13px;
 }
 
 .zw-pill.is-active {
-  border-color: #1f4e3a;
+  border-color: #4a4035;
   color: #faf8f1;
-  background: #1f4e3a;
+  background: #4a4035;
 }
 
 @media (max-width: 640px) {
@@ -10446,7 +10446,7 @@ body:has(.zhaowu-home-layout) .zhaowu-has-wallpaper #birth-form select {
 html[data-zw-theme="night"] {
   --zw-paper: #0b2f26;
   --zw-paper-soft: #0b2f26;
-  --zw-paper-strong: #0f332b;
+  --zw-paper-strong: #27211b;
   --zw-ink: #eae6d7;
   --zw-ink-soft: #c9c4b2;
   --zw-muted: #80998b;
@@ -10457,11 +10457,11 @@ html[data-zw-theme="night"] {
   --zw-shadow: 0 16px 52px rgba(0, 0, 0, .4);
   --color-paper: #0b2f26;
   --color-paper-deep: #0a1311;
-  --color-cream: #0f332b;
+  --color-cream: #27211b;
   --color-ink: #eae6d7;
   --color-ink-soft: #c9c4b2;
   --color-ink-mute: #80998b;
-  --color-line: #2f5d4f;
+  --color-line: #4a4035;
   color-scheme: dark;
 }
 
@@ -10491,14 +10491,14 @@ html[data-zw-theme="night"] .site-lang-group,
 html[data-zw-theme="night"] .zhaowu-header-login {
   border-color: rgba(212, 176, 116, .35) !important;
   color: #eae6d7 !important;
-  background: rgba(15, 51, 43, .72) !important;
+  background: rgba(39, 33, 27, .72) !important;
 }
 
 html[data-zw-theme="night"] .site-lang-button { color: #c9c4b2 !important; }
 html[data-zw-theme="night"] .site-lang-button[data-active="true"],
 html[data-zw-theme="night"] .site-lang-button[aria-pressed="true"] {
   color: #eae6d7 !important;
-  background: rgba(47, 93, 79, .55) !important;
+  background: rgba(78, 71, 62, .55) !important;
 }
 
 html[data-zw-theme="night"] .zhaowu-theme-toggle {
@@ -10521,11 +10521,11 @@ html[data-zw-theme="night"] .zhaowu-daily-almanac,
 html[data-zw-theme="night"] .stone-login-sheet,
 html[data-zw-theme="night"] .zhaowu-home-portals a,
 html[data-zw-theme="night"] .zhaowu-brand-ui-library__asset {
-  background: #0f332b !important;
-  background-color: #0f332b !important;
+  background: #27211b !important;
+  background-color: #27211b !important;
   color: #eae6d7 !important;
   border-color: rgba(212, 176, 116, .28) !important;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, .28) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 html[data-zw-theme="night"] .zhaowu-brand-ui-library__preview {
@@ -10571,7 +10571,7 @@ html[data-zw-theme="night"] .stone-login-signature {
   --zw-el-fire: #b23a2f;
   --zw-el-earth: #b06a2b;
   --zw-el-metal: #b39858;
-  --zw-el-water: #355a73;
+  --zw-el-water: #5f5549;
   --zw-card-day: rgba(250, 248, 241, 0.78);
   --zw-card-night: rgba(15, 32, 28, 0.72);
 }
@@ -10628,10 +10628,10 @@ html[data-zw-theme="night"] .stone-login-signature {
 .zhaowu-login-sheet,
 .stone-login-sheet {
   background-color: var(--zw-card-day) !important;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   border-color: rgba(196, 160, 90, 0.28) !important;
-  box-shadow: 0 10px 28px rgba(76, 55, 33, 0.06) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-question-sheet,
@@ -10664,8 +10664,8 @@ html[data-zw-theme="night"] .stone-login-signature {
   justify-content: center;
   padding: 0 1.25rem !important;
   border: 1px solid #c4a05a !important;
-  border-radius: 999px !important;
-  background: #1f4e3a !important;
+  border-radius: 3px !important;
+  background: #4a4035 !important;
   background-image: none !important;
   color: #faf8f1 !important;
   box-shadow: none !important;
@@ -10678,7 +10678,7 @@ html[data-zw-theme="night"] .stone-login-signature {
 .zhaowu-header-signout {
   background: transparent !important;
   border: 1px solid #c4a05a !important;
-  color: #1f4e3a !important;
+  color: #4a4035 !important;
   box-shadow: none !important;
 }
 
@@ -10822,14 +10822,14 @@ html[data-zw-theme="night"] .stone-login-signature {
   overflow: hidden !important;
   padding: clamp(20px, 4vw, 34px) !important;
   border: 1px solid rgba(168, 134, 82, .34) !important;
-  border-radius: 26px !important;
+  border-radius: 3px !important;
   background:
     radial-gradient(circle at 88% 11%, rgba(180, 136, 66, .13) 0 7%, transparent 22%),
-    radial-gradient(circle at 10% 92%, rgba(47, 107, 90, .09), transparent 30%),
+    radial-gradient(circle at 10% 92%, rgba(88, 78, 67, .09), transparent 30%),
     linear-gradient(150deg, rgba(252, 248, 238, .95), rgba(247, 240, 226, .84)) !important;
-  box-shadow: 0 18px 48px rgba(70, 52, 31, .08) !important;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 #five-element-wardrobe::before,
@@ -10953,7 +10953,7 @@ html[data-zw-theme="night"] .stone-login-signature {
   padding: 13px 8px 12px !important;
   overflow: hidden;
   border: 1px solid rgba(114, 91, 58, .14) !important;
-  border-radius: 18px !important;
+  border-radius: 3px !important;
   background: rgba(255, 253, 247, .48) !important;
   box-shadow: 0 7px 22px rgba(64, 48, 29, .035) !important;
   text-align: center !important;
@@ -10966,7 +10966,7 @@ html[data-zw-theme="night"] .stone-login-signature {
   inset: 0;
   pointer-events: none;
   opacity: .42;
-  background: linear-gradient(180deg, var(--zw-card-tint, rgba(47,107,90,.08)), transparent 62%);
+  background: linear-gradient(180deg, var(--zw-card-tint, rgba(88, 78, 67,.08)), transparent 62%);
 }
 
 #five-element-wardrobe > div[role="list"] > button::after {
@@ -11004,7 +11004,7 @@ html[data-zw-theme="night"] .stone-login-signature {
 
 #five-element-wardrobe > div[role="list"] > button:nth-child(1) > span:first-child {
   background-image:
-    radial-gradient(circle, rgba(47,107,90,.13), rgba(252,248,238,.15) 68%),
+    radial-gradient(circle, rgba(88, 78, 67,.13), rgba(252,248,238,.15) 68%),
     url("/brand-ui/mark-pine.svg") !important;
   background-size: 100%, 76% !important;
 }
@@ -11032,7 +11032,7 @@ html[data-zw-theme="night"] .stone-login-signature {
 
 #five-element-wardrobe > div[role="list"] > button:nth-child(5) > span:first-child {
   background-image:
-    radial-gradient(circle, rgba(53,90,115,.13), rgba(252,248,238,.10) 70%),
+    radial-gradient(circle, rgba(95, 85, 73,.13), rgba(252,248,238,.10) 70%),
     url("/brand-ui/motif-water.svg") !important;
   background-size: 100%, 72% !important;
 }
@@ -11062,7 +11062,7 @@ html[data-zw-theme="night"] .stone-login-signature {
   #five-element-wardrobe > div[role="list"] > button:hover {
     transform: translateY(-2px);
     border-color: color-mix(in srgb, var(--zw-card-accent) 48%, transparent) !important;
-    box-shadow: 0 12px 26px rgba(64, 48, 29, .075) !important;
+    box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
   }
 }
 
@@ -11075,7 +11075,7 @@ html[data-zw-theme="night"] .stone-login-signature {
   transform: translateY(-2px);
   border: 1.5px solid var(--zw-card-accent) !important;
   background: rgba(255, 253, 247, .82) !important;
-  box-shadow: 0 14px 30px rgba(64, 48, 29, .10) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 #five-element-wardrobe > div[role="list"] > button[aria-pressed="true"] > span:first-child {
@@ -11093,7 +11093,7 @@ html[data-zw-theme="night"] .stone-login-signature {
   border-top: 1px solid rgba(168, 134, 82, .16) !important;
   border-right: 1px solid rgba(168, 134, 82, .16) !important;
   border-bottom: 1px solid rgba(168, 134, 82, .16) !important;
-  border-radius: 16px !important;
+  border-radius: 3px !important;
   background:
     linear-gradient(90deg, rgba(255,253,247,.78), rgba(255,253,247,.46)),
     url("/brand-ui/divider-mountain.svg") right 12px bottom 7px / 150px auto no-repeat !important;
@@ -11152,7 +11152,7 @@ html[data-zw-theme="night"] .stone-login-signature {
   border-color: rgba(212, 176, 116, .30) !important;
   background:
     radial-gradient(circle at 88% 11%, rgba(212,176,116,.11) 0 7%, transparent 23%),
-    radial-gradient(circle at 10% 92%, rgba(64,111,91,.16), transparent 31%),
+    radial-gradient(circle at 10% 92%, rgba(96, 88, 79,.16), transparent 31%),
     linear-gradient(150deg, rgba(18,38,32,.80), rgba(13,29,25,.72)) !important;
   color: #eae6d7 !important;
 }
@@ -11205,7 +11205,7 @@ html[data-zw-theme="night"] .stone-login-signature {
 @media (max-width: 640px) {
   #five-element-wardrobe {
     padding: 19px 14px 26px !important;
-    border-radius: 22px !important;
+    border-radius: 3px !important;
   }
 
   #five-element-wardrobe > header {
@@ -11294,7 +11294,7 @@ html[data-zw-theme="night"] .stone-login-signature {
     min-height: 116px !important;
     gap: 6px !important;
     padding: 10px 4px 9px !important;
-    border-radius: 12px !important;
+    border-radius: 3px !important;
     scroll-snap-align: none;
   }
 
@@ -11354,9 +11354,9 @@ html[data-zw-theme="night"] .stone-login-signature {
 /* ---------- Daily almanac: night mode must stay readable ---------- */
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-almanac {
   color: #fffaf0 !important;
-  background: linear-gradient(180deg, #10372c 0%, #08221c 100%) !important;
+  background: linear-gradient(180deg, #2a241d 0%, #08221c 100%) !important;
   border-color: rgba(212, 176, 116, .56) !important;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, .30) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 [data-zw-theme="night"] .zhaowu-home-layout .zhaowu-daily-watermark {
@@ -11435,23 +11435,23 @@ html[data-zw-theme="night"] .stone-login-signature {
 .zhaowu-spirit-slip {
   color: #2b312d !important;
   border: 1px solid rgba(168, 134, 82, .42) !important;
-  border-radius: 28px !important;
+  border-radius: 3px !important;
   background: linear-gradient(180deg, #fffaf0 0%, #f5ead7 100%) !important;
-  box-shadow: 0 24px 58px rgba(19, 37, 31, .22) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 [data-zw-theme="night"] .zhaowu-spirit-slip {
   color: #29302c !important;
   background: linear-gradient(180deg, #fffaf0 0%, #f5ead7 100%) !important;
   border-color: rgba(212, 176, 116, .58) !important;
-  box-shadow: 0 28px 70px rgba(0, 0, 0, .44) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 .zhaowu-spirit-slip-close {
   border: 1px solid rgba(168, 134, 82, .50) !important;
   background: #fffaf0 !important;
-  color: #173f34 !important;
-  box-shadow: 0 4px 14px rgba(20, 42, 35, .14) !important;
+  color: #322b24 !important;
+  box-shadow: 0 4px 14px rgba(35, 31, 27, .14) !important;
 }
 
 /* The old R52 pixel/notched polygon must never reappear. */
@@ -11462,13 +11462,13 @@ html[data-zw-theme="night"] .stone-login-signature {
   margin: 8px auto 24px !important;
   overflow: hidden !important;
   border: 1px solid rgba(168, 134, 82, .52) !important;
-  border-radius: 20px !important;
+  border-radius: 3px !important;
   background: linear-gradient(155deg, #d9d1bf 0%, #eee5d3 100%) !important;
   clip-path: none !important;
   -webkit-clip-path: none !important;
   mask: none !important;
   -webkit-mask: none !important;
-  box-shadow: 0 8px 22px rgba(22, 49, 40, .15) !important;
+  box-shadow: 0 8px 22px rgba(40, 36, 31, .15) !important;
 }
 
 /* Preserve the artwork itself. Do not wash it into a translucent soft-light layer. */
@@ -11498,11 +11498,11 @@ html[data-zw-theme="night"] .stone-login-signature {
 }
 
 .zhaowu-spirit-slip-kicker {
-  color: #2c6654 !important;
+  color: #534a3f !important;
 }
 
 .zhaowu-spirit-slip h2 {
-  color: #123c31 !important;
+  color: #2e2720 !important;
 }
 
 .zhaowu-spirit-slip-copy p {
@@ -11514,19 +11514,19 @@ html[data-zw-theme="night"] .stone-login-signature {
 }
 
 .zhaowu-spirit-slip-mark {
-  color: #173f34 !important;
+  color: #322b24 !important;
 }
 
 @media (max-width: 760px) {
   .zhaowu-spirit-slip {
-    border-radius: 24px !important;
+    border-radius: 3px !important;
   }
 
   .zhaowu-spirit-slip-art {
     width: 92% !important;
     margin-top: 4px !important;
     margin-bottom: 20px !important;
-    border-radius: 17px !important;
+    border-radius: 3px !important;
   }
 
   .zhaowu-spirit-slip-copy p {
@@ -11537,7 +11537,7 @@ html[data-zw-theme="night"] .stone-login-signature {
 /* r102 — language selector contract: selected day-mode option is pine with light text.
    This intentionally wins over older readability locks that used !important. */
 .site-lang-button[aria-pressed="true"] {
-  background: #1f4e3a !important;
+  background: #4a4035 !important;
   color: #fffaf0 !important;
   border-color: #c4a05a !important;
 }
@@ -11645,7 +11645,7 @@ html[data-zw-theme="night"] .stone-login-signature {
   --zw-ink: #2b2824;
   --zw-ink-soft: #686157;
   --zw-cinnabar: #8f3f36;
-  --zw-pine: #355e50;
+  --zw-pine: #4a4035;
   --zw-gold: #a8844d;
   --zw-hairline: rgba(60, 45, 30, .12);
 }
@@ -11680,7 +11680,7 @@ a {
   border-color: var(--zw-hairline);
   background:
     radial-gradient(circle at 88% 6%, rgba(168, 132, 77, .075), transparent 31%),
-    radial-gradient(circle at 8% 92%, rgba(53, 94, 80, .045), transparent 29%),
+    radial-gradient(circle at 8% 92%, rgba(81, 74, 66, .045), transparent 29%),
     linear-gradient(180deg, rgba(251, 247, 239, .985), rgba(242, 234, 223, .97));
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, .42),
@@ -11717,14 +11717,14 @@ a {
 .zhaowu-visual-tabs button {
   scroll-snap-align: start;
   min-width: max-content;
-  border-radius: 14px;
+  border-radius: 3px;
   background: rgba(251, 247, 239, .86);
   box-shadow: none;
   transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
 }
 
 .zhaowu-visual-tabs button.is-active {
-  border-color: rgba(53, 94, 80, .72);
+  border-color: rgba(81, 74, 66, .72);
   background: var(--zw-pine);
 }
 
@@ -11737,7 +11737,7 @@ a {
 .zhaowu-visual-card {
   border-color: var(--zw-hairline);
   background: rgba(251, 247, 239, .88);
-  box-shadow: 0 12px 36px rgba(60, 45, 30, .045);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 /* The source artworks are vertical. Keep their character instead of forcing 16:9. */
@@ -11745,7 +11745,7 @@ a {
   width: min(100%, 620px);
   aspect-ratio: 3 / 4;
   margin-inline: auto;
-  border-radius: 18px;
+  border-radius: 3px;
   background:
     linear-gradient(180deg, rgba(242, 234, 223, .92), rgba(226, 215, 197, .9));
 }
@@ -11760,10 +11760,10 @@ a {
   bottom: 10px;
   max-width: calc(100% - 20px);
   border: 1px solid rgba(60, 45, 30, .1);
-  border-radius: 10px;
+  border-radius: 3px;
   background: rgba(251, 247, 239, .9);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 .zhaowu-visual-tags {
@@ -11771,7 +11771,7 @@ a {
 }
 
 .zhaowu-visual-tags span {
-  border-radius: 10px;
+  border-radius: 3px;
   background: rgba(242, 234, 223, .7);
 }
 
@@ -11789,7 +11789,7 @@ a {
 
 @media (hover: hover) and (pointer: fine) {
   .zhaowu-visual-module-grid button:hover {
-    border-color: rgba(53, 94, 80, .35);
+    border-color: rgba(81, 74, 66, .35);
     background: rgba(255, 253, 248, .96);
   }
 }
@@ -11820,7 +11820,7 @@ a {
 .zhaowu-element-bar > .zhaowu-meter { background: none; overflow: visible; }
 
 .zhaowu-visual-note {
-  border-left-color: rgba(53, 94, 80, .58);
+  border-left-color: rgba(81, 74, 66, .58);
 }
 
 .zhaowu-visual-note.is-provisional {
@@ -11856,7 +11856,7 @@ a {
     width: auto;
     margin: 0 max(14px, env(safe-area-inset-left)) 28px max(14px, env(safe-area-inset-right));
     padding: 17px;
-    border-radius: 20px;
+    border-radius: 3px;
   }
 
   .zhaowu-visual-book-head p,
@@ -11892,7 +11892,7 @@ a {
 
   .zhaowu-visual-card {
     padding: 15px;
-    border-radius: 17px;
+    border-radius: 3px;
   }
 
   .zhaowu-visual-card-title h5,
@@ -11905,7 +11905,7 @@ a {
     width: 100%;
     aspect-ratio: 4 / 5;
     margin-top: 14px;
-    border-radius: 15px;
+    border-radius: 3px;
   }
 
   .zhaowu-visual-summary {
@@ -11924,12 +11924,12 @@ a {
   .zhaowu-visual-module-grid > div {
     min-height: 82px;
     padding: 13px 14px;
-    border-radius: 14px;
+    border-radius: 3px;
   }
 
   .zhaowu-visual-facts {
     grid-template-columns: 1fr;
-    border-radius: 13px;
+    border-radius: 3px;
   }
 
   .zhaowu-visual-facts div {
@@ -12025,7 +12025,7 @@ a {
    This is deliberately last-wins: keep the legacy visual stack stable while making the
    visible production surfaces coherent at 24 / 56 px. */
 :root {
-  --zw-icon-pine: #1f4e3a;
+  --zw-icon-pine: #4a4035;
   --zw-icon-gold: #c4a05a;
   --zw-icon-seal: #a64a38;
   --zw-icon-paper: #fffaf0;
@@ -12065,12 +12065,12 @@ html[data-zw-theme="night"] .zw-brand-icon__glyph { color: #eae6d7 !important; }
   gap: 13px !important;
   padding: 19px 18px 16px !important;
   border: 1px solid rgba(116, 91, 56, .20) !important;
-  border-radius: 18px !important;
+  border-radius: 3px !important;
   background: rgba(255, 251, 242, .90) !important;
   box-shadow: 0 8px 24px rgba(57, 45, 30, .055) !important;
 }
 .zhaowu-home-layout .zhaowu-home-portal.is-bazi {
-  border-color: rgba(31, 78, 58, .30) !important;
+  border-color: rgba(63, 55, 46, .30) !important;
   background: linear-gradient(145deg, rgba(239, 245, 237, .94), rgba(255, 251, 242, .92)) !important;
 }
 .zhaowu-home-portal-copy { padding-right: 76px !important; }
@@ -12090,7 +12090,7 @@ html[data-zw-theme="night"] .zw-brand-icon__glyph { color: #eae6d7 !important; }
 .zhaowu-home-layout .zhaowu-home-portal::before {
   top: 14px !important;
   right: 17px !important;
-  color: rgba(31, 78, 58, .43) !important;
+  color: rgba(63, 55, 46, .43) !important;
   font-size: 12px !important;
 }
 /* r217：分組識別徽章從「不透明白盤 + 陰影」改為「柔性暈染」，讓圖徽直接融進卡片底色，
@@ -12116,37 +12116,37 @@ html[data-zw-theme="night"] .zw-brand-icon__glyph { color: #eae6d7 !important; }
 .zhaowu-home-sheet-shell .zhaowu-home-portal[data-specialist-link="bazi"]::after {
   background-image:
     radial-gradient(circle, rgba(255, 253, 246, .55) 0%, rgba(255, 253, 246, .20) 56%, rgba(255, 253, 246, 0) 80%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='none' stroke='%23c4a05a' stroke-width='2'/%3E%3Cg fill='none' stroke='%231f4e3a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='13' y='19' width='8' height='27' rx='2'/%3E%3Crect x='23' y='16' width='8' height='30' rx='2'/%3E%3Crect x='33' y='18' width='8' height='28' rx='2'/%3E%3Crect x='43' y='15' width='8' height='31' rx='2'/%3E%3C/g%3E%3Ccircle cx='32' cy='50' r='2' fill='%23a64a38'/%3E%3C/svg%3E") !important;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='none' stroke='%23c4a05a' stroke-width='2'/%3E%3Cg fill='none' stroke='%234a4035' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='13' y='19' width='8' height='27' rx='2'/%3E%3Crect x='23' y='16' width='8' height='30' rx='2'/%3E%3Crect x='33' y='18' width='8' height='28' rx='2'/%3E%3Crect x='43' y='15' width='8' height='31' rx='2'/%3E%3C/g%3E%3Ccircle cx='32' cy='50' r='2' fill='%23a64a38'/%3E%3C/svg%3E") !important;
 }
 .zhaowu-home-sheet-shell .zhaowu-home-portal[data-specialist-link="ziwei"]::after {
   background-image:
     radial-gradient(circle, rgba(255, 253, 246, .55) 0%, rgba(255, 253, 246, .20) 56%, rgba(255, 253, 246, 0) 80%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='none' stroke='%23c4a05a' stroke-width='2'/%3E%3Cg fill='none' stroke='%231f4e3a' stroke-width='2.2'%3E%3Crect x='17' y='17' width='30' height='30' rx='2'/%3E%3Cpath d='M27 17v30m10-30v30M17 27h30M17 37h30'/%3E%3C/g%3E%3Cpath d='m32 25 2 5 5 2-5 2-2 5-2-5-5-2 5-2Z' fill='none' stroke='%23c4a05a' stroke-width='1.8'/%3E%3Ccircle cx='32' cy='32' r='1.8' fill='%23a64a38'/%3E%3C/svg%3E") !important;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='none' stroke='%23c4a05a' stroke-width='2'/%3E%3Cg fill='none' stroke='%234a4035' stroke-width='2.2'%3E%3Crect x='17' y='17' width='30' height='30' rx='2'/%3E%3Cpath d='M27 17v30m10-30v30M17 27h30M17 37h30'/%3E%3C/g%3E%3Cpath d='m32 25 2 5 5 2-5 2-2 5-2-5-5-2 5-2Z' fill='none' stroke='%23c4a05a' stroke-width='1.8'/%3E%3Ccircle cx='32' cy='32' r='1.8' fill='%23a64a38'/%3E%3C/svg%3E") !important;
 }
 .zhaowu-home-sheet-shell .zhaowu-home-portal[data-specialist-link="western"]::after {
   background-image:
     radial-gradient(circle, rgba(255, 253, 246, .55) 0%, rgba(255, 253, 246, .20) 56%, rgba(255, 253, 246, 0) 80%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='none' stroke='%23c4a05a' stroke-width='2'/%3E%3Cg fill='none' stroke='%231f4e3a' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='32' cy='32' r='16'/%3E%3Cpath d='M32 16v9m0 14v9M16 32h9m14 0h9M21 21l6 6m10 10 6 6m0-22-6 6M21 43l6-6'/%3E%3C/g%3E%3Ccircle cx='32' cy='32' r='6.5' fill='none' stroke='%23c4a05a' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='1.8' fill='%23a64a38'/%3E%3C/svg%3E") !important;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='none' stroke='%23c4a05a' stroke-width='2'/%3E%3Cg fill='none' stroke='%234a4035' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='32' cy='32' r='16'/%3E%3Cpath d='M32 16v9m0 14v9M16 32h9m14 0h9M21 21l6 6m10 10 6 6m0-22-6 6M21 43l6-6'/%3E%3C/g%3E%3Ccircle cx='32' cy='32' r='6.5' fill='none' stroke='%23c4a05a' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='1.8' fill='%23a64a38'/%3E%3C/svg%3E") !important;
 }
 .zhaowu-home-sheet-shell .zhaowu-home-portal[data-specialist-link="indian"]::after {
   background-image:
     radial-gradient(circle, rgba(255, 253, 246, .55) 0%, rgba(255, 253, 246, .20) 56%, rgba(255, 253, 246, 0) 80%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='none' stroke='%23c4a05a' stroke-width='2'/%3E%3Cpath d='M32 15l4 11 11-4-8 10 8 10-11-4-4 11-4-11-11 4 8-10-8-10 11 4Z' fill='none' stroke='%231f4e3a' stroke-width='2.2' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='32' r='6' fill='none' stroke='%23c4a05a' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='1.8' fill='%23a64a38'/%3E%3C/svg%3E") !important;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='none' stroke='%23c4a05a' stroke-width='2'/%3E%3Cpath d='M32 15l4 11 11-4-8 10 8 10-11-4-4 11-4-11-11 4 8-10-8-10 11 4Z' fill='none' stroke='%234a4035' stroke-width='2.2' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='32' r='6' fill='none' stroke='%23c4a05a' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='1.8' fill='%23a64a38'/%3E%3C/svg%3E") !important;
 }
 .zhaowu-home-sheet-shell .zhaowu-home-portal[data-specialist-link="qizheng"]::after {
   background-image:
     radial-gradient(circle, rgba(255, 253, 246, .55) 0%, rgba(255, 253, 246, .20) 56%, rgba(255, 253, 246, 0) 80%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='none' stroke='%23c4a05a' stroke-width='2'/%3E%3Cg fill='none' stroke='%231f4e3a' stroke-width='2'%3E%3Cellipse cx='32' cy='32' rx='18' ry='10'/%3E%3Cellipse cx='32' cy='32' rx='10' ry='18' transform='rotate(35 32 32)'/%3E%3C/g%3E%3Cg fill='%23c4a05a'%3E%3Ccircle cx='16' cy='30' r='2'/%3E%3Ccircle cx='24' cy='21' r='1.7'/%3E%3Ccircle cx='40' cy='22' r='1.7'/%3E%3Ccircle cx='48' cy='34' r='1.7'/%3E%3Ccircle cx='39' cy='43' r='1.7'/%3E%3Ccircle cx='24' cy='42' r='1.7'/%3E%3C/g%3E%3Ccircle cx='32' cy='32' r='2' fill='%23a64a38'/%3E%3C/svg%3E") !important;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='none' stroke='%23c4a05a' stroke-width='2'/%3E%3Cg fill='none' stroke='%234a4035' stroke-width='2'%3E%3Cellipse cx='32' cy='32' rx='18' ry='10'/%3E%3Cellipse cx='32' cy='32' rx='10' ry='18' transform='rotate(35 32 32)'/%3E%3C/g%3E%3Cg fill='%23c4a05a'%3E%3Ccircle cx='16' cy='30' r='2'/%3E%3Ccircle cx='24' cy='21' r='1.7'/%3E%3Ccircle cx='40' cy='22' r='1.7'/%3E%3Ccircle cx='48' cy='34' r='1.7'/%3E%3Ccircle cx='39' cy='43' r='1.7'/%3E%3Ccircle cx='24' cy='42' r='1.7'/%3E%3C/g%3E%3Ccircle cx='32' cy='32' r='2' fill='%23a64a38'/%3E%3C/svg%3E") !important;
 }
 .zhaowu-home-sheet-shell .zhaowu-home-portal[data-specialist-link="past"]::after {
   background-image:
     radial-gradient(circle, rgba(255, 253, 246, .55) 0%, rgba(255, 253, 246, .20) 56%, rgba(255, 253, 246, 0) 80%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='none' stroke='%23c4a05a' stroke-width='2'/%3E%3Cg fill='none' stroke='%231f4e3a' stroke-width='2.3' stroke-linecap='round'%3E%3Cpath d='M17 32c5-10 12-10 15 0s10 10 15 0M17 32c5 10 12 10 15 0s10-10 15 0'/%3E%3C/g%3E%3Cpath d='M20 22c6-7 18-8 25-1M44 43c-7 5-18 4-24-2' fill='none' stroke='%23c4a05a' stroke-width='1.8' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='32' r='1.8' fill='%23a64a38'/%3E%3C/svg%3E") !important;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='none' stroke='%23c4a05a' stroke-width='2'/%3E%3Cg fill='none' stroke='%234a4035' stroke-width='2.3' stroke-linecap='round'%3E%3Cpath d='M17 32c5-10 12-10 15 0s10 10 15 0M17 32c5 10 12 10 15 0s10-10 15 0'/%3E%3C/g%3E%3Cpath d='M20 22c6-7 18-8 25-1M44 43c-7 5-18 4-24-2' fill='none' stroke='%23c4a05a' stroke-width='1.8' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='32' r='1.8' fill='%23a64a38'/%3E%3C/svg%3E") !important;
 }
 .zhaowu-home-sheet-shell .zhaowu-home-portal[data-specialist-link="numerology"]::after {
   background-image:
     radial-gradient(circle, rgba(255, 253, 246, .55) 0%, rgba(255, 253, 246, .20) 56%, rgba(255, 253, 246, 0) 80%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='none' stroke='%23c4a05a' stroke-width='2'/%3E%3Cg fill='none' stroke='%231f4e3a' stroke-width='2.2' stroke-linejoin='round'%3E%3Cpath d='m32 16 17 30H15Z'/%3E%3Cpath d='M32 16v30M15 46l17-15 17 15'/%3E%3C/g%3E%3Ccircle cx='32' cy='16' r='2' fill='%23a64a38'/%3E%3Ccircle cx='15' cy='46' r='2' fill='%23c4a05a'/%3E%3Ccircle cx='49' cy='46' r='2' fill='%23c4a05a'/%3E%3C/svg%3E") !important;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='none' stroke='%23c4a05a' stroke-width='2'/%3E%3Cg fill='none' stroke='%234a4035' stroke-width='2.2' stroke-linejoin='round'%3E%3Cpath d='m32 16 17 30H15Z'/%3E%3Cpath d='M32 16v30M15 46l17-15 17 15'/%3E%3C/g%3E%3Ccircle cx='32' cy='16' r='2' fill='%23a64a38'/%3E%3Ccircle cx='15' cy='46' r='2' fill='%23c4a05a'/%3E%3Ccircle cx='49' cy='46' r='2' fill='%23c4a05a'/%3E%3C/svg%3E") !important;
 }
 
 .zhaowu-home-portal-action {
@@ -12157,9 +12157,9 @@ html[data-zw-theme="night"] .zw-brand-icon__glyph { color: #eae6d7 !important; }
   min-height: 36px !important;
   padding: 0 13px !important;
   border: 1px solid rgba(196, 160, 90, .62) !important;
-  border-radius: 999px !important;
-  background: rgba(31, 78, 58, .055) !important;
-  color: #1f4e3a !important;
+  border-radius: 3px !important;
+  background: rgba(63, 55, 46, .055) !important;
+  color: #4a4035 !important;
   box-shadow: none !important;
   font-size: 14px !important;
   line-height: 1.35 !important;
@@ -12174,7 +12174,7 @@ html[data-zw-theme="night"] .zw-brand-icon__glyph { color: #eae6d7 !important; }
    blank upload slot. Real artwork stays landscape; fallback becomes a compact oracle seal. */
 .zhaowu-spirit-slip {
   padding: 24px 22px 26px !important;
-  border-radius: 24px !important;
+  border-radius: 3px !important;
 }
 .zhaowu-spirit-slip-close {
   top: 14px !important;
@@ -12191,7 +12191,7 @@ html[data-zw-theme="night"] .zw-brand-icon__glyph { color: #eae6d7 !important; }
   aspect-ratio: 16 / 9 !important;
   max-height: 292px !important;
   margin: 6px auto 20px !important;
-  border-radius: 18px !important;
+  border-radius: 3px !important;
 }
 .zhaowu-spirit-slip-art.is-empty {
   width: min(100%, 480px) !important;
@@ -12199,14 +12199,14 @@ html[data-zw-theme="night"] .zw-brand-icon__glyph { color: #eae6d7 !important; }
   max-height: 184px !important;
   aspect-ratio: 16 / 6.3 !important;
   margin: 6px auto 18px !important;
-  border-radius: 18px !important;
+  border-radius: 3px !important;
   color: transparent !important;
   font-size: 0 !important;
   background-color: #f2ead9 !important;
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='%23fffaf0' stroke='%23c4a05a' stroke-width='2'/%3E%3Cg fill='none' stroke='%231f4e3a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 28h20v19H22Z'/%3E%3Cpath d='M25 28l-2-13m9 13V13m7 15 3-14'/%3E%3Cpath d='M22 34h20' stroke='%23c4a05a'/%3E%3C/g%3E%3Ccircle cx='32' cy='40' r='2' fill='%23a64a38'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='%23fffaf0' stroke='%23c4a05a' stroke-width='2'/%3E%3Cg fill='none' stroke='%234a4035' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 28h20v19H22Z'/%3E%3Cpath d='M25 28l-2-13m9 13V13m7 15 3-14'/%3E%3Cpath d='M22 34h20' stroke='%23c4a05a'/%3E%3C/g%3E%3Ccircle cx='32' cy='40' r='2' fill='%23a64a38'/%3E%3C/svg%3E"),
     radial-gradient(circle at 24% 34%, rgba(196,160,90,.13), transparent 24%),
-    radial-gradient(circle at 76% 66%, rgba(31,78,58,.09), transparent 28%),
+    radial-gradient(circle at 76% 66%, rgba(63, 55, 46,.09), transparent 28%),
     linear-gradient(145deg, #eee5d3, #f8f2e6) !important;
   background-position: center, center, center, center !important;
   background-repeat: no-repeat !important;
@@ -12215,13 +12215,13 @@ html[data-zw-theme="night"] .zw-brand-icon__glyph { color: #eae6d7 !important; }
 .zhaowu-spirit-slip-kicker {
   gap: 7px !important;
   margin-top: 2px !important;
-  color: #2c6654 !important;
+  color: #534a3f !important;
   font-size: 16px !important;
 }
 .zhaowu-spirit-slip-gourd { width: 24px !important; height: 24px !important; }
 .zhaowu-spirit-slip h2 {
   margin-top: 14px !important;
-  color: #123c31 !important;
+  color: #2e2720 !important;
   font-size: clamp(1.9rem, 6vw, 2.35rem) !important;
   line-height: 1.15 !important;
 }
@@ -12238,7 +12238,7 @@ html[data-zw-theme="night"] .zw-brand-icon__glyph { color: #eae6d7 !important; }
 .zhaowu-spirit-slip-mark { margin-top: 9px !important; font-size: 11px !important; letter-spacing: .14em !important; }
 
 html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-portal {
-  background: rgba(15, 51, 43, .90) !important;
+  background: rgba(39, 33, 27, .90) !important;
   border-color: rgba(212, 176, 116, .30) !important;
 }
 html[data-zw-theme="night"] .zhaowu-home-portal-copy strong { color: #fffaf0 !important; }
@@ -12276,7 +12276,7 @@ html[data-zw-theme="night"] .zhaowu-home-portal-action {
     padding: 0 12px !important;
     font-size: 13.5px !important;
   }
-  .zhaowu-spirit-slip { padding: 20px 16px 22px !important; border-radius: 22px !important; }
+  .zhaowu-spirit-slip { padding: 20px 16px 22px !important; border-radius: 3px !important; }
   .zhaowu-spirit-slip-art:not(.is-empty) { width: 100% !important; margin-top: 4px !important; }
   .zhaowu-spirit-slip-art.is-empty {
     width: 100% !important;
@@ -12327,7 +12327,7 @@ html[data-zw-theme="night"] .zhaowu-question-promise span + span::before {
 html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-question-sheet textarea,
 html[data-zw-theme="night"] .zhaowu-home-sheet-shell #birth-form .zhaowu-question-sheet textarea {
   background: #fffaf0 !important;
-  color: #1b241f !important;
+  color: #21201e !important;
   border-color: rgba(212, 176, 116, .46) !important;
 }
 
@@ -12363,7 +12363,7 @@ html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-rec
 }
 
 html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-record .zhaowu-section-kicker {
-  color: #2c6654 !important;
+  color: #534a3f !important;
 }
 
 html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-record .zhaowu-section-lead,
@@ -12379,7 +12379,7 @@ html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-rec
 html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-record input,
 html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-record select {
   background: #fffaf0 !important;
-  color: #1b241f !important;
+  color: #21201e !important;
   border-color: rgba(81, 67, 48, .28) !important;
 }
 
@@ -12393,7 +12393,7 @@ html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-rec
   height: 72px !important;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, .55) !important;
-  border-radius: 12px !important;
+  border-radius: 3px !important;
   background: none !important;
   background-image: none !important;
   box-shadow: inset 0 0 0 1px rgba(73, 56, 35, .08), 0 6px 16px rgba(55, 42, 27, .08) !important;
@@ -12550,7 +12550,7 @@ html[data-zw-theme="night"] #five-element-wardrobe[data-daily-colors="embed"] > 
   z-index: 2 !important;
   display: block !important;
   margin: 4px 0 0 !important;
-  color: #294e3c !important;
+  color: #423c35 !important;
   font-size: clamp(22px, 6vw, 30px) !important;
   line-height: 1.2 !important;
   white-space: nowrap !important;
@@ -12572,7 +12572,7 @@ html[data-zw-theme="night"] #five-element-wardrobe[data-daily-colors="embed"] > 
 }
 
 .zhaowu-chart-details summary {
-  color: #315a4c !important;
+  color: #4a4035 !important;
   font-size: 15px !important;
   font-weight: 650 !important;
 }
@@ -12581,7 +12581,7 @@ html[data-zw-theme="night"] #five-element-wardrobe[data-daily-colors="embed"] > 
 .zhaowu-home-layout .zhaowu-home-fun-section {
   background: #f7f0e1 !important;
   border: 1px solid rgba(80, 65, 44, .18) !important;
-  box-shadow: 0 16px 40px rgba(55, 44, 29, .08) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
@@ -12601,7 +12601,7 @@ html[data-zw-theme="night"] #five-element-wardrobe[data-daily-colors="embed"] > 
 .zhaowu-home-sheet-shell .zhaowu-bazi-hub {
   padding: 18px 4px 8px !important;
   border: 0 !important;
-  border-top: 1px solid rgba(41, 75, 63, .22) !important;
+  border-top: 1px solid rgba(64, 58, 52, .22) !important;
   background: transparent !important;
 }
 
@@ -12621,9 +12621,9 @@ html[data-zw-theme="night"] #five-element-wardrobe[data-daily-colors="embed"] > 
 html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-bazi-hub,
 html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-hub {
   color: #fffaf0 !important;
-  background: #12352c !important;
+  background: #2a241d !important;
   border-top-color: rgba(212, 176, 116, .28) !important;
-  border-radius: 16px !important;
+  border-radius: 3px !important;
   padding: 18px 18px 14px !important;
 }
 
@@ -12637,7 +12637,7 @@ html[data-zw-theme="night"] .zhaowu-chart-details summary {
 }
 
 html[data-zw-theme="night"] .zhaowu-bazi-chart {
-  background: #12352c !important;
+  background: #2a241d !important;
   color: #fffaf0 !important;
   border-color: rgba(212, 176, 116, .32) !important;
 }
@@ -12645,9 +12645,9 @@ html[data-zw-theme="night"] .zhaowu-bazi-chart {
 html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-portals-block,
 html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-fun-section,
 html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-stage--directory {
-  background: #12352c !important;
+  background: #2a241d !important;
   border-color: rgba(212, 176, 116, .32) !important;
-  box-shadow: 0 18px 44px rgba(0, 0, 0, .28) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
@@ -12673,7 +12673,7 @@ html[data-zw-theme="night"] .zhaowu-pillar-grid > section > h3 {
 }
 
 html[data-zw-theme="night"] .zhaowu-pillar-grid > section > strong {
-  color: #1f4e3a !important;
+  color: #4a4035 !important;
 }
 
 html[data-zw-theme="night"] .zhaowu-pillar-grid > section > small {
@@ -12843,7 +12843,7 @@ html[data-zw-theme="night"] .life-view-art-fragment {
   background-image: none !important;
   color: #1c1915 !important;
   border-color: rgba(90, 72, 48, .28) !important;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, .22) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   opacity: 1 !important;
@@ -12899,7 +12899,7 @@ html[data-zw-theme="night"] .zhaowu-app-frame section.seal-border .text-cinnabar
 html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-portals-block,
 html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-fun-section,
 html[data-zw-theme="night"] .zhaowu-home-layout .zhaowu-home-stage--directory {
-  background: #12352c !important;
+  background: #2a241d !important;
   color: #fffaf0 !important;
 }
 
@@ -12910,14 +12910,14 @@ html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-question-she
 
 html[data-zw-theme="night"] .zhaowu-daily-almanac,
 html[data-zw-theme="night"] .zhaowu-question-sheet {
-  background: #12352c !important;
+  background: #2a241d !important;
   color: #fffaf0 !important;
 }
 
 /* ─── sky-events-article.css ─── */
 .sky-events-feature-mark.is-saturn,.sky-event-orbit.is-saturn{background:radial-gradient(circle at 35% 30%,#b69b72,#5e5142 58%,#1c211f)}
 .sky-event-essay{margin-top:34px;padding-top:8px}
-.sky-event-essay-intro{font-size:1rem;line-height:1.9;color:#4f5b54;padding:18px 20px;border-radius:18px;background:rgba(240,234,218,.68);border:1px solid rgba(126,94,47,.16)}
+.sky-event-essay-intro{font-size:1rem;line-height:1.9;color:#4f5b54;padding:18px 20px;border-radius: 3px;background:rgba(240,234,218,.68);border:1px solid rgba(126,94,47,.16)}
 .sky-event-essay-section{padding:26px 0;border-bottom:1px solid rgba(88,74,53,.12)}
 .sky-event-essay-section:last-child{border-bottom:0}
 .sky-event-essay-section h3{font-size:clamp(1.2rem,3.4vw,1.65rem);margin:0 0 14px;line-height:1.35}
@@ -12939,13 +12939,13 @@ html[data-zw-theme="night"] .zhaowu-question-sheet {
 .zhaowu-home-sheet-shell .zhaowu-bazi-stage,
 .zhaowu-home-sheet-shell .zhaowu-question-stage {
   border: 1px solid rgba(82, 65, 42, .14) !important;
-  border-radius: 24px !important;
+  border-radius: 3px !important;
   padding: clamp(20px, 5vw, 32px) !important;
   background:
     radial-gradient(circle at 100% 0%, rgba(196,160,90,.10), transparent 34%),
     linear-gradient(155deg, rgba(255,252,244,.96), rgba(247,240,226,.92)) !important;
   background-color: rgba(255, 252, 244, .78) !important;
-  box-shadow: 0 18px 52px rgba(55,44,29,.07) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 .zhaowu-bazi-stage {
@@ -12984,8 +12984,8 @@ html[data-zw-theme="night"] .zhaowu-question-sheet {
   display: grid;
   gap: 14px;
   margin: 0 !important;
-  border: 1px dashed rgba(41,75,63,.28);
-  border-radius: 16px;
+  border: 1px dashed rgba(64, 58, 52,.28);
+  border-radius: 3px;
   padding: 16px;
   background: rgba(255,253,248,.72);
 }
@@ -13000,10 +13000,10 @@ html[data-zw-theme="night"] .zhaowu-question-sheet {
 .zhaowu-bazi-pending button[type="submit"] {
   width: 100%;
   min-height: 52px;
-  border: 1px solid rgba(31,78,58,.18);
-  border-radius: 999px;
+  border: 1px solid rgba(63, 55, 46,.18);
+  border-radius: 3px;
   padding: 0 20px;
-  background: #294b3f;
+  background: #504d49;
   color: #fffaf0;
   font-size: 16px;
   font-weight: 720;
@@ -13017,7 +13017,7 @@ html[data-zw-theme="night"] .zhaowu-question-sheet {
 
 .zhaowu-bazi-foundation h3 {
   margin: 0 0 14px;
-  color: #294b3f;
+  color: #504d49;
   font-size: 20px;
   line-height: 1.4;
 }
@@ -13078,11 +13078,11 @@ html[data-zw-theme="night"] .zhaowu-question-sheet {
 .zhaowu-question-birth-edit {
   flex: 0 0 auto;
   min-height: 38px;
-  border: 1px solid rgba(41,75,63,.22);
-  border-radius: 999px;
+  border: 1px solid rgba(64, 58, 52,.22);
+  border-radius: 3px;
   padding: 0 13px;
-  background: rgba(41,75,63,.06);
-  color: #294b3f;
+  background: rgba(64, 58, 52,.06);
+  color: #504d49;
   font-size: 13px;
   font-weight: 650;
 }
@@ -13092,7 +13092,7 @@ html[data-zw-theme="night"] .zhaowu-question-sheet {
   min-height: 150px;
   resize: vertical;
   border: 1px solid rgba(82,65,42,.22) !important;
-  border-radius: 18px !important;
+  border-radius: 3px !important;
   padding: 16px 17px !important;
   background: rgba(255,253,248,.95) !important;
   color: #29251f !important;
@@ -13103,8 +13103,8 @@ html[data-zw-theme="night"] .zhaowu-question-sheet {
 
 .zhaowu-question-stage textarea:focus {
   outline: none;
-  border-color: rgba(41,75,63,.62) !important;
-  box-shadow: 0 0 0 3px rgba(41,75,63,.10) !important;
+  border-color: rgba(64, 58, 52,.62) !important;
+  box-shadow: 0 0 0 3px rgba(64, 58, 52,.10) !important;
 }
 
 .zhaowu-question-meta {
@@ -13134,12 +13134,12 @@ html[data-zw-theme="night"] .zhaowu-question-sheet {
 .zhaowu-analysis-submit-wrap button[type="submit"] {
   width: min(100%, 520px);
   min-height: 54px;
-  border: 1px solid rgba(31,78,58,.18) !important;
-  border-radius: 999px !important;
+  border: 1px solid rgba(63, 55, 46,.18) !important;
+  border-radius: 3px !important;
   padding: 0 24px !important;
-  background: #294b3f !important;
+  background: #504d49 !important;
   color: #fffaf0 !important;
-  box-shadow: 0 10px 28px rgba(31,78,58,.16) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
   font-size: 16px !important;
   font-weight: 720 !important;
   letter-spacing: .03em !important;
@@ -13156,9 +13156,9 @@ html[data-zw-theme="night"] .zhaowu-question-sheet {
 
 .zhaowu-result-card {
   border: 1px solid rgba(82,65,42,.14) !important;
-  border-radius: 24px !important;
+  border-radius: 3px !important;
   background: rgba(255,252,244,.97) !important;
-  box-shadow: 0 18px 52px rgba(55,44,29,.07) !important;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06)!important;
 }
 
 .zhaowu-result-card h2 {
@@ -13174,7 +13174,7 @@ html[data-zw-theme="night"] .zhaowu-question-sheet {
   .zhaowu-home-sheet-shell .zhaowu-customer-record,
   .zhaowu-home-sheet-shell .zhaowu-bazi-stage,
   .zhaowu-home-sheet-shell .zhaowu-question-stage {
-    border-radius: 20px !important;
+    border-radius: 3px !important;
     padding: 20px 16px !important;
   }
   .zhaowu-bazi-stage .zhaowu-pillar-grid,
@@ -13221,7 +13221,7 @@ html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-bazi-stage,
 html[data-zw-theme="night"] .zhaowu-home-sheet-shell .zhaowu-question-stage,
 html[data-zw-theme="night"] .zhaowu-result-card {
   border-color: rgba(212,176,116,.26) !important;
-  background: linear-gradient(155deg, rgba(19,39,34,.96), rgba(24,45,38,.92)) !important;
+  background: linear-gradient(155deg, rgba(19,39,34,.96), rgba(38, 35, 31,.92)) !important;
   background-color: rgba(19, 39, 34, .92) !important;
 }
 

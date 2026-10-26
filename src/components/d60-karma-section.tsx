@@ -285,7 +285,7 @@ export function D60KarmaSection({ variant = "palm", reportBirth, depth = "full" 
 
   const card = (
     <article className="relative overflow-hidden rounded-2xl border border-[#b99755]/35 bg-[#fffaf2] p-5 shadow-[inset_4px_0_0_rgba(111,82,59,.55)]" aria-label={copy.title}>
-      <div aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full border border-[#8e4538]/10" />
+      <div aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-sm border border-[#8e4538]/10" />
       <div className="relative">
         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#7c5b43]">{copy.kicker}</p>
         <h3 className="mt-1 font-display text-xl font-semibold tracking-[0.05em] text-ink">{copy.title}</h3>

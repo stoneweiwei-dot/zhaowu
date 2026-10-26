@@ -128,10 +128,10 @@ function ShushuBoundaryArticle() {
         <h2 className="font-display text-xl text-ink">{tr(locale,"方法聲明與參考","方法声明与参考","Method note and references")}</h2>
         <p className="mt-3 text-sm leading-7 text-ink-soft">{tr(locale,"本文討論的是術數研究與使用的認識論邊界，不宣稱八字、紫微、卦術或其他傳統預測模型的效力已獲現代自然科學證實。可驗證的天文、時間、地理與氣候資料，和建立在這些資料之上的傳統象徵推演，必須分層陳述。","本文讨论的是术数研究与使用的认识论边界，不宣称八字、紫微、卦术或其他传统预测模型的效力已获现代自然科学证实。可验证的天文、时间、地理与气候资料，和建立在这些资料之上的传统象征推演，必须分层陈述。","This essay concerns epistemic boundaries in the study and use of traditional divinatory systems. It does not claim that BaZi, Ziwei, hexagram methods or other predictive systems have been scientifically validated. Verifiable astronomical, temporal, geographical and climate data must be kept distinct from symbolic inference built upon them.")}</p>
         <div className="mt-5 flex flex-wrap gap-2 text-xs">
-          <a className="rounded-full border border-line bg-cream px-3 py-2 text-ink-soft" href="https://zh.wikisource.org/zh-hant/%E8%8D%80%E5%AD%90/%E5%A4%A7%E7%95%A5%E7%AF%87" target="_blank" rel="noreferrer">《荀子·大略》</a>
-          <a className="rounded-full border border-line bg-cream px-3 py-2 text-ink-soft" href="https://zh.wikisource.org/zh-hant/%E8%8D%80%E5%AD%90/%E5%A4%A9%E8%AB%96%E7%AF%87" target="_blank" rel="noreferrer">《荀子·天論》</a>
-          <a className="rounded-full border border-line bg-cream px-3 py-2 text-ink-soft" href="https://news.gmw.cn/2019-09/07/content_33142787.htm" target="_blank" rel="noreferrer">李華：數與德</a>
-          <a className="rounded-full border border-line bg-cream px-3 py-2 text-ink-soft" href="https://plato.stanford.edu/entries/yogacara/" target="_blank" rel="noreferrer">SEP: Yogācāra</a>
+          <a className="rounded-sm border border-line bg-cream px-3 py-2 text-ink-soft" href="https://zh.wikisource.org/zh-hant/%E8%8D%80%E5%AD%90/%E5%A4%A7%E7%95%A5%E7%AF%87" target="_blank" rel="noreferrer">《荀子·大略》</a>
+          <a className="rounded-sm border border-line bg-cream px-3 py-2 text-ink-soft" href="https://zh.wikisource.org/zh-hant/%E8%8D%80%E5%AD%90/%E5%A4%A9%E8%AB%96%E7%AF%87" target="_blank" rel="noreferrer">《荀子·天論》</a>
+          <a className="rounded-sm border border-line bg-cream px-3 py-2 text-ink-soft" href="https://news.gmw.cn/2019-09/07/content_33142787.htm" target="_blank" rel="noreferrer">李華：數與德</a>
+          <a className="rounded-sm border border-line bg-cream px-3 py-2 text-ink-soft" href="https://plato.stanford.edu/entries/yogacara/" target="_blank" rel="noreferrer">SEP: Yogācāra</a>
         </div>
       </section>
 

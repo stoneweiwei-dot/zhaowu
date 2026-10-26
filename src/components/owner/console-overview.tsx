@@ -70,7 +70,7 @@ export function ConsoleOverview({ reports, hasMoreReports, reportsLoading, onNav
           {todos.map((todo, index) => (
             <li key={index} className={`flex flex-wrap items-center justify-between gap-3 rounded-xl border px-4 py-3 ${TONE[todo.tone]}`}>
               <span className="min-w-0 flex-1 text-sm leading-6 text-ink">{todo.text}</span>
-              {todo.go ? <button type="button" onClick={() => onNavigate(todo.go!)} className="min-h-11 shrink-0 rounded-full border border-line bg-cream px-4 text-sm text-ink">{todo.cta}</button> : null}
+              {todo.go ? <button type="button" onClick={() => onNavigate(todo.go!)} className="min-h-11 shrink-0 rounded-sm border border-line bg-cream px-4 text-sm text-ink">{todo.cta}</button> : null}
             </li>
           ))}
         </ul>
@@ -85,7 +85,7 @@ export function ConsoleOverview({ reports, hasMoreReports, reportsLoading, onNav
             <div className="flex justify-between gap-3"><dt className="text-ink-mute">上次發布</dt><dd>{lastPosted ? dateText(lastPosted.published_at ?? lastPosted.created_at) : "尚未發布"}</dd></div>
             <div className="flex justify-between gap-3"><dt className="text-ink-mute">內容庫</dt><dd>{auto?.bank ? `${auto.bank.total} 則輪播` : "—"}</dd></div>
           </dl>
-          <button type="button" onClick={() => onNavigate("autopublish")} className="mt-4 min-h-11 rounded-full border border-line bg-paper/70 px-4 text-sm text-ink">管理自動發佈</button>
+          <button type="button" onClick={() => onNavigate("autopublish")} className="mt-4 min-h-11 rounded-sm border border-line bg-paper/70 px-4 text-sm text-ink">管理自動發佈</button>
         </section>
 
         <section className="seal-border rounded-xl bg-cream/95 p-5">
@@ -99,7 +99,7 @@ export function ConsoleOverview({ reports, hasMoreReports, reportsLoading, onNav
               </ul>
             </>
           )}
-          <button type="button" onClick={() => onNavigate("reports")} className="mt-4 min-h-11 rounded-full border border-line bg-paper/70 px-4 text-sm text-ink">查看全部報告</button>
+          <button type="button" onClick={() => onNavigate("reports")} className="mt-4 min-h-11 rounded-sm border border-line bg-paper/70 px-4 text-sm text-ink">查看全部報告</button>
         </section>
       </div>
 
@@ -107,7 +107,7 @@ export function ConsoleOverview({ reports, hasMoreReports, reportsLoading, onNav
         <h3 className="font-display text-lg">網站外觀與內容</h3>
         <div className="mt-3 flex flex-wrap gap-2">
           {([["images", "背景與圖片"], ["opening", "開場影片"], ["themes", "主題皮膚"]] as [OverviewTarget, string][]).map(([target, label]) => (
-            <button key={target} type="button" onClick={() => onNavigate(target)} className="min-h-11 rounded-full border border-line bg-paper/70 px-4 text-sm text-ink">{label}</button>
+            <button key={target} type="button" onClick={() => onNavigate(target)} className="min-h-11 rounded-sm border border-line bg-paper/70 px-4 text-sm text-ink">{label}</button>
           ))}
         </div>
       </section>

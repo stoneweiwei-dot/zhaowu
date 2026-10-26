@@ -57,7 +57,7 @@ function daysLabel(days: number[]) {
 }
 
 function Pill({ tone, children }: { tone: keyof typeof TONE_CLASS; children: React.ReactNode }) {
-  return <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${TONE_CLASS[tone]}`}>{children}</span>;
+  return <span className={`inline-flex items-center rounded-sm border px-2.5 py-0.5 text-[11px] font-medium ${TONE_CLASS[tone]}`}>{children}</span>;
 }
 
 function threadsErrorText(code: string) {
@@ -269,10 +269,10 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
             aria-checked={settings.enabled}
             disabled={busy}
             onClick={() => void act(() => saveAutopublishSettings({ enabled: !settings.enabled }), settings.enabled ? "已暫停自動發佈。" : "已開啟自動發佈。")}
-            className={`inline-flex min-h-12 w-fit shrink-0 items-center gap-3 rounded-full border px-4 text-sm font-medium transition disabled:opacity-50 ${settings.enabled ? "border-wood bg-wood text-cream" : "border-line bg-paper/70 text-ink-soft"}`}
+            className={`inline-flex min-h-12 w-fit shrink-0 items-center gap-3 rounded-sm border px-4 text-sm font-medium transition disabled:opacity-50 ${settings.enabled ? "border-wood bg-wood text-cream" : "border-line bg-paper/70 text-ink-soft"}`}
           >
-            <span className={`relative inline-block h-6 w-11 rounded-full ${settings.enabled ? "bg-cream/35" : "bg-ink/15"}`}>
-              <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-cream shadow transition-all ${settings.enabled ? "left-[22px]" : "left-0.5"}`} />
+            <span className={`relative inline-block h-6 w-11 rounded-sm ${settings.enabled ? "bg-cream/35" : "bg-ink/15"}`}>
+              <span className={`absolute top-0.5 h-5 w-5 rounded-sm bg-cream shadow transition-all ${settings.enabled ? "left-[22px]" : "left-0.5"}`} />
             </span>
             {settings.enabled ? "運作中" : "已暫停"}
           </button>
@@ -287,7 +287,7 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
         <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7" data-autopublish-manual>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h3 className="font-display text-xl">待手動發布（{manualTasks.length}）</h3>
-            {staleManual.length ? <button type="button" disabled={busy} className="min-h-11 rounded-full border border-line bg-paper/60 px-4 text-sm text-ink-soft disabled:opacity-50" onClick={() => { if (window.confirm(`略過 ${staleManual.length} 則超過 3 天的舊任務？`)) void act(async () => { for (const item of staleManual) await updateQueuePost(item.id, { status: "skipped" }); }, "舊任務已略過。"); }}>略過 {staleManual.length} 則舊任務</button> : null}
+            {staleManual.length ? <button type="button" disabled={busy} className="min-h-11 rounded-sm border border-line bg-paper/60 px-4 text-sm text-ink-soft disabled:opacity-50" onClick={() => { if (window.confirm(`略過 ${staleManual.length} 則超過 3 天的舊任務？`)) void act(async () => { for (const item of staleManual) await updateQueuePost(item.id, { status: "skipped" }); }, "舊任務已略過。"); }}>略過 {staleManual.length} 則舊任務</button> : null}
           </div>
           <ul className="mt-4 space-y-3">
             {manualTasks.map((item) => (
@@ -295,12 +295,12 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
                 <div className="flex flex-wrap items-center gap-2 text-xs text-ink-mute">{pendingManualChannels(item).map((c) => <Pill key={c} tone="warn">{CHANNEL_LABEL[c]}</Pill>)}<span>{taipei(item.created_at)}</span></div>
                 <p className="mt-2 whitespace-pre-wrap text-sm leading-7 text-ink">{item.body}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <button type="button" className="min-h-11 rounded-full border border-line bg-cream px-4 text-sm" onClick={async () => setNotice((await copyText(item.body)) ? "文案已複製。" : "複製失敗，請手動選取。")}>複製文案</button>
+                  <button type="button" className="min-h-11 rounded-sm border border-line bg-cream px-4 text-sm" onClick={async () => setNotice((await copyText(item.body)) ? "文案已複製。" : "複製失敗，請手動選取。")}>複製文案</button>
                   {pendingManualChannels(item).map((c) => {
                     const link = composeLink(c, item.body);
-                    return link ? <a key={c} href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center rounded-full border border-line bg-cream px-4 text-sm text-ink" onClick={() => { void copyText(item.body); }}>{link.label}</a> : null;
+                    return link ? <a key={c} href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center rounded-sm border border-line bg-cream px-4 text-sm text-ink" onClick={() => { void copyText(item.body); }}>{link.label}</a> : null;
                   })}
-                  <button type="button" disabled={busy} className="min-h-11 rounded-full bg-wood px-4 text-sm text-cream disabled:opacity-50" onClick={() => void act(() => markQueuePostDone(item.id), "已標記為已發布。")}>我已經發了</button>
+                  <button type="button" disabled={busy} className="min-h-11 rounded-sm bg-wood px-4 text-sm text-cream disabled:opacity-50" onClick={() => void act(() => markQueuePostDone(item.id), "已標記為已發布。")}>我已經發了</button>
                   <button type="button" disabled={busy} className="min-h-11 px-3 text-sm text-ink-mute underline disabled:opacity-50" onClick={() => void act(() => updateQueuePost(item.id, { status: "skipped" }))}>略過</button>
                 </div>
               </li>
@@ -325,13 +325,13 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
                 ))}
               </ul>
             ) : <p className="mt-3 text-sm leading-6 text-ink-soft">按下按鈕，用 Threads 帳號授權一次，之後就不用再碰。{data.channels?.targets.threads ? `已鎖定發布到 @${data.channels.targets.threads}。` : ""}</p>}
-            <button type="button" disabled={busy || threadsStatus?.tone === "info"} className="mt-3 min-h-11 rounded-full bg-wood px-5 text-sm text-cream disabled:opacity-60" onClick={() => void connectThreads()}>
+            <button type="button" disabled={busy || threadsStatus?.tone === "info"} className="mt-3 min-h-11 rounded-sm bg-wood px-5 text-sm text-cream disabled:opacity-60" onClick={() => void connectThreads()}>
               {threadsConnected ? "新增另一個 Threads 帳號" : "連接 Threads"}
             </button>
             {threadsStatus ? (
               <div role={threadsStatus.tone === "error" ? "alert" : "status"} className={`mt-3 rounded-md border px-3 py-3 text-sm leading-6 ${threadsStatus.tone === "error" ? "border-cinnabar/30 bg-cinnabar/5 text-cinnabar-deep" : "border-line bg-paper/70 text-ink-soft"}`}>
                 {threadsStatus.text}
-                {threadsStatus.url ? <a href={threadsStatus.url} className="mt-2 flex min-h-11 items-center justify-center rounded-full border border-line bg-cream px-4 text-ink">前往 Threads 授權</a> : null}
+                {threadsStatus.url ? <a href={threadsStatus.url} className="mt-2 flex min-h-11 items-center justify-center rounded-sm border border-line bg-cream px-4 text-ink">前往 Threads 授權</a> : null}
               </div>
             ) : null}
             {!threadsConnected ? (
@@ -359,20 +359,20 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
                 ))}
               </ul>
             ) : <p className="mt-3 text-sm leading-6 text-ink-soft">按一次 Meta 授權，系統會自動讀取你管理的 Facebook 粉絲專頁，以及與它連結的 Instagram 專業帳號。以後排程會自己發。</p>}
-            <button type="button" disabled={busy || metaStatus?.tone === "info"} className="mt-3 min-h-11 rounded-full bg-wood px-5 text-sm text-cream disabled:opacity-60" onClick={() => void connectMeta()}>
+            <button type="button" disabled={busy || metaStatus?.tone === "info"} className="mt-3 min-h-11 rounded-sm bg-wood px-5 text-sm text-cream disabled:opacity-60" onClick={() => void connectMeta()}>
               {data.channels?.metaAccounts?.length ? "重新授權 / 新增粉絲專頁" : "連接 Meta"}
             </button>
-            {metaStatus ? <div role={metaStatus.tone === "error" ? "alert" : "status"} className={`mt-3 rounded-md border px-3 py-3 text-sm leading-6 ${metaStatus.tone === "error" ? "border-cinnabar/30 bg-cinnabar/5 text-cinnabar-deep" : "border-line bg-paper/70 text-ink-soft"}`}>{metaStatus.text}{metaStatus.url ? <a href={metaStatus.url} className="mt-2 flex min-h-11 items-center justify-center rounded-full border border-line bg-cream px-4 text-ink">前往 Meta 授權</a> : null}</div> : null}
+            {metaStatus ? <div role={metaStatus.tone === "error" ? "alert" : "status"} className={`mt-3 rounded-md border px-3 py-3 text-sm leading-6 ${metaStatus.tone === "error" ? "border-cinnabar/30 bg-cinnabar/5 text-cinnabar-deep" : "border-line bg-paper/70 text-ink-soft"}`}>{metaStatus.text}{metaStatus.url ? <a href={metaStatus.url} className="mt-2 flex min-h-11 items-center justify-center rounded-sm border border-line bg-cream px-4 text-ink">前往 Meta 授權</a> : null}</div> : null}
             {!(data.channels?.facebook || data.channels?.instagram) ? (
               <details className="mt-2 text-sm text-ink-soft" open={metaStatus?.tone === "error"}>
                 <summary className="min-h-11 cursor-pointer py-3 text-ink">跳出「無法載入網址／應用程式網域」錯誤？</summary>
                 <p className="leading-6">這是 Meta 開發者後台少了兩項設定（developers.facebook.com → 你的應用程式），改完再按一次「連接 Meta」：</p>
                 <ol className="mt-1 list-decimal space-y-2 pl-5 leading-6">
                   <li>設定 → 基本資料 → 「應用程式網域」填入 <code className="break-all rounded bg-paper px-1">{metaRedirectHost}</code>，按儲存變更。
-                    <button type="button" className="ml-2 min-h-9 rounded-full border border-line bg-cream px-3 text-xs" onClick={async () => setNotice((await copyText(metaRedirectHost)) ? "網域已複製。" : "複製失敗，請手動選取。")}>複製</button>
+                    <button type="button" className="ml-2 min-h-9 rounded-sm border border-line bg-cream px-3 text-xs" onClick={async () => setNotice((await copyText(metaRedirectHost)) ? "網域已複製。" : "複製失敗，請手動選取。")}>複製</button>
                   </li>
                   <li>Facebook 登入 → 設定 → 「有效的 OAuth 重新導向 URI」填入 <code className="break-all rounded bg-paper px-1">{metaRedirectUri}</code>，按儲存變更。
-                    <button type="button" className="ml-2 min-h-9 rounded-full border border-line bg-cream px-3 text-xs" onClick={async () => setNotice((await copyText(metaRedirectUri)) ? "回呼網址已複製。" : "複製失敗，請手動選取。")}>複製</button>
+                    <button type="button" className="ml-2 min-h-9 rounded-sm border border-line bg-cream px-3 text-xs" onClick={async () => setNotice((await copyText(metaRedirectUri)) ? "回呼網址已複製。" : "複製失敗，請手動選取。")}>複製</button>
                   </li>
                   <li>應用程式若還在「開發中」，授權用的 Facebook 帳號要是該應用的管理員或測試人員，且能管理要發文的粉絲專頁。</li>
                 </ol>
@@ -395,7 +395,7 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
         <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="發佈日">
           {WEEKDAYS.map((label, day) => {
             const on = settings.publish_days.includes(day);
-            return <button key={day} type="button" aria-pressed={on} disabled={busy} onClick={() => toggleDay(day)} className={`min-h-11 min-w-12 rounded-full border px-4 text-sm font-medium disabled:opacity-50 ${on ? "border-wood bg-wood text-cream" : "border-line bg-paper/60 text-ink-soft"}`}>週{label}</button>;
+            return <button key={day} type="button" aria-pressed={on} disabled={busy} onClick={() => toggleDay(day)} className={`min-h-11 min-w-12 rounded-sm border px-4 text-sm font-medium disabled:opacity-50 ${on ? "border-wood bg-wood text-cream" : "border-line bg-paper/60 text-ink-soft"}`}>週{label}</button>;
           })}
         </div>
         <div className="mt-5">
@@ -403,7 +403,7 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
           <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label="發佈平台">
             {(Object.keys(CHANNEL_LABEL) as QueueChannel[]).map((channel) => {
               const on = settings.channels.includes(channel);
-              return <button key={channel} type="button" aria-pressed={on} disabled={busy} onClick={() => toggleSettingChannel(channel)} className={`min-h-11 rounded-full border px-4 text-sm disabled:opacity-50 ${on ? "border-wood bg-wood/10 text-wood" : "border-line bg-paper/60 text-ink-soft"}`}>{on ? "✓ " : ""}{CHANNEL_LABEL[channel]}{AUTO_CHANNELS.includes(channel) && !autoChannelConnected(channel) ? "（未連接）" : ""}</button>;
+              return <button key={channel} type="button" aria-pressed={on} disabled={busy} onClick={() => toggleSettingChannel(channel)} className={`min-h-11 rounded-sm border px-4 text-sm disabled:opacity-50 ${on ? "border-wood bg-wood/10 text-wood" : "border-line bg-paper/60 text-ink-soft"}`}>{on ? "✓ " : ""}{CHANNEL_LABEL[channel]}{AUTO_CHANNELS.includes(channel) && !autoChannelConnected(channel) ? "（未連接）" : ""}</button>;
             })}
           </div>
         </div>
@@ -426,13 +426,13 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
         <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="這一則要發到">
           {(Object.keys(CHANNEL_LABEL) as QueueChannel[]).map((channel) => {
             const on = draftChannels.includes(channel);
-            return <button key={channel} type="button" aria-pressed={on} onClick={() => setDraftChannels((cur) => on ? cur.filter((c) => c !== channel) : [...cur, channel])} className={`min-h-11 rounded-full border px-4 text-sm ${on ? "border-wood bg-wood/10 text-wood" : "border-line bg-paper/60 text-ink-soft"}`}>{on ? "✓ " : ""}{CHANNEL_LABEL[channel]}</button>;
+            return <button key={channel} type="button" aria-pressed={on} onClick={() => setDraftChannels((cur) => on ? cur.filter((c) => c !== channel) : [...cur, channel])} className={`min-h-11 rounded-sm border px-4 text-sm ${on ? "border-wood bg-wood/10 text-wood" : "border-line bg-paper/60 text-ink-soft"}`}>{on ? "✓ " : ""}{CHANNEL_LABEL[channel]}</button>;
           })}
         </div>
         <div className="mt-4 flex flex-wrap gap-2">
-          <button type="button" disabled={busy || !draftChannels.length} className="min-h-12 rounded-full bg-cinnabar px-5 text-sm font-medium text-cream disabled:opacity-40" onClick={() => void submitDraft("scheduled")}>排入佇列</button>
-          <button type="button" disabled={busy || !draftChannels.length} className="min-h-12 rounded-full border border-line bg-cream px-5 text-sm disabled:opacity-40" onClick={() => void submitDraft("now")}>立即發布</button>
-          <button type="button" disabled={busy} className="min-h-12 rounded-full border border-line bg-paper/60 px-5 text-sm text-ink-soft disabled:opacity-40" onClick={() => void submitDraft("draft")}>存成草稿</button>
+          <button type="button" disabled={busy || !draftChannels.length} className="min-h-12 rounded-sm bg-cinnabar px-5 text-sm font-medium text-cream disabled:opacity-40" onClick={() => void submitDraft("scheduled")}>排入佇列</button>
+          <button type="button" disabled={busy || !draftChannels.length} className="min-h-12 rounded-sm border border-line bg-cream px-5 text-sm disabled:opacity-40" onClick={() => void submitDraft("now")}>立即發布</button>
+          <button type="button" disabled={busy} className="min-h-12 rounded-sm border border-line bg-paper/60 px-5 text-sm text-ink-soft disabled:opacity-40" onClick={() => void submitDraft("draft")}>存成草稿</button>
           {editingId ? <button type="button" className="min-h-12 px-4 text-sm text-ink-mute underline" onClick={resetDraft}>取消編輯</button> : null}
         </div>
       </section>
@@ -442,8 +442,8 @@ export function AutopublishPanel({ initialNotice = "" }: { initialNotice?: strin
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 className="font-display text-xl">佇列與紀錄</h3>
           <div className="flex gap-2">
-            <button type="button" disabled={busy || !settings.channels.length} className="min-h-11 rounded-full border border-line bg-cream px-4 text-sm disabled:opacity-40" onClick={() => void act(async () => { const out = await runAutopublishNow(); setNotice(out.result.ran ? `已執行：${STATUS_LABEL[(out.result.status as QueueStatus) ?? "published"].text}` : out.result.reason === "NOTHING_CONNECTED" ? "尚未連接任何可發布的平台。" : `未執行：${out.result.reason}`); })}>現在就發一則</button>
-            <button type="button" className="min-h-11 rounded-full border border-line bg-paper/60 px-4 text-sm text-ink-soft" onClick={() => void reload()}>重新整理</button>
+            <button type="button" disabled={busy || !settings.channels.length} className="min-h-11 rounded-sm border border-line bg-cream px-4 text-sm disabled:opacity-40" onClick={() => void act(async () => { const out = await runAutopublishNow(); setNotice(out.result.ran ? `已執行：${STATUS_LABEL[(out.result.status as QueueStatus) ?? "published"].text}` : out.result.reason === "NOTHING_CONNECTED" ? "尚未連接任何可發布的平台。" : `未執行：${out.result.reason}`); })}>現在就發一則</button>
+            <button type="button" className="min-h-11 rounded-sm border border-line bg-paper/60 px-4 text-sm text-ink-soft" onClick={() => void reload()}>重新整理</button>
           </div>
         </div>
         {queued.length ? (

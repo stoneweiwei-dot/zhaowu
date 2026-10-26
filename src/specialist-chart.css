@@ -4,7 +4,7 @@
   border:1px solid var(--color-line,#d7cec0);
   border-radius:1rem;
   background:var(--color-paper,#fffaf1);
-  color:var(--color-ink,#263d36);
+  color:var(--color-ink,#36322d);
   min-width:0;
 }
 .zw-chart h2{
@@ -18,7 +18,7 @@
 .zw-chart-table-block{min-width:0;margin:1rem 0}
 .zw-chart-table-title{
   margin:0 0 .65rem;
-  color:var(--color-ink,#263d36);
+  color:var(--color-ink,#36322d);
   font-family:var(--font-display,"Songti TC","Noto Serif TC",serif);
   font-size:1.15rem;
   font-weight:620;
@@ -46,8 +46,8 @@
 }
 .zw-chart-table thead{background:#eee9de;font-weight:650}
 .zw-chart-wheel{display:block;width:100%;max-width:440px;aspect-ratio:1;margin:1rem auto;fill:none;stroke:#859387;stroke-width:1}
-.zw-chart-wheel text{fill:#263d36;stroke:none;font-size:14px;text-anchor:middle;dominant-baseline:middle}
-.zw-chart-wheel .zw-star-label{fill:#fffaf1;stroke:#617e6c}
+.zw-chart-wheel text{fill:#36322d;stroke:none;font-size:14px;text-anchor:middle;dominant-baseline:middle}
+.zw-chart-wheel .zw-star-label{fill:#fffaf1;stroke:#75706a}
 .zw-ziwei-grid{
   display:grid;
   grid-template-columns:repeat(4,minmax(140px,1fr));

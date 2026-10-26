@@ -3,10 +3,10 @@
   max-width: 34rem;
   margin: 1.4rem auto 2rem;
   padding: 1.3rem clamp(1rem, 4vw, 2rem) 1.45rem;
-  border-top: 1px solid rgba(82, 113, 100, .24);
-  border-bottom: 1px solid rgba(82, 113, 100, .24);
+  border-top: 1px solid rgba(103, 98, 92, .24);
+  border-bottom: 1px solid rgba(103, 98, 92, .24);
   text-align: center;
-  color: #344a42;
+  color: #433f3b;
   background: transparent;
 }
 .zhaowu-day-stem-portrait__head {
@@ -67,7 +67,7 @@
   line-height: 1.6;
 }
 .zhaowu-day-stem-portrait__caption .zhaowu-day-stem-portrait__nature {
-  color: #476659;
+  color: #5c5751;
   font-family: var(--font-display, "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif);
   font-size: 1.08rem;
 }

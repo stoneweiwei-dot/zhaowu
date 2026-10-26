@@ -45,7 +45,7 @@ export function FollowUpBox({ result }: { result: AnalysisResult }) {
           placeholder={t("followPh")}
           className="min-h-12 flex-1 resize-y rounded-lg border border-line bg-cream px-4 py-3 text-sm leading-6 outline-none focus:border-cinnabar"
         />
-        <button type="submit" disabled={busy || !question.trim()} className="h-12 shrink-0 rounded-full bg-cinnabar px-5 text-sm text-cream disabled:opacity-50">
+        <button type="submit" disabled={busy || !question.trim()} className="h-12 shrink-0 rounded-sm bg-cinnabar px-5 text-sm text-cream disabled:opacity-50">
           {busy ? t("followBusy") : t("followButton")}
         </button>
       </form>

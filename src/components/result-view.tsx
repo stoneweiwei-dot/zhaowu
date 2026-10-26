@@ -323,7 +323,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         ) : (
         <div className="mx-auto my-4 grid max-w-sm grid-cols-1 gap-3">
           <div className="flex flex-col justify-between rounded-lg border-2 border-cinnabar/80 bg-cinnabar/5 p-4 text-center relative shadow-sm">
-            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-cinnabar px-2 py-0.5 text-[10px] text-cream font-medium">
+            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-sm bg-cinnabar px-2 py-0.5 text-[10px] text-cream font-medium">
               {locale === "en" ? "Recommended" : locale === "zh-Hans" ? toSimplifiedCustomerText("推薦深批") : "推薦深批"}
             </span>
             <div>
@@ -335,7 +335,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
               type="button"
               disabled={purchasing !== null}
               onClick={() => void handleUnlock("system")}
-              className="mt-3 w-full rounded-full bg-cinnabar py-2 text-xs font-medium text-cream hover:opacity-90 disabled:opacity-60"
+              className="mt-3 w-full rounded-sm bg-cinnabar py-2 text-xs font-medium text-cream hover:opacity-90 disabled:opacity-60"
             >
               {purchasing === "system" ? "…" : (locale === "en" ? `Unlock ${reportAccessPrice("system", "bazi").price}` : `解鎖 ${reportAccessPrice("system", "bazi").price}`)}
             </button>
@@ -370,7 +370,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
             type="button"
             disabled={busy !== null}
             onClick={() => void onSave()}
-            className="zhaowu-result-secondary h-12 rounded-full border border-line bg-cream px-5 text-ink disabled:opacity-60"
+            className="zhaowu-result-secondary h-12 rounded-sm border border-line bg-cream px-5 text-ink disabled:opacity-60"
           >
             {busy === "save" ? copy.saving : hasDurableRecord ? copy.updateSaved : t("save")}
           </button>
@@ -378,7 +378,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         <button
           type="button"
           onClick={() => reset()}
-          className="zhaowu-result-reset h-12 rounded-full px-5 text-ink-soft hover:text-ink"
+          className="zhaowu-result-reset h-12 rounded-sm px-5 text-ink-soft hover:text-ink"
         >
           {t("reset")}
         </button>

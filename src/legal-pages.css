@@ -88,7 +88,7 @@
 }
 .zhaowu-site-footer .zhaowu-why > summary::-webkit-details-marker { display: none; }
 .zhaowu-site-footer .zhaowu-why > summary:focus-visible {
-  outline: 2px solid var(--zw-jade, #557f79);
+  outline: 2px solid var(--zw-jade, #504d49);
   outline-offset: 2px;
 }
 .zhaowu-site-footer .zhaowu-why__body {
@@ -120,10 +120,10 @@
   width: 22px;
   height: 22px;
   margin-top: 2px;
-  accent-color: var(--zw-jade, #294b3f);
+  accent-color: var(--zw-jade, #504d49);
 }
 .zhaowu-purchase-consent a {
-  color: var(--zw-jade, #294b3f);
+  color: var(--zw-jade, #504d49);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -188,7 +188,7 @@
   text-align: left;
 }
 .zhaowu-data-notice a {
-  color: var(--zw-jade, #294b3f);
+  color: var(--zw-jade, #504d49);
   text-decoration: underline;
   text-underline-offset: 3px;
 }

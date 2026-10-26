@@ -465,7 +465,7 @@ export function BackgroundMusic() {
           close: "收起音樂控制",
         };
 
-  const transportButton = "inline-grid min-h-11 min-w-11 place-items-center rounded-full border border-line/80 bg-paper/75 text-base leading-none text-ink-soft transition hover:text-ink active:scale-[0.97]";
+  const transportButton = "inline-grid min-h-11 min-w-11 place-items-center rounded-sm border border-line/80 bg-paper/75 text-base leading-none text-ink-soft transition hover:text-ink active:scale-[0.97]";
   const modeButton = (active: boolean) => `${transportButton} ${active ? "border-cinnabar bg-cinnabar/15 text-cinnabar ring-2 ring-cinnabar/25 shadow-sm" : "opacity-70"}`;
   const modeStatus = locale === "en"
     ? `${shuffleEnabled ? "Shuffle" : "In order"} · ${loopEnabled ? "Loop on" : "Stop at end"}`

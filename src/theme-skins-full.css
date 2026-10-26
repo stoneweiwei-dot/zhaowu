@@ -12,21 +12,21 @@
 /* ── per-skin tokens: painting, focal point, type, frame, card ornament ───────────────────────────────── */
 html[data-zws="lotus-boat"] {
   --zws-art: url(/theme-skins/reference-dragon.webp); --zws-focus: 50% 30%; --zws-veil: 38%;
-  --zws-frame: #1c4a3e;
+  --zws-frame: #3b342b;
   --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Cormorant Garamond", "Iowan Old Style", Georgia, serif; --zws-hw: 600;
   --zws-card-outline: 1px solid rgba(184, 147, 77, .55); --zws-card-outline-off: -5px;
   --zws-card-orn: linear-gradient(90deg, transparent, rgba(184, 147, 77, .7), transparent) top 0 left 50% / 46% 2px no-repeat;
 }
 html[data-zws="cloud-jade"] {
   --zws-art: url(/art/zhaowu-dragon-lake-v1.webp); --zws-focus: 50% 52%; --zws-veil: 30%;
-  --zws-frame: #1f4a3c;
+  --zws-frame: #3c352d;
   --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 500;
   --zws-card-orn: radial-gradient(120% 70% at 50% -10%, rgba(255, 255, 255, .85), transparent 60%);
-  --zws-card-border: 1px solid rgba(43, 85, 69, .18);
+  --zws-card-border: 1px solid rgba(71, 64, 57, .18);
 }
 html[data-zws="golden-phoenix"] {
   --zws-art: url(/theme-skins/golden-phoenix-art.webp); --zws-focus: 50% 36%; --zws-veil: 20%;
-  --zws-frame: #2a4a3b;
+  --zws-frame: #403a34;
   --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Playfair Display", "Cormorant Garamond", Georgia, serif; --zws-hw: 700;
   --zws-card-outline: 1px solid rgba(201, 162, 79, .8); --zws-card-outline-off: -5px;
   --zws-card-orn: radial-gradient(circle at 100% 0%, rgba(255, 205, 110, .38), transparent 46%);
@@ -40,7 +40,7 @@ html[data-zws="ink-dragon"] {
 }
 html[data-zws="dragon-lotus"] {
   --zws-art: url(/theme-skins/reference-dragon.webp); --zws-focus: 40% 18%; --zws-veil: 22%;
-  --zws-frame: #1e473c;
+  --zws-frame: #3a332b;
   --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 700;
   --zws-card-r: 8px;
   --zws-card-orn:
@@ -61,10 +61,10 @@ html[data-zws="night-flute"] {
 }
 html[data-zws="day-flute"] {
   --zws-art: url(/theme-skins/reference-day-flute.webp); --zws-focus: 50% 26%; --zws-veil: 40%;
-  --zws-frame: #0f4059;
+  --zws-frame: #3e352a;
   --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 600;
-  --zws-card-border: 1px solid rgba(15, 64, 89, .18); --zws-card-blur: blur(8px);
-  --zws-card-orn: linear-gradient(90deg, #0f4059, #3a7a9a) top 0 left 0 / 100% 3px no-repeat;
+  --zws-card-border: 1px solid rgba(62, 53, 42, .18); --zws-card-blur: blur(8px);
+  --zws-card-orn: linear-gradient(90deg, #3e352a, #7b6b59) top 0 left 0 / 100% 3px no-repeat;
 }
 html[data-zws="night-palace"] {
   --zws-art: url(/theme-skins/night-palace-art.webp); --zws-focus: 50% 34%; --zws-veil: 5%;
@@ -81,14 +81,14 @@ html[data-zws="night-palace"] {
 }
 html[data-zws="pine-ink"] {
   --zws-art: url(/hero-gallery/temple-bamboo-rain.webp); --zws-focus: 50% 45%; --zws-veil: 45%;
-  --zws-frame: #1f4a3a;
+  --zws-frame: #2e3328;
   --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Jost", "Helvetica Neue", Arial, sans-serif; --zws-hw: 800;
-  --zws-card-r: 8px; --zws-card-border: 1px solid rgba(23, 43, 37, .2);
-  --zws-card-orn: linear-gradient(#1f4a3a, #1f4a3a) left 0 top 0 / 4px 100% no-repeat;
+  --zws-card-r: 8px; --zws-card-border: 1px solid rgba(46, 51, 40, .2);
+  --zws-card-orn: linear-gradient(#2e3328, #2e3328) left 0 top 0 / 4px 100% no-repeat;
 }
 html[data-zws="pastel-koi"] {
   --zws-art: url(/theme-skins/reference-koi.webp); --zws-focus: 50% 40%; --zws-veil: 22%;
-  --zws-frame: #5b8a88;
+  --zws-frame: #685a66;
   --zws-font-d: "Noto Sans TC", "PingFang TC", sans-serif; --zws-font-en: "Jost", "Helvetica Neue", Arial, sans-serif; --zws-hw: 400;
   --zws-card: rgba(255, 255, 255, .7); --zws-card-r: 24px; --zws-card-blur: blur(12px);
   --zws-card-border: 1px solid rgba(255, 255, 255, .9);
@@ -98,28 +98,28 @@ html[data-zws="pastel-koi"] {
 /* ── 青木・生生不息 series (15–18): green-wood, new growth ─────────────────────────────────────────────── */
 html[data-zws="verdant-dragon"] {
   --zws-art: url(/theme-skins/verdant-dragon-art.webp); --zws-focus: 50% 24%; --zws-veil: 46%;
-  --zws-frame: #2f6a4c;
+  --zws-frame: #4a6038;
   --zws-font-d: "LXGW WenKai TC", "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 700;
   --zws-card-r: 20px; --zws-card-border: 1px solid rgba(155, 160, 95, .62);
   --zws-card-outline: 1px solid rgba(185, 165, 75, .42); --zws-card-outline-off: -5px;
-  --zws-card-orn: linear-gradient(90deg, #2f6a4c, #b9a54b 62%, transparent) top 0 left 0 / 100% 3px no-repeat, radial-gradient(circle at 100% 0%, rgba(190, 215, 120, .38), transparent 42%);
+  --zws-card-orn: linear-gradient(90deg, #4a6038, #b9a54b 62%, transparent) top 0 left 0 / 100% 3px no-repeat, radial-gradient(circle at 100% 0%, rgba(190, 215, 120, .38), transparent 42%);
   --zws-pc-gold: #b9a54b;
 }
 html[data-zws="verdant-mist"] {
   --zws-art: url(/theme-skins/verdant-mist-art.webp); --zws-focus: 50% 36%; --zws-veil: 34%;
-  --zws-frame: #2e6a52;
+  --zws-frame: #56504a;
   --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 500;
   --zws-card: rgba(247, 250, 242, .8); --zws-card-r: 18px; --zws-card-blur: blur(10px);
   --zws-card-border: 1px solid rgba(255, 255, 255, .85);
-  --zws-card-frame: 0 0 0 1px rgba(88, 138, 112, .28), 0 10px 28px rgba(40, 80, 60, .10);
+  --zws-card-frame: 0 0 0 1px rgba(122, 114, 104, .28), 0 10px 28px rgba(67, 60, 53, .10);
   --zws-card-orn: linear-gradient(180deg, rgba(255, 255, 255, .75), transparent 38%);
 }
 html[data-zws="verdant-pavilion"] {
   --zws-art: url(/theme-skins/verdant-pavilion-art.webp); --zws-focus: 50% 44%; --zws-veil: 40%;
-  --zws-frame: #3f7d3a;
+  --zws-frame: #5a6a3a;
   --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Playfair Display", Georgia, serif; --zws-hw: 600;
   --zws-card-r: 14px; --zws-card-border: 1px solid rgba(120, 165, 80, .5);
-  --zws-card-orn: linear-gradient(180deg, #8fb54a, #3f7d3a) left 0 top 12% / 5px 76% no-repeat, radial-gradient(circle at 100% 0%, rgba(170, 210, 110, .34), transparent 40%);
+  --zws-card-orn: linear-gradient(180deg, #8fb54a, #675c50) left 0 top 12% / 5px 76% no-repeat, radial-gradient(circle at 100% 0%, rgba(170, 210, 110, .34), transparent 40%);
 }
 html[data-zws="verdant-rain"] {
   --zws-art: url(/theme-skins/verdant-rain-art.webp); --zws-focus: 50% 40%; --zws-veil: 14%;
@@ -127,21 +127,21 @@ html[data-zws="verdant-rain"] {
   --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 600;
   --zws-card-r: 12px; --zws-card-blur: blur(10px);
   --zws-card-border: 1px solid rgba(168, 211, 138, .42);
-  --zws-card-frame: 0 0 0 1px rgba(168, 211, 138, .18), 0 0 26px rgba(110, 190, 110, .14), 0 12px 34px rgba(0, 0, 0, .5);
+  --zws-card-frame: 0 0 0 1px rgba(168, 211, 138, .18), 0 0 26px rgba(164, 151, 136, .14), 0 12px 34px rgba(0, 0, 0, .5);
   --zws-card-orn: linear-gradient(90deg, transparent, #a8d38a, transparent) top 0 left 12% / 76% 1.5px no-repeat, linear-gradient(90deg, transparent, rgba(168, 211, 138, .5), transparent) bottom 0 left 12% / 76% 1px no-repeat;
 }
 
 /* ── 畫中六景 series (19–24): owner private uploads, text-free full paintings ────────────────────────── */
 html[data-zws="dawn-dragon"] {
   --zws-art: url(/theme-skins/dawn-dragon-art.webp); --zws-focus: 50% 38%; --zws-veil: 34%;
-  --zws-frame: #2f5d55;
+  --zws-frame: #7a4d35;
   --zws-font-d: "LXGW WenKai TC", "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 600;
   --zws-card-r: 18px; --zws-card-border: 1px solid rgba(200, 154, 92, .5);
   --zws-card-orn: linear-gradient(90deg, transparent, #d6a96a, transparent) top 0 left 10% / 80% 2px no-repeat, radial-gradient(circle at 100% 0%, rgba(255, 205, 140, .30), transparent 44%);
 }
 html[data-zws="moon-lotus-boat"] {
   --zws-art: url(/theme-skins/moon-lotus-boat-art.webp); --zws-focus: 50% 30%; --zws-veil: 34%;
-  --zws-frame: #3d5f52;
+  --zws-frame: #5a5040;
   --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 600;
   --zws-card-r: 16px; --zws-card-border: 1px solid rgba(201, 164, 103, .55);
   --zws-card-outline: 1px solid rgba(201, 164, 103, .32); --zws-card-outline-off: -5px;
@@ -149,14 +149,14 @@ html[data-zws="moon-lotus-boat"] {
 }
 html[data-zws="bamboo-falls"] {
   --zws-art: url(/theme-skins/bamboo-falls-art.webp); --zws-focus: 50% 40%; --zws-veil: 44%;
-  --zws-frame: #2c4a44;
+  --zws-frame: #4a4840;
   --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Playfair Display", Georgia, serif; --zws-hw: 700;
-  --zws-card-r: 10px; --zws-card-border: 1px solid rgba(44, 74, 68, .24);
-  --zws-card-orn: linear-gradient(#2c4a44, #2c4a44) left 0 top 0 / 4px 100% no-repeat;
+  --zws-card-r: 10px; --zws-card-border: 1px solid rgba(74, 72, 64, .24);
+  --zws-card-orn: linear-gradient(#4a4840, #4a4840) left 0 top 0 / 4px 100% no-repeat;
 }
 html[data-zws="petal-immortal"] {
   --zws-art: url(/theme-skins/petal-immortal-art.webp); --zws-focus: 50% 30%; --zws-veil: 26%;
-  --zws-frame: #4f6f76;
+  --zws-frame: #5a6068;
   --zws-font-d: "LXGW WenKai TC", "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 500;
   --zws-card-r: 24px; --zws-card-blur: blur(10px);
   --zws-card-border: 1px solid rgba(255, 255, 255, .9);
@@ -164,7 +164,7 @@ html[data-zws="petal-immortal"] {
 }
 html[data-zws="pink-lotus-stream"] {
   --zws-art: url(/theme-skins/pink-lotus-stream-art.webp); --zws-focus: 50% 40%; --zws-veil: 30%;
-  --zws-frame: #43707a;
+  --zws-frame: #685f55;
   --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 500;
   --zws-card-r: 22px; --zws-card-blur: blur(10px);
   --zws-card-border: 1px solid rgba(255, 255, 255, .88);
@@ -172,10 +172,10 @@ html[data-zws="pink-lotus-stream"] {
 }
 html[data-zws="butterfly-lotus"] {
   --zws-art: url(/theme-skins/butterfly-lotus-art.webp); --zws-focus: 50% 30%; --zws-veil: 36%;
-  --zws-frame: #4a6a62;
+  --zws-frame: #5a5a50;
   --zws-font-d: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif; --zws-font-en: "Cormorant Garamond", Georgia, serif; --zws-hw: 600;
-  --zws-card-r: 14px; --zws-card-border: 1px solid rgba(74, 106, 98, .22);
-  --zws-card-orn: linear-gradient(90deg, #4a6a62, #c9a3ad 70%, transparent) top 0 left 0 / 100% 2px no-repeat;
+  --zws-card-r: 14px; --zws-card-border: 1px solid rgba(96, 90, 84, .22);
+  --zws-card-orn: linear-gradient(90deg, #605a54, #c9a3ad 70%, transparent) top 0 left 0 / 100% 2px no-repeat;
 }
 
 /* ── 1. page painting — every page, not only the home banner ──────────────────────────────────────────── */
@@ -265,8 +265,8 @@ html[data-zws] body .zw-hero-card:nth-of-type(4) { --zws-pc-pos: 80% 84%; }
 /* ── 4. header glass, buttons, nav pills ──────────────────────────────────────────────────────────────── */
 html[data-zws] body .zhaowu-site-header {
   background: color-mix(in srgb, var(--zws-page) 74%, transparent) !important;
-  backdrop-filter: blur(14px) saturate(1.2);
-  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 html[data-zws] body :is(button[type="submit"], .bg-cinnabar, .zhaowu-primary-button, .stone-login-primary) {
   background: var(--zws-btn-bg, var(--zws-accent)) !important;
@@ -342,7 +342,7 @@ html[data-zws][data-zws-mode="dark"] body main :not(:is(.sky-events-page, .earth
   -webkit-text-fill-color: currentColor !important;
 }
 html[data-zws][data-zws-mode="dark"] body main :not(:is(.sky-events-page, .earth-online-shell) *):is([class*="text-cinnabar"], [class*="text-earth"], [class*="text-wood"], [class*="text-ink-mute"]):not(button:not(.seal-border) *):not(.zw-ink-board *) { color: color-mix(in srgb, var(--zws-gold) 92%, #fff) !important; -webkit-text-fill-color: currentColor !important; }
-html[data-zws][data-zws-mode="dark"] body main :not(:is(.sky-events-page, .earth-online-shell) *):is(a, button).rounded-full:not(.bg-cinnabar):not([type="submit"]),
+html[data-zws][data-zws-mode="dark"] body main :not(:is(.sky-events-page, .earth-online-shell) *):is(a, button).rounded-sm:not(.bg-cinnabar):not([type="submit"]),
 html[data-zws][data-zws-mode="dark"] body main :not(:is(.sky-events-page, .earth-online-shell) *):is(a, button).is-secondary {
   background: rgba(224, 190, 128, .12) !important;
   color: var(--zws-ink) !important;
@@ -424,7 +424,7 @@ html[data-zws][data-zws][data-zws-mode="dark"] body :is(#five-element-wardrobe, 
    dark site skin. Its colour samples must retain their real pigment values and
    its labels must stay dark-on-paper instead of inheriting pale night ink. */
 html[data-zws][data-zws][data-zws-mode="dark"] body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac .zhaowu-today-section.is-wardrobe .zhaowu-today-guide__wardrobe {
-  color: #2d4038 !important;
+  color: #3a3733 !important;
   background:
     radial-gradient(circle at 92% 4%, rgba(190, 165, 109, .10), transparent 26%),
     linear-gradient(180deg, #fbf7ed 0%, #f4ecdc 100%) !important;
@@ -444,7 +444,7 @@ html[data-zws][data-zws][data-zws-mode="dark"] body main:is(.zhaowu-home-layout,
   [data-wardrobe-materials] > span,
   [data-wardrobe-note="quiet-colours"] > strong
 ) {
-  color: #273b34 !important;
+  color: #35312e !important;
   -webkit-text-fill-color: currentColor !important;
 }
 html[data-zws][data-zws][data-zws-mode="dark"] body main:is(.zhaowu-home-layout, .zw-hero-home) #daily-almanac .zhaowu-today-section.is-wardrobe :is(
@@ -521,8 +521,8 @@ html[data-zws^="song-"] {
   --zws-radius: 9px;
   --zws-card-border: 1px solid var(--zws-line);
   --zws-card-orn: none;
-  --zws-card-frame: 0 3px 12px rgba(50, 60, 45, .055);
-  --zws-shadow: 0 3px 12px rgba(50, 60, 45, .055);
+  --zws-card-frame: 0 3px 12px rgba(55, 53, 50, .055);
+  --zws-shadow: 0 3px 12px rgba(55, 53, 50, .055);
   --zws-btn-bg: var(--zws-accent);
   --zws-btn-radius: 10px;
   --zws-pill-radius: 9px;
@@ -531,11 +531,11 @@ html[data-zws^="song-"] {
   --zws-rule: var(--zws-gold);
   --zws-pattern: none;
   --zws-hero-radius: 9px;
-  --zws-hero-frame: 0 3px 12px rgba(50, 60, 45, .06);
+  --zws-hero-frame: 0 3px 12px rgba(55, 53, 50, .06);
   --zws-hero-border: 1px solid var(--zws-line);
 }
-html[data-zws="song-clear-dragon"] { --zws-art: url(/art/zhaowu-dragon-lake-v1.webp); --zws-focus: 50% 52%; --zws-frame: #315e50; }
-html[data-zws="song-rain-bank"] { --zws-art: url(/hero-gallery/river-rain-boat.webp); --zws-focus: 50% 48%; --zws-frame: #315c67; }
+html[data-zws="song-clear-dragon"] { --zws-art: url(/art/zhaowu-dragon-lake-v1.webp); --zws-focus: 50% 52%; --zws-frame: #4a4035; }
+html[data-zws="song-rain-bank"] { --zws-art: url(/hero-gallery/river-rain-boat.webp); --zws-focus: 50% 48%; --zws-frame: #554d43; }
 html[data-zws="song-lotus-still"] { --zws-art: url(/art/scene-lotus-boat-v1.webp); --zws-focus: 50% 44%; --zws-frame: #6a604b; }
 html[data-zws="song-osmanthus"] { --zws-art: url(/art/scene-osmanthus-tea-v1.webp); --zws-focus: 50% 45%; --zws-frame: #5c6044; }
 
@@ -565,7 +565,7 @@ html[data-zws^="song-"] body :is(.zw-hero-nav-item.zw-hero-card, .seal-border, .
   outline: none;
 }
 html[data-zws^="song-"] body :is(button[type="submit"], .bg-cinnabar, .zhaowu-primary-button) {
-  box-shadow: 0 2px 8px rgba(32, 54, 48, .08) !important;
+  box-shadow: 0 2px 8px rgba(47, 43, 39, .08) !important;
 }
 
 
@@ -606,7 +606,7 @@ html[data-zws] body :is(
   .history-entry-report,
   .zw-saved-report-card
 ) :is(h1, h2, h3, h4, p, small, strong) {
-  color: #293c34 !important;
+  color: #36332f !important;
   text-shadow: none !important;
 }
 html[data-zws] body .zhaowu-report-header .zhaowu-report-kicker {
@@ -637,8 +637,8 @@ html[data-zws][data-zws-mode="dark"] body main :is(
   .history-entry-report,
   .zw-saved-report-card
 ) :is(h1, h2, h3, h4, p, small, strong, span):not(button *) {
-  color: #293c34 !important;
-  -webkit-text-fill-color: #293c34 !important;
+  color: #36332f !important;
+  -webkit-text-fill-color: #36332f !important;
 }
 
 /* ── 2026-10-13: theme-integrated paper, headings and controls ──────────────────
@@ -686,7 +686,7 @@ html[data-zws][data-zws][data-zws-mode="dark"] {
   --zws-surface: color-mix(in srgb, var(--zws-page) 86%, var(--zws-accent) 14%);
 }
 /* The pastel accent is decorative; reuse its darker existing button pigment. */
-html[data-zws="pastel-koi"][data-zws] { --zws-action-bg: #467573; }
+html[data-zws="pastel-koi"][data-zws] { --zws-action-bg: #685a66; }
 
 /* A reading sheet carries the fill once. Popups stay opaque and independent. */
 html[data-zws][data-zws][data-zws][data-zws] body :is(
@@ -809,7 +809,7 @@ html[data-zws][data-zws][data-zws][data-zws] body :is(
 
 /* Saved report covers deliberately stay warm paper under every skin. */
 html[data-zws][data-zws][data-zws][data-zws] body .zw-saved-report-card {
-  --zws-control-ink: #293c34;
+  --zws-control-ink: #36332f;
   box-shadow: none !important;
   outline: none;
 }
@@ -866,7 +866,7 @@ html[data-zws][data-zws][data-zws][data-zws] body #zhaowu-main-content.zhaowu-ap
   .zhaowu-specialist-hero, .zhaowu-visual-book-head, .zhaowu-luck-head,
   .history-entry-report, .zw-saved-report-card
 ) :is(h1, h2, h3, h4, p, small, strong, span):not(button *):not(a *) {
-  color: #293c34 !important;
+  color: #36332f !important;
   -webkit-text-fill-color: currentColor !important;
 }
 /* Reading-order labels share the report sheet instead of pale grey pills. */
@@ -885,7 +885,7 @@ html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-focused-progress span 
 }
 
 html[data-zws][data-zws][data-zws][data-zws] body #zhaowu-main-content .zhaowu-focused-report.zhaowu-report-continuous-sheet .zhaowu-report-header :is(h3, p) {
-  color: #293c34 !important;
+  color: #36332f !important;
   -webkit-text-fill-color: currentColor !important;
 }
 
@@ -1036,12 +1036,12 @@ html[data-zws][data-zws-mode="dark"] body #root .zw-painted-home :is(h1, .ph-mot
 }
 /* 吉象圖鑑 cards stay paper on night skins: their caption row keeps dark ink */
 html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content main a > .zhaowu-wm + div > span {
-  color: #3a4a42 !important;
+  color: #45423f !important;
   -webkit-text-fill-color: currentColor !important;
 }
 /* Paper pages keep their own heading ink on night skins (a night heading rule elsewhere repaints every h1/h2) */
-html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content main.sky-events-page :is(.sky-events-hero h1, .sky-today-header h2) { color: #17372f !important; -webkit-text-fill-color: currentColor !important; }
-html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content main.sky-events-page :is(.sky-events-watch h2, .sky-event-article h3, .sky-events-archive h2) { color: #24493e !important; -webkit-text-fill-color: currentColor !important; }
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content main.sky-events-page :is(.sky-events-hero h1, .sky-today-header h2) { color: #2d2721 !important; -webkit-text-fill-color: currentColor !important; }
+html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content main.sky-events-page :is(.sky-events-watch h2, .sky-event-article h3, .sky-events-archive h2) { color: #3d3730 !important; -webkit-text-fill-color: currentColor !important; }
 html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content main.sky-events-page .sky-event-title h2 { color: #3b3230 !important; -webkit-text-fill-color: currentColor !important; }
 html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content main.earth-online-shell :is(.earth-online-hero h1, .earth-online-quiz-card h2, .earth-online-article > h2) { color: var(--eo-ink) !important; -webkit-text-fill-color: currentColor !important; }
 html[data-zws][data-zws][data-zws][data-zws-mode="dark"] body #zhaowu-main-content main.earth-online-shell .earth-online-loot-card h2 { color: #fff8e9 !important; -webkit-text-fill-color: currentColor !important; }
@@ -1320,7 +1320,7 @@ html[data-zws] body .history-empty {
   background:
     radial-gradient(circle at 50% 0, color-mix(in srgb, var(--zws-gold) 10%, transparent), transparent 46%),
     var(--zws-card) !important;
-  border-radius: 16px !important;
+  border-radius: 3px !important;
   padding: 34px 20px !important;
 }
 html[data-zws] body .history-empty > .zw-brand-icon {
@@ -1420,23 +1420,23 @@ html[lang="en"][data-zws] body #root main :is(h1, h2, h3, h4, .font-display) {
 
 /* Song Gallery / Frostleaf V3: applies only to this selection, never to auth or report logic. */
 html[data-zws="song-gallery-frostleaf"] {
- --zws-art: url(/theme-skins/song-gallery-frostleaf-art.webp); --zws-focus: 50% 48%; --zws-frame: #315e50; --zws-veil: 75%;
+ --zws-art: url(/theme-skins/song-gallery-frostleaf-art.webp); --zws-focus: 50% 48%; --zws-frame: #4a4035; --zws-veil: 75%;
  --zws-font-d: "Songti TC", "Noto Serif TC", "Songti SC", "Noto Serif SC", serif;
  --zws-font-en: "Iowan Old Style", Baskerville, Georgia, serif;
  --zws-hw: 500; --zws-card-r: 8px; --zws-card-orn: none;
  --zws-card-frame: none; --zws-card-blur: none; --zws-shadow: none;
- --zws-btn-bg: #315e50; --zws-btn-radius: 7px; --zws-pill-radius: 7px;
+ --zws-btn-bg: #4a4035; --zws-btn-radius: 7px; --zws-pill-radius: 7px;
  --zws-rule: #9c8b6b; --zws-rule-h: 1px; --zws-rule-w: 36px;
  --zws-hero-radius: 8px; --zws-hero-frame: none; --zws-card-border: 1px solid var(--zws-line);
 }
 
 /* Verified 2026 seasonal pack, using the existing full-site skin engine. */
 html[data-zws="solar-frost-descent"] {
- --zws-art: url(/theme-skins/solar-frost-descent/hero-frost-descent.webp); --zws-focus: 50% 55%; --zws-frame: #375f5b; --zws-veil: 84%;
+ --zws-art: url(/theme-skins/solar-frost-descent/hero-frost-descent.webp); --zws-focus: 50% 55%; --zws-frame: #524b44; --zws-veil: 84%;
  --zws-font-d: "Songti TC", "Noto Serif TC", "Songti SC", serif;
  --zws-font-en: "Iowan Old Style", Baskerville, Georgia, serif;
  --zws-card-orn: none; --zws-card-frame: none; --zws-card-blur: none;
- --zws-hw: 500; --zws-shadow: none; --zws-btn-bg: #375f5b; --zws-btn-radius: 7px; --zws-pill-radius: 7px;
+ --zws-hw: 500; --zws-shadow: none; --zws-btn-bg: #4a4035; --zws-btn-radius: 7px; --zws-pill-radius: 7px;
  --zws-rule: #b59a70; --zws-rule-h: 1px; --zws-rule-w: 36px;
  --zws-hero-radius: 8px; --zws-hero-frame: none; --zws-card-border: 1px solid var(--zws-line);
 }

@@ -48,7 +48,7 @@ html body #root .zw-langpick .zw-langpick__track {
   gap: 2px;
   padding: 3px;
   border: 1px solid color-mix(in srgb, var(--color-line, #d8c7a4) 70%, #b8934d);
-  border-radius: 999px;
+  border-radius: 3px;
   background: color-mix(in srgb, var(--color-cream, #fffdf7) 94%, transparent);
   box-shadow: 0 1px 0 rgba(184, 147, 77, .28), 0 8px 20px -12px rgba(71, 61, 47, .45);
 }
@@ -60,7 +60,7 @@ html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt {
   height: 44px !important;
   padding: 0 14px !important;
   border: 0 !important;
-  border-radius: 999px !important;
+  border-radius: 3px !important;
   background: transparent !important;
   color: var(--color-ink-soft, #5a554c) !important;
   font-family: inherit;
@@ -75,13 +75,13 @@ html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt {
 }
 
 html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt:hover {
-  background: color-mix(in srgb, var(--color-wood, #2f6f5f) 12%, transparent) !important;
+  background: color-mix(in srgb, var(--color-wood, #352e26) 12%, transparent) !important;
 }
 
 html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt[aria-checked="true"] {
-  background: var(--color-wood, #2f6f5f) !important;
+  background: var(--color-wood, #352e26) !important;
   color: #fffaf0 !important;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .22), 0 3px 8px -4px rgba(26, 61, 52, .6) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .22), 0 1px 3px -1px rgba(53, 46, 38, .4) !important;
 }
 
 html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt:focus-visible {

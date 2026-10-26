@@ -318,7 +318,7 @@ function FunTestsIndex() {
         <section className="seal-border rounded-2xl bg-cream/95 p-5 sm:p-8">
           <button type="button" onClick={backToMenu} className="mb-4 text-sm text-cinnabar">← {pageCopy.menu}</button>
           <div className="flex items-center justify-between gap-4 text-xs text-ink-mute"><span>{pageCopy.animalTitle}</span><span>{animalIndex + 1} / {animalQuestions.length}</span></div>
-          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-paper-deep"><div className="h-full bg-cinnabar transition-all" style={{ width: `${((animalIndex + 1) / animalQuestions.length) * 100}%` }} /></div>
+          <div className="mt-3 h-1.5 overflow-hidden rounded-sm bg-paper-deep"><div className="h-full bg-cinnabar transition-all" style={{ width: `${((animalIndex + 1) / animalQuestions.length) * 100}%` }} /></div>
           <h2 className="mt-6 font-display text-2xl leading-9 text-ink">{animalQuestions[animalIndex].title}</h2>
           <div className="mt-5 grid gap-3">
             {animalQuestions[animalIndex].answers.map((answer) => (
@@ -335,7 +335,7 @@ function FunTestsIndex() {
             <h2 className="mt-2 font-display text-3xl text-ink">{inner.name} · {inner.subtitle}</h2>
             <p className="mt-4 text-sm leading-7 text-ink-soft"><b className="text-ink">{pageCopy.animalCore}：</b>{inner.desire}</p>
             <p className="mt-4 text-sm font-semibold text-ink">{pageCopy.animalStrength}</p>
-            <div className="mt-2 flex flex-wrap gap-2">{inner.powers.map((power) => <span key={power} className="rounded-full border border-line bg-paper px-3 py-1.5 text-sm text-ink">{power}</span>)}</div>
+            <div className="mt-2 flex flex-wrap gap-2">{inner.powers.map((power) => <span key={power} className="rounded-sm border border-line bg-paper px-3 py-1.5 text-sm text-ink">{power}</span>)}</div>
             <p className="mt-4 text-sm leading-7 text-ink-soft"><b className="text-ink">{pageCopy.animalShadow}：</b>{inner.shadow}</p>
           </article>
 
@@ -355,15 +355,15 @@ function FunTestsIndex() {
             <article className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
               <strong className="font-display text-xl text-ink">{pageCopy.needChart}</strong>
               <p className="mt-2 text-sm leading-7 text-ink-soft">{pageCopy.needChartBody}</p>
-              <Link to="/" className="mt-4 inline-flex rounded-full bg-cinnabar px-5 py-3 text-sm text-cream">{pageCopy.home}</Link>
+              <Link to="/" className="mt-4 inline-flex rounded-sm bg-cinnabar px-5 py-3 text-sm text-cream">{pageCopy.home}</Link>
             </article>
           )}
 
           <SongBeastPromptDisclosure locale={locale} innerAnimal={animalResultKey ?? "eagle"} guardianElement={guardian?.element} />
 
           <div className="grid gap-3 sm:grid-cols-2">
-            <button type="button" onClick={startAnimal} className="min-h-12 rounded-full border border-line bg-cream px-5 py-3 text-sm text-ink">{pageCopy.restart}</button>
-            <button type="button" onClick={backToMenu} className="min-h-12 rounded-full border border-line bg-paper px-5 py-3 text-sm text-ink">{pageCopy.menu}</button>
+            <button type="button" onClick={startAnimal} className="min-h-12 rounded-sm border border-line bg-cream px-5 py-3 text-sm text-ink">{pageCopy.restart}</button>
+            <button type="button" onClick={backToMenu} className="min-h-12 rounded-sm border border-line bg-paper px-5 py-3 text-sm text-ink">{pageCopy.menu}</button>
           </div>
         </section>
       ) : null}
@@ -372,7 +372,7 @@ function FunTestsIndex() {
         <section className="seal-border rounded-2xl bg-cream/95 p-5 sm:p-8">
           <button type="button" onClick={backToMenu} className="mb-4 text-sm text-cinnabar">← {elementUi.back}</button>
           <div className="flex items-center justify-between gap-4 text-xs text-ink-mute"><span>{elementUi.progress}</span><span>{elementIndex + 1} / {elementQuestions.length}</span></div>
-          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-paper-deep"><div className="h-full bg-cinnabar transition-all" style={{ width: `${((elementIndex + 1) / elementQuestions.length) * 100}%` }} /></div>
+          <div className="mt-3 h-1.5 overflow-hidden rounded-sm bg-paper-deep"><div className="h-full bg-cinnabar transition-all" style={{ width: `${((elementIndex + 1) / elementQuestions.length) * 100}%` }} /></div>
           <h2 className="mt-6 font-display text-2xl leading-9 text-ink">{elementQuestions[elementIndex].title}</h2>
           <div className="mt-5 grid gap-3">
             {elementQuestions[elementIndex].answers.map((answer) => (
@@ -411,8 +411,8 @@ function FunTestsIndex() {
           </article>
 
           <div className="grid gap-3 sm:grid-cols-2">
-            <button type="button" onClick={startElement} className="min-h-12 rounded-full border border-line bg-cream px-5 py-3 text-sm text-ink">{elementUi.restart}</button>
-            <button type="button" onClick={backToMenu} className="min-h-12 rounded-full border border-line bg-paper px-5 py-3 text-sm text-ink">{elementUi.back}</button>
+            <button type="button" onClick={startElement} className="min-h-12 rounded-sm border border-line bg-cream px-5 py-3 text-sm text-ink">{elementUi.restart}</button>
+            <button type="button" onClick={backToMenu} className="min-h-12 rounded-sm border border-line bg-paper px-5 py-3 text-sm text-ink">{elementUi.back}</button>
           </div>
         </section>
       ) : null}

@@ -129,7 +129,7 @@ export function AuspiciousGallerySection({ mode = "preview" }: { mode?: Auspicio
         <div className="mt-5 flex justify-center">
           <Link
             to="/auspicious-atlas"
-            className="inline-flex min-h-11 items-center rounded-full border border-line bg-paper px-5 text-sm text-ink-soft"
+            className="inline-flex min-h-11 items-center rounded-sm border border-line bg-paper px-5 text-sm text-ink-soft"
           >
             {copy.open} →
           </Link>
@@ -141,7 +141,7 @@ export function AuspiciousGallerySection({ mode = "preview" }: { mode?: Auspicio
           <button
             type="button"
             onClick={() => setVisibleCount((count) => count + LOAD_MORE)}
-            className="min-h-11 rounded-full border border-line bg-paper px-5 text-sm text-ink-soft"
+            className="min-h-11 rounded-sm border border-line bg-paper px-5 text-sm text-ink-soft"
           >
             {copy.more}
           </button>

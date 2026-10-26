@@ -123,7 +123,7 @@ function StellarDiagram({ shape, alt }: { shape: Shape; alt: string }) {
         <radialGradient id="zws-star" cx="42%" cy="35%" r="69%">
           <stop offset="0%" stopColor="#fff8e4" />
           <stop offset="45%" stopColor={starColor} />
-          <stop offset="100%" stopColor={isBlue ? "#426fa7" : "#b96347"} />
+          <stop offset="100%" stopColor={isBlue ? "#867663" : "#b96347"} />
         </radialGradient>
         <radialGradient id="zws-haze">
           <stop offset="0%" stopColor="#b8c8bb" stopOpacity=".7" />
@@ -257,8 +257,8 @@ export function StellarLifeCycleInteractive() {
         ) : null}
       </div>
       <div className="mt-5 flex items-center justify-between gap-3">
-        <button type="button" disabled={index === 0} onClick={() => setIndex((i) => Math.max(0, i - 1))} className="min-h-11 rounded-full border border-line bg-paper px-5 py-2 text-sm text-ink disabled:cursor-not-allowed disabled:opacity-40">{t(["← 上一步", "← 上一步", "← Previous"], locale)}</button>
-        <button type="button" disabled={index === stages.length - 1} onClick={() => setIndex((i) => Math.min(stages.length - 1, i + 1))} className="min-h-11 rounded-full border border-line bg-paper px-5 py-2 text-sm text-ink disabled:cursor-not-allowed disabled:opacity-40">{t(["下一步 →", "下一步 →", "Next →"], locale)}</button>
+        <button type="button" disabled={index === 0} onClick={() => setIndex((i) => Math.max(0, i - 1))} className="min-h-11 rounded-sm border border-line bg-paper px-5 py-2 text-sm text-ink disabled:cursor-not-allowed disabled:opacity-40">{t(["← 上一步", "← 上一步", "← Previous"], locale)}</button>
+        <button type="button" disabled={index === stages.length - 1} onClick={() => setIndex((i) => Math.min(stages.length - 1, i + 1))} className="min-h-11 rounded-sm border border-line bg-paper px-5 py-2 text-sm text-ink disabled:cursor-not-allowed disabled:opacity-40">{t(["下一步 →", "下一步 →", "Next →"], locale)}</button>
       </div>
       <p className="mt-5 border-t border-line pt-4 text-xs leading-6 text-ink-mute">{t(["科學依據：NASA 恆星演化、太陽資料。年齡與質量門檻均為近似值；不同金屬豐度、旋轉、伴星與質量流失會改變演化。", "科学依据：NASA 恒星演化、太阳资料。年龄与质量门槛均为近似值；不同金属丰度、旋转、伴星与质量流失会改变演化。", "Sources: NASA stellar lifecycle and Sun facts. Times and mass thresholds are approximate; composition, rotation, companions and mass loss change the details."], locale)}</p>
       <nav className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-xs text-cinnabar" aria-label={t(["科學來源", "科学来源", "Scientific sources"], locale)}>

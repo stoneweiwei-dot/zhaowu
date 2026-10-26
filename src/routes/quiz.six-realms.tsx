@@ -132,7 +132,7 @@ function SixRealmsQuiz() {
           <div className="flex items-center justify-between gap-4 text-xs text-ink-mute">
             <span>{copy.question} {index + 1}</span><span>{index + 1} / {questions.length}</span>
           </div>
-          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-paper-deep">
+          <div className="mt-3 h-1.5 overflow-hidden rounded-sm bg-paper-deep">
             <div className="h-full bg-cinnabar transition-all" style={{ width: `${((index + 1) / questions.length) * 100}%` }} />
           </div>
           <h2 className="mt-6 font-display text-2xl leading-9 text-ink">{questions[index].title}</h2>
@@ -152,7 +152,7 @@ function SixRealmsQuiz() {
               );
             })}
           </div>
-          <button type="button" disabled={!selected} onClick={advance} className="mt-5 min-h-12 w-full rounded-full bg-cinnabar px-5 py-3 text-sm text-cream disabled:cursor-not-allowed disabled:opacity-35">
+          <button type="button" disabled={!selected} onClick={advance} className="mt-5 min-h-12 w-full rounded-sm bg-cinnabar px-5 py-3 text-sm text-cream disabled:cursor-not-allowed disabled:opacity-35">
             {index === questions.length - 1 ? copy.result : copy.next}
           </button>
         </section>
@@ -183,8 +183,8 @@ function SixRealmsQuiz() {
           </article>
 
           <div className="grid gap-3 sm:grid-cols-2">
-            <button type="button" onClick={reset} className="min-h-12 rounded-full border border-line bg-cream px-5 py-3 text-sm text-ink">{copy.restart}</button>
-            <Link to="/" className="grid min-h-12 place-items-center rounded-full bg-cinnabar px-5 py-3 text-sm text-cream">{copy.formal}</Link>
+            <button type="button" onClick={reset} className="min-h-12 rounded-sm border border-line bg-cream px-5 py-3 text-sm text-ink">{copy.restart}</button>
+            <Link to="/" className="grid min-h-12 place-items-center rounded-sm bg-cinnabar px-5 py-3 text-sm text-cream">{copy.formal}</Link>
           </div>
           <p className="text-center text-xs leading-6 text-ink-mute">{copy.formalNote}</p>
         </section>

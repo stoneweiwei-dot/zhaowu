@@ -110,7 +110,7 @@ export function BaziKnowledgeNotesSection() {
           <h3 className="mt-1 font-display text-xl text-ink">{tr(locale,"五行五色、五音與五氣","五行五色、五音与五气","Five Elements, Colours, Tones and Qi")}</h3>
           <p className="mt-1 text-sm leading-6 text-ink-soft">{tr(locale,"看懂傳統對應，也看它們如何轉成實際行動。","看懂传统对应，也看它们如何转成实际行动。","Understand the traditional correspondences and how to turn them into practical action.")}</p>
         </div>
-        <Link to="/knowledge/five-elements-tone-qi" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-pine px-4 py-2 text-sm text-white">
+        <Link to="/knowledge/five-elements-tone-qi" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-sm bg-pine px-4 py-2 text-sm text-white">
           {tr(locale,"閱讀教學","阅读教学","Read the guide")} →
         </Link>
       </section>
@@ -173,7 +173,7 @@ export function BaziKnowledgeNotesSection() {
         <div className="mt-5 rounded-xl border border-earth/25 bg-cream p-4">
           <h4 className="font-display text-lg text-ink">{tr(locale,"格局不只分「有／沒有」","格局不只分“有／没有”","Structure is not just yes or no")}</h4>
           <div className="mt-3 flex flex-wrap gap-2">
-            {structureStates.map((state) => <span key={state} className="rounded-full border border-line bg-paper px-3 py-2 text-xs text-ink-soft">{state}</span>)}
+            {structureStates.map((state) => <span key={state} className="rounded-sm border border-line bg-paper px-3 py-2 text-xs text-ink-soft">{state}</span>)}
           </div>
           <p className="mt-3 text-sm leading-7 text-ink-soft">{tr(locale,"每一級都要能回到月令、透干、根氣、相神／用神、制化與破格因素。單獨一句「某格」不算完整判斷。","每一级都要能回到月令、透干、根气、相神／用神、制化与破格因素。单独一句“某格”不算完整判断。","Every state must be traceable to season, visible stems, roots, supporting/useful functions, transformations and breaking factors. A structure label alone is not a complete judgement.")}</p>
         </div>
@@ -191,7 +191,7 @@ export function BaziKnowledgeNotesSection() {
           {STEMS.map((stem) => (
             <article key={stem.key} className="rounded-xl border border-line bg-cream p-4">
               <div className="flex items-center gap-4">
-                <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full border font-display text-3xl ${ELEMENT_CLASS[stem.element]}`}>{stem.key}</div>
+                <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-sm border font-display text-3xl ${ELEMENT_CLASS[stem.element]}`}>{stem.key}</div>
                 <div>
                   <h4 className="font-display text-lg text-ink">{stem.key} · {stem.image[i]}</h4>
                   <p className="mt-1 text-xs leading-5 text-ink-mute">{stem.words[i].join(" · ")}</p>
@@ -231,8 +231,8 @@ export function BaziKnowledgeNotesSection() {
         <article className="seal-border rounded-2xl bg-paper p-5 sm:p-7">
           <h3 className="font-display text-xl text-ink">{tr(locale,"古訓與網路整理要分開","古训与网络整理要分开","Separate classical quotations from modern summaries")}</h3>
           <div className="mt-4 flex flex-wrap gap-2">
-            <span className="rounded-full border border-earth/30 bg-cream px-3 py-1 text-xs text-earth">{tr(locale,"古籍原文","古籍原文","Verified classical text")}</span>
-            <span className="rounded-full border border-line bg-cream px-3 py-1 text-xs text-ink-soft">{tr(locale,"今人整理／出處待考","今人整理／出处待考","Modern summary / source unverified")}</span>
+            <span className="rounded-sm border border-earth/30 bg-cream px-3 py-1 text-xs text-earth">{tr(locale,"古籍原文","古籍原文","Verified classical text")}</span>
+            <span className="rounded-sm border border-line bg-cream px-3 py-1 text-xs text-ink-soft">{tr(locale,"今人整理／出處待考","今人整理／出处待考","Modern summary / source unverified")}</span>
           </div>
           <p className="mt-4 text-sm leading-6 text-ink-soft">{tr(locale,"只有已確認原典、篇章或可靠文獻來源的文字，才標古籍原文；網路流傳句不為了效果冒充經典。","只有已确认原典、篇章或可靠文献来源的文字，才标古籍原文；网络流传句不为了效果冒充经典。","Only verified source text is labelled classical. Internet sayings are not upgraded into scripture for effect.")}</p>
         </article>
@@ -240,7 +240,7 @@ export function BaziKnowledgeNotesSection() {
         <article className="seal-border rounded-2xl bg-paper p-5 sm:p-7">
           <h3 className="font-display text-xl text-ink">{tr(locale,"趣味測驗另行","趣味测验另行","Fun quizzes stay separate")}</h3>
           <p className="mt-4 text-sm leading-6 text-ink-soft">{tr(locale,"趣味測驗可以觀察當下傾向，但不冒充命盤，也不拿「大神級／超神級」之類等級當人生層級。","趣味测验可以观察当下倾向，但不冒充命盘，也不拿“大神级／超神级”之类等级当人生层级。","Fun quizzes can reflect current tendencies, but they are not charts and do not rank a person's life level.")}</p>
-          <Link to="/fun-tests" className="mt-5 inline-flex min-h-11 items-center rounded-full border border-line bg-cream px-4 py-2 text-sm text-ink">{tr(locale,"去趣味測驗","去趣味测验","Open fun quizzes")} →</Link>
+          <Link to="/fun-tests" className="mt-5 inline-flex min-h-11 items-center rounded-sm border border-line bg-cream px-4 py-2 text-sm text-ink">{tr(locale,"去趣味測驗","去趣味测验","Open fun quizzes")} →</Link>
         </article>
       </section>
 

@@ -11,18 +11,18 @@
   --color-cinnabar: #a7352b;
   --color-cinnabar-deep: #76251f;
   --color-line: #d8c7a4;
-  --color-wood: #2f6f5f;
+  --color-wood: #352e26;
   --color-fire: #a7352b;
   --color-earth: #9b7745;
   --color-metal: #756f64;
-  --color-water: #314f58;
+  --color-water: #4b453e;
   --font-display: "Noto Serif TC", "Songti TC", "Songti SC", "STSong", "SimSun", "PMingLiU", "Noto Serif CJK TC", "Noto Serif SC", serif;
   --font-sans: "Noto Sans TC", "PingFang TC", "Noto Sans", system-ui, sans-serif;
   --radius-xs: 4px;
   --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 22px;
-  --radius-xl: 28px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
 }
 
 @layer base {
@@ -37,15 +37,7 @@
   }
 
   body {
-    background-image:
-      linear-gradient(rgba(116, 100, 75, .045) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(116, 100, 75, .035) 1px, transparent 1px),
-      radial-gradient(circle at 18% 10%, rgba(255, 255, 255, .92), transparent 25%),
-      radial-gradient(circle at 86% 18%, rgba(167, 53, 43, .055), transparent 23%),
-      radial-gradient(circle at 16% 84%, rgba(47, 111, 95, .055), transparent 28%),
-      linear-gradient(180deg, #fbf8f1, #f1e6d3);
-    background-size: 32px 32px, 32px 32px, auto, auto, auto, auto;
-    background-attachment: fixed;
+    background: #f5ede0;
   }
 
   body:has(.zhaowu-has-wallpaper) {
@@ -68,11 +60,8 @@
 }
 
 .seal-border {
-  border-radius: 14px;
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--color-line) 82%, transparent),
-    0 18px 50px rgb(62 45 24 / 0.08),
-    inset 0 1px 0 rgb(255 255 255 / .58);
+  border-radius: 2px;
+  border-bottom: 1px solid color-mix(in oklab, var(--color-line) 60%, transparent);
 }
 
 .hero-kicker {
@@ -109,7 +98,7 @@
   height: 0.16em;
   right: -0.2em;
   top: -0.02em;
-  border-radius: 999px;
+  border-radius: 3px;
   background: var(--color-cinnabar);
   box-shadow: 0 0 0 5px rgb(143 48 39 / 0.08);
 }
@@ -159,9 +148,9 @@
   padding:clamp(2rem,6vw,4.5rem);
   background:
     radial-gradient(circle at 77% 18%, rgba(244,220,174,.52), transparent 24%),
-    radial-gradient(circle at 18% 80%, rgba(77,112,91,.08), transparent 26%),
+    radial-gradient(circle at 18% 80%, rgba(101, 95, 88,.08), transparent 26%),
     linear-gradient(145deg, rgba(255,251,240,.98), rgba(241,229,203,.94));
-  box-shadow:0 28px 90px rgba(76,53,29,.13), inset 0 0 0 1px rgba(152,117,70,.23), inset 0 0 0 10px rgba(255,255,255,.18);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .zhaowu-sanctum::before {
@@ -193,8 +182,8 @@
 .zhaowu-sanctum-body { margin-top:1rem; max-width:31rem; color:var(--color-ink-soft); font-size:.9rem; line-height:1.9; }
 .zhaowu-start-button {
   display:inline-flex; align-items:center; min-height:3rem; margin-top:1.8rem; padding:0 1.6rem;
-  border-radius:999px; background:linear-gradient(135deg,#8f3027,#6f241e); color:#fff9ef;
-  box-shadow:0 12px 28px rgba(111,36,30,.22), inset 0 1px 0 rgba(255,255,255,.16); letter-spacing:.1em;
+  border-radius: 3px; background:linear-gradient(135deg,#8f3027,#6f241e); color:#fff9ef;
+  box-shadow: 0 1px 3px rgba(55,44,29,.06); letter-spacing:.1em;
 }
 
 .zhaowu-sanctum-seal {
@@ -212,7 +201,7 @@
   width:min(26rem,74%); padding:1rem 1.25rem 1rem 1rem;
   border-top:1px solid rgba(152,117,70,.32); border-bottom:1px solid rgba(152,117,70,.25);
   background:linear-gradient(90deg,rgba(246,237,216,.90),rgba(255,251,241,.74));
-  backdrop-filter:blur(10px); box-shadow:0 12px 34px rgba(76,53,29,.08);
+  backdrop-filter: none; box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 .zhaowu-almanac-mark { width:5rem; height:5rem; display:grid; place-items:center; border-right:1px solid rgba(143,48,39,.2); padding-right:.85rem; }
 .zhaowu-almanac-mark .zhaowu-emblem { width:4.6rem!important; height:4.6rem!important; }

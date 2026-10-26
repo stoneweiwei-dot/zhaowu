@@ -79,7 +79,7 @@ export function OwnerSongBeastPromptPanel({ locale }: { locale: Locale }) {
         <textarea id="song-beast-prompt-text" readOnly value={prompt} rows={8} className="mt-1 block w-full resize-y rounded-lg border border-line bg-paper p-3 text-sm leading-6 text-ink" />
       </label>
       <div className="mt-3 flex flex-wrap items-center gap-3">
-        <button type="button" onClick={() => void copyPrompt()} className="min-h-11 rounded-lg bg-[#315e50] px-5 text-sm font-medium text-white">
+        <button type="button" onClick={() => void copyPrompt()} className="min-h-11 rounded-lg bg-[#4a4035] px-5 text-sm font-medium text-white">
           {tx("複製生成指令", "复制生成指令", "Copy prompt")}
         </button>
         <span role="status" className="text-sm text-ink-soft">

@@ -20,10 +20,10 @@
   color: var(--tj-text);
   background:
     radial-gradient(circle at 84% 16%, rgba(170, 121, 63, .07), transparent 24rem),
-    radial-gradient(circle at 9% 92%, rgba(47, 116, 101, .045), transparent 20rem),
+    radial-gradient(circle at 9% 92%, rgba(94, 82, 69, .045), transparent 20rem),
     linear-gradient(180deg, rgba(255, 249, 238, .18), rgba(238, 221, 192, .08)),
     rgba(246, 236, 217, .28);
-  box-shadow: 0 14px 38px rgba(74, 54, 31, .065);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .tianji-page::before,
@@ -39,7 +39,7 @@
   opacity: .15;
   background-image:
     radial-gradient(circle, rgba(142, 103, 58, .22) 0 1px, transparent 1.25px),
-    radial-gradient(circle, rgba(47, 116, 101, .16) 0 1px, transparent 1.2px);
+    radial-gradient(circle, rgba(94, 82, 69, .16) 0 1px, transparent 1.2px);
   background-size: 96px 96px, 151px 151px;
   background-position: 18px 20px, 66px 78px;
   animation: tj-stars 28s linear infinite;
@@ -96,7 +96,7 @@
   align-items: center;
   justify-content: center;
   border: 1px solid var(--tj-line);
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 0 .9rem;
   color: var(--tj-muted);
   background: rgba(249, 241, 226, .36);
@@ -127,7 +127,7 @@
   align-items: center;
   min-height: 1.9rem;
   border: 1px solid rgba(150, 111, 64, .28);
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 0 .75rem;
   color: var(--tj-gold);
   background: rgba(247, 237, 217, .40);
@@ -178,7 +178,7 @@
   border-radius: 50%;
 }
 
-.tianji-sigil::after { inset: 35%; border-color: rgba(47, 116, 101, .18); }
+.tianji-sigil::after { inset: 35%; border-color: rgba(94, 82, 69, .18); }
 .tianji-sigil span,
 .tianji-sigil b {
   position: absolute;
@@ -208,8 +208,8 @@
   background:
     linear-gradient(165deg, rgba(255, 249, 238, .16), transparent 38%),
     var(--tj-panel);
-  backdrop-filter: blur(1.5px) saturate(102%);
-  -webkit-backdrop-filter: blur(1.5px) saturate(102%);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   box-shadow: 0 8px 24px rgba(74, 54, 31, .045);
 }
 
@@ -262,14 +262,14 @@
   grid-template-columns: 1fr 1fr;
   gap: .4rem;
   border: 1px solid var(--tj-line);
-  border-radius: 999px;
+  border-radius: 3px;
   padding: .3rem;
   background: rgba(244, 231, 208, .28);
 }
 
 .tianji-calendar-tabs button {
   min-height: 2.65rem;
-  border-radius: 999px;
+  border-radius: 3px;
   color: var(--tj-muted);
   font-size: .82rem;
   font-weight: 650;
@@ -278,8 +278,8 @@
 
 .tianji-calendar-tabs button[aria-selected="true"] {
   color: #fffaf0;
-  background: #2f7465;
-  box-shadow: 0 7px 18px rgba(47, 116, 101, .10);
+  background: #5e5245;
+  box-shadow: 0 7px 18px rgba(94, 82, 69, .10);
 }
 
 .tianji-field-block {
@@ -319,10 +319,10 @@
   gap: .72rem;
   align-items: flex-start;
   margin-top: 1rem;
-  border: 1px solid rgba(47, 116, 101, .22);
+  border: 1px solid rgba(94, 82, 69, .22);
   border-radius: 1rem;
   padding: .85rem;
-  background: rgba(47, 116, 101, .055);
+  background: rgba(94, 82, 69, .055);
 }
 
 .tianji-auto-icon {
@@ -333,12 +333,12 @@
   place-items: center;
   border-radius: 50%;
   color: #fffaf0;
-  background: #2f7465;
+  background: #5e5245;
   font-size: .78rem;
   font-weight: 900;
 }
 
-.tianji-auto-note strong { display: block; color: #2f7465; font-size: .82rem; }
+.tianji-auto-note strong { display: block; color: #5e5245; font-size: .82rem; }
 .tianji-auto-note small { display: block; margin-top: .24rem; color: var(--tj-muted); font-size: .7rem; line-height: 1.55; }
 
 .tianji-error {
@@ -360,12 +360,12 @@
   min-height: 3.25rem;
   margin-top: 1rem;
   border: 0;
-  border-radius: 999px;
+  border-radius: 3px;
   color: #fff9ef;
   background: linear-gradient(180deg, #b4372b, #982d25);
   font-weight: 850;
   letter-spacing: .1em;
-  box-shadow: 0 10px 22px rgba(131, 43, 32, .12);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
   transition: transform .18s ease, filter .18s ease;
 }
 
@@ -403,7 +403,7 @@
   border: 1px solid rgba(150, 111, 64, .13);
   border-radius: 50%;
 }
-.tianji-orbit-ring::after { inset: 32%; border-color: rgba(47, 116, 101, .16); }
+.tianji-orbit-ring::after { inset: 32%; border-color: rgba(94, 82, 69, .16); }
 
 .tianji-core {
   position: absolute;
@@ -438,10 +438,10 @@
 }
 
 .tianji-node[data-active="true"] {
-  border-color: #2f7465;
+  border-color: #5e5245;
   color: #fffaf0;
-  background: #2f7465;
-  box-shadow: 0 0 14px rgba(47,116,101,.16);
+  background: #5e5245;
+  box-shadow: 0 0 14px rgba(94, 82, 69,.16);
   font-weight: 850;
 }
 
@@ -468,7 +468,7 @@
   box-shadow: 0 6px 18px rgba(74,54,31,.035);
 }
 
-.tianji-resolved-strip { padding: .85rem; background: linear-gradient(135deg, rgba(180,55,43,.035), rgba(47,116,101,.035)), rgba(247,238,220,.34); }
+.tianji-resolved-strip { padding: .85rem; background: linear-gradient(135deg, rgba(180,55,43,.035), rgba(94, 82, 69,.035)), rgba(247,238,220,.34); }
 .tianji-resolved-strip small,
 .tianji-reading small,
 .tianji-destiny small,
@@ -485,7 +485,7 @@
 .tianji-destiny { margin-top: .7rem; padding: .9rem; }
 .tianji-reading p,
 .tianji-destiny p { margin-top: .42rem; color: var(--tj-muted); font-size: .82rem; line-height: 1.72; }
-.tianji-destiny { border-color: rgba(180,55,43,.22); background: linear-gradient(135deg, rgba(180,55,43,.04), rgba(47,116,101,.03)), rgba(247,238,220,.34); }
+.tianji-destiny { border-color: rgba(180,55,43,.22); background: linear-gradient(135deg, rgba(180,55,43,.04), rgba(94, 82, 69,.03)), rgba(247,238,220,.34); }
 
 @media (max-width: 760px) {
   .tianji-page { min-height: 0; border-radius: 1.45rem; }

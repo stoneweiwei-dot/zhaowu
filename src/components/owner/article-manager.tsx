@@ -141,8 +141,8 @@ export function OwnerArticleManager({ locale }: { locale: Locale }) {
                   <p className="mt-1 text-xs text-ink-mute">{archived ? t(locale,"已下架","已下架","Unpublished") : changed ? t(locale,"已編輯","已编辑","Edited") : t(locale,"原始文章","原始文章","Original")}</p>
                 </div>
                 <div className="flex gap-2">
-                  <button type="button" className="min-h-11 rounded-full border border-line px-3 text-xs text-ink" onClick={() => choose(base.id)}>{t(locale,"編輯","编辑","Edit")}</button>
-                  <button type="button" disabled={busyId !== null} className="min-h-11 rounded-full border border-cinnabar/30 px-3 text-xs text-cinnabar disabled:opacity-40" onClick={() => void changeArchive(base.id, !archived)}>
+                  <button type="button" className="min-h-11 rounded-sm border border-line px-3 text-xs text-ink" onClick={() => choose(base.id)}>{t(locale,"編輯","编辑","Edit")}</button>
+                  <button type="button" disabled={busyId !== null} className="min-h-11 rounded-sm border border-cinnabar/30 px-3 text-xs text-cinnabar disabled:opacity-40" onClick={() => void changeArchive(base.id, !archived)}>
                     {archived ? t(locale,"還原","还原","Restore") : t(locale,"刪除","删除","Remove")}
                   </button>
                 </div>
@@ -156,7 +156,7 @@ export function OwnerArticleManager({ locale }: { locale: Locale }) {
           <h3 className="font-display text-xl text-ink">{selected.article.title[locale]}</h3>
           <div className="mt-4 flex flex-wrap gap-2" aria-label="Article language">
             {LANGUAGES.map(({ code, name }) => <button type="button" key={code} aria-pressed={editorLanguage === code} onClick={() => setEditorLanguage(code)}
-              className={`min-h-11 rounded-full border px-4 text-sm ${editorLanguage === code ? "border-wood bg-wood text-cream" : "border-line text-ink"}`}>{name}</button>)}
+              className={`min-h-11 rounded-sm border px-4 text-sm ${editorLanguage === code ? "border-wood bg-wood text-cream" : "border-line text-ink"}`}>{name}</button>)}
           </div>
           <label className="mt-4 block text-sm text-ink">{t(locale,"標題","标题","Title")}
             <input className={inputClass + " mt-2"} maxLength={240} value={form.title[editorLanguage]} onChange={(e) => update("title",e.target.value)} />
@@ -168,8 +168,8 @@ export function OwnerArticleManager({ locale }: { locale: Locale }) {
             <textarea className={inputClass + " mt-2"} rows={12} maxLength={80000} value={form.body[editorLanguage]} onChange={(e) => update("body",e.target.value)} />
           </label>
           <div className="mt-5 flex flex-wrap gap-2">
-            <button type="button" disabled={busyId !== null} onClick={() => void save()} className="min-h-11 rounded-full bg-wood px-5 text-sm text-cream disabled:opacity-50">{t(locale,"保存全部語言","保存全部语言","Save all languages")}</button>
-            <button type="button" disabled={busyId !== null} onClick={() => void reset()} className="min-h-11 rounded-full border border-line px-4 text-sm text-ink disabled:opacity-50">{t(locale,"還原原文","恢复原文","Reset original")}</button>
+            <button type="button" disabled={busyId !== null} onClick={() => void save()} className="min-h-11 rounded-sm bg-wood px-5 text-sm text-cream disabled:opacity-50">{t(locale,"保存全部語言","保存全部语言","Save all languages")}</button>
+            <button type="button" disabled={busyId !== null} onClick={() => void reset()} className="min-h-11 rounded-sm border border-line px-4 text-sm text-ink disabled:opacity-50">{t(locale,"還原原文","恢复原文","Reset original")}</button>
           </div>
         </div>
       ) : null}

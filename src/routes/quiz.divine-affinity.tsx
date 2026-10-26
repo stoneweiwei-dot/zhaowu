@@ -301,7 +301,7 @@ function DivineAffinityQuiz() {
             <span>{questions[index].layer}</span>
             <span>{copy.question} {index + 1} / {questions.length}</span>
           </div>
-          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-paper-deep">
+          <div className="mt-3 h-1.5 overflow-hidden rounded-sm bg-paper-deep">
             <div className="h-full bg-cinnabar transition-all" style={{ width: `${((index + 1) / questions.length) * 100}%` }} />
           </div>
           <p className="mt-5 text-xs tracking-[0.15em] text-ink-mute">{copy.choose}</p>
@@ -322,7 +322,7 @@ function DivineAffinityQuiz() {
               );
             })}
           </div>
-          <button type="button" disabled={!selected} onClick={advance} className="mt-5 min-h-12 w-full rounded-full bg-cinnabar px-5 py-3 text-sm text-cream disabled:cursor-not-allowed disabled:opacity-35">
+          <button type="button" disabled={!selected} onClick={advance} className="mt-5 min-h-12 w-full rounded-sm bg-cinnabar px-5 py-3 text-sm text-cream disabled:cursor-not-allowed disabled:opacity-35">
             {index === questions.length - 1 ? copy.result : locale === "en" ? "Next" : locale === "zh-Hans" ? "下一题" : "下一題"}
           </button>
         </section>
@@ -368,8 +368,8 @@ function DivineAffinityQuiz() {
           </article>
 
           <div className="grid gap-3 sm:grid-cols-2">
-            <button type="button" onClick={reset} className="min-h-12 rounded-full border border-line bg-cream px-5 py-3 text-sm text-ink">{copy.restart}</button>
-            <Link to="/" className="grid min-h-12 place-items-center rounded-full bg-cinnabar px-5 py-3 text-sm text-cream">{copy.home}</Link>
+            <button type="button" onClick={reset} className="min-h-12 rounded-sm border border-line bg-cream px-5 py-3 text-sm text-ink">{copy.restart}</button>
+            <Link to="/" className="grid min-h-12 place-items-center rounded-sm bg-cinnabar px-5 py-3 text-sm text-cream">{copy.home}</Link>
           </div>
         </section>
       )}

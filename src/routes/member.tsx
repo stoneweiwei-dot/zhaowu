@@ -133,17 +133,17 @@ function MemberPage() {
               {tx("已登入：", "已登录：", "Signed in as ")}<b className="break-all">{visitor.email}</b>
             </p>
             <div className="flex flex-wrap gap-2">
-              <Link to="/history" className="inline-flex min-h-11 items-center rounded-full border border-line bg-cream px-5 text-sm">{tx("我的報告", "我的报告", "My reports")}</Link>
-              <Link to="/" className="inline-flex min-h-11 items-center rounded-full border border-line bg-cream px-5 text-sm">{tx("回首頁", "回首页", "Home")}</Link>
-              <button type="button" onClick={() => void logoutVisitor()} className="min-h-11 rounded-full border border-line bg-paper/60 px-5 text-sm text-ink-soft">{tx("登出", "登出", "Sign out")}</button>
+              <Link to="/history" className="inline-flex min-h-11 items-center rounded-sm border border-line bg-cream px-5 text-sm">{tx("我的報告", "我的报告", "My reports")}</Link>
+              <Link to="/" className="inline-flex min-h-11 items-center rounded-sm border border-line bg-cream px-5 text-sm">{tx("回首頁", "回首页", "Home")}</Link>
+              <button type="button" onClick={() => void logoutVisitor()} className="min-h-11 rounded-sm border border-line bg-paper/60 px-5 text-sm text-ink-soft">{tx("登出", "登出", "Sign out")}</button>
             </div>
           </div>
         ) : (
           <>
             {mode === "login" || mode === "signup" ? (
-              <div className="mt-6 grid grid-cols-2 gap-1 rounded-full border border-line bg-paper/60 p-1" role="tablist">
+              <div className="mt-6 grid grid-cols-2 gap-1 rounded-sm border border-line bg-paper/60 p-1" role="tablist">
                 {(["login", "signup"] as const).map((value) => (
-                  <button key={value} type="button" role="tab" aria-selected={mode === value} disabled={busy} onClick={() => changeMode(value)} className={`min-h-11 rounded-full text-sm font-medium ${mode === value ? "bg-wood text-cream" : "text-ink-soft"}`}>
+                  <button key={value} type="button" role="tab" aria-selected={mode === value} disabled={busy} onClick={() => changeMode(value)} className={`min-h-11 rounded-sm text-sm font-medium ${mode === value ? "bg-wood text-cream" : "text-ink-soft"}`}>
                     {value === "login" ? tx("登入", "登录", "Sign in") : tx("註冊", "注册", "Sign up")}
                   </button>
                 ))}
@@ -170,7 +170,7 @@ function MemberPage() {
                   <input className={field} type="password" autoComplete="new-password" required minLength={8} maxLength={72} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
                 </label>
               ) : null}
-              <button type="submit" disabled={busy} className="min-h-12 w-full rounded-full bg-cinnabar px-5 text-base font-medium text-cream disabled:opacity-50">
+              <button type="submit" disabled={busy} className="min-h-12 w-full rounded-sm bg-cinnabar px-5 text-base font-medium text-cream disabled:opacity-50">
                 {busy ? tx("處理中…", "处理中…", "Working…") : mode === "login" ? tx("登入", "登录", "Sign in") : mode === "signup" ? tx("建立帳號並登入", "创建账号并登录", "Create account and sign in") : mode === "reset" ? tx("更新密碼", "更新密码", "Update password") : tx("寄送重設連結", "发送重置链接", "Send reset link")}
               </button>
             </form>

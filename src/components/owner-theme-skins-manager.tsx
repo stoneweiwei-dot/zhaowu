@@ -58,7 +58,7 @@ function ThemeCard({ locale, skin, active, saving, compact = false, family, onCh
   return (
     <article
       className={`overflow-hidden rounded-[18px] border ${active ? "ring-2 ring-offset-2" : ""}`}
-      style={{ backgroundColor: skin.swatch[0], borderColor: skin.swatch[1], color: dark ? "#f7f1e5" : "#202925", outlineColor: skin.swatch[1] }}
+      style={{ backgroundColor: skin.swatch[0], borderColor: skin.swatch[1], color: dark ? "#f7f1e5" : "#262523", outlineColor: skin.swatch[1] }}
       data-owner-theme-card={skin.id}
     >
       <button type="button" onClick={() => onPreview({ src: skin.hero, alt: `${name} · ${tr(locale, "原畫", "原画", "Original artwork")}` })} className="block w-full text-left" aria-label={`${name} · ${tr(locale, "查看原畫", "查看原画", "View original artwork")}`}>
@@ -71,12 +71,12 @@ function ThemeCard({ locale, skin, active, saving, compact = false, family, onCh
             <p className="mt-1 text-sm leading-6 opacity-80">{localNote(locale, skin)}</p>
             {skin.id === FROST_SKIN_ID && <p className="mt-1 text-sm leading-6"><span lang="zh">霜降</span> · <span lang="en">Frost’s Descent</span></p>}
           </div>
-          {family ? <span className="shrink-0 rounded-full border border-current/25 px-2.5 py-1 text-[11px] opacity-75">{familyName(locale, family)}</span> : null}
+          {family ? <span className="shrink-0 rounded-sm border border-current/25 px-2.5 py-1 text-[11px] opacity-75">{familyName(locale, family)}</span> : null}
         </div>
         <div className="mt-3 flex items-center gap-2" aria-label={tr(locale, "主題色票", "主题色票", "Theme palette")}>
-          {skin.swatch.map((colour) => <i key={colour} className="h-5 flex-1 rounded-full border border-black/10" style={{ backgroundColor: colour }} />)}
+          {skin.swatch.map((colour) => <i key={colour} className="h-5 flex-1 rounded-sm border border-black/10" style={{ backgroundColor: colour }} />)}
         </div>
-        <button type="button" disabled={saving} onClick={() => onChoose(skin.id)} aria-pressed={active} className="mt-4 min-h-11 w-full rounded-full border px-4 text-sm font-medium disabled:opacity-50" style={{ borderColor: skin.swatch[1], backgroundColor: active ? skin.swatch[1] : "transparent", color: active ? (dark ? skin.swatch[0] : "#fffaf0") : "inherit" }}>
+        <button type="button" disabled={saving} onClick={() => onChoose(skin.id)} aria-pressed={active} className="mt-4 min-h-11 w-full rounded-sm border px-4 text-sm font-medium disabled:opacity-50" style={{ borderColor: skin.swatch[1], backgroundColor: active ? skin.swatch[1] : "transparent", color: active ? (dark ? skin.swatch[0] : "#fffaf0") : "inherit" }}>
           {saving ? tr(locale, "同步中…", "同步中…", "Saving…") : active ? tr(locale, "全站使用中", "全站使用中", "Live site theme") : tr(locale, "套用這套主題", "套用这套主题", "Publish this theme")}
         </button>
       </div>
@@ -133,7 +133,7 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
           <p className="text-xs text-ink-mute">{tr(locale, "目前全站", "目前全站", "Live across the site")}</p>
           <p className="mt-0.5 font-medium text-ink">{current ? localName(locale, current) : tr(locale, "系統預設", "系统默认", "System default")}</p>
         </div>
-        <button type="button" disabled={saving || id === ""} onClick={() => void choose("none")} className="min-h-11 rounded-full border border-line px-4 text-sm text-ink disabled:opacity-40">
+        <button type="button" disabled={saving || id === ""} onClick={() => void choose("none")} className="min-h-11 rounded-sm border border-line px-4 text-sm text-ink disabled:opacity-40">
           {tr(locale, "恢復系統預設", "恢复系统默认", "Restore default")}
         </button>
       </div>
@@ -170,7 +170,7 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
 
       <nav className="mt-5 flex gap-2 overflow-x-auto pb-1" aria-label={tr(locale, "按色系篩選", "按色系筛选", "Filter by palette")}>
         {FAMILY_FILTERS.map((family) => (
-          <button key={family} type="button" aria-pressed={filter === family} onClick={() => setFilter(family)} className={`min-h-11 shrink-0 rounded-full border px-4 text-sm ${filter === family ? "border-wood bg-wood text-cream" : "border-line bg-paper/60 text-ink"}`}>
+          <button key={family} type="button" aria-pressed={filter === family} onClick={() => setFilter(family)} className={`min-h-11 shrink-0 rounded-sm border px-4 text-sm ${filter === family ? "border-wood bg-wood text-cream" : "border-line bg-paper/60 text-ink"}`}>
             {familyName(locale, family)}
           </button>
         ))}
@@ -185,7 +185,7 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
       <details className="mt-6 rounded-lg border border-line bg-paper/35" data-archived-theme-collection>
         <summary className="flex min-h-14 cursor-pointer items-center justify-between gap-3 px-4 py-3 text-ink">
           <span><strong className="block">{tr(locale, "歷史主題", "历史主题", "Historical themes")}</strong><small className="mt-1 block text-ink-mute">{tr(locale, "相近版本集中收納，需要時仍可套用", "相近版本集中收纳，需要时仍可套用", "Similar editions are tucked away and still available")}</small></span>
-          <span className="rounded-full border border-line px-2.5 py-1 text-xs">{ARCHIVED_SKINS.length}</span>
+          <span className="rounded-sm border border-line px-2.5 py-1 text-xs">{ARCHIVED_SKINS.length}</span>
         </summary>
         <div className="grid gap-3 border-t border-line p-3 sm:grid-cols-2">
           {ARCHIVED_SKINS.map((skin) => (
@@ -199,7 +199,7 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
           <section role="dialog" aria-modal="true" aria-label={preview.alt} onClick={(event) => event.stopPropagation()} className="flex max-h-full w-full max-w-5xl flex-col overflow-hidden rounded-xl bg-cream shadow-2xl">
             <div className="flex min-h-14 items-center justify-between gap-3 border-b border-line px-4 py-2">
               <p className="min-w-0 truncate text-sm font-medium text-ink">{preview.alt}</p>
-              <button type="button" autoFocus onClick={() => setPreview(null)} className="min-h-11 shrink-0 rounded-full border border-line bg-paper px-4 text-sm text-ink" aria-label={tr(locale, "返回主題列表", "返回主题列表", "Back to themes")}>
+              <button type="button" autoFocus onClick={() => setPreview(null)} className="min-h-11 shrink-0 rounded-sm border border-line bg-paper px-4 text-sm text-ink" aria-label={tr(locale, "返回主題列表", "返回主题列表", "Back to themes")}>
                 {tr(locale, "返回主題列表", "返回主题列表", "Back to themes")}
               </button>
             </div>

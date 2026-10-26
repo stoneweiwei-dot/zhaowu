@@ -307,7 +307,7 @@ function CultivationDestinyQuiz() {
         </header>
         <section className="seal-border rounded-2xl bg-paper p-5 sm:p-7">
           <p className="text-sm leading-7 text-ink-soft">{copy.noBirth}</p>
-          <Link to="/" className="mt-5 grid min-h-12 place-items-center rounded-full bg-cinnabar px-5 py-3 text-sm text-cream">{copy.back}</Link>
+          <Link to="/" className="mt-5 grid min-h-12 place-items-center rounded-sm bg-cinnabar px-5 py-3 text-sm text-cream">{copy.back}</Link>
         </section>
       </main>
     );
@@ -357,7 +357,7 @@ function CultivationDestinyQuiz() {
               </select>
             </label>
           </div>
-          <button type="button" onClick={() => setGenerated(true)} className="mt-6 min-h-12 w-full rounded-full bg-cinnabar px-5 py-3 text-sm text-cream">{copy.generate}</button>
+          <button type="button" onClick={() => setGenerated(true)} className="mt-6 min-h-12 w-full rounded-sm bg-cinnabar px-5 py-3 text-sm text-cream">{copy.generate}</button>
         </section>
       ) : null}
 
@@ -387,7 +387,7 @@ function CultivationDestinyQuiz() {
               {result.elements.map((item) => (
                 <div key={item.element}>
                   <div className="flex items-center justify-between text-sm"><span className="text-ink">{item.label}</span><span className="text-ink-mute">{item.percent.toFixed(1)}%</span></div>
-                  <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-paper-deep"><div className="h-full bg-cinnabar/70" style={{ width: Math.max(3, Math.min(100, item.percent)) + "%" }} /></div>
+                  <div className="mt-1.5 h-2 overflow-hidden rounded-sm bg-paper-deep"><div className="h-full bg-cinnabar/70" style={{ width: Math.max(3, Math.min(100, item.percent)) + "%" }} /></div>
                 </div>
               ))}
             </div>
@@ -466,13 +466,13 @@ function CultivationDestinyQuiz() {
 
           <article className="seal-border rounded-2xl bg-cream/95 p-4 sm:p-6">
             <img src={imageUrl} alt={locale === "en" ? "Personal cultivation destiny dossier" : locale === "zh-Hans" ? "个人修仙命测图" : "個人修仙命測圖"} className="mx-auto block h-auto w-full max-w-[540px] rounded-xl border border-line" />
-            <button type="button" onClick={() => void savePng()} className="mt-4 min-h-12 w-full rounded-full bg-cinnabar px-5 py-3 text-sm text-cream">{copy.save}</button>
+            <button type="button" onClick={() => void savePng()} className="mt-4 min-h-12 w-full rounded-sm bg-cinnabar px-5 py-3 text-sm text-cream">{copy.save}</button>
             {exportError ? <p role="alert" className="mt-3 text-xs leading-6 text-cinnabar">{exportError}</p> : null}
           </article>
 
           <div className="grid gap-3 sm:grid-cols-2">
-            <button type="button" onClick={() => { setGenerated(false); setExportError(""); }} className="min-h-12 rounded-full border border-line bg-cream px-5 py-3 text-sm text-ink">{copy.retry}</button>
-            <Link to="/" className="grid min-h-12 place-items-center rounded-full border border-line bg-paper px-5 py-3 text-sm text-ink">{locale === "en" ? "Back home" : locale === "zh-Hans" ? "返回首页" : "返回首頁"}</Link>
+            <button type="button" onClick={() => { setGenerated(false); setExportError(""); }} className="min-h-12 rounded-sm border border-line bg-cream px-5 py-3 text-sm text-ink">{copy.retry}</button>
+            <Link to="/" className="grid min-h-12 place-items-center rounded-sm border border-line bg-paper px-5 py-3 text-sm text-ink">{locale === "en" ? "Back home" : locale === "zh-Hans" ? "返回首页" : "返回首頁"}</Link>
           </div>
         </section>
       ) : null}

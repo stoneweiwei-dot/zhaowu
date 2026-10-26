@@ -129,7 +129,7 @@ export function ReportTimingGuide({ chart, unlocked }: Props) {
             <article key={y.year} className="rounded-lg border border-line/50 p-3">
               <div className="flex items-baseline justify-between gap-2 text-xs">
                 <strong className="font-display text-base text-ink">{y.year} · {y.ganZhi}</strong>
-                {y.current ? <span className="rounded-full bg-cinnabar/10 px-2 py-0.5 text-cinnabar">{s(t.current)}</span> : null}
+                {y.current ? <span className="rounded-sm bg-cinnabar/10 px-2 py-0.5 text-cinnabar">{s(t.current)}</span> : null}
               </div>
               <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
                 <Half label={s(t.firstHalf)} half={y.first} t={t} showDetail={unlocked} />
@@ -177,7 +177,7 @@ export function ReportTimingGuide({ chart, unlocked }: Props) {
           <ul className="mt-2 list-disc space-y-1 pl-5">{t.lockedItems.map((item) => <li key={item}>{s(item)}</li>)}</ul>
           <p className="mt-2 text-ink-mute">{s(t.hookYear)}</p>
           <p className="text-ink-mute">{s(t.hookMonth)}</p>
-          <button type="button" onClick={goUnlock} className="mt-3 rounded-full bg-cinnabar px-4 py-2 text-xs font-medium text-cream hover:opacity-90">{s(t.cta)}</button>
+          <button type="button" onClick={goUnlock} className="mt-3 rounded-sm bg-cinnabar px-4 py-2 text-xs font-medium text-cream hover:opacity-90">{s(t.cta)}</button>
         </div>
       ) : null}
     </section>

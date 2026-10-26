@@ -24,12 +24,12 @@
 .qz-report-paper {
   border: 1px solid rgba(128, 91, 51, 0.2);
   background: rgba(255, 251, 240, 0.94);
-  box-shadow: 0 22px 54px rgba(72, 48, 26, 0.08);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .qz-hero {
   margin-top: 18px;
-  border-radius: 24px;
+  border-radius: 3px;
   padding: 30px 22px 32px;
   text-align: center;
 }
@@ -58,7 +58,7 @@
 .qz-hero-mark b { display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid rgba(157, 62, 49, 0.34); color: #9d3e31; font-family: var(--font-display, serif); font-size: 19px; font-weight: 500; }
 .qz-hero-lead { max-width: 580px; margin: 0 auto; color: rgba(45, 37, 29, 0.72); font-size: 15px; line-height: 1.9; }
 
-.qz-form-card { margin-top: 16px; border-radius: 22px; padding: 22px 18px; }
+.qz-form-card { margin-top: 16px; border-radius: 3px; padding: 22px 18px; }
 .qz-form-card > header { padding-bottom: 17px; border-bottom: 1px solid rgba(128, 91, 51, 0.15); }
 .qz-form-card > header h2 { margin: 5px 0 0; font-family: var(--font-display, serif); font-size: 25px; font-weight: 520; letter-spacing: 0.05em; }
 .qz-form-card form { margin-top: 18px; }
@@ -71,7 +71,7 @@
   min-width: 0;
   min-height: 56px;
   border: 1px solid rgba(126, 90, 52, 0.3);
-  border-radius: 14px;
+  border-radius: 3px;
   padding: 0 15px;
   background: #fffdf6;
   color: #29231c;
@@ -79,21 +79,21 @@
   font-size: 16px;
   outline: none;
 }
-.qz-field input:focus { border-color: #2e7d70; box-shadow: 0 0 0 3px rgba(46, 125, 112, 0.12); }
+.qz-field input:focus { border-color: #8a7d68; box-shadow: 0 0 0 3px rgba(138, 125, 104, 0.12); }
 .qz-city-field { margin-top: 15px; }
-.qz-city-results { position: absolute; z-index: 20; top: calc(100% + 6px); left: 0; right: 0; overflow: hidden; border: 1px solid rgba(126, 90, 52, 0.25); border-radius: 14px; background: #fffdf6; box-shadow: 0 18px 36px rgba(62, 41, 22, 0.15); }
+.qz-city-results { position: absolute; z-index: 20; top: calc(100% + 6px); left: 0; right: 0; overflow: hidden; border: 1px solid rgba(126, 90, 52, 0.25); border-radius: 3px; background: #fffdf6; box-shadow: 0 1px 3px rgba(55,44,29,.06); }
 .qz-city-results button { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 12px; border: 0; border-bottom: 1px solid rgba(126, 90, 52, 0.12); padding: 12px 14px; background: transparent; color: #30271f; text-align: left; }
 .qz-city-results button:last-child { border-bottom: 0; }
 .qz-city-results small { color: rgba(49, 39, 30, 0.52); }
 .qz-error { margin: 13px 0 0; color: #a0352d; font-size: 13px; }
-.qz-submit { display: flex; width: 100%; min-height: 56px; align-items: center; justify-content: center; gap: 13px; margin-top: 18px; border: 0; border-radius: 16px; background: linear-gradient(135deg, #ae302a, #90261f); color: #fffaf1; font-size: 17px; font-weight: 750; letter-spacing: 0.08em; box-shadow: 0 13px 24px rgba(130, 38, 31, 0.2); }
+.qz-submit { display: flex; width: 100%; min-height: 56px; align-items: center; justify-content: center; gap: 13px; margin-top: 18px; border: 0; border-radius: 3px; background: linear-gradient(135deg, #ae302a, #90261f); color: #fffaf1; font-size: 17px; font-weight: 750; letter-spacing: 0.08em; box-shadow: 0 1px 3px rgba(55,44,29,.06); }
 .qz-submit b { font-size: 20px; font-weight: 400; }
 
 .qz-report { margin-top: 22px; scroll-margin-top: 20px; }
 .qz-report-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; padding: 0 3px 13px; }
 .qz-report-heading h2 { margin: 5px 0 0; font-family: var(--font-display, serif); font-size: 27px; font-weight: 520; }
 .qz-report-heading > span { max-width: 190px; color: rgba(49, 40, 31, 0.56); font-size: 11px; line-height: 1.55; text-align: right; }
-.qz-report-paper { position: relative; overflow: hidden; border-radius: 22px; padding: 26px 20px; }
+.qz-report-paper { position: relative; overflow: hidden; border-radius: 3px; padding: 26px 20px; }
 .qz-report-paper::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.22; background-image: linear-gradient(rgba(120, 87, 51, 0.08) 1px, transparent 1px); background-size: 100% 28px; }
 .qz-report-paper > * { position: relative; }
 .qz-report-seal { position: absolute; top: 25px; right: 20px; display: grid; width: 44px; height: 44px; place-items: center; border: 1px solid rgba(166, 54, 43, 0.38); color: #a5362b; font-family: var(--font-display, serif); font-size: 19px; }

@@ -19,8 +19,8 @@ function PublicNotFound() {
         <h1 className="mt-3 font-display text-3xl text-ink sm:text-4xl">{title}</h1>
         <p className="mt-4 text-[15px] leading-7 text-ink-soft">{body}</p>
         <div className="mt-7 flex flex-wrap gap-3">
-          <Link to="/" className="inline-flex min-h-12 items-center rounded-full bg-cinnabar px-5 py-3 text-sm text-cream">{home}</Link>
-          <Link to="/updates" className="inline-flex min-h-12 items-center rounded-full border border-line bg-paper px-5 py-3 text-sm text-ink">{updates}</Link>
+          <Link to="/" className="inline-flex min-h-12 items-center rounded-sm bg-cinnabar px-5 py-3 text-sm text-cream">{home}</Link>
+          <Link to="/updates" className="inline-flex min-h-12 items-center rounded-sm border border-line bg-paper px-5 py-3 text-sm text-ink">{updates}</Link>
         </div>
       </section>
     </main>

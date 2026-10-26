@@ -221,7 +221,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
           <p className="text-[10px] tracking-[0.22em] text-cinnabar">{copy.kicker}</p>
           <h2 className="mt-1 font-display text-xl leading-tight">{copy.title}</h2>
         </div>
-        <label className={`inline-flex min-h-10 cursor-pointer items-center justify-center rounded-full bg-[#1f4e3a] px-4 text-sm text-[#faf8f1] ${busy || SUPABASE_STORAGE_WRITES_PAUSED ? "pointer-events-none opacity-50" : ""}`}>
+        <label className={`inline-flex min-h-10 cursor-pointer items-center justify-center rounded-sm bg-[#4a4035] px-4 text-sm text-[#faf8f1] ${busy || SUPABASE_STORAGE_WRITES_PAUSED ? "pointer-events-none opacity-50" : ""}`}>
           {copy.upload}
           <input type="file" multiple disabled={busy || SUPABASE_STORAGE_WRITES_PAUSED} accept={LOGIN_VIDEO_ACCEPT} className="hidden" onChange={(event) => void onUpload(event)} />
         </label>
@@ -243,23 +243,23 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
                   {renamingId === asset.id ? (
                     <form className="flex min-w-0 flex-1 items-center gap-1" onSubmit={(event) => { event.preventDefault(); void saveName(asset); }}>
                       <input autoFocus value={draftName} maxLength={NAME_MAX} placeholder={copy.namePlaceholder} onChange={(event) => setDraftName(event.target.value)} className="min-w-0 flex-1 rounded-md border border-line bg-cream px-2 py-1 text-xs" />
-                      <button type="submit" disabled={busy} className="rounded-full bg-[#1f4e3a] px-2 py-1 text-[10px] text-[#faf8f1]">{copy.save}</button>
-                      <button type="button" className="rounded-full border border-line px-2 py-1 text-[10px]" onClick={() => setRenamingId(null)}>{copy.cancel}</button>
+                      <button type="submit" disabled={busy} className="rounded-sm bg-[#4a4035] px-2 py-1 text-[10px] text-[#faf8f1]">{copy.save}</button>
+                      <button type="button" className="rounded-sm border border-line px-2 py-1 text-[10px]" onClick={() => setRenamingId(null)}>{copy.cancel}</button>
                     </form>
                   ) : <p className="w-full min-w-0 break-words text-sm font-medium [overflow-wrap:anywhere]">{displayTitle(asset)}</p>}
-                  {current ? <span className="shrink-0 rounded-full border border-[#c4a05a] px-2 py-0.5 text-[11px] text-[#1f4e3a]">{copy.current}</span> : null}
+                  {current ? <span className="shrink-0 rounded-sm border border-[#c4a05a] px-2 py-0.5 text-[11px] text-[#4a4035]">{copy.current}</span> : null}
                 </div>
                 {locked ? (
                   <p className="text-[11px] text-ink-mute">{copy.builtIn}</p>
                 ) : (
                   <div className="flex flex-wrap items-center gap-2">
                     {!current ? (
-                      <button type="button" className="rounded-full bg-[#1f4e3a] px-2.5 py-1 text-[10px] text-[#faf8f1]" onClick={async () => {
+                      <button type="button" className="rounded-sm bg-[#4a4035] px-2.5 py-1 text-[10px] text-[#faf8f1]" onClick={async () => {
                         try { await setLoginVisualCurrent(session, asset); await load(); notifyChanged(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); }
                       }}>{copy.use}</button>
                     ) : null}
-                    <button type="button" className="rounded-full border border-line px-2.5 py-1 text-[10px]" onClick={() => { setRenamingId(asset.id); setDraftName(displayTitle(asset)); }}>{copy.rename}</button>
-                    <button type="button" className="rounded-full px-2.5 py-1 text-[10px] text-cinnabar" onClick={async () => {
+                    <button type="button" className="rounded-sm border border-line px-2.5 py-1 text-[10px]" onClick={() => { setRenamingId(asset.id); setDraftName(displayTitle(asset)); }}>{copy.rename}</button>
+                    <button type="button" className="rounded-sm px-2.5 py-1 text-[10px] text-cinnabar" onClick={async () => {
                       if (!window.confirm(`${copy.remove} ${displayTitle(asset)}?`)) return;
                       try { await deleteGalleryAsset(session, asset); await load(); notifyChanged(); } catch (error) { setMessage(error instanceof Error ? error.message : copy.failed); }
                     }}>{copy.remove}</button>
@@ -275,7 +275,7 @@ export function OwnerLoginVisualsManager({ session, locale }: { session: Supabas
           <div className="w-full max-w-lg overflow-hidden rounded-2xl border border-line bg-cream p-4" onClick={(event) => event.stopPropagation()}>
             <div className="flex items-center justify-between gap-3">
               <p className="truncate font-display text-lg">{displayTitle(preview)}</p>
-              <button type="button" className="rounded-full border border-line px-3 py-1 text-xs" onClick={() => setPreview(null)}>{copy.close}</button>
+              <button type="button" className="rounded-sm border border-line px-3 py-1 text-xs" onClick={() => setPreview(null)}>{copy.close}</button>
             </div>
             <div className="mt-3 overflow-hidden rounded-xl bg-paper">
               <video className="max-h-[70vh] w-full object-contain" src={srcOf(preview)} poster={posterOf(preview)} controls autoPlay muted playsInline />

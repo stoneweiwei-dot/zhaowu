@@ -6,9 +6,9 @@
   padding: clamp(1.1rem, 4vw, 2.1rem);
   background:
     radial-gradient(circle at 92% 3%, rgba(216, 181, 125, .13), transparent 22%),
-    radial-gradient(circle at 7% 93%, rgba(74, 130, 116, .10), transparent 27%),
+    radial-gradient(circle at 7% 93%, rgba(112, 103, 92, .10), transparent 27%),
     linear-gradient(150deg, rgba(255, 252, 245, .99), rgba(244, 235, 218, .97));
-  box-shadow: 0 22px 60px rgba(74, 55, 31, .10);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .zhaowu-tools-section::before {
@@ -92,7 +92,7 @@
   border-radius: 1.6rem;
   padding: 1.25rem;
   isolation: isolate;
-  box-shadow: 0 16px 38px rgba(63, 45, 24, .10), inset 0 1px rgba(255,255,255,.60);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .zhaowu-specialist-card::before {
@@ -117,18 +117,18 @@
 }
 
 .zhaowu-specialist-card.is-palm {
-  border: 1px solid rgba(52, 123, 105, .28);
+  border: 1px solid rgba(100, 88, 75, .28);
   background:
     linear-gradient(110deg, rgba(255,255,255,.55), transparent 42%),
     radial-gradient(circle at 89% 17%, rgba(221, 151, 127, .13), transparent 30%),
-    radial-gradient(circle at 10% 95%, rgba(82, 137, 119, .12), transparent 30%),
+    radial-gradient(circle at 10% 95%, rgba(119, 110, 100, .12), transparent 30%),
     linear-gradient(150deg, #fffdf8 0%, #f4ecdc 100%);
 }
 
-.zhaowu-specialist-card.is-palm::before { border: 1px solid rgba(52, 123, 105, .13); }
+.zhaowu-specialist-card.is-palm::before { border: 1px solid rgba(100, 88, 75, .13); }
 .zhaowu-specialist-card.is-palm::after {
-  border: 1px solid rgba(68, 125, 108, .11);
-  box-shadow: 0 0 0 1.3rem rgba(68,125,108,.025), 0 0 0 2.6rem rgba(198,154,75,.018);
+  border: 1px solid rgba(106, 97, 87, .11);
+  box-shadow: 0 0 0 1.3rem rgba(106, 97, 87,.025), 0 0 0 2.6rem rgba(198,154,75,.018);
 }
 
 .zhaowu-specialist-card.is-tianji {
@@ -158,7 +158,7 @@
 .zhaowu-specialist-card.is-tea::before { border: 1px solid rgba(132, 86, 39, .16); }
 .zhaowu-specialist-card.is-tea::after {
   border: 1px solid rgba(130, 84, 43, .12);
-  box-shadow: 0 0 0 1.2rem rgba(133, 88, 47, .025), 0 0 0 2.4rem rgba(71, 112, 82, .022);
+  box-shadow: 0 0 0 1.2rem rgba(133, 88, 47, .025), 0 0 0 2.4rem rgba(99, 92, 84, .022);
 }
 
 .zhaowu-card-number {
@@ -172,7 +172,7 @@
   z-index: 0;
 }
 
-.is-palm .zhaowu-card-number { color: rgba(52, 123, 105, .055); }
+.is-palm .zhaowu-card-number { color: rgba(100, 88, 75, .055); }
 .is-tianji .zhaowu-card-number { color: rgba(224, 193, 138, .075); }
 .is-tea .zhaowu-card-number { color: rgba(109, 70, 36, .07); }
 
@@ -221,7 +221,7 @@
   text-transform: uppercase;
 }
 
-.is-palm .zhaowu-specialist-eyebrow { color: #3b8777; }
+.is-palm .zhaowu-specialist-eyebrow { color: #6e6254; }
 .is-tianji .zhaowu-specialist-eyebrow { color: #dfc592; }
 .is-tea .zhaowu-specialist-eyebrow { color: #87552f; }
 
@@ -312,7 +312,7 @@
   justify-content: space-between;
   gap: .75rem;
   margin-top: auto;
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 0 1.05rem 0 1.25rem;
   font-size: .8rem;
   font-weight: 720;
@@ -324,24 +324,24 @@
 .zhaowu-specialist-action b { font-size: 1.08rem; font-weight: 500; }
 
 .is-palm-action {
-  border: 1px solid rgba(52, 123, 105, .37);
-  color: #2f7465;
+  border: 1px solid rgba(100, 88, 75, .37);
+  color: #5e5245;
   background: linear-gradient(180deg, rgba(255, 254, 249, .96), rgba(247, 240, 226, .96));
-  box-shadow: 0 9px 24px rgba(52, 123, 105, .09), inset 0 1px rgba(255,255,255,.82);
+  box-shadow: 0 9px 24px rgba(100, 88, 75, .09), inset 0 1px rgba(255,255,255,.82);
 }
 
 .is-tianji-action {
   border: 1px solid rgba(231, 204, 153, .44);
   color: #26152f;
   background: linear-gradient(180deg, #efd9ad, #cda46e);
-  box-shadow: 0 11px 28px rgba(4, 1, 8, .28), inset 0 1px rgba(255,255,255,.4);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 .is-tea-action {
   border: 1px solid rgba(102, 62, 32, .35);
   color: #fff9eb;
   background: linear-gradient(180deg, #8f5836, #6d402b);
-  box-shadow: 0 11px 26px rgba(76, 45, 23, .17), inset 0 1px rgba(255,255,255,.18);
+  box-shadow: 0 1px 3px rgba(55,44,29,.06);
 }
 
 @media (max-width: 760px) {

@@ -21,8 +21,8 @@ const CHAKRA_COLOUR_IDEAS = [
   { hex: "#B94340", name: ["海底輪", "海底轮", "Root"], focus: ["安全", "安全", "Security"] },
   { hex: "#DB823C", name: ["臍輪", "脐轮", "Sacral"], focus: ["創造", "创造", "Creativity"] },
   { hex: "#D7B347", name: ["太陽神經叢輪", "太阳神经丛轮", "Solar plexus"], focus: ["自信", "自信", "Confidence"] },
-  { hex: "#438A65", name: ["心輪", "心轮", "Heart"], focus: ["關係", "关系", "Connection"] },
-  { hex: "#4384AD", name: ["喉輪", "喉轮", "Throat"], focus: ["表達", "表达", "Expression"] },
+  { hex: "#73675a", name: ["心輪", "心轮", "Heart"], focus: ["關係", "关系", "Connection"] },
+  { hex: "#8b7965", name: ["喉輪", "喉轮", "Throat"], focus: ["表達", "表达", "Expression"] },
   { hex: "#475B96", name: ["眉心輪", "眉心轮", "Brow"], focus: ["洞察", "洞察", "Insight"] },
   { hex: "#8F73A5", name: ["頂輪", "顶轮", "Crown"], focus: ["覺察", "觉察", "Awareness"] },
 ] as const;

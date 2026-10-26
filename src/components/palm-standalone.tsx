@@ -175,7 +175,7 @@ export function PalmStandalone() {
   return (
     <main className="palm-standalone mx-auto max-w-4xl space-y-6 pb-10 sm:space-y-8">
       <section className="palm-hero relative overflow-hidden rounded-[2rem] border border-[#b99655]/40 bg-[#17140f] shadow-[0_28px_90px_rgba(24,18,10,.28)]">
-        <div className="palm-hero-overlay absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(39,103,93,.34),transparent_34%),radial-gradient(circle_at_10%_90%,rgba(143,48,39,.18),transparent_38%),linear-gradient(135deg,#18140f_0%,#232019_48%,#112b28_100%)]" />
+        <div className="palm-hero-overlay absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(82, 72, 60,.34),transparent_34%),radial-gradient(circle_at_10%_90%,rgba(143,48,39,.18),transparent_38%),linear-gradient(135deg,#18140f_0%,#232019_48%,#112b28_100%)]" />
         <div className="palm-hero-copy relative px-5 pb-6 pt-7 sm:px-8 sm:pb-8 sm:pt-9 lg:px-10 lg:py-10">
           <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-[#dfbd78] sm:text-xs">{copy.kicker}</p>
           <h1 className="mt-3 max-w-2xl font-display text-3xl font-semibold leading-[1.18] tracking-[0.055em] text-[#fff8e9] sm:text-5xl">{copy.title}</h1>
@@ -244,7 +244,7 @@ export function PalmStandalone() {
 
             {error ? <p role="alert" className="mt-4 rounded-xl border border-cinnabar/25 bg-cinnabar/7 px-4 py-3 text-sm text-cinnabar-deep">{copy[error]}</p> : null}
 
-            <button type="submit" className="mt-6 min-h-14 w-full rounded-full bg-[#7f2f28] px-6 text-base font-semibold tracking-[0.1em] text-[#fff7e7] shadow-[0_14px_30px_rgba(111,36,30,.2)] transition hover:bg-[#68251f] focus:outline-none focus:ring-2 focus:ring-cinnabar/35 focus:ring-offset-2">
+            <button type="submit" className="mt-6 min-h-14 w-full rounded-sm bg-[#7f2f28] px-6 text-base font-semibold tracking-[0.1em] text-[#fff7e7] shadow-[0_14px_30px_rgba(111,36,30,.2)] transition hover:bg-[#68251f] focus:outline-none focus:ring-2 focus:ring-cinnabar/35 focus:ring-offset-2">
               {copy.submit}
             </button>
             <p className="mt-3 text-center text-[11px] leading-5 text-ink-mute">{copy.privacy}</p>
@@ -257,7 +257,7 @@ export function PalmStandalone() {
       {result ? (
         <section ref={resultRef} className="palm-result scroll-mt-20 space-y-5 overflow-hidden rounded-[1.9rem] border border-[#b99755]/35 bg-cream/95 shadow-[0_28px_80px_rgba(62,43,24,.14)]" aria-live="polite">
           <div className="palm-result-head relative overflow-hidden border-b border-[#b99755]/20 bg-[#1b1812] px-5 py-6 sm:px-8 sm:py-7">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_86%_20%,rgba(47,119,115,.25),transparent_34%),linear-gradient(135deg,rgba(127,47,40,.2),transparent_50%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_86%_20%,rgba(96, 84, 70,.25),transparent_34%),linear-gradient(135deg,rgba(127,47,40,.2),transparent_50%)]" />
             <div className="relative">
               <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#dfbd78]">{copy.result}</p>
               <h2 className="mt-1 font-display text-2xl font-semibold tracking-[0.06em] text-[#fff8e9] sm:text-3xl">{name.trim() ? `${name.trim()}${copy.resultFor}` : copy.palaces}</h2>
@@ -304,11 +304,11 @@ export function PalmStandalone() {
                   <article key={palace.key} className="relative overflow-hidden rounded-2xl border bg-[#fffaf2] p-5" style={{ borderColor: `${tone}55`, boxShadow: `inset 4px 0 0 ${tone}` }}>
                     <div className="flex items-start justify-between gap-3">
                       <div><p className="text-[11px] font-semibold tracking-[0.18em] text-ink-mute">{item.lifeLabel}</p><p className="mt-1 text-xs text-ink-soft">{item.range}</p></div>
-                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border font-display text-xl" style={{ borderColor: `${tone}66`, color: tone, backgroundColor: `${tone}10` }}>{item.zhi}</span>
+                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-sm border font-display text-xl" style={{ borderColor: `${tone}66`, color: tone, backgroundColor: `${tone}10` }}>{item.zhi}</span>
                     </div>
                     <h3 className="mt-5 font-display text-xl font-semibold tracking-[0.06em] text-ink">{item.star}</h3>
                     <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-mute">{copy.realmFrom}</p>
-                    <p className="mt-1 inline-flex rounded-full px-3 py-1 text-xs font-semibold" style={{ color: tone, backgroundColor: `${tone}12` }}>{item.dao}</p>
+                    <p className="mt-1 inline-flex rounded-sm px-3 py-1 text-xs font-semibold" style={{ color: tone, backgroundColor: `${tone}12` }}>{item.dao}</p>
                     <p className="mt-4 text-[10px] font-semibold tracking-[0.15em] text-cinnabar">{copy.traitLabel}</p>
                     <p className="mt-2 text-sm leading-7 text-ink-soft">{meaning.trait}</p>
                     <p className="mt-4 text-[10px] font-semibold tracking-[0.15em] text-cinnabar">{copy.storyLabel}</p>
@@ -347,8 +347,8 @@ export function PalmStandalone() {
             <p className="text-xs leading-6 text-ink-mute">{copy.boundary}</p>
             <div className="palm-history-note"><span>{historySaved ? copy.saved : copy.saveFailed}</span>{historySaved ? <Link to="/history">{copy.history}<b aria-hidden>→</b></Link> : null}</div>
             <div className="grid gap-3 sm:grid-cols-2">
-              <button type="button" onClick={reset} className="min-h-12 rounded-full border border-cinnabar/35 bg-transparent px-5 text-sm font-medium text-cinnabar">{copy.again}</button>
-              <Link to="/" className="inline-flex min-h-12 items-center justify-center rounded-full bg-cinnabar px-5 text-sm font-medium text-cream">{copy.full}</Link>
+              <button type="button" onClick={reset} className="min-h-12 rounded-sm border border-cinnabar/35 bg-transparent px-5 text-sm font-medium text-cinnabar">{copy.again}</button>
+              <Link to="/" className="inline-flex min-h-12 items-center justify-center rounded-sm bg-cinnabar px-5 text-sm font-medium text-cream">{copy.full}</Link>
             </div>
           </div>
         </section>

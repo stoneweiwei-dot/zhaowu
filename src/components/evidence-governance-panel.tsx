@@ -99,8 +99,8 @@ export function EvidenceGovernancePanel({ result }: { result: AnalysisResult }) 
               style={{
                 borderRadius: 999,
                 padding: "5px 8px",
-                background: item.state === "withheld" || item.state === "symbolic" ? "rgba(132, 112, 84, .11)" : item.state === "probable" ? "rgba(167, 116, 49, .12)" : "rgba(65, 93, 76, .12)",
-                color: item.state === "withheld" || item.state === "symbolic" ? "#776a5b" : item.state === "probable" ? "#8d652e" : "#405d4e",
+                background: item.state === "withheld" || item.state === "symbolic" ? "rgba(132, 112, 84, .11)" : item.state === "probable" ? "rgba(167, 116, 49, .12)" : "rgba(84, 79, 74, .12)",
+                color: item.state === "withheld" || item.state === "symbolic" ? "#776a5b" : item.state === "probable" ? "#8d652e" : "#544f49",
                 fontSize: 9,
                 fontWeight: 700,
                 whiteSpace: "nowrap",

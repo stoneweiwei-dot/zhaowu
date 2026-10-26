@@ -155,7 +155,7 @@ function FiveElementOverdriveQuiz() {
               <span>{copy.question} {index + 1} / {QUESTIONS.length}</span>
               <span>{Math.round((index / QUESTIONS.length) * 100)}%</span>
             </div>
-            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-line/60"><div className="h-full rounded-full bg-cinnabar transition-all" style={{ width: `${(index / QUESTIONS.length) * 100}%` }} /></div>
+            <div className="mt-2 h-1.5 overflow-hidden rounded-sm bg-line/60"><div className="h-full rounded-sm bg-cinnabar transition-all" style={{ width: `${(index / QUESTIONS.length) * 100}%` }} /></div>
             <h2 className="mt-6 font-display text-2xl leading-9 text-ink">{current.prompt[locale]}</h2>
             <div className="mt-5 grid gap-3">
               {current.options.map((option) => (
@@ -184,9 +184,9 @@ function FiveElementOverdriveQuiz() {
               })}
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
-              <button type="button" onClick={restart} className="min-h-11 rounded-full bg-ink px-5 py-2 text-sm text-paper">{copy.restart}</button>
-              <Link to="/knowledge" className="inline-flex min-h-11 items-center rounded-full border border-line bg-cream px-5 py-2 text-sm text-ink">{copy.article} →</Link>
-              <Link to="/" className="inline-flex min-h-11 items-center rounded-full border border-line bg-paper px-5 py-2 text-sm text-ink">{copy.home}</Link>
+              <button type="button" onClick={restart} className="min-h-11 rounded-sm bg-ink px-5 py-2 text-sm text-paper">{copy.restart}</button>
+              <Link to="/knowledge" className="inline-flex min-h-11 items-center rounded-sm border border-line bg-cream px-5 py-2 text-sm text-ink">{copy.article} →</Link>
+              <Link to="/" className="inline-flex min-h-11 items-center rounded-sm border border-line bg-paper px-5 py-2 text-sm text-ink">{copy.home}</Link>
             </div>
           </div>
         )}
