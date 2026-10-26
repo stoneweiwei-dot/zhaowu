@@ -101,7 +101,10 @@ test("reader and full-text translation views retain first-screen escape guidance
   assert.ok(mainStart >= 0 && mainEnd > mainStart, "Static fallback must exist");
   const body = html.slice(mainStart, mainEnd);
   // Reader-style text extractors may remove navigation but retain article paragraphs.
-  const readerBody = body.replace(/<nav\\b[^>]*>[\\s\\S]*?<\\/nav>/g, "");
+  const navStart = body.indexOf('<nav class="zw-static-entry"');
+  const navEnd = body.indexOf("</nav>", navStart);
+  assert.ok(navStart >= 0 && navEnd > navStart, "Reader test requires a fallback nav to simulate stripping");
+  const readerBody = body.slice(0, navStart) + body.slice(navEnd + "</nav>".length);
   const introEnd = readerBody.indexOf("<h2>主要功能</h2>");
   const lead = readerBody.slice(0, introEnd);
   assert.ok(lead.includes('data-static-reader-access'), "Reader-help text must be a paragraph, not a nav");
