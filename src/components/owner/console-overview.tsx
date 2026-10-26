@@ -106,7 +106,7 @@ export function ConsoleOverview({ reports, hasMoreReports, reportsLoading, onNav
       <section className="seal-border rounded-xl bg-cream/95 p-5">
         <h3 className="font-display text-lg">網站外觀與內容</h3>
         <div className="mt-3 flex flex-wrap gap-2">
-          {([["images", "背景與圖片"], ["opening", "開場影片"], ["themes", "主題皮膚"]] as [OverviewTarget, string][]).map(([target, label]) => (
+          {([["images", "背景與圖片"], ["opening", "影片素材"], ["themes", "主題皮膚"]] as [OverviewTarget, string][]).map(([target, label]) => (
             <button key={target} type="button" onClick={() => onNavigate(target)} className="min-h-11 rounded-full border border-line bg-paper/70 px-4 text-sm text-ink">{label}</button>
           ))}
         </div>

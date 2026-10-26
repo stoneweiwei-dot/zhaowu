@@ -43,6 +43,7 @@ test("r218 server allowlists match the client format list", async () => {
 test("r218 video upload support remains available to IntroGate assets while /login is static", async () => {
   const login = await source("src/routes/login.tsx");
   assert.match(login, /\/hero-gallery\/dragon-scholar\.webp/);
-  assert.match(login, /data-login-stage-static="true"/);
+  assert.match(login, /data-login-surface="song-landing-r224"/);
+  assert.match(login, /stone-login-stage-media/);
   assert.doesNotMatch(login, /currentTime >= 15|<video|onTimeUpdate/);
 });

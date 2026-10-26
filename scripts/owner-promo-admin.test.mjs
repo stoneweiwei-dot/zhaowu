@@ -95,3 +95,15 @@ test("promo function never deletes and never touches redeemed_count or the redee
   assert.doesNotMatch(src, /redeemed_count\s*:/);
   assert.doesNotMatch(src, /promo_redemptions/);
 });
+
+test("owner promo UI keeps the common path visible and folds advanced/history clutter", () => {
+  const panel = readFileSync(new URL("../src/components/owner/promo-panel.tsx", import.meta.url), "utf8");
+  assert.match(panel, /activeCodes = codes\?\.filter/);
+  assert.match(panel, /pastCodes = codes\?\.filter/);
+  assert.match(panel, /建立新優惠碼/);
+  assert.match(panel, /進階：自訂碼與備註/);
+  assert.match(panel, /舊紀錄/);
+  assert.match(panel, /調整名額或期限/);
+  assert.match(panel, /可用優惠碼/);
+  assert.doesNotMatch(panel, /<h3[^>]*>全部優惠碼/);
+});
