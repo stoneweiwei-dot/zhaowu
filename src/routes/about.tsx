@@ -81,13 +81,15 @@ function AboutZhaowu() {
   const copy = content(locale);
   return <main className="zw-about" aria-labelledby="zw-about-title" data-zhaowu-features-page>
     <header className="zw-about-hero">
-      <img src="/theme-skins/reference-day-flute.webp" alt="" width={1248} height={1248} fetchPriority="high" />
       <div className="zw-about-hero-content">
         <p className="zw-about-eyebrow">{copy.eyebrow}</p>
         <h1 id="zw-about-title">{copy.title}</h1>
         <p className="zw-about-intro">{copy.summary}</p>
-        <a className="zw-about-down" href="#features">{copy.explore} <span aria-hidden>↓</span></a>
       </div>
+      <figure className="zw-about-hero-art">
+        <img src="/theme-skins/reference-day-flute.webp" alt="" width={1248} height={1248} fetchPriority="high" />
+      </figure>
+      <a className="zw-about-down" href="#features">{copy.explore} <span aria-hidden>↓</span></a>
     </header>
     <section id="features" className="zw-about-body" aria-label={copy.explore}>
       {copy.features.map((feature, index) => (
