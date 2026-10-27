@@ -72,3 +72,13 @@ test("curated login media excludes internal loading and operational artwork", ()
   const curated = catalog.match(/LOGIN_VISUAL_CATALOG_KEYS = \[([\s\S]*?)\]/)?.[1] ?? "";
   assert.doesNotMatch(curated, /official-monitor|song-parchment|dawn-dragon|jade-lotus/);
 });
+
+test("owner video edit controls use mobile-friendly tap targets", () => {
+  assert.match(loginOwner, /const rows = assets/);
+  assert.doesNotMatch(loginOwner, /LOGIN_VISUAL_CATALOG|catalogRows/);
+  for (const label of ["copy.save", "copy.cancel", "copy.use", "copy.rename", "copy.remove"]) {
+    const start = loginOwner.lastIndexOf("<button", loginOwner.indexOf("{" + label + "}"));
+    assert.ok(start >= 0 && loginOwner.slice(start, loginOwner.indexOf("</button>", start)).includes("min-h-11"), label);
+  }
+  assert.doesNotMatch(loginOwner, /px-2(?:\.5)? py-1 text-\[10px\]/);
+});
