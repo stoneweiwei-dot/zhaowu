@@ -107,3 +107,21 @@ test("owner promo UI keeps the common path visible and folds advanced/history cl
   assert.match(panel, /可用優惠碼/);
   assert.doesNotMatch(panel, /<h3[^>]*>全部優惠碼/);
 });
+
+test("promo owner defaults and renewal controls remain safe on unlimited codes", () => {
+  const panel = readFileSync(new URL("../src/components/owner/promo-panel.tsx", import.meta.url), "utf8");
+  assert.ok(panel.includes('useState<PromoSystemId | "">("")'));
+  assert.ok(panel.includes('[max, setMax] = useState("")'));
+  assert.ok(panel.includes('[days, setDays] = useState("")'));
+  assert.ok(panel.includes("maxRedemptions: maxCount"));
+  assert.ok(panel.includes("expiresAt: dayCount === null ? null"));
+  assert.ok(panel.includes('timeZone: "Australia/Sydney"'));
+  assert.ok(panel.includes("每次兌換解鎖一項"));
+  assert.ok(panel.includes("code.maxRedemptions === null"));
+  assert.ok(panel.includes("code.expiresAt === null"));
+  assert.ok(panel.includes("不限名額，無需加額"));
+  assert.ok(panel.includes("永不過期，無需延長"));
+  assert.ok(panel.includes("cannotReactivate = expiryElapsed || quotaReached"));
+  assert.ok(panel.includes("!code.active && cannotReactivate"));
+  assert.doesNotMatch(panel, /maxRedemptions: \(code\.maxRedemptions \?\?/);
+});
