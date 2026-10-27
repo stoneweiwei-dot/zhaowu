@@ -58,3 +58,37 @@
   .zw-editions__benefits { padding-left: 28px; }
   .zw-editions__selected { margin-left: 28px !important; }
 }
+
+/* A single open-book purchase action, not an extra promotional tile. */
+.zhaowu-report-paywall .zw-editions-purchase {
+  margin: 6px 0 14px;
+  padding: 12px 0 2px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.zhaowu-report-paywall .zw-editions-purchase > p {
+  margin: 0 !important;
+  font-size: 15px !important;
+  font-weight: 600;
+  color: var(--zw-ink, #273b34) !important;
+}
+.zhaowu-report-paywall .zw-editions-purchase > small {
+  display: block;
+  margin: 6px 0 12px;
+  color: var(--zw-muted, #666b61);
+  line-height: 1.7;
+}
+.zhaowu-report-paywall .zw-editions-purchase > button {
+  width: 100%;
+  min-height: 48px;
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 15px;
+  color: #fffdf8;
+  background: var(--zw-jade, #294b3f);
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: none;
+}
+.zhaowu-report-paywall .zw-editions-purchase > button:disabled { opacity: .58; cursor: wait; }
