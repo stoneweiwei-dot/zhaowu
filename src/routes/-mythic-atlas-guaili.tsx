@@ -33,7 +33,7 @@ export function GuailiBook({ locale }: { locale: Locale }) {
         <p>{tr(GUAILI_COPY.volumesLead, locale)}</p>
       </div>
       <div className="hq-guaili-volumes">
-        {GUAILI_VOLUMES.map((volume, index) => <details key={volume.no} open={index === 6 ? true : undefined}>
+        {GUAILI_VOLUMES.map((volume, index) => <details key={volume.no} id={`guaili-volume-${index+1}`} open={index === 6 ? true : undefined}>
           <summary><span className="hq-guaili-volume-number">{volume.no}</span><span className="hq-guaili-volume-title">{tr(volume.title, locale)}<small>{tr(volume.lead, locale)}</small></span></summary>
           <p>{tr(volume.text, locale)}</p>
         </details>)}
@@ -101,7 +101,7 @@ export function GuailiBook({ locale }: { locale: Locale }) {
         <p>{tr(GUAILI_COPY.chronologyLead, locale)}</p>
       </div>
       <ol className="hq-guaili-timeline">
-        {GUAILI_YEARS.map((event, index) => <li key={index}>
+        {GUAILI_YEARS.map((event, index) => <li key={index} id={`guaili-year-${index+1}`}>
           <span>{tr(event.year, locale)}</span><div><h3>{tr(event.name, locale)}</h3><p>{tr(event.detail, locale)}</p></div>
         </li>)}
       </ol>
