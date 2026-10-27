@@ -1,0 +1,15 @@
+/* A second, distinct series entrance below the existing twelve-plate mythic archive. */
+html body #root .zw-painted-home .ph-guaili-bookcase{
+ display:flex;justify-content:space-between;align-items:center;gap:1rem;
+ width:92%;max-width:700px;min-width:0;margin:0 auto 2rem;padding:.8rem 0 1.25rem;
+ border-bottom:1px solid rgba(67,76,54,.3);text-decoration:none;
+ background:transparent;box-shadow:none;color:var(--ph-ink);
+}
+html body #root .zw-painted-home .ph-guaili-bookcase>span{flex:1;min-width:0}
+html body #root .zw-painted-home .ph-guaili-bookcase :is(small,strong,em){display:block;overflow-wrap:anywhere}
+html body #root .zw-painted-home .ph-guaili-bookcase small{font:500 .66rem/1.6 system-ui,sans-serif;letter-spacing:.13em;color:var(--ph-accent)}
+html body #root .zw-painted-home .ph-guaili-bookcase strong{font:600 clamp(1.08rem,4vw,1.36rem)/1.5 var(--zws-font-d,var(--zw-font-heading));color:var(--ph-ink)}
+html body #root .zw-painted-home .ph-guaili-bookcase em{font:400 .73rem/1.8 var(--zw-font-body);font-style:normal;color:var(--ph-muted)}
+html body #root .zw-painted-home .ph-guaili-bookcase i{flex:none;font:400 1.25rem serif;color:var(--ph-accent)}
+html body #root .zw-painted-home .ph-guaili-bookcase:focus-visible{outline:2px solid var(--ph-accent);outline-offset:4px}
+@media (max-width:360px){html body #root .zw-painted-home .ph-guaili-bookcase{width:calc(100% - 44px)}}
