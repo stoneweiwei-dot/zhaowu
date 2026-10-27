@@ -46,6 +46,11 @@
       "zh-Hans": { "title": "怪力乱神・黄泉纪七卷｜十二地支四态・大裂隙灾异编年｜昭梧", "description": "昭梧原创《怪力乱神》全书七卷：神籍官僚制、黄泉与轮回、十二地支四态、十二流煞及十年灾异终局。区分古籍、民俗与架空改写。" },
       "en": { "title": "Strange Powers, Unquiet Gods | Seven Volumes of the Yellow Springs | ZHAOWU", "description": "ZHAOWU's seven-volume mythic chronicle: celestial bureaucracy, the Yellow Springs, twelve zodiac aspects and a decade of calamity, with sources distinguished from fiction." }
     },
+    "/guaili-luanshen": {
+      "zh-Hant": { "title": "怪力亂神｜昭梧黃泉紀七卷獨立書目・十二地支與八災", "description": "獨立《怪力亂神》系列分組，按七卷原書、十二地支四態及黃泉曆十年災異編年導航至昭梧原始正文。古籍與原創清楚分層。" },
+      "zh-Hans": { "title": "怪力乱神｜昭梧黄泉纪七卷独立书目・十二地支与八灾", "description": "独立《怪力乱神》系列分组，按七卷原书、十二地支四态及黄泉历十年灾异编年导航至昭梧原始正文。古籍与原创清楚分层。" },
+      "en": { "title": "Strange Powers · Seven-Volume Series Index | ZHAOWU", "description": "Explore all seven volumes of Strange Powers, twelve zodiac aspects and the ten-year Yellow Springs chronicle. An original series index linking to the published mythic archive." }
+    },
     "/updates": {
       "zh-Hant": { "title": "最新版本更新內容｜昭梧", "description": "昭梧正式版本更新紀錄：新功能、修正與天象新增，依日期與版本整理。" },
       "zh-Hans": { "title": "最新版本更新内容｜昭梧", "description": "昭梧正式版本更新纪录：新功能、修正与天象新增，依日期与版本整理。" },
