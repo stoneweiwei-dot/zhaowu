@@ -1,0 +1,60 @@
+/* ZHAOWU · one continuous Song-style report price index; no card-wall or sticker styling. */
+.zw-editions {
+  margin: 20px 0;
+  color: var(--zw-ink, #273b34);
+  background: transparent;
+  min-width: 0;
+}
+.zw-editions__heading h3 {
+  margin: 0;
+  color: var(--zw-ink, #273b34);
+  font: 400 clamp(20px, 5vw, 26px)/1.45 "Chiron Sung HK", "Songti TC", serif;
+}
+.zw-editions__heading p,
+.zw-editions__identity p,
+.zw-editions__benefits,
+.zw-editions__once,
+.zw-editions__art p {
+  margin: 5px 0 0 !important;
+  font-size: 13px !important;
+  line-height: 1.8 !important;
+  color: var(--zw-muted, #666b61) !important;
+}
+.zw-editions__list { margin-top: 15px; border-top: 1px solid rgba(50, 76, 61, .24); }
+.zw-editions__row {
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(50, 76, 61, .20);
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  min-width: 0;
+}
+.zw-editions__row[data-selected="true"] { border-bottom-color: rgba(50, 76, 61, .50); }
+.zw-editions__identity { display: grid; grid-template-columns: 24px minmax(0,1fr) auto; align-items: start; gap: 11px; min-width: 0; }
+.zw-editions__identity small { margin-top: 3px; color: var(--zw-muted, #666b61); font: 12px/1.6 Georgia, serif; }
+.zw-editions__identity h4 { margin: 0; font: 500 18px/1.5 "Chiron Sung HK", "Songti TC", serif; color: var(--zw-ink, #273b34); }
+.zw-editions__identity strong { font: 600 clamp(15px,4vw,19px)/1.55 Georgia, serif; white-space: nowrap; color: var(--zw-jade-deep, #294f42); }
+.zw-editions__benefits { padding-left: 35px; overflow-wrap: anywhere; }
+.zw-editions__selected {
+  margin: 7px 0 0 35px !important;
+  font-size: 12px !important;
+  line-height: 1.6 !important;
+  color: var(--zw-jade-deep, #294f42) !important;
+  font-weight: 600;
+}
+.zw-editions__once { margin-top: 12px !important; }
+.zw-editions__art {
+  margin-top: 15px;
+  padding: 10px 0 0;
+  border: 0;
+  border-top: 1px solid rgba(50,76,61,.2);
+  background: transparent;
+}
+.zw-editions__art summary { display: list-item; cursor: pointer; padding: 4px 0; min-height: 44px; font: 500 14px/1.7 "Chiron Sung HK", "Songti TC", serif; color: var(--zw-ink, #273b34); }
+.zw-editions__art p { margin: 3px 0 0 !important; max-width: 46em; }
+@media (max-width: 380px) {
+  .zw-editions__identity { grid-template-columns: 20px minmax(0,1fr) auto; gap: 8px; }
+  .zw-editions__identity h4 { font-size: 16px; }
+  .zw-editions__benefits { padding-left: 28px; }
+  .zw-editions__selected { margin-left: 28px !important; }
+}
