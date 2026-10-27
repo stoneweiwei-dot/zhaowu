@@ -3,6 +3,7 @@ import { FiveToneGift } from "@/components/five-tone-gift";
 import { PremiumPoeticAfterword, type PremiumPoeticContext } from "@/components/premium-poetic-afterword";
 import { PurchaseConsent, usePurchaseConsent } from "@/components/purchase-consent";
 import { DataGradeFooter } from "@/components/data-grade-footer";
+import { ReportPlanComparison } from "@/components/report-plan-comparison";
 import { assessBirthRecord } from "@/lib/bazi/data-grade";
 import type { Locale } from "@/lib/i18n";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
@@ -151,10 +152,6 @@ function copyFor(locale: Locale): Copy {
   };
 }
 
-const tiers: Array<{ id: ReportAccessProduct; copy: "system"; body: "systemBody" }> = [
-  { id: "system", copy: "system", body: "systemBody" },
-];
-
 export function ReportAccessGate({
   system,
   locale,
@@ -254,23 +251,13 @@ export function ReportAccessGate({
         <p>{copy.lead}</p>
         <p className="zhaowu-report-distinction">{copy.distinction}</p>
       </header>
-      <div className="zhaowu-report-pricing" role="list">
-        <article role="listitem" className="is-free">
-          <strong>{copy.free}</strong>
-          <span>$0</span>
-          <p>{copy.freeBody}</p>
-        </article>
-        {tiers.map((tier) => (
-          <article role="listitem" key={tier.id} className={tier.id === "system" ? "is-featured" : undefined}>
-            <strong>{copy[tier.copy]}</strong>
-            <span>{reportAccessPrice(tier.id, system).price}</span>
-            <p>{copy[tier.body]}</p>
-            <small>{copy.bonus[tier.id]}</small>
-            <button type="button" disabled={busy !== null} onClick={() => void purchase(tier.id)}>
-              {busy === tier.id ? "…" : `${copy.buy} ${reportAccessPrice(tier.id, system).price}`}
-            </button>
-          </article>
-        ))}
+      <ReportPlanComparison locale={locale} system={system} />
+      <div className="zhaowu-report-pricing zw-editions-purchase">
+        <p>{copy.system} · {reportAccessPrice("system", system).price}</p>
+        <small>{copy.systemBody}</small>
+        <button type="button" disabled={busy !== null} onClick={() => void purchase("system")}>
+          {busy === "system" ? "…" : `${copy.buy} ${reportAccessPrice("system", system).price}`}
+        </button>
       </div>
       <div className="zhaowu-report-promo" data-report-promo>
         {!promoOpen ? (
