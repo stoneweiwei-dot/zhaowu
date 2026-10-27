@@ -31,6 +31,7 @@ export function homeTree(t: T): TreeNode[] {
       hint: t('輸入生辰，看懂你的性格與人生節奏。', '输入生辰，看懂你的性格与人生节奏。', 'Enter your birth date. Understand your patterns and rhythm.'),
       primary: { kind: 'action', section: 'form', title: t('開始排盤：填寫出生日期', '开始排盘：填写出生日期', 'Start: enter your birth date'), hint: t('免費 · 免登入 · 約 1 分鐘', '免费 · 免登录 · 约 1 分钟', 'Free · no sign-in · about 1 minute') },
       items: [
+        { kind: 'link', href: '/sample-report', title: t('先看公開命書示例', '先看公开命书示例', 'Read a sample report'), hint: t('虛構個案，先看內容深度與判斷邊界。', '虚构个案，先看内容深度与判断边界。', 'A fictional case showing the depth and boundaries.') },
         { kind: 'link', href: '/history', title: t('我的報告', '我的报告', 'My reports'), hint: t('看過的報告都收在這裡，隨時回來讀。', '看过的报告都收在这里，随时回来读。', 'Every report you have made, kept in one place.') },
         { kind: 'link', href: '/soul-chapters', title: t('靈階鏡像', '灵阶镜像', 'Soul Chapters'), hint: t('人生有十章，哪一章最像現在的你？', '人生有十章，哪一章最像现在的你？', 'Ten life chapters. Which one feels like yours right now?') },
       ],

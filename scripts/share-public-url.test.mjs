@@ -10,27 +10,27 @@ const loc = (url) => {
 
 test("preview deployment host is replaced by the canonical production origin", () => {
   const out = publicShareUrl(loc("https://stone-zhaowu-official-jhcm5nxyz-stone-weiwei-5213s-projects.vercel.app/report"));
-  assert.equal(out, `${CANONICAL_SITE_ORIGIN}/report`);
+  assert.equal(out, `${CANONICAL_SITE_ORIGIN}/report?utm_source=zhaowu&utm_medium=share`);
   assert.doesNotMatch(out, /jhcm5nxyz|projects\.vercel\.app/);
 });
 
 test("query string and hash never reach the shared link", () => {
   const out = publicShareUrl(loc("https://stone-zhaowu-official.vercel.app/?session_id=cs_1&access_key=secret&zw_release=r1&zw_retry=2#x"));
-  assert.equal(out, `${CANONICAL_SITE_ORIGIN}/`);
+  assert.equal(out, `${CANONICAL_SITE_ORIGIN}/?utm_source=zhaowu&utm_medium=share`);
   assert.doesNotMatch(out, /secret|access_key|session_id|zw_|#/);
 });
 
 test("legacy Vercel alias is replaced by the canonical custom domain", () => {
-  assert.equal(publicShareUrl(loc("https://stone-zhaowu-official.vercel.app/today")), `${CANONICAL_SITE_ORIGIN}/today`);
+  assert.equal(publicShareUrl(loc("https://stone-zhaowu-official.vercel.app/today")), `${CANONICAL_SITE_ORIGIN}/today?utm_source=zhaowu&utm_medium=share`);
 });
 
 test("canonical custom domain keeps its current path", () => {
-  assert.equal(publicShareUrl(loc("https://zhao-wu.com/today")), `${CANONICAL_SITE_ORIGIN}/today`);
+  assert.equal(publicShareUrl(loc("https://zhao-wu.com/today")), `${CANONICAL_SITE_ORIGIN}/today?utm_source=zhaowu&utm_medium=share`);
 });
 
 test("non-vercel hosts (custom domain, localhost) keep their own origin", () => {
-  assert.equal(publicShareUrl(loc("https://example.com/a?b=1")), "https://example.com/a");
-  assert.equal(publicShareUrl(loc("http://localhost:5173/x#y")), "http://localhost:5173/x");
+  assert.equal(publicShareUrl(loc("https://example.com/a?b=1")), "https://example.com/a?utm_source=zhaowu&utm_medium=share");
+  assert.equal(publicShareUrl(loc("http://localhost:5173/x#y")), "http://localhost:5173/x?utm_source=zhaowu&utm_medium=share");
 });
 
 test("share card uses publicShareUrl and no longer shares window.location.href", async () => {
