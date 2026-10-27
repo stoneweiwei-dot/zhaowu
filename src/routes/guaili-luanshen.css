@@ -1,0 +1,49 @@
+/* Series bookshelf: editorial text, existing STONE painting, no faux illustration. */
+.hqc-index{--hqc-ink:#27352c;--hqc-accent:#963f32;--hqc-rule:rgba(108,92,63,.25);min-width:0}
+.hqc-breadcrumb{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;padding:1.2rem 0 1.7rem;color:var(--hq-soft);font-size:.72rem}
+.hqc-breadcrumb a{color:var(--hq-pine);text-decoration:underline;text-underline-offset:.22rem}
+.hqc-opening{display:grid;gap:clamp(1.6rem,4vw,4rem);align-items:center;padding:clamp(1.2rem,4vw,3rem) 0;border-block:1px solid var(--hqc-rule)}
+.hqc-opening-copy{min-width:0}
+.hqc-opening h1{margin:.7rem 0 1rem;font-size:clamp(3rem,13vw,7.3rem);letter-spacing:.16em;line-height:1.17;overflow-wrap:anywhere}
+.hqc-deck{margin:0!important;font-family:var(--font-display);font-size:clamp(1.18rem,3vw,1.85rem);color:var(--hq-pine);letter-spacing:.06em}
+.hqc-lead{max-width:37rem;margin:2rem 0 0;font-size:.92rem;line-height:2.05;color:var(--hq-soft)}
+.hqc-axiom{margin:2rem 0 1.5rem;padding-left:1.15rem;border-left:2px solid var(--hqc-accent);font-family:var(--font-display);font-size:1.13rem;line-height:1.7}
+.hqc-reading-link{display:inline-flex;align-items:center;gap:.8rem;min-height:46px;padding:.6rem 1rem;color:var(--hq-pine);border:1px solid var(--hq-pine);text-decoration:none;font-family:var(--font-display);font-size:.92rem}
+.hqc-reading-link span{font-size:1.4rem}
+.hqc-painting{min-width:0;max-width:28rem;margin:0}
+.hqc-painting img{display:block;width:100%;height:auto;aspect-ratio:941/1672;object-fit:cover;background:#eee4cf}
+.hqc-painting figcaption{margin:.55rem 0 0;color:var(--hq-soft);font-size:.7rem;line-height:1.5}
+.hqc-jump{display:flex;gap:1.5rem;overflow-x:auto;scrollbar-width:thin;border-bottom:1px solid var(--hqc-rule);padding:1.1rem 0}
+.hqc-jump a{flex:none;min-height:44px;display:inline-flex;align-items:center;text-decoration:none;color:var(--hq-pine);font-family:var(--font-display);font-size:.9rem}
+.hqc-section{margin-top:clamp(4rem,9vw,7rem);scroll-margin-top:5rem;min-width:0}
+.hqc-section-intro{margin-bottom:1.8rem}
+.hqc-section-intro>span{color:var(--hqc-accent);font-size:.73rem;letter-spacing:.18em}
+.hqc-section h2{margin:.6rem 0 .8rem;font-size:clamp(1.9rem,6vw,3.1rem);line-height:1.22}
+.hqc-section-intro>p{color:var(--hq-soft);font-size:.84rem;line-height:1.9;max-width:45rem}
+.hqc-booklist,.hqc-zodiac,.hqc-years{margin:0;padding:0;list-style:none}
+.hqc-booklist{border-top:1px solid var(--hqc-rule)}
+.hqc-booklist li{border-bottom:1px solid var(--hqc-rule)}
+.hqc-booklist a{display:flex;align-items:start;gap:1rem;padding:1.4rem .1rem;min-width:0;text-decoration:none;color:var(--hq-ink)}
+.hqc-number{flex:none;width:2.1rem;color:var(--hqc-accent);font-family:var(--font-display);font-size:1.5rem}
+.hqc-mainline{flex:1;min-width:0}
+.hqc-mainline strong,.hqc-mainline small{display:block;font-family:var(--font-display)}
+.hqc-mainline strong{font-size:1.2rem}
+.hqc-mainline small{margin-top:.45rem;font-size:.78rem;line-height:1.65;color:var(--hq-soft);font-weight:400}
+.hqc-arrow{color:var(--hqc-accent);font-size:1.1rem}
+.hqc-zodiac{display:grid;grid-template-columns:minmax(0,1fr);border-top:1px solid var(--hqc-rule)}
+.hqc-zodiac li{border-bottom:1px solid var(--hqc-rule);min-width:0}
+.hqc-zodiac a{display:flex;align-items:center;gap:1rem;min-width:0;padding:1.05rem .1rem;color:var(--hq-ink);text-decoration:none}
+.hqc-zodiac span{color:var(--hqc-accent);font-size:.68rem}
+.hqc-zodiac strong{font-family:var(--font-display);font-size:1.02rem;flex:none}
+.hqc-zodiac small{margin-left:auto;color:var(--hq-soft);font-size:.73rem;text-align:right;min-width:0}
+.hqc-years{border-top:1px solid var(--hqc-rule)}
+.hqc-years li{border-bottom:1px solid var(--hqc-rule)}
+.hqc-years a{display:grid;grid-template-columns:3.8rem minmax(0,1fr) 1rem;gap:.8rem;align-items:center;text-decoration:none;min-height:75px;color:var(--hq-ink)}
+.hqc-years span{color:var(--hqc-accent);font-size:.82rem}
+.hqc-years strong{font-family:var(--font-display);font-size:1.15rem}
+.hqc-final-line{max-width:37rem;margin:3.5rem 0;padding:1.6rem 0;border-block:1px solid var(--hqc-rule);font-family:var(--font-display);font-size:clamp(1.25rem,3.2vw,1.9rem);line-height:1.85;color:var(--hq-pine)}
+.hqc-footer{margin-top:4rem;border-top:1px solid var(--hqc-rule);padding:1.7rem 0;color:var(--hq-soft);font-size:.75rem;line-height:1.95}
+.hqc-footer a{color:var(--hq-pine);text-underline-offset:.2rem}
+.hqc-index :is(a):focus-visible{outline:2px solid var(--hqc-accent);outline-offset:3px}
+@container (min-width:700px){.hqc-opening{grid-template-columns:minmax(0,1.18fr) minmax(260px,.82fr)}.hqc-zodiac{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:2rem}}
+@container (max-width:389px){.hqc-opening h1{font-size:clamp(2.65rem,13vw,3.1rem)}.hqc-zodiac a{gap:.6rem}.hqc-zodiac small{font-size:.69rem}.hqc-years a{grid-template-columns:3.4rem minmax(0,1fr) .8rem}.hqc-booklist a{gap:.6rem}}
