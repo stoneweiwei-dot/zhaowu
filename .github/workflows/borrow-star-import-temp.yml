@@ -1,0 +1,13 @@
+name: Borrow Star image import QA
+on:
+  push:
+    branches: [gpt/borrow-star-replace-20261028]
+    paths: [.github/workflows/borrow-star-import-temp.yml]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo 'Review branch prepared for image import'
