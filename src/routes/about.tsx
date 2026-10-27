@@ -219,7 +219,7 @@ function AboutZhaowu() {
   return <main className="zw-about zw-about-story" data-zhaowu-features-page data-preview-layout={preview ? layout : "booklet"} data-preview-palette={preview ? palette : "paper"} style={vars} aria-labelledby="zw-about-title">
     {preview ? <div className="zw-about-preview-region">
       {controlsVisible ? <aside className="zw-about-preview-controls" aria-label="視覺與色彩設定">
-        <details open>
+        <details>
           <summary>視覺與色彩設定 <span aria-hidden="true">＋</span></summary>
           <p className="zw-about-preview-disclaimer">僅調整本頁的樣式試讀，不更改全站配色或站主主題。</p>
           <fieldset><legend>01 / 排版方向</legend>
