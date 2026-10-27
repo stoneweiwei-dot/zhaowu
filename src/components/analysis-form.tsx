@@ -29,7 +29,6 @@ import { chartTerm } from "@/lib/bazi/presentation";
 import { UnifiedBirthReport } from "@/components/unified-birth-report";
 import { ChartTrustPanel } from "@/components/chart-trust-panel";
 import { buildPlainChartSummary } from "@/lib/bazi/plain-summary";
-import { standardTimeFallbackCity } from "@/lib/bazi/cities";
 
 const EN_STRENGTH: Record<string, string> = {
   "偏旺": "Relatively strong",
@@ -92,7 +91,7 @@ export function AnalysisForm() {
         edit: "Edit details",
         birthData: "Birth record",
         calibrationTitle: "Time correction is automatic",
-        calibrationBody: "Enter the local time shown on the birth certificate and select the birthplace. Longitude, historical time zone, daylight saving and true solar time are handled automatically. If place search is unavailable, the chart continues with Beijing standard time and clearly marks that true solar time was not corrected.",
+        calibrationBody: "Enter the local time shown on the birth certificate and select the birthplace. Longitude, historical time zone, daylight saving and true solar time are handled automatically. If place search is unavailable, try again or select a matching offline city. Confirm the birthplace and time zone before continuing.",
         next: "Generate my Destiny Book",
         saving: "Saving…",
         saved: "Birth record saved on this phone.",
@@ -139,7 +138,7 @@ export function AnalysisForm() {
           edit: "修改资料",
           birthData: "出生资料",
           calibrationTitle: "时间校正由系统自动完成",
-          calibrationBody: "只需填写出生证明上的当地时间并选择出生城市；经度、历史时区、夏令时与真太阳时由系统自动处理。若地点搜索暂时不可用，会按北京时间继续排盘，并明确标示未校正真太阳时。",
+          calibrationBody: "只需填写出生证明上的当地时间并选择出生城市；经度、历史时区、夏令时与真太阳时由系统自动处理。若地点搜索暂时不可用，请重试或选择匹配的离线城市；确认出生地与时区后再继续排盘。",
           next: "生成我的命书",
           saving: "正在保存…",
           saved: "生辰已保存在这台手机。",
@@ -185,7 +184,7 @@ export function AnalysisForm() {
           edit: "修改資料",
           birthData: "出生資料",
           calibrationTitle: "時間校正由系統自動完成",
-          calibrationBody: "只需填寫出生證明上的當地時間並選擇出生城市；經度、歷史時區、夏令時與真太陽時由系統自動處理。若地點搜尋暫時不可用，會按北京標準時間繼續排盤，並明確標示未校正真太陽時。",
+          calibrationBody: "只需填寫出生證明上的當地時間並選擇出生城市；經度、歷史時區、夏令時與真太陽時由系統自動處理。若地點搜尋暫時不可用，請重試或選擇匹配的離線城市；確認出生地與時區後再繼續排盤。",
           next: "生成我的命書",
           saving: "正在保存…",
           saved: "生辰已保存在這台手機。",
@@ -248,8 +247,7 @@ export function AnalysisForm() {
     if (!localRecord && serverRecord) writeSharedBirthRecord(serverRecord);
   }, [user?.id, user?.birthData]);
 
-  const effectiveBirthCity = useMemo(() => birthCity ?? standardTimeFallbackCity(locale), [birthCity, locale]);
-  const draftBirth = useMemo(() => gender ? sharedBirthFromUnknown({
+  const draftBirth = useMemo(() => gender && birthCity && !birthCity.standardTimeFallback ? sharedBirthFromUnknown({
     year,
     month,
     day,
@@ -258,12 +256,12 @@ export function AnalysisForm() {
     timeUnknown,
     gender,
     relation,
-    city: effectiveBirthCity,
+    city: birthCity,
     liveCity,
     ziPolicy: "midnight",
-    useTrueSolar: !effectiveBirthCity.standardTimeFallback,
+    useTrueSolar: true,
     timeSource: timeUnknown ? undefined : timeSource,
-  }) : null, [year, month, day, hour, minute, timeUnknown, timeSource, gender, relation, effectiveBirthCity, liveCity]);
+  }) : null, [year, month, day, hour, minute, timeUnknown, timeSource, gender, relation, birthCity, liveCity]);
 
   async function saveBirthAndContinue(record: SharedBirthRecord) {
     writeSharedBirthRecord(record);
@@ -286,6 +284,11 @@ export function AnalysisForm() {
       if (!gender) {
         setError(locale === "en" ? "Choose a traditional chart option, or select Not specified." : locale === "zh-Hans" ? "请先选择性别排运选项，也可以选择不提供。" : "請先選擇性別排運選項，也可以選擇不提供。");
         document.getElementById("birth-gender")?.focus();
+        return;
+      }
+      if (!birthCity || birthCity.standardTimeFallback || !birthCity.timezone) {
+        setError(locale === "en" ? "Please select your birth city and confirm its time zone before continuing." : locale === "zh-Hans" ? "请先从列表选择出生城市并确认时区，再继续排盘。" : "請先從列表選擇出生城市並確認時區，再繼續排盤。");
+        document.getElementById("birth-city")?.focus();
         return;
       }
       if (!draftBirth) {

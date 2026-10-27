@@ -48,9 +48,9 @@ function HistoryPage() {
     kicker: tr(locale, "昭梧 · 個人紀錄", "昭梧 · 个人记录", "ZHAOWU · MY HISTORY"),
     title: tr(locale, "我的報告", "我的报告", "My reports"),
     lead: tr(locale,
-      "你建立的命書與提問報告會加密保存在這台裝置；無需註冊，隨時可以回來重看。",
-      "你建立的命书与提问报告会加密保存在这台设备；无需注册，随时可以回来重看。",
-      "Your charts and question reports are encrypted and saved on this device. No registration is required."),
+      "命書與提問報告加密保存在目前瀏覽器。請使用原裝置與原瀏覽器重看；清除網站資料或結束無痕瀏覽可能遺失紀錄。",
+      "命书与提问报告加密保存在当前浏览器。请使用原设备与原浏览器重看；清除网站数据或结束无痕浏览可能丢失记录。",
+      "Charts and question reports are encrypted in this browser. Return using the same device and browser; clearing site data or ending private browsing may erase them."),
     local: tr(locale, "僅保存在這台裝置", "仅保存在这台设备", "Saved on this device only"),
     empty: tr(locale, "還沒有報告", "还没有报告", "No reports yet"),
     generated: tr(locale, "生成時間", "生成时间", "Created"),
@@ -100,6 +100,10 @@ function HistoryPage() {
           <h2>{copy.empty}</h2>
           <p>{copy.start}</p>
           <div><a href="/#birth-form">{copy.createFirst}</a></div>
+          <details className="mt-5 text-sm leading-7">
+            <summary className="min-h-11 cursor-pointer">{tr(locale, "之前建立過或已付款，卻找不到報告？", "之前建立过或已付款，却找不到报告？", "Created or paid for a report before?")}</summary>
+            <p>{tr(locale, "請先回到購買時的裝置與瀏覽器（包括當時使用的 App 內建瀏覽器），不要再次付款。會員登入目前不會自動同步或還原報告。請保留付款收據與原有報告連結，以便核對購買權限。", "请先回到购买时的设备与浏览器（包括当时使用的 App 内置浏览器），不要再次付款。会员登录目前不会自动同步或恢复报告。请保留付款收据与原有报告链接，以便核对购买权限。", "Return to the device and browser used for purchase, including an in-app browser if applicable. Do not pay again. Signing in does not currently sync or restore reports. Keep your receipt and original report link for purchase verification.")}</p>
+          </details>
         </section>
       ) : (
         <section className="history-list" aria-label={copy.title}>

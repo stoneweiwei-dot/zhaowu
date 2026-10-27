@@ -3,7 +3,6 @@ import { searchCities } from "@/lib/actions";
 import type { CityHit } from "@/lib/bazi/types";
 import type { Locale } from "@/lib/i18n";
 import { localizePlaceHit as localizeCityHit, needsTimezone, resolveCityTimezone, searchLocalPlaces } from "@/lib/geo/city-search";
-import { standardTimeFallbackCity } from "@/lib/bazi/cities";
 
 type PickerProps = {
   id: string;
@@ -59,6 +58,9 @@ export function CityPicker({
   const [searching, setSearching] = useState(false);
   const [resolving, setResolving] = useState(false);
   const [tzError, setTzError] = useState(false);
+  const [open, setOpen] = useState(false);
+  const focused = useRef(false);
+  const commitSeq = useRef(0);
   const composing = useRef(false);
   const requestSeq = useRef(0);
   const listId = `${id}-results`;
@@ -69,24 +71,37 @@ export function CityPicker({
     && !label.toLowerCase().includes(optionalToken);
 
   const copy = locale === "en"
-    ? { searching: "Searching places…", none: "No match yet — try the town name in English or a nearby city.", confirmed: "Confirmed", resolving: "Confirming time zone…", tzFailed: "Could not confirm this place's time zone. Beijing standard time will be used without true-solar correction." }
+    ? { searching: "Searching places…", none: "No match yet — try the town name in English or a nearby city.", confirmed: "Confirmed", resolving: "Confirming time zone…", tzFailed: "Could not confirm this place’s time zone. Please select a matching city or try again before generating your chart." }
     : locale === "zh-Hans"
-      ? { searching: "正在搜索地点…", none: "暂时没有找到，可试试英文地名或附近城镇。", confirmed: "已确认", resolving: "正在确认时区…", tzFailed: "无法确认地点，将按北京时间排盘且不校正真太阳时。" }
-      : { searching: "正在搜尋地點…", none: "暫時沒有找到，可試試英文地名或附近城鎮。", confirmed: "已確認", resolving: "正在確認時區…", tzFailed: "無法確認地點，將按北京標準時間排盤且不校正真太陽時。" };
+      ? { searching: "正在搜索地点…", none: "暂时没有找到，可试试英文地名或附近城镇。", confirmed: "已确认", resolving: "正在确认时区…", tzFailed: "无法确认地点时区，请选择匹配城市或重试后再生成命盘。" }
+      : { searching: "正在搜尋地點…", none: "暫時沒有找到，可試試英文地名或附近城鎮。", confirmed: "已確認", resolving: "正在確認時區…", tzFailed: "無法確認地點時區，請選擇匹配城市或重試後再生成命盤。" };
 
   useEffect(() => {
     const localized = value ? localizeCityHit(value, locale) : null;
     setSelected(localized);
     setQuery(localized?.display ?? "");
     if (value && localized && localized.display !== value.display) onSelect(localized);
-  }, [locale, onSelect, value?.display, value?.latitude, value?.longitude]);
+  }, [locale, value?.display, value?.latitude, value?.longitude]);
+
+  function closeResults() {
+    focused.current = false;
+    setOpen(false);
+    ++requestSeq.current;
+    setSearching(false);
+    setHits([]);
+  }
+
+  useEffect(() => () => { ++requestSeq.current; ++commitSeq.current; }, []);
 
   async function commit(city: CityHit, rewriteText: boolean) {
+    const seq = ++commitSeq.current;
+    closeResults();
     setTzError(false);
     let ready: CityHit | null = city;
     if (needsTimezone(city)) {
       setResolving(true);
-      ready = await resolveCityTimezone(city);
+      ready = await resolveCityTimezone(city).catch(() => null);
+      if (seq !== commitSeq.current) return;
       setResolving(false);
     }
     if (!ready) {
@@ -103,15 +118,16 @@ export function CityPicker({
 
   function commitBestAvailable() {
     const q = query.trim();
-    const pick = exactMatch(hits, q) ?? hits[0];
+    const pick = exactMatch(hits, q);
     if (pick) {
       void commit(pick, true);
       return;
     }
-    if (!optional && q) void commit(standardTimeFallbackCity(locale, q), true);
+    if (!optional && q) setTzError(true);
   }
 
   function runSearch(raw: string) {
+    if (!focused.current) return;
     const q = raw.trim();
     const seq = ++requestSeq.current;
     if (q.length < 2) {
@@ -138,7 +154,7 @@ export function CityPicker({
         }
       })
       .catch(() => {
-        if (seq === requestSeq.current) setHits([]);
+        if (seq === requestSeq.current) setHits(instant.map((city) => localizeCityHit(city, locale)));
       })
       .finally(() => {
         if (seq === requestSeq.current) setSearching(false);
@@ -146,7 +162,7 @@ export function CityPicker({
   }
 
   useEffect(() => {
-    if (composing.current) return;
+    if (composing.current || !focused.current) return;
     const q = query.trim();
     if (selected && selected.display === q) return;
     const timer = window.setTimeout(() => runSearch(q), 320);
@@ -156,7 +172,11 @@ export function CityPicker({
   const showEmpty = !searching && !selected && query.trim().length >= 2 && hits.length === 0;
 
   return (
-    <div className="relative" data-city-picker>
+    <div className="relative" data-city-picker onBlur={(event) => {
+      if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
+      if (!selected) commitBestAvailable();
+      closeResults();
+    }}>
       <label htmlFor={id} className="mb-2 block text-sm text-ink-soft">
         {label}
         {showOptionalLabel ? <span className="ml-2 text-xs text-ink-mute">{optionalLabel}</span> : null}
@@ -171,17 +191,22 @@ export function CityPicker({
         spellCheck={false}
         enterKeyHint="search"
         inputMode="search"
+        role="combobox"
         aria-autocomplete="list"
         aria-controls={listId}
-        aria-expanded={hits.length > 0}
+        aria-expanded={open && hits.length > 0}
         aria-invalid={invalid || tzError || undefined}
         aria-describedby={invalid && errorMessage ? errorId : undefined}
         className={`h-12 w-full rounded-md border bg-cream px-4 text-base outline-none transition focus:border-cinnabar ${invalid || tzError ? "border-cinnabar" : "border-line"}`}
         onFocus={() => {
-          if (selected || query.trim().length >= 2) return;
+          focused.current = true;
+          setOpen(true);
+          if (selected) return;
+          if (query.trim().length >= 2) { runSearch(query); return; }
+          const seq = ++requestSeq.current;
           void searchCities({ data: "" })
-            .then((rows) => setHits(rows.map((city) => localizeCityHit(city, locale))))
-            .catch(() => setHits([]));
+            .then((rows) => { if (seq === requestSeq.current) setHits(rows.map((city) => localizeCityHit(city, locale))); })
+            .catch(() => { if (seq === requestSeq.current) setHits([]); });
         }}
         onCompositionStart={() => { composing.current = true; }}
         onCompositionEnd={(e) => {
@@ -190,22 +215,20 @@ export function CityPicker({
           runSearch(e.currentTarget.value);
         }}
         onKeyDown={(e) => {
-          if (e.key === "Escape") setHits([]);
+          if (e.key === "Escape") closeResults();
           if (e.key === "Enter" && !composing.current) {
             e.preventDefault();
-            commitBestAvailable();
-          }
-        }}
-        onBlur={() => {
-          // A visitor should never have to click the floating list. Blur confirms
-          // the best result synchronously so the following submit click sees it.
-          if (!selected) commitBestAvailable();
-          else {
-            setHits([]);
-            if (query !== selected.display && exactMatch([selected], query)) setQuery(selected.display);
+            if (!selected) commitBestAvailable();
+            closeResults();
           }
         }}
         onChange={(e) => {
+          ++requestSeq.current;
+          ++commitSeq.current;
+          focused.current = true;
+          setOpen(true);
+          setResolving(false);
+          setHits([]);
           setQuery(e.target.value);
           setTzError(false);
           if (selected) {
@@ -221,8 +244,8 @@ export function CityPicker({
       {showEmpty ? <p className="mt-2 text-xs text-ink-mute" role="status">{copy.none}</p> : null}
       {tzError ? <p role="alert" className="mt-2 text-sm text-cinnabar">{copy.tzFailed}</p> : null}
       {invalid && errorMessage ? <p id={errorId} role="alert" className="mt-2 text-sm text-cinnabar">{errorMessage}</p> : null}
-      {hits.length ? (
-        <div id={listId} role="listbox" aria-label={query.trim().length < 2 ? popularLabel : label} className="absolute z-40 mt-1 max-h-72 w-full overflow-auto overscroll-contain rounded-md border border-line bg-cream shadow-xl">
+      {open && hits.length ? (
+        <div id={listId} role="listbox" aria-label={query.trim().length < 2 ? popularLabel : label} className="relative z-10 mt-1 max-h-48 w-full overflow-auto overscroll-contain rounded-md border border-line bg-cream shadow-xl">
           {query.trim().length < 2 ? (
             <p className="border-b border-line/60 px-4 py-2 text-xs tracking-[0.16em] text-ink-mute">{popularLabel}</p>
           ) : null}

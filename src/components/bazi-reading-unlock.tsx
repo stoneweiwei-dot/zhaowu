@@ -36,7 +36,7 @@ export function BaziReadingUnlock({ locale, reportId, grade }: { locale: Locale;
   }
   return <section className="mb-4 mt-4 border-t border-line/60 pt-4" data-bazi-reading-locked>
     <h3 className="font-display text-lg">{text("完整命書", "完整命书", "Full BaZi reading")}</h3>
-    <p className="mt-2 text-sm leading-6">{text("基本排盤與兩段試讀免費；完整解讀、詳細時運及連續追問，解鎖後閱讀。", "基本排盘与两段试读免费；完整解读、详细时运及连续追问，解锁后阅读。", "Your basic chart and two preview paragraphs are free. Unlock the full reading, detailed timing and follow-up questions.")}</p>
+    <p className="mt-2 text-sm leading-6">{text("你的基本命盤與兩段核心試讀已免費呈現。如想繼續了解完整解讀、詳細時運及連續追問，可按需要開卷。單次付費，不自動續費。", "你的基本命盘与两段核心试读已免费呈现。如想继续了解完整解读、详细时运及连续追问，可按需要开卷。单次付费，不自动续费。", "Your basic chart and two core preview paragraphs are already free. When you want to explore further, unlock the full reading, detailed timing and follow-up questions with a one-time purchase. No automatic renewal.")}</p>
     <PurchaseConsent locale={locale} checked={consent.checked} needed={consent.needed} onChange={consent.toggle} grade={grade} gradeAck={consent.gradeAck} gradeNeeded={consent.gradeNeeded} onGradeChange={consent.toggleGrade} />
     <button type="button" disabled={busy} onClick={() => void unlock()} className="mt-3 min-h-11 rounded-lg bg-cinnabar px-5 text-sm text-cream disabled:opacity-50">{busy ? "…" : text("解鎖", "解锁", "Unlock") + " " + reportAccessPrice("system", "bazi").price}</button>
     {error ? <p role="alert" className="mt-2 text-sm text-cinnabar">{error}</p> : null}
