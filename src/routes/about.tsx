@@ -128,7 +128,7 @@ const EDITORIAL_COPY = {
       ],
       [
         "阅读之前",
-        "命理内容提供理解和思考的角度，不是事件预测，也不替你做决定。医疗、法律与投资等重要问题，仍应寻求相应的专业意见。"
+        "命理内容提供理解与思考的角度，不是事件预测，也不替你做决定。医疗、法律与投资等重要问题，仍应寻求相应的专业意见。"
       ]
     ],
     "home": "返回首页",
@@ -163,7 +163,7 @@ const EDITORIAL_COPY = {
     "articles": "Read the essays",
     "deep": "Explore eight sides of Zhaowu",
     "notes": "A note on seasons and charting",
-    "calculations": "True solar time is optional. Local season and daily rhythm do not reverse the four pillars, month pillar or luck cycles."
+    "calculations": "True solar time is optional. If you were born or live in the Southern Hemisphere, the site reads local season and daily rhythm only; it does not reverse the four pillars, the month pillar or the luck cycles."
   }
 } as const;
 type AboutLayout = "booklet" | "ink" | "worktable";
