@@ -24,3 +24,19 @@ jobs:
         with:
           node-version: 22
       - run: node --test scripts/report-editions-contract.test.mjs
+
+  static-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      # TanStack Router writes routeTree.gen.ts during the Vite build.
+      # The legacy workflow runs tsc before generation, so it fails on a
+      # pre-existing unregistered guaili route even when the source compiles.
+      - run: npx vite build
+      - run: npx tsc --noEmit
