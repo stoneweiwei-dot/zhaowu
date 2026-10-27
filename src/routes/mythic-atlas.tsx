@@ -54,7 +54,7 @@ function MythicAtlasPage() {
     </header>
 
     <nav className="hq-toc" aria-label={tr(COPY.contents, locale)}>
-      <span>{tr(COPY.contents, locale)}</span><a href="#world">{tr(COPY.world, locale)}</a><a href="#atlas">{tr(COPY.atlas, locale)}</a><a href="#chronicle">{tr(COPY.chronicle, locale)}</a><a href="#guaili">{tr(l("怪力亂神・七卷", "怪力乱神・七卷", "Strange Powers · Seven Volumes"), locale)}</a><a href="#guaili-zodiac">{tr(l("十二地支四態", "十二地支四态", "Twelve Branches"), locale)}</a><a href="#guaili-ending">{tr(l("十年災異終局", "十年灾异终局", "Final Chronicle"), locale)}</a><a href="#paintings">{tr(COPY.paintings, locale)}</a><a href="#borrow-star">{locale === "en" ? "Borrowed Star" : locale === "zh-Hans" ? "借星" : "借星"}</a><a href="#observation">{tr(COPY.observation, locale)}</a><a href="#sources">{tr(COPY.sources, locale)}</a>
+      <span>{tr(COPY.contents, locale)}</span><a href="#world">{tr(COPY.world, locale)}</a><a href="#atlas">{tr(COPY.atlas, locale)}</a><a href="#chronicle">{tr(COPY.chronicle, locale)}</a><a href="/guaili-luanshen">{tr(l("《怪力亂神》分組書目", "《怪力乱神》分组书目", "Strange Powers · Series Index"), locale)}</a><a href="#guaili">{tr(l("怪力亂神・七卷", "怪力乱神・七卷", "Strange Powers · Seven Volumes"), locale)}</a><a href="#guaili-zodiac">{tr(l("十二地支四態", "十二地支四态", "Twelve Branches"), locale)}</a><a href="#guaili-ending">{tr(l("十年災異終局", "十年灾异终局", "Final Chronicle"), locale)}</a><a href="#paintings">{tr(COPY.paintings, locale)}</a><a href="#borrow-star">{locale === "en" ? "Borrowed Star" : locale === "zh-Hans" ? "借星" : "借星"}</a><a href="#observation">{tr(COPY.observation, locale)}</a><a href="#sources">{tr(COPY.sources, locale)}</a>
     </nav>
 
     <section className="hq-section" id="world">
