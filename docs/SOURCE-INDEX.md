@@ -71,6 +71,7 @@ For conflicting project behavior, use the precedence already defined in `AGENTS.
 - Scope: `/mythic-atlas#guaili` 的七卷導讀、十二地支四態、十二流煞、十年災異編年、終章
 - Canonical archival note: https://github.com/stoneweiwei-dot/zhaowu/blob/main/docs/mythic-atlas/GUAILI-LUANSHEN-CANON-20261027.md
 - Runtime source: `src/routes/-mythic-atlas-guaili-data.ts` 與 `-mythic-atlas-guaili.tsx`
+- Series grouping (no duplicate body): https://zhao-wu.com/guaili-luanshen — links to the canonical `mythic-atlas` chapters
 - Rights: 自有敘事可公開；第三方現代二創線索仍需核權，未查證前不重製其表達
 - Freshness: 後續修改以站主最新明示版本及原始母本優先，對外考據另以可追溯文獻查核
 
