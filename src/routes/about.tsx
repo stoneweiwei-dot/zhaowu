@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
+import { useState, type CSSProperties } from "react";
 import "@/about-zhaowu.css";
 
 export const Route = createFileRoute("/about")({ component: AboutZhaowu });
@@ -76,42 +77,194 @@ function content(locale: string) {
   };
 }
 
+
+// Portable ZIP 2026-10-28: exact four-section three-language editorial copy.
+// Original eight illustrated features remain available in the expandable archive.
+const EDITORIAL_COPY = {
+  "zh-Hant": {
+    "pageTitle": "關於昭梧",
+    "opening": "讓天時有形，讓命理可讀。",
+    "summary": "昭梧整理八字命盤、今日指引與東方文化文章，也以畫作呈現節氣的變化。你可以從出生資料開始認識自己的命盤，或讀一篇文章，看看今天的時令。",
+    "sections": [
+      [
+        "昭梧在做什麼",
+        "昭梧以子平八字為核心，將四柱、五行與大運流年的內容分層整理，讓第一次接觸命理的人也能逐步閱讀。計算依據與象徵解讀分別說明，讓你知道一段內容從何而來。"
+      ],
+      [
+        "時間與畫面",
+        "節氣與畫作是昭梧的另一條線索。不同時令帶來不同畫面，也讓日常閱讀有一些變化。傳統物候意象與你所在地的實際天氣分開呈現，不把畫中的季節當作天氣預報。"
+      ],
+      [
+        "怎樣使用這裡",
+        "第一次來，可以先排一份命盤，也可以直接閱讀文章或今日指引。輸入出生年月日、時間與出生地即可排盤，免登入閱讀三段式核心直斷；更深入的大運、流年與流月為單次解鎖，不設自動續費。"
+      ],
+      [
+        "閱讀之前",
+        "命理內容提供理解與思考的角度，不是事件預測，也不替你做決定。醫療、法律與投資等重要問題，仍應尋求相應的專業意見。"
+      ]
+    ],
+    "home": "返回首頁",
+    "articles": "閱讀文章",
+    "deep": "深入認識昭梧的八個面向",
+    "notes": "節氣與排盤說明",
+    "calculations": "真太陽時可選擇是否採用。南半球出生或居住，只按當地季節與作息理解，不反轉四柱、月令與大運。"
+  },
+  "zh-Hans": {
+    "pageTitle": "关于昭梧",
+    "opening": "让天时有形，让命理可读。",
+    "summary": "昭梧整理八字命盘、今日指引与东方文化文章，也以画作呈现节气的变化。你可以从出生资料开始认识自己的命盘，或读一篇文章，看看今天的时令。",
+    "sections": [
+      [
+        "昭梧在做什么",
+        "昭梧以子平八字为核心，将四柱、五行与大运流年的内容分层整理，让第一次接触命理的人也能逐步阅读。计算依据与象征解读分别说明，让你知道一段内容从何而来。"
+      ],
+      [
+        "时间与画面",
+        "节气与画作是昭梧的另一条线索。不同时令带来不同画面，也让日常阅读有一些变化。传统物候意象与你所在地的实际天气分开呈现，不把画中的季节当作天气预报。"
+      ],
+      [
+        "怎样使用这里",
+        "第一次来，可以先排一份命盘，也可以直接阅读文章或今日指引。输入出生年月日、时间与出生地即可排盘，免登录阅读三段式核心直断；更深入的大运、流年与流月为单次解锁，不设自动续费。"
+      ],
+      [
+        "阅读之前",
+        "命理内容提供理解和思考的角度，不是事件预测，也不替你做决定。医疗、法律与投资等重要问题，仍应寻求相应的专业意见。"
+      ]
+    ],
+    "home": "返回首页",
+    "articles": "阅读文章",
+    "deep": "深入了解昭梧的八个面向",
+    "notes": "节气与排盘说明",
+    "calculations": "真太阳时可选择是否采用。南半球出生或居住，只按当地季节与作息理解，不反转四柱、月令与大运。"
+  },
+  "en": {
+    "pageTitle": "About Zhaowu",
+    "opening": "Where the seasons have a form, and destiny becomes readable.",
+    "summary": "Zhaowu brings together BaZi charts, daily guidance and essays on Eastern culture, with paintings that reflect the changing seasons. Begin with your birth chart, read an essay, or explore today's seasonal guide.",
+    "sections": [
+      [
+        "What Zhaowu does",
+        "Zi Ping BaZi is the starting point. The four pillars, five elements and changing luck cycles are organised into layers, so first-time readers can follow them at their own pace. Calculation rules are kept separate from symbolic interpretation, making the basis of each reading clear."
+      ],
+      [
+        "Time and paintings",
+        "Seasons and paintings are another thread through Zhaowu. The scene changes with the season, bringing a little variety to everyday reading. Traditional seasonal imagery is shown separately from the actual weather where you are; a painted season is not a weather forecast."
+      ],
+      [
+        "How to begin",
+        "Create a chart, read an essay or look at today's guide. Enter a birth date, time and place to chart without an account and read the free three-part core reading. Deeper luck-cycle, annual and monthly readings unlock once, with no automatic renewal."
+      ],
+      [
+        "Before you read",
+        "Destiny readings offer a perspective for reflection, not an event prediction or a decision on your behalf. For medical, legal or investment matters, seek advice from the relevant qualified professional."
+      ]
+    ],
+    "home": "Back to home",
+    "articles": "Read the essays",
+    "deep": "Explore eight sides of Zhaowu",
+    "notes": "A note on seasons and charting",
+    "calculations": "True solar time is optional. Local season and daily rhythm do not reverse the four pillars, month pillar or luck cycles."
+  }
+} as const;
+type AboutLayout = "booklet" | "ink" | "worktable";
+type AboutPalette = "paper" | "jade" | "mineral";
+const ABOUT_PALETTES = {
+  "paper": {
+    "name": "暖紙／松綠",
+    "paper": "#faf9f5",
+    "ink": "#273b34",
+    "muted": "#62675e",
+    "line": "#dadcd3",
+    "accent": "#345e50"
+  },
+  "jade": {
+    "name": "青瓷／深墨",
+    "paper": "#f3f7f1",
+    "ink": "#214337",
+    "muted": "#607068",
+    "line": "#cbd9d0",
+    "accent": "#2f6e59"
+  },
+  "mineral": {
+    "name": "礦物／赭褐",
+    "paper": "#f8f3eb",
+    "ink": "#3d3831",
+    "muted": "#766c60",
+    "line": "#ded3c6",
+    "accent": "#8a5a3d"
+  }
+} as const;
+const ABOUT_LAYOUTS: Array<[AboutLayout,string,string]> = [
+  ["booklet","文人冊頁","寬版軸線、宋體與自然留白"],
+  ["ink","墨線展讀","加強標題軸線與細線節奏"],
+  ["worktable","編輯工作台","較緊湊的段落密度"],
+];
 function AboutZhaowu() {
   const { locale } = useI18n();
-  const copy = content(locale);
-  return <main className="zw-about" aria-labelledby="zw-about-title" data-zhaowu-features-page>
-    <header className="zw-about-hero">
-      <div className="zw-about-hero-content">
-        <p className="zw-about-eyebrow">{copy.eyebrow}</p>
-        <h1 id="zw-about-title">{copy.title}</h1>
-        <p className="zw-about-intro">{copy.summary}</p>
+  const detailed = content(locale);
+  const editor = EDITORIAL_COPY[locale === "en" ? "en" : locale === "zh-Hans" ? "zh-Hans" : "zh-Hant"];
+  const preview = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("stylePreview") === "1";
+  const [layout, setLayout] = useState<AboutLayout>("booklet");
+  const [palette, setPalette] = useState<AboutPalette>("paper");
+  const [controlsVisible, setControlsVisible] = useState(true);
+  const swatches = ABOUT_PALETTES[palette];
+  const vars = preview ? {
+    "--about-paper": swatches.paper,
+    "--about-ink": swatches.ink,
+    "--about-muted": swatches.muted,
+    "--about-line": swatches.line,
+    "--about-accent": swatches.accent,
+  } as CSSProperties : undefined;
+  const reset = () => { setLayout("booklet"); setPalette("paper"); setControlsVisible(true); };
+  return <main className="zw-about zw-about-story" data-zhaowu-features-page data-preview-layout={preview ? layout : "booklet"} data-preview-palette={preview ? palette : "paper"} style={vars} aria-labelledby="zw-about-title">
+    {preview ? <div className="zw-about-preview-region">
+      {controlsVisible ? <aside className="zw-about-preview-controls" aria-label="視覺與色彩設定">
+        <details open>
+          <summary>視覺與色彩設定 <span aria-hidden="true">＋</span></summary>
+          <p className="zw-about-preview-disclaimer">僅調整本頁的樣式試讀，不更改全站配色或站主主題。</p>
+          <fieldset><legend>01 / 排版方向</legend>
+            {ABOUT_LAYOUTS.map(([id, name, note]) => <button key={id} type="button" data-choice="layout" aria-pressed={layout===id} onClick={() => setLayout(id)}><strong>{name}</strong><small>{note}</small></button>)}
+          </fieldset>
+          <fieldset><legend>02 / 色彩配置</legend>
+            {(Object.keys(ABOUT_PALETTES) as AboutPalette[]).map(id => <button key={id} type="button" data-choice="palette" aria-pressed={palette===id} onClick={() => setPalette(id)}><i style={{background:ABOUT_PALETTES[id].accent}} aria-hidden="true"/><strong>{ABOUT_PALETTES[id].name}</strong></button>)}
+          </fieldset>
+          <dl className="zw-about-preview-swatches">{(Object.keys(swatches).filter(x=>x!=="name") as Array<Exclude<keyof typeof swatches,"name">>).map(k=><div key={k}><dt>{k}</dt><dd>{swatches[k]}</dd></div>)}</dl>
+          <div className="zw-about-preview-actions">
+            <button type="button" onClick={()=>setControlsVisible(false)}>只看頁面</button>
+            <button type="button" onClick={reset}>重設</button>
+          </div>
+        </details>
+      </aside> : <button className="zw-about-preview-open" type="button" onClick={()=>setControlsVisible(true)}>開啟設定</button>}
+    </div>:null}
+    <header className="zw-about-opening">
+      <h1 id="zw-about-title">{editor.pageTitle}</h1>
+      <div className="zw-about-opening-copy">
+        <p className="zw-about-lead">{editor.opening}</p>
+        <p className="zw-about-intro">{editor.summary}</p>
+        <figure className="zw-about-figure"><img src="/theme-skins/reference-day-flute.webp" alt={locale==="en"?"A flute player in an original Zhaowu landscape painting":locale==="zh-Hans"?"昭梧原有吹笛人物山水画":"昭梧原有吹笛人物山水畫"} width={1254} height={1254} decoding="async" fetchPriority="high"/></figure>
       </div>
-      <figure className="zw-about-hero-art">
-        <img src="/theme-skins/reference-day-flute.webp" alt="" width={1248} height={1248} fetchPriority="high" />
-      </figure>
-      <a className="zw-about-down" href="#features">{copy.explore} <span aria-hidden>↓</span></a>
     </header>
-    <section id="features" className="zw-about-body" aria-label={copy.explore}>
-      {copy.features.map((feature, index) => (
-        <article className="zw-about-feature" key={feature.label} data-feature-number={index + 1}>
-          <div className="zw-about-feature-art">
-            <img src={feature.image} alt={feature.imageAlt} loading="lazy" decoding="async" width={720} height={720}/>
-          </div>
-          <div className="zw-about-feature-copy">
-            <span className="zw-about-feature-index">{feature.label}</span>
-            <h2>{feature.title}</h2>
-            <p>{feature.body}</p>
-          </div>
-        </article>
-      ))}
-      <p className="zw-about-note">{copy.limits}</p>
-    </section>
-    <footer className="zw-about-end">
-      <p>{copy.footer}</p>
-      <div className="zw-about-ctas">
-        <Link to="/" className="zw-about-enter">{copy.visit} <span aria-hidden>→</span></Link>
-        <Link to="/login" className="zw-about-back">{copy.returnLogin}</Link>
+    <div className="zw-about-sections">
+      {editor.sections.map(([heading, body],i)=><section className="zw-about-section" key={heading} aria-labelledby={`zw-about-section-${i}`}>
+        <h2 id={`zw-about-section-${i}`}>{heading}</h2><p>{body}</p>
+      </section>)}
+    </div>
+    <details id="features" className="zw-about-feature-archive">
+      <summary>{editor.deep} <span aria-hidden="true">＋</span></summary>
+      <div className="zw-about-feature-gallery">
+        {detailed.features.map((feature,i)=><article className="zw-about-feature" key={feature.label}>
+          <figure className="zw-about-feature-art"><img src={feature.image} alt={feature.imageAlt} width={720} height={720} loading="lazy" decoding="async"/></figure>
+          <div className="zw-about-feature-copy"><span className="zw-about-feature-index">{feature.label}</span><h2>{feature.title}</h2><p>{feature.body}</p></div>
+        </article>)}
       </div>
+    </details>
+    <footer className="zw-about-end">
+      <nav className="zw-about-ctas" aria-label={editor.pageTitle}>
+        <Link to="/">{editor.home}<span aria-hidden="true">↗</span></Link>
+        <Link to="/knowledge">{editor.articles}<span aria-hidden="true">→</span></Link>
+        <Link to="/login">{detailed.returnLogin}</Link>
+      </nav>
+      <details className="zw-about-notes"><summary>{editor.notes}</summary><p>{detailed.limits}</p><p>{editor.calculations}</p></details>
       <small>STONE 原創 · ZHAOWU</small>
     </footer>
   </main>;
