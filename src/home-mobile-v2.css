@@ -9,6 +9,12 @@ html body #root .zw-painted-home.zw-v2-home {
   --zw-v2-soft: #62675e;
   --zw-v2-pine: #345e50;
   --zw-v2-line: #dadcd3;
+  /* Fixed warm-paper reading contrast even when an owner dark artwork is selected. */
+  --ph-paper: var(--zw-v2-paper) !important;
+  --ph-ink: var(--zw-v2-ink) !important;
+  --ph-muted: var(--zw-v2-soft) !important;
+  --ph-accent: var(--zw-v2-pine) !important;
+  --ph-on-accent: #fffdf8 !important;
   width: 100%;
   max-width: 100%;
   color: var(--zw-v2-ink);
