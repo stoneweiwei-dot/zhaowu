@@ -79,7 +79,8 @@ export function CityPicker({
   useEffect(() => {
     const localized = value ? localizeCityHit(value, locale) : null;
     setSelected(localized);
-    setQuery(localized?.display ?? "");
+    // Parent echoes of a cleared or silently matched value must not replace active typing.
+    if (!focused.current) setQuery(localized?.display ?? "");
     if (value && localized && localized.display !== value.display) onSelect(localized);
   }, [locale, value?.display, value?.latitude, value?.longitude]);
 
