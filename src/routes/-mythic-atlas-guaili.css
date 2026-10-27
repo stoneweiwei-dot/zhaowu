@@ -25,6 +25,11 @@
 .hq-guaili-volume-title small{display:block;margin-top:.35rem;color:var(--hq-soft);font-family:inherit;font-size:.78rem;font-weight:400;line-height:1.6}
 .hq-guaili-volumes details>p{max-width:58rem;margin:0 1rem 1.6rem 2.7rem;line-height:1.95;color:var(--hq-soft);font-size:.88rem}
 .hq-guaili-zodiac-list{display:grid;grid-template-columns:minmax(0,1fr);gap:0;border-top:1px solid var(--hq-line)}
+.hq-zodiac-essay{max-width:51rem;margin:0 0 2rem;color:var(--hq-soft);font-size:.9rem;line-height:1.95}
+.hq-zodiac-essay p{margin:.8rem 0}
+.hq-zodiac-essay h3{margin:1.8rem 0 .6rem;color:var(--hq-ink);font-family:var(--font-display);font-size:1.35rem}
+.hq-zodiac-lead{color:var(--hq-pine);font-family:var(--font-display);font-size:clamp(1.07rem,3vw,1.38rem);line-height:1.75}
+.hq-zodiac-afterword{margin:2.5rem 0 3rem}
 .hq-guaili-zodiac-list details{min-width:0;border-bottom:1px solid var(--hq-line)}
 .hq-guaili-zodiac-list summary{display:flex;gap:.8rem;align-items:center;min-height:62px;padding:.65rem .2rem;cursor:pointer;list-style:none}
 .hq-guaili-zodiac-mark{color:var(--hq-cinnabar);font-size:.68rem;letter-spacing:.1em}
@@ -35,6 +40,12 @@
 .hq-guaili-zodiac-list dt{color:var(--hq-soft);font-size:.72rem}
 .hq-guaili-zodiac-list dd{margin:0;color:var(--hq-ink);font-size:.82rem;overflow-wrap:anywhere}
 .hq-guaili-caveat{margin:.6rem 0 1.3rem 1.65rem;color:#786d5b;font-size:.75rem;line-height:1.7}
+.hq-guaili-plate{max-width:27rem;margin:0 auto 1.4rem;padding:0 .8rem}
+.hq-guaili-plate a{display:block;line-height:0}
+.hq-guaili-plate img{display:block;width:100%;height:auto;aspect-ratio:941/1672;object-fit:contain;background:#171410}
+.hq-guaili-plate figcaption{margin:.65rem 0 0;color:var(--hq-soft);font-size:.74rem;line-height:1.6;text-align:center}
+.hq-guaili-law,.hq-guaili-story{margin:.8rem 0 .8rem 1.65rem;color:var(--hq-ink);font-size:.86rem;line-height:1.85}
+.hq-guaili-law strong{font-family:var(--font-display);color:var(--hq-pine)}
 .hq-guaili-after-list{margin-top:3.5rem}
 .hq-guaili-currents{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 1.1rem;margin:0 0 2rem;padding:0;list-style:none;border-top:1px solid var(--hq-line)}
 .hq-guaili-currents li{display:flex;gap:.9rem;align-items:center;min-width:0;padding:.85rem .2rem;border-bottom:1px solid var(--hq-line)}
