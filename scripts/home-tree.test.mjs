@@ -7,15 +7,16 @@ const source = (path) => readFile(new URL(path, root), "utf8");
 
 test("home shows four plain-language entrances as an expandable tree", async () => {
   const tree = await source("src/components/home-tree.tsx");
-  for (const name of ["我的命盤", "今日指引", "趣味測驗", "文章專欄"]) assert.match(tree, new RegExp(name));
-  for (const name of ["我的命盘", "今日指引", "趣味测验", "文章专栏"]) assert.match(tree, new RegExp(name));
-  for (const name of ["My chart", "Today’s guide", "Quizzes", "Articles"]) assert.match(tree, new RegExp(name));
+  for (const name of ["認識自己的命盤", "看看今天的天時", "探索另一面的自己", "走進昭梧的藏書世界"]) assert.match(tree, new RegExp(name));
+  for (const name of ["认识自己的命盘", "看看今天的天时", "探索另一面的自己", "走进昭梧的藏书世界"]) assert.match(tree, new RegExp(name));
+  for (const name of ["Explore my birth chart", "Today’s time and sky", "Explore another side of myself", "Explore the ZHAOWU library"]) assert.match(tree, new RegExp(name));
   assert.match(tree, /aria-expanded=\{open\}/);
   assert.match(tree, /aria-controls=\{bodyId\}/);
   assert.match(tree, /useState<HomeSection \| null>\('form'\)/, "opens step one by default and keeps one step open at a time");
   assert.match(tree, /data-home-tree/);
   assert.match(tree, /data-guide-step=\{index \+ 1\}/);
   assert.match(tree, /ph-tree-next/);
+  for (const publicShelf of ["/mythic-atlas", "/guaili-luanshen", "/knowledge", "/sample-report"]) assert.ok(tree.includes(publicShelf));
 });
 
 test("tree lists only public pages, never gated professional routes", async () => {
