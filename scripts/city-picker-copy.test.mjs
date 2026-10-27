@@ -16,7 +16,7 @@ test("optional city copy is not rendered twice when the label already includes i
 });
 
 
-test("city input confirms the best result on Enter or blur and fails open to standard time", () => {
+test("city input confirms exact matches and requires a verified birthplace", () => {
   assert.match(picker, /candidates\.includes\(normalizedQuery\)/);
   assert.doesNotMatch(picker, /localized\.length === 1/);
   assert.match(picker, /aria-invalid=\{invalid \|\| tzError \|\| undefined\}/);
@@ -25,9 +25,13 @@ test("city input confirms the best result on Enter or blur and fails open to sta
   assert.match(picker, /resolveCityTimezone/);
   assert.match(picker, /commitBestAvailable/);
   assert.match(picker, /onBlur[\s\S]*commitBestAvailable/);
-  assert.match(picker, /standardTimeFallbackCity\(locale, q\)/);
+  assert.doesNotMatch(picker, /standardTimeFallbackCity/);
+  assert.doesNotMatch(picker, /exactMatch\(hits, q\) \?\? hits\[0\]/);
+  assert.match(picker, /open && hits.length/);
+  assert.match(picker, /seq !== commitSeq.current/);
   assert.match(picker, /role="alert"/);
-  assert.match(analysisForm, /birthCity \?\? standardTimeFallbackCity\(locale\)/);
+  assert.doesNotMatch(analysisForm, /standardTimeFallbackCity\(locale\)/);
+  assert.match(analysisForm, /!birthCity \|\| birthCity.standardTimeFallback \|\| !birthCity.timezone/);
   assert.doesNotMatch(analysisForm, /setBirthCityError/);
   assert.match(analysisForm, /未校正真太陽時/);
 });

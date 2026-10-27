@@ -158,6 +158,10 @@ function SampleReportPage() {
         <p className="mt-5 border-l-2 border-cinnabar/60 pl-4 text-sm leading-7 text-ink-soft" role="note">{copy.fictional}</p>
       </header>
 
+      <aside className="my-6 border-y border-line py-4 text-sm leading-7" data-sample-access-note>
+        <strong>{locale === "en" ? "What is free, and what is paid?" : locale === "zh-Hans" ? "免费与解锁内容" : "免費與解鎖內容"}</strong>
+        <p>{locale === "en" ? "Your basic chart and two core preview paragraphs are free. This public sample demonstrates the full report’s structure, including deeper sections; it is not a promise that every section below is free in a personal report. Full readings and detailed timing require a separate one-time unlock, with the price shown before checkout." : locale === "zh-Hans" ? "基本命盘与两段核心试读免费。此公开示例展示完整报告的结构，包含深入章节，不代表个人报告中以下所有段落都免费。完整解读与详细时运需另行单次解锁，价格会在付款前显示。" : "基本命盤與兩段核心試讀免費。此公開示例展示完整報告的結構，包含深入章節，不代表個人報告中以下所有段落都免費。完整解讀與詳細時運需另行單次解鎖，價格會在付款前顯示。"}</p>
+      </aside>
       <article className="mt-6 bg-paper px-5 py-7 text-ink shadow-[0_16px_50px_rgba(66,52,32,0.08)] sm:px-10 sm:py-10" aria-label={copy.eyebrow}>
         <section aria-labelledby="sample-profile-title">
           <p id="sample-profile-title" className="text-xs tracking-[0.2em] text-[#315e50]">{copy.profileTitle}</p>
