@@ -27,7 +27,9 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - name: All 24 terms / 72 hou and existing art
         run: npm run test:themes
-      - name: Typecheck
-        run: npm run check
-      - name: Production compilation
+      # TanStack Router updates src/routeTree.gen.ts during the Vite build.
+      # Compile before TypeScript validation so newly added file-routes have generated types.
+      - name: Production compilation and route generation
         run: ./node_modules/.bin/vite build
+      - name: Typecheck against generated routes
+        run: npm run check
