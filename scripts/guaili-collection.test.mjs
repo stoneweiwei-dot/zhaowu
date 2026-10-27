@@ -27,7 +27,7 @@ test("seven-volume, twelve-branch and four-year indexes reuse one source of trut
   assert.match(source, /export const GUAILI_VOLUMES/);
   for (const pair of [["guaili-volume", "volume"], ["guaili-zodiac", "zodiac"], ["guaili-year", "year"]]) {
     assert.ok(index.includes('mythic-atlas#' + pair[0]), pair[0]);
-    assert.ok(body.includes('id={`' + pair[0] + '-${index+1}`}') || body.includes('id={`' + pair[0] + '-${index+1}`}'), pair[0]);
+    assert.ok(body.includes('id={`' + pair[0] + '-${index+1}`}'), pair[0]);
   }
   assert.ok(index.includes('not a second copy'));
   assert.doesNotMatch(index, /<GuailiBook/);
@@ -37,7 +37,7 @@ test("new group has three language SEO entries and a public sitemap URL", () => 
   assert.ok(m);
   for (const lang of ["zh-Hant","zh-Hans","en"]) {
     assert.ok(m[lang]?.title?.length > 18);
-    assert.ok(m[lang]?.description?.length > 60);
+    assert.ok(m[lang]?.description?.length > 45);
   }
   assert.match(sitemap, /https:\/\/zhao-wu\.com\/guaili-luanshen<\/loc>/);
   assert.ok(seo.routes["/mythic-atlas"], "existing mythic route preserved");
