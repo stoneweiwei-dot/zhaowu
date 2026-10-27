@@ -25,3 +25,15 @@
 .hq-borrow-star-page figcaption small{display:block;margin-top:.65rem;color:var(--hq-cinnabar);font-size:.66rem;letter-spacing:.08em}
 @container (min-width:720px){.hq-borrow-star-pages{grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.hq-borrow-star-page{align-content:start;padding-bottom:1rem}.hq-borrow-star-page .hq-image-frame{width:100%}.hq-borrow-star-page figcaption{margin:0;padding:.3rem .15rem 0}.hq-borrow-star-page figcaption strong{font-size:1.05rem}.hq-borrow-star-page figcaption p{font-size:.8rem}}
 @container (max-width:719px){.hq-borrow-star-pages{gap:3rem}.hq-borrow-star-page{padding-bottom:2.5rem}.hq-borrow-star-page figcaption{width:min(100%,31rem)}}
+
+/* 2026-10-27 production mobile-typography closeout: keep the illustrated hero
+   readable inside its grid column without clipping translated headlines. */
+.hq-hero-copy{min-width:0}
+.hq-hero h1{font-size:clamp(2.4rem,6cqw,4.25rem);line-height:1.18;letter-spacing:.04em;overflow-wrap:anywhere}
+.hq-subtitle{letter-spacing:.08em;overflow-wrap:anywhere}
+@container (max-width:719px){
+  .hq-hero{grid-template-columns:minmax(0,1fr)}
+  .hq-hero-copy{padding:clamp(18px,5cqw,28px)}
+  .hq-hero h1{font-size:clamp(2rem,11cqw,3.5rem);line-height:1.22}
+  .hq-subtitle{letter-spacing:.05em}
+}
