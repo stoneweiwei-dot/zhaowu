@@ -37,3 +37,14 @@ test("editorial comparison uses list rows without shadows or floating graphic st
   assert.match(style, /box-shadow: none/);
   assert.match(style, /max-width: 380px/);
 });
+
+test("home artwork remains exact original, never substituted by procedural graphics", () => {
+  const home = read("src/components/painted-home.tsx");
+  const art = read("src/components/portrait-edition-showcase.tsx");
+  assert.match(home, /<PortraitEditionShowcase locale=\{locale\}/);
+  assert.match(art, /portrait-editions\/stone-song-original\.webp/);
+  assert.match(art, /method: "HEAD"/);
+  assert.match(art, /image\/webp/);
+  assert.doesNotMatch(art, /<svg/);
+  assert.match(art, /if \(!verified\) return null/);
+});
