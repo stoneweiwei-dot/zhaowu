@@ -6,6 +6,7 @@ import { BrandIcon } from '@/components/brand-icon';
 import { HomeTree } from '@/components/home-tree';
 import { CuratedVideoShelf } from '@/components/curated-video-shelf';
 import '@/guaili-collection-entry.css';
+import '@/home-mobile-v2.css';
 
 type Section = 'form' | 'today' | 'quiz' | 'notes';
 /** Skins whose painting is clean enough to show at full strength behind the home title. */
@@ -31,6 +32,8 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
   const dark = skin?.mode === 'dark';
   // Every skin shows ITS OWN painting; the koi painting is only the no-skin / pastel-koi default.
   const art = skin?.hero || (dark ? '/theme-skins/reference-dragon.webp' : '/theme-skins/reference-koi.webp');
+  // Keep published, owner-selected paintings; replace the disliked flute/default hero with an existing Song-style mist painting.
+  const editorialArt = !skin || /flute/i.test(skin.id) ? '/theme-skins/verdant-mist-art.webp' : art;
   const style = {
     '--ph-art': `url("${art}")`, '--ph-paper': skin?.swatch[0] || '#f7efdf',
     '--ph-ink': dark ? '#f8eace' : '#203f36', '--ph-muted': dark ? '#dfdacb' : '#595447',
@@ -38,24 +41,40 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
     '--ph-highlight': skin?.swatch[2] || '#c7a468',
     '--ph-on-accent': dark ? '#142b32' : '#fff9e9',
   } as CSSProperties;
-  return <section className="zw-painted-home" data-composition={layout} data-reference-art={!skin || FULL_PAINTING_HOMES.has(skin.id)} data-tone={dark ? 'dark' : 'light'} data-title-veil={layout === 'koi' && Boolean(skin) && skin?.id !== 'pastel-koi'} style={style}>
-    <div className="ph-hero">
-      <img className="ph-hero-art" src={art} alt="" fetchPriority="high" width="1248" height="1248" style={skin?.focus ? { objectPosition: skin.focus } : undefined} />
-      {layout === 'scroll' && <p className="ph-resolve" data-home-resolve>{t('知命，不為認命，是為從容。', '知命，不为认命，是为从容。', 'Knowing your pattern isn’t giving in — it’s moving with composure.')}</p>}
-      <a className="ph-brand" href="/" aria-label="昭梧 Zhaowu"><strong>昭梧</strong><small>Z H A O W U</small></a>
-      <div className="ph-title">
-        {layout === 'comic' ? <><h1>{t('命理不只是答案，\n更是看見自己的另一種方式。','命理不只是答案，\n更是看见自己的另一种方式。','Another way to\nunderstand yourself.')}</h1></> : layout === 'koi' ? <><h1>昭<br/>梧</h1><p>{t('觀天地之氣，\n照你心中之梧。', '观天地之气，\n照你心中之梧。', 'See the world clearly.\nFind your own way.')}</p><small>{t('以東方智慧，尋見更清明的自己。', '以东方智慧，寻见更清明的自己。', 'Eastern wisdom, a clearer sense of self.')}</small></> : <><h1>{skin ? (locale === 'en' ? skin.en : locale === 'zh-Hans' ? skin.hans : skin.zh) : t('順應天時\n看見更好的選擇', '顺应天时\n看见更好的选择', 'Find your rhythm.\nSee your next step.')}</h1><p className="ph-motto">{t('命 · 勢 · 選', '命 · 势 · 选', 'LIFE · TIMING · CHOICE')}</p><small>{t('在變動的時代，找到屬於你的節奏', '在变动的时代，找到属于你的节奏', 'Find your own rhythm in a changing world.')}</small></>}
+  return <section className="zw-painted-home zw-v2-home" data-home-v2 data-composition={layout} data-reference-art={!skin || FULL_PAINTING_HOMES.has(skin.id)} data-tone={dark ? 'dark' : 'light'} style={style}>
+    <section className="zw-v2-hero" aria-labelledby="zw-v2-title">
+      <header className="zw-v2-masthead">
+        <a className="zw-v2-wordmark" href="/" aria-label="昭梧 ZHAOWU">
+          <img src="/brand-ui/mark-gourd.svg" alt="" width="48" height="48" />
+          <span><strong>昭梧</strong><small>Z H A O W U</small></span>
+        </a>
+      </header>
+      <div className="zw-v2-opening">
+        <p className="zw-v2-eyebrow">{t('東方時間文化 · 個人命書', '东方时间文化 · 个人命书', 'EASTERN TIME CULTURE · PERSONAL DESTINY BOOK')}</p>
+        <h1 id="zw-v2-title">
+          <span>{t('讓天時有形，', '让天时有形，', 'Give time a form.')}</span>
+          <span>{t('讓命理可讀。', '让命理可读。', 'Make destiny readable.')}</span>
+        </h1>
+        <p className="zw-v2-intro">{t(
+          '從一份生辰開始，免登入排盤，先讀免費核心解讀；再慢慢探索昭梧的文章、原創圖錄與每日指引。',
+          '从一份生辰开始，无需登录即可排盘，先阅读免费的核心解读；再慢慢探索昭梧的文章、原创图鉴与每日指引。',
+          'Start with your birth details to create a chart without signing in and read your free core insights. Then explore ZHAOWU’s essays, original art collections and daily guide.'
+        )}</p>
+        <div className="zw-v2-actions">
+          <button type="button" className="zw-v2-primary" data-home-birth-entry onClick={() => onOpen('form')}>
+            {t('開始免費排盤', '开始免费排盘', 'Start my free chart')} <span aria-hidden="true">→</span>
+          </button>
+          <p className="zw-v2-free-note">{t('免費 · 免登入 · 約 1 分鐘開始', '免费 · 免登录 · 约 1 分钟开始', 'Free · no sign-in · begin in about 1 minute')}</p>
+          <a className="zw-v2-sample" href="/sample-report">{t('先看公開命書示例', '先看公开命书示例', 'View a sample report')} <span aria-hidden="true">›</span></a>
+        </div>
       </div>
-      <div className="ph-actions ph-guide-start"><button type="button" data-home-birth-entry onClick={() => onOpen('form')}>{t('開始我的命盤', '开始我的命盘', 'Begin my chart')} <span>›</span></button></div>
-    </div>
-    {layout === 'comic' ? <section className="ph-comic-panel">
-      <h2>{t('漫畫命盤預覽','漫画命盘预览','Your illustrated chart')}</h2>
-      <p>{t('把抽象命理，講成你看得懂的圖。','把抽象命理，讲成你看得懂的图。','Discover the ideas through gentle illustrations.')}</p>
-      <div className="ph-comic-scenes" aria-hidden><img src="/art/scene-koi-rider-v1.webp" alt="" loading="lazy" width="400" height="400"/><img src="/art/scene-butterfly-dream-v1.webp" alt="" loading="lazy" width="400" height="400"/><img src="/art/scene-lotus-boat-v1.webp" alt="" loading="lazy" width="400" height="400"/></div>
-      <div className="ph-comic-labels"><span>{t('你的日主','你的日主','Your nature')}</span><span>{t('你的感情','你的感情','Relationships')}</span><span>{t('你的五行','你的五行','Five elements')}</span></div>
-      <button className="ph-comic-cta" onClick={() => onOpen('form')}>{t('開始我的命盤','开始我的命盘','Begin my chart')} <span>›</span></button>
-      <small>{t('以宋式留白，讀懂命理的文化意象。','以宋式留白，读懂命理的文化意象。','A quiet introduction to traditional imagery.')}</small>
-    </section> : null}
+      <figure className="zw-v2-painting">
+        <img src={editorialArt} alt={t('昭梧原創宋式水墨山水畫境', '昭梧原创宋式水墨山水画境', 'Original ZHAOWU Song-inspired ink landscape')} width="1248" height="1248" decoding="async" fetchPriority="high" />
+        <figcaption>STONE 原創 · ZHAOWU</figcaption>
+      </figure>
+      <a className="zw-v2-discover" href="#home-guide">{t('往下探索昭梧', '继续探索昭梧', 'Discover more of ZHAOWU')} <span aria-hidden="true">↓</span></a>
+    </section>
+    <HomeTree t={t} onOpen={onOpen} />
     {seasonalAuto && <aside className="ph-seasonal-note" data-seasonal-note data-solar-term={seasonalAuto.term.zh} data-solar-hou={seasonalAuto.houIndex + 1}>
       <p className="ph-seasonal-term"><span lang="zh">{locale === 'zh-Hans' ? seasonalAuto.term.hans : seasonalAuto.term.zh}</span><span lang="en">{seasonalAuto.term.en}</span></p>
       <p>{seasonalAuto.hou[locale]}</p>
@@ -84,7 +103,6 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
         <em>{t('十二地支四態・十二流煞・八災十年編年', '十二地支四态・十二流煞・八灾十年编年', 'Twelve branches · Twelve currents · The final chronicle')}</em></span>
       <i aria-hidden="true">↗</i>
     </a>
-    <HomeTree t={t} onOpen={onOpen} />
     <CuratedVideoShelf placement="home" />
     <nav className="ph-bottom-nav" aria-label={t('頁面導覽','页面导航','Page navigation')}><a href="/" aria-current="page"><BrandIcon name="home"/><span>{t('首頁','首页','Home')}</span></a><button onClick={() => onOpen('form')}><BrandIcon name="reports"/><span>{t('命盤','命盘','Chart')}</span></button><button onClick={() => onOpen('today')}><BrandIcon name="calendar"/><span>{t('指引','指引','Today')}</span></button><a href="/history"><BrandIcon name="account"/><span>{t('我的','我的','Account')}</span></a></nav>
   </section>;
