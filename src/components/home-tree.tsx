@@ -27,7 +27,7 @@ export function homeTree(t: T): TreeNode[] {
   return [
     {
       id: 'form', icon: 'reports', art: '/art/scene-koi-rider-v1.webp',
-      title: t('我的命盤', '我的命盘', 'My chart'),
+      title: t('認識自己的命盤', '认识自己的命盘', 'Explore my birth chart'),
       hint: t('輸入生辰，看懂你的性格與人生節奏。', '输入生辰，看懂你的性格与人生节奏。', 'Enter your birth date. Understand your patterns and rhythm.'),
       primary: { kind: 'action', section: 'form', title: t('開始排盤：填寫出生日期', '开始排盘：填写出生日期', 'Start: enter your birth date'), hint: t('免費 · 免登入 · 約 1 分鐘', '免费 · 免登录 · 约 1 分钟', 'Free · no sign-in · about 1 minute') },
       items: [
@@ -38,7 +38,7 @@ export function homeTree(t: T): TreeNode[] {
     },
     {
       id: 'today', icon: 'calendar', art: '/art/scene-lotus-boat-v1.webp',
-      title: t('今日指引', '今日指引', 'Today’s guide'),
+      title: t('看看今天的天時', '看看今天的天时', 'Today’s time and sky'),
       hint: t('黃曆、今日星象、穿衣顏色，一次看清。', '黄历、今日星象、穿衣颜色，一次看清。', 'Almanac, today’s sky and colours, clearly grouped.'),
       primary: { kind: 'action', section: 'today', title: t('看今天的黃曆', '看今天的黄历', 'Open today’s almanac'), hint: t('宜忌、節氣與今日提醒', '宜忌、节气与今日提醒', 'Dos and don’ts, solar terms and daily guidance') },
       items: [
@@ -49,7 +49,7 @@ export function homeTree(t: T): TreeNode[] {
     },
     {
       id: 'quiz', icon: 'insight', art: '/art/scene-osmanthus-tea-v1.webp',
-      title: t('趣味測驗', '趣味测验', 'Quizzes'),
+      title: t('探索另一面的自己', '探索另一面的自己', 'Explore another side of myself'),
       hint: t('幾分鐘，看見另一面的自己。', '几分钟，看见另一面的自己。', 'A few minutes to meet another side of you.'),
       primary: { kind: 'action', section: 'quiz', title: t('看全部測驗', '看全部测验', 'See all quizzes'), hint: t('每個測驗都能獨立完成', '每个测验都能独立完成', 'Each one stands on its own') },
       items: [
@@ -72,11 +72,14 @@ export function homeTree(t: T): TreeNode[] {
     },
     {
       id: 'notes', icon: 'articles', art: '/art/scene-butterfly-dream-v1.webp',
-      title: t('文章專欄', '文章专栏', 'Articles'),
+      title: t('走進昭梧的藏書世界', '走进昭梧的藏书世界', 'Explore the ZHAOWU library'),
       hint: t('慢慢讀：文章、短札與小知識。', '慢慢读：文章、短札与小知识。', 'Slow reading: essays, notes and short explainers.'),
       primary: { kind: 'action', section: 'notes', title: t('讀觀世錄文章', '读观世录文章', 'Read the latest essays'), hint: t('最新文章與完整內容檔案', '最新文章与完整内容档案', 'Newest writing and the full archive') },
       items: [
         { kind: 'link', href: '/knowledge', title: t('命理小知識', '命理小知识', 'Short explainers'), hint: t('方法、術語與判讀規則，查得到也看得懂。', '方法、术语与判读规则，查得到也看得懂。', 'Methods, terms and how to read them.') },
+        { kind: 'link', href: '/mythic-atlas', title: t('黃泉紀 · 原創圖錄', '黄泉纪 · 原创图录', 'Yellow Springs illustrated atlas'), hint: t('十二幅原創畫作及完整神話世界觀。', '十二幅原创画作与完整神话世界观。', 'Twelve original artworks and their connected mythology.') },
+        { kind: 'link', href: '/guaili-luanshen', title: t('怪力亂神 · 七卷全書', '怪力乱神 · 七卷全书', 'Strange Powers · seven volumes'), hint: t('完整系列目錄、地支神話與災異編年。', '完整系列目录、地支神话与灾异编年。', 'Full series index, zodiac mythology and chronicles.') },
+        { kind: 'link', href: '/about', title: t('關於昭梧', '关于昭梧', 'About ZHAOWU'), hint: t('認識昭梧的理念、藝術與方法邊界。', '认识昭梧的理念、艺术与方法边界。', 'The ideas, artwork and methods behind ZHAOWU.') },
         { kind: 'link', href: '/updates', title: t('最新更新', '最新更新', 'What’s new'), hint: t('網站最近多了什麼。', '网站最近多了什么。', 'What changed on the site recently.') },
       ],
     },
@@ -107,9 +110,9 @@ export function HomeTree({ t, onOpen }: { t: T; onOpen: (s: HomeSection) => void
   const tree = homeTree(t);
   return <nav id="home-guide" className="ph-tree" data-home-tree aria-label={t('網站導覽', '网站导览', 'Site guide')}>
     <header className="ph-tree-intro">
-      <span>{t('四步導覽', '四步导览', 'FOUR-STEP GUIDE')}</span>
-      <h2>{t('從第一步開始，慢慢走完整個昭梧', '从第一步开始，慢慢走完整个昭梧', 'Start with step one and explore Zhaowu at your pace')}</h2>
-      <p>{t('每次只展開一個主題。看完後按「下一步」，也可以直接跳到你需要的內容。', '每次只展开一个主题。看完后按“下一步”，也可以直接跳到你需要的内容。', 'Only one topic opens at a time. Continue with “Next step”, or jump straight to what you need.')}</p>
+      <span>{t('四卷導覽', '四卷导览', 'FOUR READING PATHS')}</span>
+      <h2>{t('循序展讀，遇見昭梧', '循序展读，遇见昭梧', 'Open the world of ZHAOWU, one chapter at a time')}</h2>
+      <p>{t('從命盤開始，亦可直接翻閱你感興趣的篇章。所有作品與知識都保留在後面的完整目錄。', '从命盘开始，也可直接翻阅感兴趣的篇章。所有作品与知识都保留在后面的完整目录。', 'Start with a chart or open any chapter. Every collection remains available in the full library.')}</p>
     </header>
     {tree.map((node, index) => {
       const open = openId === node.id;
