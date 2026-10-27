@@ -13,8 +13,8 @@
 .hqc-painting{min-width:0;max-width:28rem;margin:0}
 .hqc-painting img{display:block;width:100%;height:auto;aspect-ratio:941/1672;object-fit:cover;background:#eee4cf}
 .hqc-painting figcaption{margin:.55rem 0 0;color:var(--hq-soft);font-size:.7rem;line-height:1.5}
-.hqc-jump{display:flex;gap:1.5rem;overflow-x:auto;scrollbar-width:thin;border-bottom:1px solid var(--hqc-rule);padding:1.1rem 0}
-.hqc-jump a{flex:none;min-height:44px;display:inline-flex;align-items:center;text-decoration:none;color:var(--hq-pine);font-family:var(--font-display);font-size:.9rem}
+.hqc-jump{display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;border-bottom:1px solid var(--hqc-rule);padding:1.1rem 0}
+.hqc-jump a{flex:0 1 auto;min-width:0;max-width:100%;overflow-wrap:anywhere;min-height:44px;display:inline-flex;align-items:center;text-decoration:none;color:var(--hq-pine);font-family:var(--font-display);font-size:.9rem}
 .hqc-section{margin-top:clamp(4rem,9vw,7rem);scroll-margin-top:5rem;min-width:0}
 .hqc-section-intro{margin-bottom:1.8rem}
 .hqc-section-intro>span{color:var(--hqc-accent);font-size:.73rem;letter-spacing:.18em}
@@ -50,3 +50,13 @@
 
 .hqc-zodiac a>img{display:block;flex:none;width:54px;height:92px;object-fit:cover;background:#e8e0ce}
 @container (max-width:389px){.hqc-zodiac a>img{width:42px;height:75px}}
+
+/* Keep all three destinations visible and give long translated zodiac names room. */
+@media (max-width:480px){
+ .hqc-index .hqc-jump{display:grid;grid-template-columns:minmax(0,1fr);gap:.25rem;overflow:visible}
+ .hqc-index .hqc-jump a{white-space:normal;min-height:44px}
+ .hqc-index .hqc-zodiac a{display:grid;grid-template-columns:42px minmax(0,1fr);column-gap:.75rem;row-gap:.25rem}
+ .hqc-index .hqc-zodiac a>img{grid-column:1;grid-row:1 / 4;width:42px;height:auto;aspect-ratio:941/1672;object-fit:contain}
+ .hqc-index .hqc-zodiac a>span,.hqc-index .hqc-zodiac a>strong,.hqc-index .hqc-zodiac a>small{grid-column:2;min-width:0;overflow-wrap:anywhere;white-space:normal}
+ .hqc-index .hqc-zodiac a>small{margin-left:0;text-align:left;font-size:.8rem;line-height:1.6}
+}
