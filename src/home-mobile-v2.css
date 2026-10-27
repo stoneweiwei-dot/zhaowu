@@ -22,7 +22,7 @@ html body #root .zw-painted-home.zw-v2-home {
   overflow: clip;
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
-html body #root .zw-v2-home .zw-v2-hero {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-hero {
   background: var(--zw-v2-paper);
   color: var(--zw-v2-ink);
   width: 100%;
@@ -32,13 +32,13 @@ html body #root .zw-v2-home .zw-v2-hero {
   text-align: left;
   overflow: clip;
 }
-html body #root .zw-v2-home .zw-v2-masthead {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-masthead {
   display: flex;
   align-items: center;
   min-height: 68px;
   margin: 0 0 27px;
 }
-html body #root .zw-v2-home .zw-v2-wordmark {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-wordmark {
   display: inline-flex;
   align-items: center;
   gap: 11px;
@@ -46,32 +46,32 @@ html body #root .zw-v2-home .zw-v2-wordmark {
   min-height: 56px;
   color: var(--zw-v2-ink);
 }
-html body #root .zw-v2-home .zw-v2-wordmark img {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-wordmark img {
   flex: none;
   width: 43px;
   height: 48px;
   object-fit: contain;
 }
-html body #root .zw-v2-home .zw-v2-wordmark span {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-wordmark span {
   display: grid;
   gap: 3px;
 }
-html body #root .zw-v2-home .zw-v2-wordmark strong {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-wordmark strong {
   font: 400 30px/1.12 var(--zw-font-heading, "Songti TC", serif);
   letter-spacing: .14em;
 }
-html body #root .zw-v2-home .zw-v2-wordmark small {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-wordmark small {
   font: 500 9px/1.5 Georgia, serif;
   letter-spacing: .24em;
 }
-html body #root .zw-v2-home .zw-v2-eyebrow {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-eyebrow {
   font: 400 12px/1.75 var(--zw-font-body, sans-serif);
   letter-spacing: .14em;
   color: var(--zw-v2-soft) !important;
   padding-left: 18px;
   position: relative;
 }
-html body #root .zw-v2-home .zw-v2-eyebrow::before {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-eyebrow::before {
   content: '';
   position: absolute;
   left: 0;
@@ -90,8 +90,8 @@ html body #root .zw-painted-home.zw-v2-home .zw-v2-hero h1 {
   text-wrap: balance;
   color: var(--zw-v2-ink) !important;
 }
-html body #root .zw-v2-home .zw-v2-hero h1 span { display: block; }
-html body #root .zw-v2-home .zw-v2-intro {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-hero h1 span { display: block; }
+html body #root .zw-painted-home.zw-v2-home .zw-v2-intro {
   max-width: 36em;
   margin-top: 20px !important;
   font-family: "Chiron Sung HK", var(--zw-font-heading, serif);
@@ -101,13 +101,13 @@ html body #root .zw-v2-home .zw-v2-intro {
   letter-spacing: .01em;
   color: var(--zw-v2-ink) !important;
 }
-html body #root .zw-v2-home .zw-v2-actions {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-actions {
   display: flex;
   flex-direction: column;
   gap: 0;
   margin-top: 22px;
 }
-html body #root .zw-v2-home .zw-v2-primary {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-primary {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -122,16 +122,16 @@ html body #root .zw-v2-home .zw-v2-primary {
   font: 600 17px/1.4 var(--zw-font-body, sans-serif);
   box-shadow: none !important;
 }
-html body #root .zw-v2-home .zw-v2-primary span {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-primary span {
   color: #fffdf8 !important;
 }
-html body #root .zw-v2-home .zw-v2-primary:active { background: #274b41; }
-html body #root .zw-v2-home .zw-v2-free-note {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-primary:active { background: #274b41; }
+html body #root .zw-painted-home.zw-v2-home .zw-v2-free-note {
   margin-top: 9px !important;
   font: 400 12px/1.6 var(--zw-font-body, sans-serif);
   color: var(--zw-v2-soft) !important;
 }
-html body #root .zw-v2-home .zw-v2-sample {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-sample {
   align-self: flex-start;
   display: inline-flex;
   gap: 8px;
@@ -143,13 +143,13 @@ html body #root .zw-v2-home .zw-v2-sample {
   text-decoration: underline;
   text-underline-offset: 5px;
 }
-html body #root .zw-v2-home .zw-v2-painting {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-painting {
   width: 100%;
   max-width: 560px;
   margin: 10px auto 0;
   padding: 0;
 }
-html body #root .zw-v2-home .zw-v2-painting img {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-painting img {
   display: block;
   width: 100%;
   height: auto;
@@ -157,14 +157,14 @@ html body #root .zw-v2-home .zw-v2-painting img {
   object-fit: contain;
   background: transparent;
 }
-html body #root .zw-v2-home .zw-v2-painting figcaption {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-painting figcaption {
   font: 400 10px/1.5 Georgia, serif;
   letter-spacing: .2em;
   text-align: right;
   color: var(--zw-v2-soft);
   margin: 8px 0 0;
 }
-html body #root .zw-v2-home .zw-v2-discover {
+html body #root .zw-painted-home.zw-v2-home .zw-v2-discover {
   display: flex;
   gap: 10px;
   align-items: center;
@@ -174,12 +174,12 @@ html body #root .zw-v2-home .zw-v2-discover {
   color: var(--zw-v2-ink) !important;
   font: 400 14px/1.6 var(--zw-font-body, sans-serif);
 }
-html body #root .zw-v2-home :is(.zw-v2-primary,.zw-v2-sample,.zw-v2-discover,.zw-v2-wordmark):focus-visible {
+html body #root .zw-painted-home.zw-v2-home :is(.zw-v2-primary,.zw-v2-sample,.zw-v2-discover,.zw-v2-wordmark):focus-visible {
   outline: 3px solid var(--zw-v2-pine);
   outline-offset: 4px;
 }
 /* Reuse the real SiteShell language state, avoiding a second independent switcher. */
-html body #root:has(.zw-v2-home) .zhaowu-site-header {
+html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header {
   position: absolute !important;
   top: 16px !important;
   right: max(15px, calc((100vw - 680px) / 2 + 24px)) !important;
@@ -188,17 +188,17 @@ html body #root:has(.zw-v2-home) .zhaowu-site-header {
   box-shadow: none !important;
   background: transparent !important;
 }
-html body #root:has(.zw-v2-home) .zhaowu-site-header .zw-langpick__label {
+html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header .zw-langpick__label {
   display: none !important;
 }
-html body #root:has(.zw-v2-home) .zhaowu-site-header .zw-langpick__track {
+html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header .zw-langpick__track {
   display: flex !important;
   align-items: center;
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
 }
-html body #root:has(.zw-v2-home) .zhaowu-site-header .zw-langpick__opt {
+html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header .zw-langpick__opt {
   min-width: 44px !important;
   min-height: 44px !important;
   padding: 8px 4px !important;
@@ -207,28 +207,28 @@ html body #root:has(.zw-v2-home) .zhaowu-site-header .zw-langpick__opt {
   box-shadow: none !important;
 }
 /* The book index: a sequence of editorial chapter titles, never a dashboard card wall. */
-html body #root .zw-v2-home .ph-tree {
+html body #root .zw-painted-home.zw-v2-home .ph-tree {
   width: 100%;
   max-width: 680px;
   padding: 14px 24px 32px;
   gap: 0;
   scroll-margin-top: 12px;
 }
-html body #root .zw-v2-home .ph-tree-intro {
+html body #root .zw-painted-home.zw-v2-home .ph-tree-intro {
   padding: 27px 0 24px;
   border-top: 1px solid var(--zw-v2-line);
 }
-html body #root .zw-v2-home .ph-tree-intro h2 {
+html body #root .zw-painted-home.zw-v2-home .ph-tree-intro h2 {
   font-size: clamp(25px, 6vw, 34px) !important;
   font-weight: 400 !important;
   line-height: 1.45 !important;
   max-width: 100%;
 }
-html body #root .zw-v2-home .ph-tree-intro p {
+html body #root .zw-painted-home.zw-v2-home .ph-tree-intro p {
   font-size: 15px;
   line-height: 1.85;
 }
-html body #root .zw-v2-home .ph-tree-node {
+html body #root .zw-painted-home.zw-v2-home .ph-tree-node {
   border: 0;
   border-top: 1px solid var(--zw-v2-line);
   border-radius: 0;
@@ -236,46 +236,46 @@ html body #root .zw-v2-home .ph-tree-node {
   background: transparent;
   overflow: visible;
 }
-html body #root .zw-v2-home .ph-tree-head {
+html body #root .zw-painted-home.zw-v2-home .ph-tree-head {
   min-height: 96px;
   padding: 18px 0;
   gap: 13px;
 }
-html body #root .zw-v2-home .ph-tree-head>img { display: none; }
-html body #root .zw-v2-home .ph-tree-step {
+html body #root .zw-painted-home.zw-v2-home .ph-tree-head>img { display: none; }
+html body #root .zw-painted-home.zw-v2-home .ph-tree-step {
   min-width: 42px;
   color: var(--zw-v2-pine) !important;
 }
-html body #root .zw-v2-home .ph-tree-head strong {
+html body #root .zw-painted-home.zw-v2-home .ph-tree-head strong {
   font-size: 21px;
   font-weight: 400;
 }
-html body #root .zw-v2-home .ph-tree-head small {
+html body #root .zw-painted-home.zw-v2-home .ph-tree-head small {
   font-size: 14px;
   line-height: 1.7;
   color: var(--zw-v2-soft) !important;
 }
-html body #root .zw-v2-home .ph-tree-toggle {
+html body #root .zw-painted-home.zw-v2-home .ph-tree-toggle {
   width: 28px;
   height: 28px;
   background: transparent;
   border: 0;
   font-size: 22px;
 }
-html body #root .zw-v2-home .ph-tree-body {
+html body #root .zw-painted-home.zw-v2-home .ph-tree-body {
   padding: 1px 0 19px 55px;
   gap: 5px;
 }
-html body #root .zw-v2-home .ph-tree-primary {
+html body #root .zw-painted-home.zw-v2-home .ph-tree-primary {
   border-radius: 6px;
   min-height: 48px;
   background: var(--zw-v2-pine);
   color: #fffdf8 !important;
 }
-html body #root .zw-v2-home .ph-tree-primary :is(strong,small) {
+html body #root .zw-painted-home.zw-v2-home .ph-tree-primary :is(strong,small) {
   color: #fffdf8 !important;
 }
-html body #root .zw-v2-home :is(.ph-tree-leaf,.ph-tree-branch-head) {
+html body #root .zw-painted-home.zw-v2-home :is(.ph-tree-leaf,.ph-tree-branch-head) {
   border: 0;
   border-bottom: 1px solid var(--zw-v2-line);
   border-radius: 0;
@@ -283,11 +283,11 @@ html body #root .zw-v2-home :is(.ph-tree-leaf,.ph-tree-branch-head) {
   background: transparent;
   min-height: 48px;
 }
-html body #root .zw-v2-home .ph-tree-next {
+html body #root .zw-painted-home.zw-v2-home .ph-tree-next {
   border-top: 1px solid var(--zw-v2-line);
   margin-top: 10px;
 }
-html body #root .zw-v2-home :is(.ph-mythic-entry,.ph-guaili-bookcase) {
+html body #root .zw-painted-home.zw-v2-home :is(.ph-mythic-entry,.ph-guaili-bookcase) {
   max-width: 632px;
   margin-left: auto;
   margin-right: auto;
@@ -295,7 +295,7 @@ html body #root .zw-v2-home :is(.ph-mythic-entry,.ph-guaili-bookcase) {
   border-width: 0 0 1px;
   box-shadow: none;
 }
-html body #root .zw-v2-home .ph-bottom-nav {
+html body #root .zw-painted-home.zw-v2-home .ph-bottom-nav {
   position: relative !important;
   left: auto !important;
   bottom: auto !important;
@@ -306,21 +306,21 @@ html body #root .zw-v2-home .ph-bottom-nav {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 @media(max-width:359px) {
-  html body #root .zw-v2-home .zw-v2-hero { padding-inline:20px; }
+  html body #root .zw-painted-home.zw-v2-home .zw-v2-hero { padding-inline:20px; }
   html body #root .zw-painted-home.zw-v2-home .zw-v2-hero h1 { font-size:34px !important; }
-  html body #root .zw-v2-home .zw-v2-masthead { margin-bottom:20px; }
-  html body #root .zw-v2-home .zw-v2-wordmark strong { font-size:27px; }
-  html body #root .zw-v2-home .zw-v2-wordmark img { width:36px; }
-  html body #root .zw-v2-home .ph-tree { padding-inline:20px; }
-  html body #root .zw-v2-home .ph-tree-body { padding-left:30px; }
-  html body #root:has(.zw-v2-home) .zhaowu-site-header { top:13px !important; right:12px !important; }
-  html body #root:has(.zw-v2-home) .zhaowu-site-header .zw-langpick__opt { min-width:42px !important; padding:7px 1px !important; }
+  html body #root .zw-painted-home.zw-v2-home .zw-v2-masthead { margin-bottom:20px; }
+  html body #root .zw-painted-home.zw-v2-home .zw-v2-wordmark strong { font-size:27px; }
+  html body #root .zw-painted-home.zw-v2-home .zw-v2-wordmark img { width:36px; }
+  html body #root .zw-painted-home.zw-v2-home .ph-tree { padding-inline:20px; }
+  html body #root .zw-painted-home.zw-v2-home .ph-tree-body { padding-left:30px; }
+  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header { top:13px !important; right:12px !important; }
+  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header .zw-langpick__opt { min-width:42px !important; padding:7px 1px !important; }
 }
 @media(min-width:761px) {
-  html body #root .zw-v2-home .zw-v2-hero { padding-top:24px; }
+  html body #root .zw-painted-home.zw-v2-home .zw-v2-hero { padding-top:24px; }
   html body #root .zw-painted-home.zw-v2-home .zw-v2-hero h1 { font-size:clamp(39px,4.1vw,51px) !important; }
-  html body #root .zw-v2-home .zw-v2-painting { margin-top:25px; }
+  html body #root .zw-painted-home.zw-v2-home .zw-v2-painting { margin-top:25px; }
 }
 @media(prefers-reduced-motion:reduce) {
-  html body #root .zw-v2-home * { animation:none !important; scroll-behavior:auto !important; transition:none !important; }
+  html body #root .zw-painted-home.zw-v2-home * { animation:none !important; scroll-behavior:auto !important; transition:none !important; }
 }
