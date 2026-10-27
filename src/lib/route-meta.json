@@ -11,6 +11,11 @@
       "zh-Hans": { "title": "认识昭梧｜宋式美学・二十四节气・七十二候・命理文化", "description": "走进昭梧：宋式画境、节气与七十二候、实时天气、主题换装、个人命书与今日黄历星象。" },
       "en": { "title": "Discover ZHAOWU | Song Art, Solar Terms, Personal Destiny", "description": "Explore ZHAOWU: Song-inspired design, 24 solar terms, 72 pentads, live weather, curated site themes and personal destiny books." }
     },
+    "/sample-report": {
+      "zh-Hant": { "title": "公開命書示例｜直接答案・完整結構・判斷邊界｜昭梧", "description": "閱讀一份完全虛構的昭梧命書示例：直接答案、總體概括、身體提醒、六段深讀、行動與可確認／條件推斷／無法確認的邊界。" },
+      "zh-Hans": { "title": "公开命书示例｜直接答案・完整结构・判断边界｜昭梧", "description": "阅读一份完全虚构的昭梧命书示例：直接答案、总体概括、身体提醒、六段深读、行动与可确认／条件推断／无法确认的边界。" },
+      "en": { "title": "Sample Destiny Book | Answer, Structure & Evidence Boundaries | ZHAOWU", "description": "Read a fully fictional ZHAOWU sample: direct answer, whole-chart summary, wellbeing note, six deeper chapters, action and clear evidence boundaries." }
+    },
     "/knowledge": {
       "zh-Hant": { "title": "昭梧知識庫｜命理文章與命理小知識", "description": "文章與短札讀觀點與研究；命理小知識查方法、術語與判讀規則，證據等級分開標示。" },
       "zh-Hans": { "title": "昭梧知识库｜命理文章与命理小知识", "description": "文章与短札读观点与研究；命理小知识查方法、术语与判读规则，证据等级分开标示。" },

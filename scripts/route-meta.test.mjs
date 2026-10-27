@@ -13,7 +13,7 @@ test("route-meta.json is well-formed with 3 languages per route", () => {
   const { origin, routes } = readRouteMeta();
   assert.equal(origin, "https://zhao-wu.com");
   const paths = Object.keys(routes);
-  assert.equal(paths.length, 27, "expected the 27 sitemap-listed routes");
+  assert.equal(paths.length, 30, "expected the 30 sitemap-listed routes");
   assert.ok(paths.includes("/"));
   for (const path of paths) {
     assert.ok(path === "/" || path.startsWith("/"), `route key ${path} must be absolute`);

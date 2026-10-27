@@ -27,6 +27,7 @@ import { Route as MythicAtlasRouteImport } from './routes/mythic-atlas'
 import { Route as NumerologyRouteImport } from './routes/numerology'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as QizhengRouteImport } from './routes/qizheng'
+import { Route as SampleReportRouteImport } from './routes/sample-report'
 import { Route as SkyEventsRouteImport } from './routes/sky-events'
 import { Route as SocialRouteImport } from './routes/social'
 import { Route as SoulChaptersRouteImport } from './routes/soul-chapters'
@@ -136,6 +137,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const QizhengRoute = QizhengRouteImport.update({
   id: '/qizheng',
   path: '/qizheng',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SampleReportRoute = SampleReportRouteImport.update({
+  id: '/sample-report',
+  path: '/sample-report',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SkyEventsRoute = SkyEventsRouteImport.update({
@@ -260,6 +266,7 @@ export interface FileRoutesByFullPath {
   '/numerology': typeof NumerologyRoute
   '/privacy': typeof PrivacyRoute
   '/qizheng': typeof QizhengRoute
+  '/sample-report': typeof SampleReportRoute
   '/sky-events': typeof SkyEventsRoute
   '/social': typeof SocialRoute
   '/soul-chapters': typeof SoulChaptersRoute
@@ -300,6 +307,7 @@ export interface FileRoutesByTo {
   '/numerology': typeof NumerologyRoute
   '/privacy': typeof PrivacyRoute
   '/qizheng': typeof QizhengRoute
+  '/sample-report': typeof SampleReportRoute
   '/sky-events': typeof SkyEventsRoute
   '/social': typeof SocialRoute
   '/soul-chapters': typeof SoulChaptersRoute
@@ -341,6 +349,7 @@ export interface FileRoutesById {
   '/numerology': typeof NumerologyRoute
   '/privacy': typeof PrivacyRoute
   '/qizheng': typeof QizhengRoute
+  '/sample-report': typeof SampleReportRoute
   '/sky-events': typeof SkyEventsRoute
   '/social': typeof SocialRoute
   '/soul-chapters': typeof SoulChaptersRoute
@@ -383,6 +392,7 @@ export interface FileRouteTypes {
     | '/numerology'
     | '/privacy'
     | '/qizheng'
+    | '/sample-report'
     | '/sky-events'
     | '/social'
     | '/soul-chapters'
@@ -423,6 +433,7 @@ export interface FileRouteTypes {
     | '/numerology'
     | '/privacy'
     | '/qizheng'
+    | '/sample-report'
     | '/sky-events'
     | '/social'
     | '/soul-chapters'
@@ -463,6 +474,7 @@ export interface FileRouteTypes {
     | '/numerology'
     | '/privacy'
     | '/qizheng'
+    | '/sample-report'
     | '/sky-events'
     | '/social'
     | '/soul-chapters'
@@ -504,6 +516,7 @@ export interface RootRouteChildren {
   NumerologyRoute: typeof NumerologyRoute
   PrivacyRoute: typeof PrivacyRoute
   QizhengRoute: typeof QizhengRoute
+  SampleReportRoute: typeof SampleReportRoute
   SkyEventsRoute: typeof SkyEventsRoute
   SocialRoute: typeof SocialRoute
   SoulChaptersRoute: typeof SoulChaptersRoute
@@ -647,6 +660,13 @@ declare module '@tanstack/react-router' {
       path: '/qizheng'
       fullPath: '/qizheng'
       preLoaderRoute: typeof QizhengRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sample-report': {
+      id: '/sample-report'
+      path: '/sample-report'
+      fullPath: '/sample-report'
+      preLoaderRoute: typeof SampleReportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sky-events': {
@@ -841,6 +861,7 @@ const rootRouteChildren: RootRouteChildren = {
   NumerologyRoute: NumerologyRoute,
   PrivacyRoute: PrivacyRoute,
   QizhengRoute: QizhengRoute,
+  SampleReportRoute: SampleReportRoute,
   SkyEventsRoute: SkyEventsRoute,
   SocialRoute: SocialRoute,
   SoulChaptersRoute: SoulChaptersRoute,

@@ -1,3 +1,11 @@
+## 2026-10-27｜公開命書示例 × 分享歸因 × 單一路徑語言 SEO
+
+- ACTIVE：`/sample-report` 是繁體／簡體／英文完整公開命書示例；人物、生辰與情境全部虛構，明示不代表真實客戶。內容固定維持直接回答 → 總體概括 → 身體提醒 → 六段深讀 → 時間／行動 → 判斷備註，且把盤面可確認、條件推斷與無法確認分開。
+- ACTIVE：公開分享先移除原 query／hash（含 `session_id`、`access_key`、`zw_release` 等），再固定加入非識別性的 `utm_source=zhaowu&utm_medium=share`；不得把付款、報告或存取 token 帶入分享網址。
+- ACTIVE SEO 決策：公開繁／簡／英共用同一 canonical path，由客戶端語言狀態切換內容，沒有可供搜尋引擎抓取的獨立語言 URL；因此不輸出三個都指向同一 URL 的虛假 `hreflang` alternate。若未來建立真實 `/zh-hant/`、`/zh-hans/`、`/en/` 路由，再一併接入互指 `hreflang`。
+- ACTIVE 依賴邊界：ffmpeg core 自家託管為第一順位，jsDelivr 只作站主專用音樂／影片優化器的 core/wasm 備援；在 `@ffmpeg/ffmpeg` wrapper、worker 與 core 全部同源且站主流程通過前，不得只刪 CSP 白名單造成後台失效。公開訪客流程不依賴 jsDelivr。
+- PROTECTED：不改命盤 calculation truth、付款、登入、Supabase schema、站主媒體資料或單一 Vercel Production。
+
 ## 2026-10-26｜站主後台影片與優惠碼去雜訊
 
 - ACTIVE（站主最新指令）：後台「影片素材」只列出 Supabase 中真正可管理的自訂影片；不再把兩個程式內置的登入／開場備援影片顯示成不能刪除、不能真正管理的卡片。內置影片檔與首頁／登入的 runtime fallback 保留，不刪影音二進位、不改訪客播放契約。
