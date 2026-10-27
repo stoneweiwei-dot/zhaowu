@@ -45,7 +45,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
     <section className="zw-v2-hero" aria-labelledby="zw-v2-title">
       <header className="zw-v2-masthead">
         <a className="zw-v2-wordmark" href="/" aria-label="昭梧 ZHAOWU">
-          <img src="/brand-ui/mark-gourd.svg" alt="" width="48" height="48" />
+          <img src="/brand-ui/header-gourd-wordmark-r113.png" alt="" width="48" height="48" />
           <span><strong>昭梧</strong><small>Z H A O W U</small></span>
         </a>
       </header>
@@ -69,7 +69,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
         </div>
       </div>
       <figure className="zw-v2-painting">
-        <img src={editorialArt} alt={t('昭梧原創宋式水墨山水畫境', '昭梧原创宋式水墨山水画境', 'Original ZHAOWU Song-inspired ink landscape')} width="1248" height="1248" decoding="async" fetchPriority="high" />
+        <img src={editorialArt} alt={t('昭梧原創藝術畫境', '昭梧原创艺术画境', 'Original ZHAOWU artwork')} width="1248" height="1248" decoding="async" fetchPriority="high" />
         <figcaption>STONE 原創 · ZHAOWU</figcaption>
       </figure>
       <a className="zw-v2-discover" href="#home-guide">{t('往下探索昭梧', '继续探索昭梧', 'Discover more of ZHAOWU')} <span aria-hidden="true">↓</span></a>
