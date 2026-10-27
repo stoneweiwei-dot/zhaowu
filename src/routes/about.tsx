@@ -252,7 +252,7 @@ function AboutZhaowu() {
     <details id="features" className="zw-about-feature-archive">
       <summary>{editor.deep} <span aria-hidden="true">＋</span></summary>
       <div className="zw-about-feature-gallery">
-        {detailed.features.map((feature,i)=><article className="zw-about-feature" key={feature.label}>
+        {detailed.features.map((feature,i)=><article className="zw-about-feature" key={feature.label} data-feature-number={i + 1}>
           <figure className="zw-about-feature-art"><img src={feature.image} alt={feature.imageAlt} width={720} height={720} loading="lazy" decoding="async"/></figure>
           <div className="zw-about-feature-copy"><span className="zw-about-feature-index">{feature.label}</span><h2>{feature.title}</h2><p>{feature.body}</p></div>
         </article>)}
