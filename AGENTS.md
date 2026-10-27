@@ -1,3 +1,7 @@
+## 2026-10-28｜《借星》原創九圖優先發布（站主最新指令）
+
+涉及《借星》九幕圖片、圖錄、文章、素材、壓縮、發布或後台上傳時，**執行前必須先讀 `docs/BORROW-STAR-ARTWORK-PUBLISHING.md`**。此文件是九幅獨立 9:16 真正原創畫作的唯一交付與驗收契約；不能以幾何 SVG、拼貼裁切、縮圖、假圖或單純 HTTP 200 代替。圖片是站主的核心輸出，優先於同範圍美術微調。仍須遵守安全、授權、分支/CI/唯一 Production 發布流程；文件合併不等於圖片上線。
+
 # ZHAOWU ABSOLUTE EXECUTION PROTOCOL
 
 This file is the highest repository-level execution protocol for all work on **ZHAOWU / 昭梧**.
