@@ -5,6 +5,7 @@ import { useI18n } from '@/lib/i18n';
 import { BrandIcon } from '@/components/brand-icon';
 import { HomeTree } from '@/components/home-tree';
 import { CuratedVideoShelf } from '@/components/curated-video-shelf';
+import '@/guaili-collection-entry.css';
 
 type Section = 'form' | 'today' | 'quiz' | 'notes';
 /** Skins whose painting is clean enough to show at full strength behind the home title. */
@@ -76,6 +77,12 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
         <em>{t('十二幅原創圖 · 八大支系 · 三十五位人物', '十二幅原创图 · 八大支系 · 三十五位人物', 'Twelve original plates · eight lineages · thirty-five figures')}</em>
       </span>
       <i aria-hidden>›</i>
+    </a>
+    <a className="ph-guaili-bookcase" href="/guaili-luanshen" data-home-guaili-collection>
+      <span><small>{t('黃泉紀・獨立系列書目', '黄泉纪・独立系列书目', 'YELLOW SPRINGS · SERIES INDEX')}</small>
+        <strong>{t('怪力亂神｜七卷全書', '怪力乱神｜七卷全书', 'Strange Powers · The Seven Volumes')}</strong>
+        <em>{t('十二地支四態・十二流煞・八災十年編年', '十二地支四态・十二流煞・八灾十年编年', 'Twelve branches · Twelve currents · The final chronicle')}</em></span>
+      <i aria-hidden="true">↗</i>
     </a>
     <HomeTree t={t} onOpen={onOpen} />
     <CuratedVideoShelf placement="home" />
