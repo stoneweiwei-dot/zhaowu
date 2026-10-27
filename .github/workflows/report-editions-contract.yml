@@ -5,6 +5,9 @@ on:
     paths:
       - "src/components/report-plan-comparison.tsx"
       - "src/components/report-plan-comparison.css"
+      - "src/components/portrait-edition-showcase.tsx"
+      - "src/components/portrait-edition-showcase.css"
+      - "src/components/painted-home.tsx"
       - "src/components/report-access-gate.tsx"
       - "src/components/bazi-reading-unlock.tsx"
       - "src/lib/report-access.ts"
