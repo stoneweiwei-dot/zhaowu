@@ -6,6 +6,9 @@ const data = await readFile(new URL("../src/routes/-mythic-atlas-guaili-data.ts"
 const component = await readFile(new URL("../src/routes/-mythic-atlas-guaili.tsx", import.meta.url), "utf8");
 const route = await readFile(new URL("../src/routes/mythic-atlas.tsx", import.meta.url), "utf8");
 const css = await readFile(new URL("../src/routes/-mythic-atlas-guaili.css", import.meta.url), "utf8");
+const oldAtlasData = await readFile(new URL("../src/routes/-mythic-atlas-data.ts", import.meta.url), "utf8");
+const routeMeta = JSON.parse(await readFile(new URL("../src/lib/route-meta.json", import.meta.url), "utf8"));
+const sitemap = await readFile(new URL("../public/sitemap.xml", import.meta.url), "utf8");
 
 test("the existing mythic atlas carries the special without deleting its current chapters", () => {
   assert.match(route, /<GuailiBook locale=\{locale\} \/>/);
@@ -44,4 +47,20 @@ test("three languages, reusable illustration and mobile responsive styling exist
   assert.match(component, /\/mythic-atlas\/originals\/07-mountain-sea-bestiary.webp/);
   assert.match(css, /@container \(max-width:390px\)/);
   assert.doesNotMatch(component, /https?:\/\//);
+});
+
+
+test("legacy character index uses only the published 十二流煞 name", () => {
+  assert.doesNotMatch(oldAtlasData, /十二鬼月|Twelve Ghost Moons/);
+  assert.match(oldAtlasData, /十二流煞/);
+  assert.match(oldAtlasData, /Twelve Currents of Calamity/);
+});
+
+test("seven-volume mythic archive is indexed by canonical sitemap and localized meta", () => {
+  assert.ok(routeMeta.routes["/mythic-atlas"]);
+  for (const language of ["zh-Hant","zh-Hans","en"]) {
+    const item=routeMeta.routes["/mythic-atlas"][language];
+    assert.ok(item.title.length > 15 && item.description.length > 50, language);
+  }
+  assert.match(sitemap, /https:\/\/zhao-wu\.com\/mythic-atlas<\/loc>/);
 });
