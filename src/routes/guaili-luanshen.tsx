@@ -12,7 +12,7 @@ export const Route = createFileRoute("/guaili-luanshen")({ component: GuailiColl
 /** A new series bookshelf, not a second copy of the seven-volume source text. */
 function GuailiCollectionPage() {
   const { locale } = useI18n();
-  const group = l("昭梧・黃泉紀｜獨立系列書目", "昭梧・黄泉纪｜独立系列书目", "ZHAOWU · YELLOW SPRINGS · SERIES INDEX");
+  const group = l("昭梧・幽明萬象錄｜獨立系列書目", "昭梧・幽明万象录｜独立系列书目", "ZHAOWU · HIDDEN & MANIFEST · SERIES INDEX");
   const read = l("進入正文", "进入正文", "Read the text");
   const refer = l("本書所有卷目共用已發布的《幽明萬象錄》資料，書目不另存一份原稿。點選卷名可直接抵達原卷。", "本书所有卷目共用已发布的《幽明万象录》资料，书目不另存一份原稿。点选卷名可直接抵达原卷。", "All chapters point to the published Chronicle of Hidden and Manifest Worlds. This index does not create another version of the manuscript.");
   return <main className="huangquan hqc-index" data-guaili-collection>
@@ -21,7 +21,7 @@ function GuailiCollectionPage() {
       <span aria-hidden="true">/</span>
       <a href="/mythic-atlas">{tr(l("幽明萬象錄","幽明万象录","Mythic Archive"), locale)}</a>
       <span aria-hidden="true">/</span>
-      <span>{tr(l("怪力亂神","怪力乱神","Strange Powers"), locale)}</span>
+      <span>{tr(l("三界異聞","三界异闻","Three Realms Tales"), locale)}</span>
     </nav>
     <header className="hqc-opening">
       <div className="hqc-opening-copy">
