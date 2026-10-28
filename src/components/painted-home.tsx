@@ -99,7 +99,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
     </a>
     <a className="ph-guaili-bookcase" href="/guaili-luanshen" data-home-guaili-collection>
       <span><small>{t('幽明萬象錄・獨立系列書目', '幽明万象录・独立系列书目', 'HIDDEN & MANIFEST · SERIES INDEX')}</small>
-        <strong>{t('三界異聞｜七卷全書', '三界异闻｜七卷全书', 'Three Realms Tales · The Seven Volumes')}</strong>
+        <strong>{t('三界異聞錄｜七卷全書', '三界异闻录｜七卷全书', 'Tales of the Three Realms · The Seven Volumes')}</strong>
         <em>{t('十二地支四態・十二流煞・八災十年編年', '十二地支四态・十二流煞・八灾十年编年', 'Twelve branches · Twelve currents · The final chronicle')}</em></span>
       <i aria-hidden="true">↗</i>
     </a>
