@@ -277,31 +277,20 @@ test("owner endpoint is protected, consolidated, and stays within the Hobby func
   assert.ok(apiFiles.length <= 12);
 });
 
-test("the owner console embeds the existing gallery-backed dual social publisher", async () => {
+test("owner console retires broken in-site publishing and hands off to Metricool", async () => {
   const account = await source("src/routes/account.tsx");
-  const panel = await source("src/components/owner/autopublish-panel.tsx");
+  const overview = await source("src/components/owner/console-overview.tsx");
   const route = await source("src/routes/social.tsx");
-  const userState = await source("src/lib/auth/use-current-user.ts");
-  // 2026-10-16: the console rebuild puts auto-publishing first and keeps the manual publisher inside it.
-  assert.match(account, /<AutopublishPanel/);
-  assert.match(panel, /<SocialPublisherPage embedded/);
-  assert.match(panel, /應用程式網域/);
-  assert.match(panel, /action=meta\.callback/);
-  assert.match(panel, /Instagram/);
-  assert.match(route, /data-owner-social-publisher/);
-  assert.match(route, /configuration\.targets/);
-  assert.match(route, /useCurrentUserState/);
-  assert.match(route, /listOwnerGalleryAssets/);
-  assert.match(route, /uploadGalleryAsset/);
-  assert.match(route, /一次發到多個帳號/);
-  assert.match(route, /data-threads-account-manager/);
-  assert.match(route, /startThreadsConnection/);
-  assert.match(route, /Instagram 需要一張圖片；請從圖庫選擇或直接上傳/);
-  assert.doesNotMatch(route, /完成一次 Meta 授權後/);
-  assert.match(userState, /"\/social"/);
-  assert.match(route, /data-xiaohongshu-helper/);
-  assert.match(route, /navigator\.clipboard\.writeText/);
-  assert.match(route, /xiaohongshu\.com\/explore/);
+  const vercel = JSON.parse(await source("vercel.json"));
+  assert.doesNotMatch(account, /<AutopublishPanel/);
+  assert.doesNotMatch(account, /"autopublish"/);
+  assert.doesNotMatch(overview, /readAutopublishOverview/);
+  assert.match(overview, /https:\/\/app\.metricool\.com\//);
+  assert.match(route, /data-external-social-handoff/);
+  assert.match(route, /user\?\.isOwner/);
+  assert.match(route, /https:\/\/app\.metricool\.com\//);
+  assert.doesNotMatch(route, /startThreadsConnection|publishOwnerSocialPost/);
+  assert.equal(vercel.crons, undefined);
 });
 
 test("the root no longer mounts the duplicate DOM-scanning owner console organizer", async () => {
@@ -310,12 +299,12 @@ test("the root no longer mounts the duplicate DOM-scanning owner console organiz
 });
 
 
-test("unconfigured production does not pretend the Meta publisher is ready", async () => {
+test("legacy /social keeps a safe owner-only external publishing handoff", async () => {
   const route = await source("src/routes/social.tsx");
-  assert.match(route, /data-social-connection-required/);
-  assert.match(route, /Meta 尚未連接/);
-  assert.match(route, /連接帳號/);
-  assert.doesNotMatch(route, /META_.*ACCESS_TOKEN/);
+  assert.match(route, /createFileRoute\("\/social"\)/);
+  assert.match(route, /user\?\.isOwner/);
+  assert.match(route, /https:\/\/app\.metricool\.com\//);
+  assert.doesNotMatch(route, /META_.*ACCESS_TOKEN|data-owner-social-publisher/);
 });
 
 test("Meta (Facebook/Instagram) token encryption is independent of the Threads app secret", async () => {
