@@ -18,6 +18,7 @@ import { Route as CopyrightRouteImport } from './routes/copyright'
 import { Route as DailyColorsRouteImport } from './routes/daily-colors'
 import { Route as FunTestsRouteImport } from './routes/fun-tests'
 import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as GuailiLuanshenRouteImport } from './routes/guaili-luanshen'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as IndianAstrologyRouteImport } from './routes/indian-astrology'
 import { Route as KnowledgeRouteImport } from './routes/knowledge'
@@ -92,6 +93,11 @@ const FunTestsRoute = FunTestsRouteImport.update({
 const GalleryRoute = GalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuailiLuanshenRoute = GuailiLuanshenRouteImport.update({
+  id: '/guaili-luanshen',
+  path: '/guaili-luanshen',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistoryRoute = HistoryRouteImport.update({
@@ -257,6 +263,7 @@ export interface FileRoutesByFullPath {
   '/daily-colors': typeof DailyColorsRoute
   '/fun-tests': typeof FunTestsRouteWithChildren
   '/gallery': typeof GalleryRoute
+  '/guaili-luanshen': typeof GuailiLuanshenRoute
   '/history': typeof HistoryRoute
   '/indian-astrology': typeof IndianAstrologyRoute
   '/knowledge': typeof KnowledgeRouteWithChildren
@@ -298,6 +305,7 @@ export interface FileRoutesByTo {
   '/daily-colors': typeof DailyColorsRoute
   '/fun-tests': typeof FunTestsRouteWithChildren
   '/gallery': typeof GalleryRoute
+  '/guaili-luanshen': typeof GuailiLuanshenRoute
   '/history': typeof HistoryRoute
   '/indian-astrology': typeof IndianAstrologyRoute
   '/knowledge': typeof KnowledgeRouteWithChildren
@@ -340,6 +348,7 @@ export interface FileRoutesById {
   '/daily-colors': typeof DailyColorsRoute
   '/fun-tests': typeof FunTestsRouteWithChildren
   '/gallery': typeof GalleryRoute
+  '/guaili-luanshen': typeof GuailiLuanshenRoute
   '/history': typeof HistoryRoute
   '/indian-astrology': typeof IndianAstrologyRoute
   '/knowledge': typeof KnowledgeRouteWithChildren
@@ -383,6 +392,7 @@ export interface FileRouteTypes {
     | '/daily-colors'
     | '/fun-tests'
     | '/gallery'
+    | '/guaili-luanshen'
     | '/history'
     | '/indian-astrology'
     | '/knowledge'
@@ -424,6 +434,7 @@ export interface FileRouteTypes {
     | '/daily-colors'
     | '/fun-tests'
     | '/gallery'
+    | '/guaili-luanshen'
     | '/history'
     | '/indian-astrology'
     | '/knowledge'
@@ -465,6 +476,7 @@ export interface FileRouteTypes {
     | '/daily-colors'
     | '/fun-tests'
     | '/gallery'
+    | '/guaili-luanshen'
     | '/history'
     | '/indian-astrology'
     | '/knowledge'
@@ -507,6 +519,7 @@ export interface RootRouteChildren {
   DailyColorsRoute: typeof DailyColorsRoute
   FunTestsRoute: typeof FunTestsRouteWithChildren
   GalleryRoute: typeof GalleryRoute
+  GuailiLuanshenRoute: typeof GuailiLuanshenRoute
   HistoryRoute: typeof HistoryRoute
   IndianAstrologyRoute: typeof IndianAstrologyRoute
   KnowledgeRoute: typeof KnowledgeRouteWithChildren
@@ -597,6 +610,13 @@ declare module '@tanstack/react-router' {
       path: '/gallery'
       fullPath: '/gallery'
       preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guaili-luanshen': {
+      id: '/guaili-luanshen'
+      path: '/guaili-luanshen'
+      fullPath: '/guaili-luanshen'
+      preLoaderRoute: typeof GuailiLuanshenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/history': {
@@ -852,6 +872,7 @@ const rootRouteChildren: RootRouteChildren = {
   DailyColorsRoute: DailyColorsRoute,
   FunTestsRoute: FunTestsRouteWithChildren,
   GalleryRoute: GalleryRoute,
+  GuailiLuanshenRoute: GuailiLuanshenRoute,
   HistoryRoute: HistoryRoute,
   IndianAstrologyRoute: IndianAstrologyRoute,
   KnowledgeRoute: KnowledgeRouteWithChildren,
