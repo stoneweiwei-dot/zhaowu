@@ -6,7 +6,7 @@ export type ChronicleEvent = { year: Localized; name: Localized; detail: Localiz
 
 export const GUAILI_COPY = {
   eyebrow: l("昭梧・幽明萬象錄｜七卷定稿", "昭梧・幽明万象录｜七卷定稿", "ZHAOWU · HIDDEN & MANIFEST · SEVEN VOLUMES"),
-  title: l("三界異聞", "三界异闻", "Three Realms Tales"),
+  title: l("三界異聞錄", "三界异闻录", "Tales of the Three Realms"),
   subtitle: l("黃泉空了，編制崩解。", "黄泉空了，编制崩解。", "The Yellow Springs stand empty. The divine registers fall."),
   intro: l(
     "舊神入籍，山川受封，亡魂逐一登冊。當無名者再無歸處，天庭與幽冥共同建立的秩序終於從第一張廢籍開始崩裂。七卷故事以神話重新審視一個問題：被制度排除的存在，是否就不值得存在？",
