@@ -42,14 +42,14 @@
       "en": { "title": "True Solar Time for BaZi: Formula, Equation of Time & DST (Sydney Examples) | ZHAOWU", "description": "How true solar time is calculated for a BaZi chart: 4 minutes per degree of longitude, the equation of time (about −14 to +16 min) and daylight saving via the actual UTC offset, with Sydney, Taipei and Beijing worked examples, plus error and limits." }
     },
     "/mythic-atlas": {
-      "zh-Hant": { "title": "幽明萬象錄・三界異聞七卷｜十二地支四態・大裂隙災異編年｜昭梧", "description": "昭梧原創《三界異聞》全書七卷：神籍官僚制、黃泉與輪迴、十二地支四態、十二流煞及十年災異終局。區分古籍、民俗與架空改寫。" },
-      "zh-Hans": { "title": "幽明万象录・三界异闻七卷｜十二地支四态・大裂隙灾异编年｜昭梧", "description": "昭梧原创《三界异闻》全书七卷：神籍官僚制、黄泉与轮回、十二地支四态、十二流煞及十年灾异终局。区分古籍、民俗与架空改写。" },
-      "en": { "title": "Three Realms Tales | Seven Volumes of the Hidden and Manifest Worlds | ZHAOWU", "description": "ZHAOWU's seven-volume mythic chronicle: celestial bureaucracy, the Yellow Springs, twelve zodiac aspects and a decade of calamity, with sources distinguished from fiction." }
+      "zh-Hant": { "title": "幽明萬象錄・三界異聞錄七卷｜十二地支四態・大裂隙災異編年｜昭梧", "description": "昭梧原創《三界異聞錄》全書七卷：神籍官僚制、黃泉與輪迴、十二地支四態、十二流煞及十年災異終局。區分古籍、民俗與架空改寫。" },
+      "zh-Hans": { "title": "幽明万象录・三界异闻录七卷｜十二地支四态・大裂隙灾异编年｜昭梧", "description": "昭梧原创《三界异闻录》全书七卷：神籍官僚制、黄泉与轮回、十二地支四态、十二流煞及十年灾异终局。区分古籍、民俗与架空改写。" },
+      "en": { "title": "Tales of the Three Realms | Seven Volumes of the Hidden and Manifest Worlds | ZHAOWU", "description": "ZHAOWU's seven-volume mythic chronicle: celestial bureaucracy, the Yellow Springs, twelve zodiac aspects and a decade of calamity, with sources distinguished from fiction." }
     },
     "/guaili-luanshen": {
-      "zh-Hant": { "title": "三界異聞｜昭梧幽明萬象錄七卷獨立書目・十二地支與八災", "description": "獨立《三界異聞》系列分組，按七卷原書、十二地支四態及黃泉曆十年災異編年導航至昭梧原始正文。古籍與原創清楚分層。" },
-      "zh-Hans": { "title": "三界异闻｜昭梧幽明万象录七卷独立书目・十二地支与八灾", "description": "独立《三界异闻》系列分组，按七卷原书、十二地支四态及黄泉历十年灾异编年导航至昭梧原始正文。古籍与原创清楚分层。" },
-      "en": { "title": "Three Realms Tales · Seven-Volume Series Index | ZHAOWU", "description": "Explore all seven volumes of the Three Realms Tales, twelve zodiac aspects and the ten-year calamity chronicle. An original series index linking to the published mythic archive." }
+      "zh-Hant": { "title": "三界異聞錄｜昭梧幽明萬象錄七卷獨立書目・十二地支與八災", "description": "獨立《三界異聞錄》系列分組，按七卷原書、十二地支四態及黃泉曆十年災異編年導航至昭梧原始正文。古籍與原創清楚分層。" },
+      "zh-Hans": { "title": "三界异闻录｜昭梧幽明万象录七卷独立书目・十二地支与八灾", "description": "独立《三界异闻录》系列分组，按七卷原书、十二地支四态及黄泉历十年灾异编年导航至昭梧原始正文。古籍与原创清楚分层。" },
+      "en": { "title": "Tales of the Three Realms · Seven-Volume Series Index | ZHAOWU", "description": "Explore all seven volumes of the Tales of the Three Realms, twelve zodiac aspects and the ten-year calamity chronicle. An original series index linking to the published mythic archive." }
     },
     "/updates": {
       "zh-Hant": { "title": "最新版本更新內容｜昭梧", "description": "昭梧正式版本更新紀錄：新功能、修正與天象新增，依日期與版本整理。" },
