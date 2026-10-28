@@ -82,7 +82,7 @@ function useCopy(locale: string) {
         { href: "/fun-tests?test=element",     title: "五行功能测验",        hint: "看现在主观上最想加强哪一种功能" },
         { href: "/quiz/six-realms",            title: "六道习气测验",        hint: "看目前最明显的日常惯性" },
         { href: "/quiz/five-element-overdrive", title: "五行优势内耗测验",    hint: "10 个日常情境，看你最容易把哪一种优势用成内耗" },
-        { href: "/mythic-atlas", title: "黄泉纪 · 左道旁门设定集", hint: "十二幅原创图、八大支系与四条相连故事线" },
+        { href: "/mythic-atlas", title: "幽明万象录 · 原创设定集", hint: "十二幅原创图、八大支系与四条相连故事线" },
       ],
     };
   }
@@ -113,7 +113,7 @@ function useCopy(locale: string) {
       { href: "/fun-tests?test=element",     title: "五行功能測驗",        hint: "看現在主觀上最想加強哪一種功能" },
       { href: "/quiz/six-realms",            title: "六道習氣測驗",        hint: "看目前最明顯的日常慣性" },
       { href: "/quiz/five-element-overdrive", title: "五行優勢內耗測驗",    hint: "10 個日常情境，看你最容易把哪一種優勢用成內耗" },
-      { href: "/mythic-atlas", title: "黃泉紀 · 左道旁門設定集", hint: "十二幅原創圖、八大支系與四條相連故事線" },
+      { href: "/mythic-atlas", title: "幽明萬象錄 · 原創設定集", hint: "十二幅原創圖、八大支系與四條相連故事線" },
     ],
   };
 }
