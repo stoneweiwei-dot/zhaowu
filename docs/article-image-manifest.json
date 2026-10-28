@@ -2,6 +2,14 @@
   "_doc": "文章圖像資產清單：每張文章圖的出處與狀態。由 scripts/article-image-manifest.test.mjs 於 prebuild 驗證。kind: painting|infographic|diagram；source: stone-original|existing-reused|coded-diagram|unverified；status: approved|interim|needs-review。placeholder 一律不得上線。",
   "entries": [
     {
+      "src": "/articles/stone-cause-and-action.webp",
+      "article": "cause-action-kindness",
+      "kind": "painting",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "2026-10-29 為本文生成之宋式山水原創插畫；941×1672 WebP，© STONE 簽名；SHA-256 857517edce95560ba81222620c2eec65fd4d24cedab436097ed10bdcd71af349。"
+    },
+    {
       "src": "/articles/sudhana-fifty-three-visits-stone-original.webp",
       "article": "sudhana-fifty-three-visits",
       "kind": "painting",
