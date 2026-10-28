@@ -20,7 +20,7 @@ export function GuailiBook({ locale }: { locale: Locale }) {
           <blockquote>{tr(GUAILI_COPY.principle, locale)}</blockquote>
         </div>
         <figure className="hq-guaili-opening-art">
-          <img src="/mythic-atlas/originals/07-mountain-sea-bestiary.webp"
+          <img src="/mythic-atlas/originals/07-shanhaijing-atlas.png"
             alt={tr(l("昭梧原創《災異山海》圖版","昭梧原创《灾异山海》图版","Original STONE plate of Mountain and Sea calamities"), locale)}
             width={941} height={1672} loading="lazy" />
           <figcaption>{tr(l("《災異山海》｜沿用本館既有 STONE 原創圖錄，不冒稱新繪", "《灾异山海》｜沿用本馆既有 STONE 原创图录，不冒称新绘", "Mountain and Sea · An existing STONE original, reused here"), locale)}</figcaption>

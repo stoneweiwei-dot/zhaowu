@@ -37,3 +37,15 @@
   .hq-hero h1{font-size:clamp(2rem,11cqw,3.5rem);line-height:1.22}
   .hq-subtitle{letter-spacing:.05em}
 }
+
+/* 2026-10-28 · Present source-identical 9:16 paintings without image clipping. */
+.huangquan .hq-full-plate{display:block;line-height:0}
+.huangquan .hq-image-frame img{height:auto;object-fit:contain}
+.huangquan .hq-hero>.hq-plate .hq-image-frame{height:auto;max-height:none}
+.huangquan .hq-hero>.hq-plate img{height:auto;object-fit:contain}
+.huangquan .hq-chronicle-art{max-width:15rem;margin-top:1.2rem}
+.huangquan .hq-original-film{width:min(100%,32rem);margin:2.5rem auto 0}
+.huangquan .hq-original-film video{display:block;width:100%;height:auto;aspect-ratio:9/16;max-height:78svh;object-fit:contain;background:#e8dcc6}
+.huangquan .hq-original-film figcaption{display:grid;gap:.45rem;margin-top:.8rem;color:var(--hq-soft);font-size:.8rem;line-height:1.75}
+.huangquan .hq-original-film figcaption strong{color:var(--hq-ink);font-family:var(--font-display);font-size:1rem}
+@media(max-width:420px){.huangquan .hq-chronicle-art{width:min(100%,13rem)}}

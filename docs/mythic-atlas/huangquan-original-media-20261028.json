@@ -1,0 +1,73 @@
+{
+  "title": "ZHAOWU 黃泉紀 · source-verified STONE originals",
+  "date": "2026-10-28",
+  "source": "Previously generated ChatGPT media, original untouched 941x1672 PNG and unchanged MP4",
+  "sourceZipSha256": "370de385ed005b7dbc3a7ae17f164b7c6651af427956d901aef32668ca9de70e",
+  "images": [
+    {
+      "old": "01-skeleton-puppet.webp",
+      "file": "01-skeleton-puppet.png",
+      "sha256": "a633935f4980d3b4f47ae144cd44dead6b6fbf1d52e4b8f78d82d8193e92792f"
+    },
+    {
+      "old": "02-three-realms-banner.webp",
+      "file": "02-t-shaped-silk.png",
+      "sha256": "490132f1b381d4ca3331db85eceeb1102ed0f3022afe8d6bcd1cc63f490a6cda"
+    },
+    {
+      "old": "03-celestial-procession.webp",
+      "file": "03-celestial-court.png",
+      "sha256": "cf8319dbf0e267b61d006aee0e85d8d677b07dde506477a59e78141f9bf77bce"
+    },
+    {
+      "old": "04-guardian-captures-general.webp",
+      "file": "04-guan-yu-captive.png",
+      "sha256": "937ba6f92a8608f96048cb09082fe392ac1d12a46272fb972cb8a43988b06312"
+    },
+    {
+      "old": "05-ten-kings-court.webp",
+      "file": "05-ten-kings.png",
+      "sha256": "09893c044c3b5e03bc4c63d9ad5f176bb8e6aeebe1be2fcefbc8b667d3db34a7"
+    },
+    {
+      "old": "06-nine-dragons.webp",
+      "file": "06-nine-dragons.png",
+      "sha256": "fcd8595aeeda568ca3972c3cfe368591dc3654e7a1aeb22489cd907752f2c50d"
+    },
+    {
+      "old": "07-mountain-sea-bestiary.webp",
+      "file": "07-shanhaijing-atlas.png",
+      "sha256": "a8f75d3aadad04768cb8aa1b42e0175ca84b9e64cbebdf49fd85835edbcaa6b2"
+    },
+    {
+      "old": "08-ghostly-amusements.webp",
+      "file": "08-ghostly-amusements.png",
+      "sha256": "12844836f2155695f9386bff072d55192e674962fb0efb2378a8f86243c3475a"
+    },
+    {
+      "old": "09-lifting-the-bowl.webp",
+      "file": "09-uncovering-the-bowl.png",
+      "sha256": "e4f47077a06891a4992ae27a1239c3dcf967c400218e562cccbf2cbd7c3c0939"
+    },
+    {
+      "old": "10-coastal-raiders.webp",
+      "file": "10-coastal-invasion.png",
+      "sha256": "8507532cfa587cff41f57ffb65ce99d7a3c317204ba82cf03e148fb75540b4de"
+    },
+    {
+      "old": "11-searching-the-mountain.webp",
+      "file": "11-searching-the-mountain.png",
+      "sha256": "84cd201fff8c62c73c44117f8519145623c282e5db8a1345db4cc1c91bff8975"
+    },
+    {
+      "old": "12-stars-and-constellations.webp",
+      "file": "12-five-planets-28-mansions.png",
+      "sha256": "40fb16c7f7de3ec91094763d52975138416bf326fccd88444f70ad6be7a1975b"
+    }
+  ],
+  "film": {
+    "file": "huangquan-chronicles.mp4",
+    "sha256": "e4ceabcedeb428dba4e1f42fbed500b488799723a94654bfd2a73190004b9b89",
+    "size": 44151953
+  }
+}
