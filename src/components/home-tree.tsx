@@ -77,8 +77,8 @@ export function homeTree(t: T): TreeNode[] {
       primary: { kind: 'action', section: 'notes', title: t('讀觀世錄文章', '读观世录文章', 'Read the latest essays'), hint: t('最新文章與完整內容檔案', '最新文章与完整内容档案', 'Newest writing and the full archive') },
       items: [
         { kind: 'link', href: '/knowledge', title: t('命理小知識', '命理小知识', 'Short explainers'), hint: t('方法、術語與判讀規則，查得到也看得懂。', '方法、术语与判读规则，查得到也看得懂。', 'Methods, terms and how to read them.') },
-        { kind: 'link', href: '/mythic-atlas', title: t('黃泉紀 · 原創圖錄', '黄泉纪 · 原创图录', 'Yellow Springs illustrated atlas'), hint: t('十二幅原創畫作及完整神話世界觀。', '十二幅原创画作与完整神话世界观。', 'Twelve original artworks and their connected mythology.') },
-        { kind: 'link', href: '/guaili-luanshen', title: t('怪力亂神 · 七卷全書', '怪力乱神 · 七卷全书', 'Strange Powers · seven volumes'), hint: t('完整系列目錄、地支神話與災異編年。', '完整系列目录、地支神话与灾异编年。', 'Full series index, zodiac mythology and chronicles.') },
+        { kind: 'link', href: '/mythic-atlas', title: t('幽明萬象錄 · 原創圖錄', '幽明万象录 · 原创图录', 'Hidden & Manifest illustrated atlas'), hint: t('十二幅原創畫作及完整神話世界觀。', '十二幅原创画作与完整神话世界观。', 'Twelve original artworks and their connected mythology.') },
+        { kind: 'link', href: '/guaili-luanshen', title: t('三界異聞 · 七卷全書', '三界异闻 · 七卷全书', 'Three Realms Tales · seven volumes'), hint: t('完整系列目錄、地支神話與災異編年。', '完整系列目录、地支神话与灾异编年。', 'Full series index, zodiac mythology and chronicles.') },
         { kind: 'link', href: '/about', title: t('關於昭梧', '关于昭梧', 'About ZHAOWU'), hint: t('認識昭梧的理念、藝術與方法邊界。', '认识昭梧的理念、艺术与方法边界。', 'The ideas, artwork and methods behind ZHAOWU.') },
         { kind: 'link', href: '/updates', title: t('最新更新', '最新更新', 'What’s new'), hint: t('網站最近多了什麼。', '网站最近多了什么。', 'What changed on the site recently.') },
       ],
