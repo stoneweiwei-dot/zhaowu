@@ -7,8 +7,8 @@ import assert from "node:assert/strict";
 const root = path.resolve(import.meta.dirname, "..");
 const basename = "sudhana-fifty-three-visits-stone-original.webp";
 const expected = {
-  length: 629444,
-  sha256: "67b9dc2f5883dae28819151ab33de66d55f14dfdcb61bbec5b8f07894042490c",
+  length: 1995574,
+  sha256: "4d649549298fee5448e542ad60b75f8cea5ad86bc7c4e61ad8fe88415545b4a4",
 };
 const bytes = Buffer.concat([0, 1].map(i => readFileSync(path.join(root, "art-source", basename + ".part" + i))));
 assert.equal(bytes.length, expected.length, "Sudhana image byte length differs from original");

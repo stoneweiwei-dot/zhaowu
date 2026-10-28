@@ -2,6 +2,14 @@
   "_doc": "文章圖像資產清單：每張文章圖的出處與狀態。由 scripts/article-image-manifest.test.mjs 於 prebuild 驗證。kind: painting|infographic|diagram；source: stone-original|existing-reused|coded-diagram|unverified；status: approved|interim|needs-review。placeholder 一律不得上線。",
   "entries": [
     {
+      "src": "/articles/sudhana-fifty-three-visits-stone-original.webp",
+      "article": "sudhana-fifty-three-visits",
+      "kind": "painting",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "2026-10-28 STONE 原創《善財童子五十三參》；2026-10-28 站主重新提供之 JPEG 864×1536，865428 bytes，原件 SHA-256 df7176f4f6bb682451df0017d525cfab809ea2549b5bc4453b67183e9fb2b6de；站內 WebP 864×1536 lossless／像素逐點一致，1995574 bytes，SHA-256 4d649549298fee5448e542ad60b75f8cea5ad86bc7c4e61ad8fe88415545b4a4。此 JPEG 與先前 PR 記載的 941×1672 PNG 為不同位元組來源，並非原 PNG 的 hash 驗證。不得以幾何 SVG 代替。"
+    },
+    {
       "src": "/articles/zhaojian-benxin-stone-original.webp",
       "article": "zhaojian-benxin-awareness-compassion",
       "kind": "painting",
