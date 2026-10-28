@@ -92,14 +92,14 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
       <img src="/mythic-atlas/originals/01-skeleton-puppet.webp" alt="" loading="lazy" width="941" height="1672" />
       <span>
         <small>{t('昭梧原創圖錄', '昭梧原创图录', 'ZHAOWU ORIGINAL ATLAS')}</small>
-        <strong>{t('黃泉紀 · 左道旁門設定集', '黄泉纪 · 左道旁门设定集', 'Chronicle of the Yellow Springs')}</strong>
+        <strong>{t('幽明萬象錄 · 原創設定集', '幽明万象录 · 原创设定集', 'Chronicle of Hidden and Manifest Worlds')}</strong>
         <em>{t('十二幅原創圖 · 八大支系 · 三十五位人物', '十二幅原创图 · 八大支系 · 三十五位人物', 'Twelve original plates · eight lineages · thirty-five figures')}</em>
       </span>
       <i aria-hidden>›</i>
     </a>
     <a className="ph-guaili-bookcase" href="/guaili-luanshen" data-home-guaili-collection>
-      <span><small>{t('黃泉紀・獨立系列書目', '黄泉纪・独立系列书目', 'YELLOW SPRINGS · SERIES INDEX')}</small>
-        <strong>{t('怪力亂神｜七卷全書', '怪力乱神｜七卷全书', 'Strange Powers · The Seven Volumes')}</strong>
+      <span><small>{t('幽明萬象錄・獨立系列書目', '幽明万象录・独立系列书目', 'HIDDEN & MANIFEST · SERIES INDEX')}</small>
+        <strong>{t('三界異聞｜七卷全書', '三界异闻｜七卷全书', 'Three Realms Tales · The Seven Volumes')}</strong>
         <em>{t('十二地支四態・十二流煞・八災十年編年', '十二地支四态・十二流煞・八灾十年编年', 'Twelve branches · Twelve currents · The final chronicle')}</em></span>
       <i aria-hidden="true">↗</i>
     </a>
