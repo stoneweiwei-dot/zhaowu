@@ -1,0 +1,31 @@
+name: Article artwork prebuild gate
+
+on:
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'docs/article-image-manifest.json'
+      - 'src/lib/life-view-long-form.ts'
+      - 'src/lib/life-view-long-form/**'
+      - 'art-source/**'
+      - 'scripts/assemble-*.mjs'
+      - 'scripts/article-*.test.mjs'
+      - 'scripts/unpublished-sudhana-gate.test.mjs'
+      - '.github/workflows/article-assets-prebuild.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  original-artwork:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Exercise exact Vercel prebuild gates before Production
+        run: npm run prebuild
