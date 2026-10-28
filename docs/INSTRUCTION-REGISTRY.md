@@ -1003,3 +1003,9 @@
 - ACTIVE：神獸形貌與神格法權為不同路徑，非生肖的真實進化或八字判斷。未羊圖中的羬羊／獬豸與戌狗圖中的哮天犬／麒麟以可考來源及原創映射分開說明。
 - DEFERRED：最高價六系套裝的獨享報告插圖，須在現行 runtime 找到能由伺服器授權驗證的套裝權限後，才可只對該層加入；不得將單盤 `system` 權限冒充套裝權限，也不得影響既有十天干／十二地支報告圖。
 - COST：十二張原 PNG 約 39 MiB 存於既有 repo 並由唯一 Vercel Production 靜態提供，無新增付費圖片供應商或 Storage；折疊段落與 lazy image 限制首屏讀取。回退只需撤回本次圖文提交，無資料遷移。
+
+## 2026-10-28｜善財五十三參缺失原畫暫緩公開（修復正式站阻塞）
+
+- 先前 #917 在原畫分段未進 Git 且宣告 BLOCKED 時合併，導致所有 Production 建置 ENOENT。為發布已完成的社群後台退場修正，完整原文與原始 manifest/hashes 無損移至 `docs/unpublished/sudhana-fifty-three-visits.md`，暫時從公開文章索引及生產 manifest 移除。
+- **不得當成原畫已發布。** `scripts/assemble-sudhana-art.mjs` 保留原本 hash 檢查，檔案齊全才可恢復公開；不生成 SVG、替代圖、不關閉其他文章的原畫品質驗收。
+- 不碰現有客戶報告、支付、登錄、Supabase、Storage、社群排程，也不建立第二個正式站。
