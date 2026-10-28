@@ -62,8 +62,8 @@
 
 ### 圖鑑與靈章
 
-- [怪力亂神・黃泉紀七卷](https://zhao-wu.com/mythic-atlas): 十二地支四態、大裂隙災異編年與原創畫作
-- [怪力亂神・獨立書目](https://zhao-wu.com/guaili-luanshen): 黃泉紀七卷書目、十二地支與八災
+- [幽明萬象錄・三界異聞七卷](https://zhao-wu.com/mythic-atlas): 十二地支四態、大裂隙災異編年與原創畫作
+- [三界異聞・獨立書目](https://zhao-wu.com/guaili-luanshen): 幽明萬象錄七卷書目、十二地支與八災
 - [吉象圖鑑](https://zhao-wu.com/auspicious-atlas): 結緣聖像與瑞獸意象
 - [靈階十章](https://zhao-wu.com/soul-chapters): 人生十章意象，對照當下的處境
 
