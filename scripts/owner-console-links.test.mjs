@@ -12,8 +12,10 @@ test("owner console tabs are real deep links", () => {
   assert.match(source, /window\.addEventListener\("popstate", restoreViewFromUrl\)/);
 });
 
-test("every owner console panel remains directly addressable", () => {
-  for (const view of ["overview", "reports", "autopublish", "images", "opening", "themes", "promo", "articles", "devices"]) {
+test("all active owner tabs have deep links; retired social tab is absent", () => {
+  for (const view of ["overview", "reports", "images", "opening", "themes", "promo", "articles", "devices"]) {
     assert.match(source, new RegExp(`\\["${view}",`), `missing console link for ${view}`);
   }
+  assert.doesNotMatch(source, /\\["autopublish",/);
+  assert.doesNotMatch(source, /<AutopublishPanel/);
 });
