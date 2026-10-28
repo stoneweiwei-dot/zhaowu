@@ -54,7 +54,7 @@ function MythicAtlasPage() {
     </header>
 
     <nav className="hq-toc" aria-label={tr(COPY.contents, locale)}>
-      <span>{tr(COPY.contents, locale)}</span><a href="#world">{tr(COPY.world, locale)}</a><a href="#atlas">{tr(COPY.atlas, locale)}</a><a href="#chronicle">{tr(COPY.chronicle, locale)}</a><a href="#huangquan-film">{tr(l("《黃泉紀》原版影片","《黄泉纪》原版影片","Original Yellow Springs Film"),locale)}</a><a href="/guaili-luanshen">{tr(l("《怪力亂神》分組書目", "《怪力乱神》分组书目", "Strange Powers · Series Index"), locale)}</a><a href="#guaili">{tr(l("怪力亂神・七卷", "怪力乱神・七卷", "Strange Powers · Seven Volumes"), locale)}</a><a href="#guaili-zodiac">{tr(l("十二地支四態", "十二地支四态", "Twelve Branches"), locale)}</a><a href="#guaili-ending">{tr(l("十年災異終局", "十年灾异终局", "Final Chronicle"), locale)}</a><a href="#paintings">{tr(COPY.paintings, locale)}</a><a href="#borrow-star">{locale === "en" ? "Borrowed Star" : locale === "zh-Hans" ? "借星" : "借星"}</a><a href="#observation">{tr(COPY.observation, locale)}</a><a href="#sources">{tr(COPY.sources, locale)}</a>
+      <span>{tr(COPY.contents, locale)}</span><a href="#world">{tr(COPY.world, locale)}</a><a href="#atlas">{tr(COPY.atlas, locale)}</a><a href="#chronicle">{tr(COPY.chronicle, locale)}</a><a href="#huangquan-film">{tr(l("《幽明萬象錄》原版影片","《幽明万象录》原版影片","Original Chronicle Film"),locale)}</a><a href="/guaili-luanshen">{tr(l("《三界異聞》分組書目", "《三界异闻》分组书目", "Three Realms Tales · Series Index"), locale)}</a><a href="#guaili">{tr(l("三界異聞・七卷", "三界异闻・七卷", "Three Realms Tales · Seven Volumes"), locale)}</a><a href="#guaili-zodiac">{tr(l("十二地支四態", "十二地支四态", "Twelve Branches"), locale)}</a><a href="#guaili-ending">{tr(l("十年災異終局", "十年灾异终局", "Final Chronicle"), locale)}</a><a href="#paintings">{tr(COPY.paintings, locale)}</a><a href="#borrow-star">{locale === "en" ? "Borrowed Star" : locale === "zh-Hans" ? "借星" : "借星"}</a><a href="#observation">{tr(COPY.observation, locale)}</a><a href="#sources">{tr(COPY.sources, locale)}</a>
     </nav>
 
     <section className="hq-section" id="world">
@@ -90,11 +90,11 @@ function MythicAtlasPage() {
       <div className="hq-section-heading"><span>卷三</span><h2>{tr(COPY.chronicle, locale)}</h2></div>
       <div className="hq-chronicle-intro"><Plate index={11} locale={locale} /><div className="hq-chronicles">{CHRONICLES.map((chapter, chapterIndex) => <article key={chapter.no}><span>{chapter.no}</span><div><h3>{tr(chapter.title, locale)}</h3><strong>{tr(chapter.lead, locale)}</strong><p>{tr(chapter.text, locale)}</p><div className="hq-chronicle-art"><Plate index={([5, 11, 10, 12] as const)[chapterIndex]} locale={locale} /></div></div></article>)}</div></div>
       <figure className="hq-original-film" id="huangquan-film">
-        <video controls playsInline preload="metadata" poster="/mythic-atlas/originals/01-skeleton-puppet.png" aria-label={tr(l("《黃泉紀》完整原版影片","《黄泉纪》完整原版影片","Full original film of The Yellow Springs Chronicle"), locale)}>
+        <video controls playsInline preload="metadata" poster="/mythic-atlas/originals/01-skeleton-puppet.png" aria-label={tr(l("《幽明萬象錄》完整原版影片","《幽明万象录》完整原版影片","Full original film of the Chronicle of Hidden and Manifest Worlds"), locale)}>
           <source src="/mythic-atlas/films/huangquan-chronicles.mp4" type="video/mp4" />
           {tr(l("目前瀏覽器無法播放此影片。","当前浏览器无法播放此视频。","This browser cannot play the video."), locale)}
         </video>
-        <figcaption><strong>{tr(l("《黃泉紀》｜原版動態圖志","《黄泉纪》｜原版动态图志","The Yellow Springs Chronicle · Original Film"),locale)}</strong>
+        <figcaption><strong>{tr(l("《幽明萬象錄》｜原版動態圖志","《幽明万象录》｜原版动态图志","Chronicle of Hidden and Manifest Worlds · Original Film"),locale)}</strong>
         <span>{tr(l("九幕原創敘事：由九幽黃泉、幽都、輪迴斷路至上古災異與棄序之後。保留完整 MP4，未剪輯、未重編碼。","九幕原创叙事：由九幽黄泉、幽都、轮回断路至上古灾异与弃序之后。保留完整 MP4，未剪辑、未重新编码。","Nine illustrated chapters, from the Nine Springs and Broken Rebirth to ancient calamities. The complete MP4 is unedited and untranscoded."),locale)}</span></figcaption>
       </figure>
     </section>
