@@ -87,7 +87,7 @@ export function BorrowStarInterlude({ locale }: { locale: Locale }) {
         <figcaption>
           <strong>{tr(page.title, locale)}</strong>
           <p>{tr(page.text, locale)}</p>
-          <small>{tr(l("《黃泉紀》原創支線", "《黄泉纪》原创支线", "Original Yellow Springs side story"), locale)}</small>
+          <small>{tr(l("《幽明萬象錄》原創支線", "《幽明万象录》原创支线", "Original chronicle side story"), locale)}</small>
         </figcaption>
       </figure>)}
     </div>
