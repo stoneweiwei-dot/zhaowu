@@ -1,6 +1,6 @@
 # 昭梧｜昭於未見，梧於有歸
 
-> 昭梧（ZHAOWU）是一個免登入的八字排盤網站。以出生年月日時與出生地為輸入，依傳統子平八字與真太陽時校正，整理五行旺衰、大運與流年運勢、今日提示等內容。語言：繁體中文（zh-Hant）、簡體中文（zh-Hans）、英文（en）。
+> 昭梧（ZHAOWU）是一個免登入的八字排盤網站。以出生年月日時與出生地為輸入，依傳統子平八字與真太陽時校正，整理五行旺衰、大運與流年運勢、今日提示等內容。另提供紫微斗數、西洋占星、七政四餘、印度占星、生命靈數、達摩一掌經六種排盤解讀，以及測驗、圖鑑與天象內容。語言：繁體中文（zh-Hant）、簡體中文（zh-Hans）、英文（en），依瀏覽器語言切換。
 
 正式網址：https://zhao-wu.com/
 
@@ -11,6 +11,7 @@
 - 五行旺衰
 - 大運與流年運勢
 - 今日提示
+- 六種專業排盤解讀：紫微斗數、西洋占星、七政四餘、印度占星、生命靈數、達摩一掌經
 
 ## 網站特色
 
@@ -36,19 +37,61 @@
 
 ## 頁面
 
-- [首頁](https://zhao-wu.com/): 排盤入口與介紹
+### 排盤入口
+
+- [首頁](https://zhao-wu.com/): 排盤入口與介紹，免登入免費八字排盤、真太陽時校正與流年運勢
+
+### 六種專業排盤解讀
+
+- [紫微斗數](https://zhao-wu.com/ziwei): 紫微斗數排盤、宮位四化、大限流年，免登入
+- [西洋占星](https://zhao-wu.com/astrology): 星座本命盤、七曜落宮、十二宮與相位
+- [七政四餘](https://zhao-wu.com/qizheng): 七曜運行與天時變化的古典推演
+- [印度占星](https://zhao-wu.com/indian-astrology): 古典吠陀星盤排盤解讀
+- [生命靈數](https://zhao-wu.com/numerology): 生命靈數報告
+- [達摩一掌經](https://zhao-wu.com/yizhangjing): 前世今生四宮的掌上推算
+
+### 測驗與守護
+
+- [趣味測驗系列](https://zhao-wu.com/fun-tests): 內在動物、五行功能、六道等測驗總覽
+- [地球 ONLINE 古籍攻略](https://zhao-wu.com/fun-tests/earth-online): 八題測你目前卡在哪一關
+- [修仙命格靈測](https://zhao-wu.com/quiz/cultivation-destiny): 修仙世界觀的命格測驗
+- [仙佛淵源本緣測試](https://zhao-wu.com/quiz/divine-affinity): 16 題深層版淵源測驗
+- [五行功能測驗](https://zhao-wu.com/quiz/five-element-overdrive): 看你最容易把哪種優勢用成內耗
+- [六道習氣測驗](https://zhao-wu.com/quiz/six-realms): 看你今天正在經歷哪一道
+- [茶仙守護測驗](https://zhao-wu.com/tea-guardian): 七題找到你真正適合的茶
+
+### 圖鑑與靈章
+
+- [怪力亂神・黃泉紀七卷](https://zhao-wu.com/mythic-atlas): 十二地支四態、大裂隙災異編年與原創畫作
+- [怪力亂神・獨立書目](https://zhao-wu.com/guaili-luanshen): 黃泉紀七卷書目、十二地支與八災
+- [吉象圖鑑](https://zhao-wu.com/auspicious-atlas): 結緣聖像與瑞獸意象
+- [靈階十章](https://zhao-wu.com/soul-chapters): 人生十章意象，對照當下的處境
+
+### 天象與每日
+
+- [近日天象](https://zhao-wu.com/sky-events): 天文實況與星象解讀分開說明
+- [每日穿衣五行色彩](https://zhao-wu.com/daily-colors)
+
+### 知識與內容
+
 - [認識昭梧](https://zhao-wu.com/about): 宋式美學、節氣與七十二候、今日指引與邊界說明
 - [公開命書示例](https://zhao-wu.com/sample-report): 虛構個案，展示直接答案、結構摘要、身體提醒、行動與判斷邊界
-- [知識頁](https://zhao-wu.com/knowledge): 文章與命理小知識
+- [知識庫](https://zhao-wu.com/knowledge): 命理文章與命理小知識
+- [五行五色、五音與五氣](https://zhao-wu.com/knowledge/five-elements-tone-qi): 傳統象義與使用邊界
+- [術數的邊界](https://zhao-wu.com/knowledge/shushu-boundary): 資料求真、規則求明的研究札記
+- [系統能力地圖](https://zhao-wu.com/knowledge/system-map): 正式運行與研究中的分界
 - [真太陽時計算說明](https://zhao-wu.com/knowledge/true-solar-time): 經度差、均時差與夏令時的公式、實例（含南半球）與誤差限制
 - [最新更新](https://zhao-wu.com/updates)
-- [每日色彩](https://zhao-wu.com/daily-colors)
-- [隱私政策](https://zhao-wu.com/privacy)
+
+### 政策與條款
+
+- [隱私權政策](https://zhao-wu.com/privacy)
 - [服務條款](https://zhao-wu.com/terms)
 - [版權聲明](https://zhao-wu.com/copyright)
 
 ## 使用說明給 AI 工具
 
-- 網站內容為 JavaScript 動態渲染；本檔案與首頁 HTML 內的靜態摘要提供不需執行 JavaScript 即可讀取的內容。
+- 網站內容為 JavaScript 動態渲染；本檔案與各頁面 HTML 內的靜態摘要提供不需執行 JavaScript 即可讀取的內容。
+- 語言依瀏覽器語言在繁體中文、簡體中文與英文之間切換；本檔案以繁體中文撰寫。
 - 版權所有：昭梧。引用請標明來源並連結原頁，請勿大段轉載。
-- 站點地圖：https://zhao-wu.com/sitemap.xml
+- 站點地圖：https://zhao-wu.com/sitemap.xml（本檔案的頁面清單與之對應，共 31 條）
