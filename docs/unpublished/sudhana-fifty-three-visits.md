@@ -1,3 +1,26 @@
+# 暫緩發布的原創文章｜善財童子五十三參（2026-10-28）
+
+- **狀態：BLOCKED，不是已發布文章。** 原畫 WebP 二進位分段 part0（315000 bytes）和 part1（314444 bytes）沒有進入 Git；圖片不能被驗證或組裝。此情況不應阻擋昭梧其他已完成的站點修正上線。
+- **完整原文保留如下，原始檔來源：** `src/lib/life-view-long-form/sudhana-fifty-three-visits.ts`。沒有刪除文章內容；暫移出公開長文索引，等待原圖真正接入後恢復。
+- **原始圖片：** 用戶生成的 `善財童子五十三參_求法之路.png`，941×1672，PNG SHA-256 `8cfda368d41ea235504e865a715cdc48b5b651017cbbc0269c83e40238cff278`。
+- **原圖 WebP：** 941×1672，629444 bytes，SHA-256 `67b9dc2f5883dae28819151ab33de66d55f14dfdcb61bbec5b8f07894042490c`。
+- **Git 仍保留組裝程式：** `scripts/assemble-sudhana-art.mjs`，恢復時須將精確校驗通過的原始二進位分段加入 `art-source/`，再把文章移回 `src/lib/life-view-long-form/`、重新加入 `src/lib/life-view-long-form.ts` 和影像 manifest，並恢復 prebuild 組裝。
+- **原 manifest 紀錄（保留）：**
+
+~~~~json
+{
+  "src": "/articles/sudhana-fifty-three-visits-stone-original.webp",
+  "article": "sudhana-fifty-three-visits",
+  "kind": "painting",
+  "source": "stone-original",
+  "status": "approved",
+  "note": "2026-10-28 STONE 原創《善財童子五十三參》圖鑑，原始 PNG 941×1672；供站內閱讀的 WebP 維持 941×1672 全幅畫面。原始 PNG SHA-256 8cfda368d41ea235504e865a715cdc48b5b651017cbbc0269c83e40238cff278，WebP SHA-256 67b9dc2f5883dae28819151ab33de66d55f14dfdcb61bbec5b8f07894042490c。原圖來源為本對話生成的同一視覺畫面，未以幾何 SVG 代替。"
+}
+~~~~
+
+## 完整原始文章（勿替換為假圖）
+
+~~~~typescript
 import type { LifeViewArticle } from "@/lib/life-view";
 
 /** Cultural essay: the iconographic illustration is a modern original, not a historical manuscript or a verbatim sutra illustration. */
@@ -102,3 +125,5 @@ Source and artwork note: The narrative is based on the Entry into the Dharma Rea
     display: "portrait",
   }],
 };
+
+~~~~
