@@ -21,7 +21,7 @@ function GuailiCollectionPage() {
       <span aria-hidden="true">/</span>
       <a href="/mythic-atlas">{tr(l("幽明萬象錄","幽明万象录","Mythic Archive"), locale)}</a>
       <span aria-hidden="true">/</span>
-      <span>{tr(l("三界異聞","三界异闻","Three Realms Tales"), locale)}</span>
+      <span>{tr(l("三界異聞錄","三界异闻录","Tales of the Three Realms"), locale)}</span>
     </nav>
     <header className="hqc-opening">
       <div className="hqc-opening-copy">
