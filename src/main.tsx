@@ -19,7 +19,7 @@ import './painted-home.css';
 import './language-switcher.css';
 
 
-const router = createRouter({ routeTree });
+const router = createRouter({ routeTree, scrollRestoration: true, defaultPreload: "intent" });
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }
 declare const __ZHAOWU_RELEASE_ID__: string;
 const root = document.getElementById('root');
