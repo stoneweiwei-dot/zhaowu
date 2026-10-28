@@ -21,7 +21,7 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - name: Exact original twelve PNGs and unchanged MP4 checksums
         run: node --test scripts/huangquan-original-media.test.mjs
-      - name: Typecheck
-        run: npm run check
-      - name: Production build
+      - name: Production build and generated route types
         run: npm run build
+      - name: Typecheck after route generation
+        run: npm run check
