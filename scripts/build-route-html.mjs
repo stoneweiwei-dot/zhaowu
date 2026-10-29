@@ -119,6 +119,7 @@ export function renderTrueSolarStatic(origin) {
     `<h2>${esc(t.faq.h)}</h2>`,
     ...t.faq.items.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`),
     `<p><a href="/#birth-form">${esc(t.cta.label)}</a> \u00b7 <a href="/knowledge">${esc(t.cta.back)}</a></p>`,
+    '<nav aria-label="相關知識"><h2>相關知識</h2><ul><li><a href="/knowledge/five-elements-tone-qi">五行五色、五音與五氣</a></li><li><a href="/knowledge/shushu-boundary">術數的邊界</a></li><li><a href="/knowledge/system-map">昭梧命理系統能力地圖</a></li></ul></nav>',
     "</main>",
   ].join("\n");
 
@@ -162,12 +163,23 @@ export const STATIC_PAGES = {
 /** Replaces the homepage static shell with the route's own body and appends its JSON-LD to <head>. */
 export function injectStaticPage(html, routePath, origin) {
   const render = STATIC_PAGES[routePath];
-  if (!render) return html;
-  const { main, jsonLd } = render(origin);
+  const { main, jsonLd } = render ? render(origin) : renderRouteSummary(routePath);
   const shellPattern = /<main class="zw-static-shell"[\s\S]*?<\/main>/;
   if (!shellPattern.test(html)) throw new Error(`static shell not found in built index.html for ${routePath}`);
-  const ld = `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, "\\u003c")}</script>\n  `;
+  const ld = jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, "\\u003c")}</script>\n  ` : "";
   return html.replace(shellPattern, () => main).replace("</head>", () => `${ld}</head>`);
+}
+
+/** Honest route-specific fallback, using the existing public metadata as a summary. */
+export function renderRouteSummary(routePath) {
+  const routes = readRouteMeta().routes;
+  const entry = routes[routePath]?.["zh-Hant"];
+  if (!entry) throw new Error(`missing route metadata for ${routePath}`);
+  const knowledgePaths = ["/knowledge/true-solar-time", "/knowledge/five-elements-tone-qi", "/knowledge/shushu-boundary", "/knowledge/system-map"];
+  const links = (routePath === "/knowledge" || knowledgePaths.includes(routePath))
+    ? `<nav aria-label="知識頁面"><h2>知識頁面</h2><ul>${knowledgePaths.filter(p => p !== routePath).map(p => `<li><a href="${esc(p)}">${esc(routes[p]["zh-Hant"].title)}</a></li>`).join("")}</ul></nav>`
+    : "";
+  return { main: `<main class="zw-static-shell" lang="zh-Hant"><nav aria-label="導覽"><a href="/">昭梧首頁</a> · <a href="/knowledge">知識庫</a></nav><h1>${esc(entry.title)}</h1><p>${esc(entry.description)}</p>${links}<p>完整內容與互動功能需要 JavaScript；若頁面未正常載入，請重試或使用 Safari／Chrome。</p><p><a href="/?zw_entry=chart#birth-form">免費八字排盤</a></p></main>`, jsonLd: null };
 }
 
 export function buildRouteHtml(distDir = join(ROOT, "dist")) {
