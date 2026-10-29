@@ -107,7 +107,10 @@ test("static HTML: route-specific body, own JSON-LD (Article + FAQPage + Breadcr
   for (const q of graph[1].mainEntity) assert.ok(html.includes(`<h3>${q.name}</h3>`), `FAQ question not visible: ${q.name}`);
   // all example rows are in the static table
   for (const e of content.examples) assert.ok(html.includes(e.trueSolarStamp), `static table missing ${e.id}`);
-  // other routes are untouched
-  assert.equal(injectStaticPage(shell, "/knowledge", origin), shell);
+  const hub = injectStaticPage(shell, "/knowledge", origin);
+  for (const path of ["true-solar-time", "five-elements-tone-qi", "shushu-boundary", "system-map"]) {
+    assert.ok(hub.includes(`href="/knowledge/${path}"`), `hub missing ${path}`);
+    if (path !== "true-solar-time") assert.ok(html.includes(`href="/knowledge/${path}"`));
+  }
   assert.ok(renderTrueSolarStatic(origin).main.startsWith('<main class="zw-static-shell"'));
 });

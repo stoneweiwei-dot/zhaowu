@@ -59,6 +59,15 @@ function KnowledgePage() {
 
       <CuratedVideoShelf placement="knowledge" />
 
+      <nav className="seal-border space-y-3 rounded-2xl bg-cream p-5 sm:p-8" aria-label={tr(locale,"知識文章","知识文章","Knowledge articles")}>
+        <h2 className="font-display text-xl text-ink">{tr(locale,"知識文章","知识文章","Knowledge articles")}</h2>
+        <ul className="space-y-3 text-sm leading-7 text-ink-soft">
+          <li><Link className="underline underline-offset-4" to="/knowledge/five-elements-tone-qi">{tr(locale,"五行五色、五音與五氣","五行五色、五音与五气","Five Elements, colours, tones and qi")}</Link></li>
+          <li><Link className="underline underline-offset-4" to="/knowledge/shushu-boundary">{tr(locale,"術數的邊界","术数的边界","The boundary of the divination arts")}</Link></li>
+          <li><Link className="underline underline-offset-4" to="/knowledge/system-map">{tr(locale,"昭梧命理系統能力地圖","昭梧命理系统能力地图","Zhaowu system capability map")}</Link></li>
+        </ul>
+      </nav>
+
       <Link to="/knowledge/true-solar-time" className="seal-border block rounded-2xl bg-paper px-5 py-4 transition hover:border-cinnabar/40" data-true-solar-time-link>
         <span className="text-xs font-semibold tracking-[0.14em] text-cinnabar">{tr(locale,"計算說明","计算说明","HOW IT IS CALCULATED")}</span>
         <strong className="mt-2 block font-display text-xl text-ink">{tr(locale,"真太陽時怎麼算：經度差、均時差與夏令時","真太阳时怎么算：经度差、均时差与夏令时","How true solar time is calculated: longitude, equation of time and DST")}</strong>
