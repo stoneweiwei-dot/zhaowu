@@ -33,7 +33,7 @@
 | 提問文字＋盤面摘要 | OpenAI（僅 AI 開關開啟時） | `supabase/functions/answer-writer` | ⚠ 目前 OpenAI 回 401，開關已關；一旦重開，政策第 3、4 節已涵蓋 |
 | 報告紀錄 | Supabase `report_requests`（含 user_email、context、paid_report 等欄位） | `zhaowu-owner-data` | ⚠ **請確認客戶的報告何時、如何上傳到雲端**；政策以「部分情況下可能保存，僅管理者可存取」措辭，若實際為所有付費報告皆上傳，請改為明確說法 |
 | 付款 | Stripe Payment Links；Supabase 只存 Checkout ID、商品、金額、狀態、隨機存取金鑰 | `report_purchase_entitlements` migration | 不存卡號、姓名、電郵 ✓ |
-| 匿名品質統計 | PostHog 美國區 | `answer-quality-telemetry.ts` | 已關 GeoIP、不建個人檔案；失敗案例附遮蔽後問題摘要（≤180 字） |
+| 匿名品質統計 | PostHog 美國區 | `answer-quality-telemetry.ts` | 已關 GeoIP、不建個人檔案；事件只含雜湊指紋、類型與長度區間，不含問題原文；網址只送路徑 |
 | 訪客計數 | Supabase RPC `zhaowu_record_visit`，隨機 visitor key | `site-stats.ts` | |
 | 每日提問限額 | IP 加鹽雜湊存 `daily_usage` | `answer-writer` | 雜湊後的 IP 仍可能屬個人資料，政策已披露 |
 | 字型 | Google Fonts | `index.html` | 訪客 IP 傳給 Google（見 §5） |

@@ -147,12 +147,17 @@ export type PromoRedeemError =
   | "CONSENT_REQUIRED"
   | "ACCESS_KEY_UNAVAILABLE"
   | "PROMO_CODE_REQUIRED"
-  | "PROMO_NOT_FOUND"
-  | "PROMO_EXPIRED"
-  | "PROMO_EXHAUSTED"
-  | "PROMO_WRONG_SYSTEM"
-  | "PROMO_ALREADY_REDEEMED"
+  | "PROMO_INVALID"
   | "PROMO_UNAVAILABLE";
+
+const PROMO_INVALID_CODES = new Set([
+  "PROMO_INVALID",
+  "PROMO_NOT_FOUND",
+  "PROMO_EXPIRED",
+  "PROMO_EXHAUSTED",
+  "PROMO_WRONG_SYSTEM",
+  "PROMO_ALREADY_REDEEMED",
+]);
 
 /** Redeems a temporary free-access code for one report system. Never grants access itself:
  * the server (promo-code Edge Function) is the sole authority, exactly like a Stripe purchase. */
@@ -171,8 +176,7 @@ export async function redeemPromoCode(code: string, system: ReportSystemId): Pro
   const payload = await response.json().catch(() => ({})) as Verification;
   if (!response.ok || !payload.paid) {
     const raw = typeof payload.error === "string" ? payload.error : payload.error?.code;
-    const known: PromoRedeemError[] = ["PROMO_NOT_FOUND", "PROMO_EXPIRED", "PROMO_EXHAUSTED", "PROMO_WRONG_SYSTEM", "PROMO_ALREADY_REDEEMED"];
-    throw new Error((known as string[]).includes(raw || "") ? raw! : "PROMO_UNAVAILABLE" satisfies PromoRedeemError);
+    throw new Error(PROMO_INVALID_CODES.has(raw || "") ? "PROMO_INVALID" satisfies PromoRedeemError : "PROMO_UNAVAILABLE" satisfies PromoRedeemError);
   }
   trackConversion("zhaowu_promo_redeemed", { system, level: "system" });
   return levelFor(payload, system);

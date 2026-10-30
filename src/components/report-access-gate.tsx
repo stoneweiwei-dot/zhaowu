@@ -71,11 +71,7 @@ function copyFor(locale: Locale): Copy {
     promoSuccess: "Code applied — unlocked below.",
     promoError: {
       PROMO_CODE_REQUIRED: "Enter a code first.",
-      PROMO_NOT_FOUND: "That code isn't recognised.",
-      PROMO_EXPIRED: "That code has expired.",
-      PROMO_EXHAUSTED: "That code has already reached its limit.",
-      PROMO_WRONG_SYSTEM: "That code doesn't apply to this system.",
-      PROMO_ALREADY_REDEEMED: "This browser has already used that code.",
+      PROMO_INVALID: "That code can't be used.",
       PROMO_UNAVAILABLE: "The code could not be applied. Please try again.",
     },
   };
@@ -106,11 +102,7 @@ function copyFor(locale: Locale): Copy {
     promoSuccess: "代码已生效，已为你解锁。",
     promoError: {
       PROMO_CODE_REQUIRED: "请先输入代码。",
-      PROMO_NOT_FOUND: "这个代码无法识别。",
-      PROMO_EXPIRED: "这个代码已过期。",
-      PROMO_EXHAUSTED: "这个代码的名额已用完。",
-      PROMO_WRONG_SYSTEM: "这个代码不适用于本系统。",
-      PROMO_ALREADY_REDEEMED: "此浏览器已经使用过这个代码。",
+      PROMO_INVALID: "这个代码无法使用。",
       PROMO_UNAVAILABLE: "代码暂时无法使用，请再试一次。",
     },
   };
@@ -141,11 +133,7 @@ function copyFor(locale: Locale): Copy {
     promoSuccess: "代碼已生效，已為你解鎖。",
     promoError: {
       PROMO_CODE_REQUIRED: "請先輸入代碼。",
-      PROMO_NOT_FOUND: "這個代碼無法識別。",
-      PROMO_EXPIRED: "這個代碼已過期。",
-      PROMO_EXHAUSTED: "這個代碼的名額已用完。",
-      PROMO_WRONG_SYSTEM: "這個代碼不適用於本系統。",
-      PROMO_ALREADY_REDEEMED: "此瀏覽器已經使用過這個代碼。",
+      PROMO_INVALID: "這個代碼無法使用。",
       PROMO_UNAVAILABLE: "代碼暫時無法使用，請再試一次。",
     },
   };

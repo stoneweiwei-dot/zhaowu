@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
-import { generateCode, normalizeCreate, normalizeUpdate, promoStatus, toPublicRow, SYSTEM_IDS } from "../supabase/functions/zhaowu-owner-promo/logic.mjs";
+import { CODE_ALPHABET, generateCode, isAcceptedGeneratedCode, normalizeCreate, normalizeUpdate, promoStatus, toPublicRow, SYSTEM_IDS } from "../supabase/functions/zhaowu-owner-promo/logic.mjs";
 import { authorizeBridgeHeaders } from "../supabase/functions/zhaowu-owner-promo/auth.mjs";
 import { authorizeBridgeHeaders as dataAuthorize } from "../supabase/functions/zhaowu-owner-data/security.mjs";
 import { ownerUpstreamFunction } from "../api/owner-data.js";
@@ -11,10 +11,40 @@ const NOW = new Date("2026-10-17T00:00:00.000Z");
 const rnd = (n) => Uint8Array.from({ length: n }, (_, i) => i * 7 + 3);
 const future = (days) => new Date(NOW.getTime() + days * 86_400_000).toISOString();
 
-test("generated codes use the unambiguous ZW-XXXX-XXXX shape", () => {
+test("generated codes use at least 10 unambiguous characters", () => {
   const code = generateCode(rnd);
-  assert.match(code, /^ZW-[A-HJKMNP-Z2-9]{4}-[A-HJKMNP-Z2-9]{4}$/);
+  const randomPart = code.replace(/^ZW-/, "").replace(/-/g, "");
+  assert.ok(randomPart.length >= 10);
+  assert.match(code, /^ZW-[A-HJKMNP-Z2-9]{5}-[A-HJKMNP-Z2-9]{5}$/);
+  for (const character of randomPart) assert.ok(CODE_ALPHABET.includes(character));
   assert.doesNotMatch(code, /[01OIL]/);
+  assert.equal(isAcceptedGeneratedCode(code), true);
+});
+
+test("legacy 8-character generated codes still validate and custom codes stay unchanged", () => {
+  assert.equal(isAcceptedGeneratedCode("ZW-ABCD-2345"), true);
+  assert.equal(isAcceptedGeneratedCode("zw-hjk2-npqr"), true);
+  assert.equal(isAcceptedGeneratedCode("ZW-ABCD-234"), false);
+  const custom = normalizeCreate({ productId: "system", code: "SUMMER-GIFT" }, { now: NOW, randomBytes: rnd });
+  assert.equal(custom.ok, true);
+  assert.equal(custom.value.code, "SUMMER-GIFT");
+});
+
+test("generation draws from the CSPRNG and skips biased bytes", () => {
+  const owner = readFileSync(new URL("../supabase/functions/zhaowu-owner-promo/index.ts", import.meta.url), "utf8");
+  const logic = readFileSync(new URL("../supabase/functions/zhaowu-owner-promo/logic.mjs", import.meta.url), "utf8");
+  assert.match(owner, /crypto\.getRandomValues\(new Uint8Array\(length\)\)/);
+  assert.doesNotMatch(logic, /Math\.random/);
+  let calls = 0;
+  const code = generateCode((n) => {
+    calls += 1;
+    const bytes = new Uint8Array(n);
+    if (calls === 1) bytes.fill(255);
+    else bytes.fill(3);
+    return bytes;
+  });
+  assert.ok(calls >= 2);
+  assert.equal(code, "ZW-DDDDD-DDDDD");
 });
 
 test("create: system code and auto code", () => {
