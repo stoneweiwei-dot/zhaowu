@@ -71,7 +71,7 @@ test("a selected theme drives the full page environment, icon palette and typogr
 test("empty report history presents one clear chart path without a quiz detour", () => {
   const history = readFileSync("src/routes/history.tsx", "utf8");
   assert.match(history, /<BrandIcon name="reports" size="lg" \/>/);
-  assert.match(history, /<div><a href="\/#birth-form">\{copy\.createFirst\}<\/a><\/div>/);
+  assert.match(history, /<div><Link to="\/" hash="birth-form">\{copy\.createFirst\}<\/Link><\/div>/);
   assert.doesNotMatch(history, /<Link to="\/fun-tests">\{kindLabel\("fun-five-element"/);
 });
 test("pre-paint script dark list matches registry", () => {
