@@ -7,8 +7,12 @@
 export const SYSTEM_IDS = ["bazi", "ziwei", "qizheng", "western", "indian", "palm", "numerology"];
 export const PRODUCT_IDS = ["system"];
 // No 0/O/1/I/L so a code read aloud or typed from a screenshot is not ambiguous.
-const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+export const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 const CODE_PATTERN = /^[A-Za-z0-9-]{3,64}$/;
+const GENERATED_BODY_LENGTH = 10;
+const ALPHABET_CLASS = "A-HJKMNP-Z2-9";
+const LEGACY_GENERATED_CODE = new RegExp(`^ZW-[${ALPHABET_CLASS}]{4}-[${ALPHABET_CLASS}]{4}$`, "i");
+const CURRENT_GENERATED_CODE = new RegExp(`^ZW-[${ALPHABET_CLASS}]{5}-[${ALPHABET_CLASS}]{5}$`, "i");
 const MAX_REDEMPTIONS_CAP = 100000;
 const MAX_EXPIRY_YEARS = 5;
 const NOTE_MAX = 200;
@@ -17,10 +21,26 @@ const fail = (error) => ({ ok: false, error });
 const ok = (value) => ({ ok: true, value });
 
 export function generateCode(randomBytes) {
-  const bytes = randomBytes(8);
+  const span = CODE_ALPHABET.length;
+  const limit = Math.floor(256 / span) * span;
   let body = "";
-  for (const byte of bytes) body += CODE_ALPHABET[byte % CODE_ALPHABET.length];
-  return `ZW-${body.slice(0, 4)}-${body.slice(4, 8)}`;
+  let spins = 0;
+  while (body.length < GENERATED_BODY_LENGTH) {
+    if (++spins > 8) throw new Error("NO_RANDOM_SOURCE");
+    const bytes = randomBytes(Math.max((GENERATED_BODY_LENGTH - body.length) * 2, 16));
+    for (const byte of bytes) {
+      if (byte >= limit) continue;
+      body += CODE_ALPHABET[byte % span];
+      if (body.length === GENERATED_BODY_LENGTH) break;
+    }
+  }
+  return `ZW-${body.slice(0, 5)}-${body.slice(5)}`;
+}
+
+/** Legacy ZW-XXXX-XXXX and current ZW-XXXXX-XXXXX. Custom owner codes use CODE_PATTERN instead. */
+export function isAcceptedGeneratedCode(code) {
+  const value = String(code ?? "").trim();
+  return LEGACY_GENERATED_CODE.test(value) || CURRENT_GENERATED_CODE.test(value);
 }
 
 function optionalInt(value, { min, max }) {
