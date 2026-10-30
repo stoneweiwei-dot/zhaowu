@@ -46,7 +46,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
   return <section className="zw-painted-home zw-v2-home" data-home-v2 data-composition={layout} data-reference-art={!skin || FULL_PAINTING_HOMES.has(skin.id)} data-tone={dark ? 'dark' : 'light'} style={style}>
     <section className="zw-v2-hero" aria-labelledby="zw-v2-title">
       <header className="zw-v2-masthead">
-        <Link className="zw-v2-wordmark" to="/" aria-label="昭梧 Z H A O W U">
+        <Link className="zw-v2-wordmark" to="/" aria-label="昭梧 ZHAOWU">
           <img
             src="/brand-ui/header-gourd-wordmark-r113-144.webp"
             srcSet="/brand-ui/header-gourd-wordmark-r113-144.webp 144w, /brand-ui/header-gourd-wordmark-r113-288.webp 288w"

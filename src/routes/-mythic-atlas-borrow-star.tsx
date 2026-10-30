@@ -82,7 +82,7 @@ export function BorrowStarInterlude({ locale }: { locale: Locale }) {
             height={960}
             loading={index < 2 ? "eager" : "lazy"}
           />
-          <span className="hq-original-mark">{tr(l("STONE 原創", "STONE 原创", "STONE ORIGINAL"), locale)}</span>
+          <span className="hq-original-mark">{tr(l("STONE 原創", "STONE 原创", "STONE 原創"), locale)}</span>
         </div>
         <figcaption>
           <strong>{tr(page.title, locale)}</strong>

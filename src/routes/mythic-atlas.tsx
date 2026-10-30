@@ -16,7 +16,7 @@ function Plate({ index, locale, priority = false }: { index: number; locale: Loc
   return <figure className="hq-plate">
     <div className="hq-image-frame">
       <a className="hq-full-plate" href={`/mythic-atlas/originals/${art.file}`} target="_blank" rel="noopener noreferrer" aria-label={tr(l("開啟完整 STONE 原創 PNG 原圖", "打开完整 STONE 原创 PNG 原图", "Open full-resolution STONE original PNG"), locale)}><img src={mythicWebPlate("originals", art.file)} alt={tr(art.title, locale)} width={941} height={1672} loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : "auto"} /></a>
-      <span className="hq-original-mark">{tr(l("STONE 原創", "STONE 原创", "STONE ORIGINAL"), locale)}</span>
+      <span className="hq-original-mark">{tr(l("STONE 原創", "STONE 原创", "STONE 原創"), locale)}</span>
     </div>
     <figcaption><strong>{String(index).padStart(2, "0")} · {tr(art.title, locale)}</strong><span>{tr(COPY.inspiredBy, locale)}：{tr(art.source, locale)}</span></figcaption>
   </figure>;
@@ -122,6 +122,6 @@ function MythicAtlasPage() {
     </section>
 
     <CuratedVideoShelf placement="mythic" />
-    <footer className="hq-footer"><span>{tr(COPY.title, locale)} · {tr(COPY.subtitle, locale)}</span><strong>{tr(l("STONE 原創", "STONE 原创", "STONE ORIGINAL"), locale)}</strong><Link to="/">ZHAOWU 昭梧</Link></footer>
+    <footer className="hq-footer"><span>{tr(COPY.title, locale)} · {tr(COPY.subtitle, locale)}</span><strong>{tr(l("STONE 原創", "STONE 原创", "STONE 原創"), locale)}</strong><Link to="/">ZHAOWU 昭梧</Link></footer>
   </main>;
 }
