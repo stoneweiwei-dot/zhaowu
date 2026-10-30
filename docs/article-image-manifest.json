@@ -2,6 +2,14 @@
   "_doc": "文章圖像資產清單：每張文章圖的出處與狀態。由 scripts/article-image-manifest.test.mjs 於 prebuild 驗證。kind: painting|infographic|diagram；source: stone-original|existing-reused|coded-diagram|unverified；status: approved|interim|needs-review。placeholder 一律不得上線。",
   "entries": [
     {
+      "src": "/articles/impermanence-life-20261030-stone-original.webp",
+      "article": "impermanence-life-20261030",
+      "kind": "infographic",
+      "source": "stone-original",
+      "status": "needs-review",
+      "note": "2026-10-30 本文獨立生成 9:16 山水與花木圖文畫卷，繁體中文原創題字；900×1600 WebP，121690 bytes；原始上傳驗證 SHA-256 1c72f8870a2b52b0d6c421e4ab441715224a8ae571c54ea1ff52cb39d33055be。原圖並非挪用《因果與行動》人物畫。待實機目視與站主審美驗收。"
+    },
+    {
       "src": "/articles/stone-cause-and-action.webp",
       "article": "cause-action-kindness",
       "kind": "painting",
