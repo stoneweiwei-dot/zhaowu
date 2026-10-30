@@ -13,6 +13,223 @@ export type SkyEvent = {
 
 export const SKY_EVENTS: SkyEvent[] = [
   {
+    "id": "zhaowu-sky-quarter-2026-10-04-2027-01-04",
+    "published": "2026-10-30",
+    "status": "active",
+    "title": {
+      "zh-Hant": "三個月重要天象｜2026.10.04—2027.01.04",
+      "zh-Hans": "三个月重要天象｜2026.10.04—2027.01.04",
+      "en": "Major sky events | 4 Oct 2026 – 4 Jan 2027"
+    },
+    "subtitle": {
+      "zh-Hant": "地心熱帶黃道｜悉尼 AEDT（UTC+11）｜水金雙逆、同日轉順與12月外行星三連停駐",
+      "zh-Hans": "地心热带黄道｜悉尼 AEDT（UTC+11）｜水金双逆、同日转顺与12月外行星三连停驻",
+      "en": "Geocentric tropical zodiac | Sydney AEDT (UTC+11) | inner-planet retrogrades and December outer-planet stations"
+    },
+    "facts": [
+      {
+        "date": "2026-10-04",
+        "label": {
+          "zh-Hant": "土星衝日，悉尼23:29；日土地心視黃經相差180°，是年度土星觀測窗口。",
+          "zh-Hans": "土星冲日，悉尼23:29；日土地心视黄经相差180°，是年度土星观测窗口。",
+          "en": "Saturn at opposition, 23:29 Sydney; the Sun and Saturn are 180° apart in geocentric ecliptic longitude, offering an annual viewing window."
+        }
+      },
+      {
+        "date": "2026-10-16",
+        "label": {
+          "zh-Hant": "冥王星於水瓶座3°04′附近恢復順行，悉尼13:40。",
+          "zh-Hans": "冥王星于水瓶座3°04′附近恢复顺行，悉尼13:40。",
+          "en": "Pluto stations direct near 3°04′ Aquarius at 13:40 Sydney."
+        }
+      },
+      {
+        "date": "2026-10-24",
+        "label": {
+          "zh-Hant": "水星於天蠍座20°59′開始視逆行，悉尼18:12；金星自10月3日起已逆行。",
+          "zh-Hans": "水星于天蝎座20°59′开始视逆行，悉尼18:12；金星自10月3日起已逆行。",
+          "en": "Mercury stations retrograde near 20°59′ Scorpio at 18:12 Sydney; Venus has been retrograde since 3 October."
+        }
+      },
+      {
+        "date": "2026-10-26",
+        "label": {
+          "zh-Hant": "金牛滿月15:11；太陽刑冥王星約23:11（悉尼時間）。",
+          "zh-Hans": "金牛满月15:11；太阳刑冥王星约23:11（悉尼时间）。",
+          "en": "Taurus Full Moon at 15:11; Sun square Pluto at approximately 23:11 Sydney."
+        }
+      },
+      {
+        "date": "2026-10-31",
+        "label": {
+          "zh-Hant": "水星在天蠍18°附近精確刑火星，悉尼04:20。",
+          "zh-Hans": "水星在天蝎18°附近精确刑火星，悉尼04:20。",
+          "en": "Mercury squares Mars near 18° Scorpio at 04:20 Sydney."
+        }
+      },
+      {
+        "date": "2026-11-04",
+        "label": {
+          "zh-Hant": "逆行金星天秤24°43′六合木星獅子24°43′，悉尼21:31。",
+          "zh-Hans": "逆行金星天秤24°43′六合木星狮子24°43′，悉尼21:31。",
+          "en": "Retrograde Venus at 24°43′ Libra sextiles Jupiter at 24°43′ Leo, 21:31 Sydney."
+        }
+      },
+      {
+        "date": "2026-11-14",
+        "label": {
+          "zh-Hant": "水星02:53在天蠍5°02′恢復順行；金星11:27在天秤22°52′恢復順行（悉尼），相隔約8小時34分鐘。",
+          "zh-Hans": "水星02:53在天蝎5°02′恢复顺行；金星11:27在天秤22°52′恢复顺行（悉尼），相隔约8小时34分钟。",
+          "en": "Mercury stations direct at 02:53 near 5°02′ Scorpio; Venus at 11:27 near 22°52′ Libra, about 8 h 34 m apart (Sydney)."
+        }
+      },
+      {
+        "date": "2026-11-16",
+        "label": {
+          "zh-Hant": "火星合木星於獅子25°53′附近，悉尼17:23。",
+          "zh-Hans": "火星合木星于狮子25°53′附近，悉尼17:23。",
+          "en": "Mars conjunct Jupiter near 25°53′ Leo at 17:23 Sydney."
+        }
+      },
+      {
+        "date": "2026-11-25",
+        "label": {
+          "zh-Hant": "雙子滿月，悉尼01:53；不應與11月24日的UTC日期混淆。",
+          "zh-Hans": "双子满月，悉尼01:53；不应与11月24日的UTC日期混淆。",
+          "en": "Gemini Full Moon at 01:53 Sydney; 24 November in UTC."
+        }
+      },
+      {
+        "date": "2026-11-29",
+        "label": {
+          "zh-Hant": "逆行天王星三分冥王星，雙子—水瓶約3°32′，悉尼22:25。",
+          "zh-Hans": "逆行天王星三分冥王星，双子—水瓶约3°32′，悉尼22:25。",
+          "en": "Retrograde Uranus trines Pluto near 3°32′ Gemini–Aquarius at 22:25 Sydney."
+        }
+      },
+      {
+        "date": "2026-12-05",
+        "label": {
+          "zh-Hant": "火星處女3°18′刑逆行天王星雙子3°18′，悉尼06:28。",
+          "zh-Hans": "火星处女3°18′刑逆行天王星双子3°18′，悉尼06:28。",
+          "en": "Mars at 3°18′ Virgo squares retrograde Uranus at 3°18′ Gemini, 06:28 Sydney."
+        }
+      },
+      {
+        "date": "2026-12-09",
+        "label": {
+          "zh-Hant": "射手新月，悉尼11:51。",
+          "zh-Hans": "射手新月，悉尼11:51。",
+          "en": "Sagittarius New Moon at 11:51 Sydney."
+        }
+      },
+      {
+        "date": "2026-12-11",
+        "label": {
+          "zh-Hant": "土星白羊7°56′恢復順行，悉尼10:31。",
+          "zh-Hans": "土星白羊7°56′恢复顺行，悉尼10:31。",
+          "en": "Saturn stations direct near 7°56′ Aries at 10:31 Sydney."
+        }
+      },
+      {
+        "date": "2026-12-13",
+        "label": {
+          "zh-Hant": "海王星白羊1°37′於09:17轉順；木星獅子27°01′於11:56轉逆（悉尼）。",
+          "zh-Hans": "海王星白羊1°37′于09:17转顺；木星狮子27°01′于11:56转逆（悉尼）。",
+          "en": "Neptune stations direct near 1°37′ Aries at 09:17; Jupiter retrograde near 27°01′ Leo at 11:56 Sydney."
+        }
+      },
+      {
+        "date": "2026-12-22",
+        "label": {
+          "zh-Hant": "悉尼07:50夏至；這是南半球夏季開始的天文節點。",
+          "zh-Hans": "悉尼07:50夏至；这是南半球夏季开始的天文节点。",
+          "en": "December solstice at 07:50 Sydney, marking the astronomical start of summer in the Southern Hemisphere."
+        }
+      },
+      {
+        "date": "2026-12-24",
+        "label": {
+          "zh-Hant": "巨蟹滿月，悉尼12:28。",
+          "zh-Hans": "巨蟹满月，悉尼12:28。",
+          "en": "Cancer Full Moon at 12:28 Sydney."
+        }
+      },
+      {
+        "date": "2026-12-27",
+        "label": {
+          "zh-Hant": "水星刑海王星，悉尼06:46；12月31日10:54水星再刑土星。",
+          "zh-Hans": "水星刑海王星，悉尼06:46；12月31日10:54水星再刑土星。",
+          "en": "Mercury squares Neptune at 06:46; on 31 December at 10:54 it squares Saturn (Sydney)."
+        }
+      },
+      {
+        "date": "2027-01-04",
+        "label": {
+          "zh-Hant": "金星刑木星，悉尼04:55；是觀測期最後一天的精確相位。",
+          "zh-Hans": "金星刑木星，悉尼04:55；是观测期最后一天的精确相位。",
+          "en": "Venus squares Jupiter at 04:55 Sydney, a final exact aspect within the reporting period."
+        }
+      }
+    ],
+    "science": {
+      "zh-Hant": [
+        "本報只納入可計算的地心視黃經相位、行星視逆行與停駐、朔望及至點。主要相位以0°、60°、90°、120°、180°定義；精確相位以兩行星黃經差符合指定角度求得。",
+        "全篇使用 Swiss Ephemeris 2.10.03 的 Moshier 模式與速度求根計算，再與公開2026星曆核對；時刻取至分鐘，計算方法或星曆模型不同可有小幅差異。採熱帶黃道，並非同名天文恆星星座。",
+        "悉尼在本季均採 AEDT（UTC+11），與美國當地日曆日期不同：水星和金星在美國時間11月13日先後轉順，但悉尼均是11月14日。逆行是地球觀測的視運動，不是行星改變繞日方向。"
+      ],
+      "zh-Hans": [
+        "本报只纳入可计算的地心视黄经相位、行星视逆行与停驻、朔望及至点。主要相位以0°、60°、90°、120°、180°定义；精确相位以两行星黄经差符合指定角度求得。",
+        "全篇使用 Swiss Ephemeris 2.10.03 的 Moshier 模式与速度求根计算，再与公开2026星历核对；时刻取至分钟，计算方法或星历模型不同可有小幅差异。采用热带黄道，并非同名天文恒星星座。",
+        "悉尼在本季均采用 AEDT（UTC+11），与美国当地日历日期不同：水星和金星在美国时间11月13日先后转顺，但悉尼均是11月14日。逆行是地球观测的视运动，不是行星改变绕日方向。"
+      ],
+      "en": [
+        "Only computable geocentric ecliptic-longitude aspects, apparent planetary retrograde stations, lunations and the solstice are included. Major angles are 0°, 60°, 90°, 120° and 180°; exact aspects are solved from planetary longitude differences.",
+        "Times were computed from Swiss Ephemeris 2.10.03 in Moshier mode using speed and root finding, and cross-checked against published ephemerides. Values are rounded to the minute and may vary slightly by model or convention. Tropical zodiac signs are not IAU constellations.",
+        "Sydney observes AEDT (UTC+11) for this period. Both inner planets station direct on 14 November Sydney time, although on 13 November in US time zones. Retrograde is apparent motion viewed from Earth, not reversed orbital motion around the Sun."
+      ]
+    },
+    "interpretation": {
+      "zh-Hant": [
+        "10月4日至31日：土星衝日、冥王星轉順、金星與水星同逆，以及水星刑火星。傳統占星的核心主題為責任、信任、資訊反覆與衝突管理；本季最集中的內行星逆行階段出現在10月24日至11月14日。",
+        "11月4日至29日：金星六合木星、11月14日水金同日轉順、火木合相、天王星三分冥王星。象徵語言由反覆審查轉向重談條件、調配資源與長期創新；沒有任何相位能保證個人轉運。",
+        "12月5日至2027年1月4日：火星刑天王星、土海轉順、木星轉逆、至點與年末水星刑相。重點轉向行動風險、長期規劃和資訊校驗；日常決策仍須以事實、成本及實際條件為準。",
+        "本報不使用任何個人出生資料、不推算宮位、不宣稱所有人必然感受相同，更不把逆行等同故障、疾病或財務損失。天文時刻是可驗算事實；感受、性格與命運屬傳統詮釋而非科學預測。"
+      ],
+      "zh-Hans": [
+        "10月4日至31日：土星冲日、冥王星转顺、金星与水星同逆，以及水星刑火星。传统占星的核心主题为责任、信任、信息反复与冲突管理；本季最集中的内行星逆行阶段出现在10月24日至11月14日。",
+        "11月4日至29日：金星六合木星、11月14日水金同日转顺、火木合相、天王星三分冥王星。象征语言由反复审查转向重谈条件、调配资源与长期创新；没有任何相位能保证个人转运。",
+        "12月5日至2027年1月4日：火星刑天王星、土海转顺、木星转逆、至点与年末水星刑相。重点转向行动风险、长期规划和信息核验；日常决策仍须以事实、成本及实际条件为准。",
+        "本报不使用任何个人出生资料、不推算宫位、不宣称所有人必然感受相同，更不把逆行等同故障、疾病或财务损失。天文时刻是可验算事实；感受、性格与命运属于传统诠释而非科学预测。"
+      ],
+      "en": [
+        "4–31 October: Saturn's opposition, Pluto's direct station, the Venus–Mercury overlap and a Mercury–Mars square. Traditional themes concern responsibility, trust, repeated information and conflict management; the densest inner-planet retrograde period is 24 October–14 November.",
+        "4–29 November: Venus sextiles Jupiter, Mercury and Venus station direct on the same Sydney day, Mars conjoins Jupiter and Uranus trines Pluto. The symbolism shifts from review to renegotiation, resource allocation and longer-term innovation, without guaranteeing anyone a turnaround.",
+        "5 December–4 January: Mars squares Uranus; Saturn and Neptune station direct; Jupiter stations retrograde; the solstice and late-December Mercury squares follow. Symbolic emphasis turns to operational risk, long-range planning and information verification, while real decisions still depend on evidence, costs and conditions.",
+        "This is a collective sky report. It uses no natal data or houses, makes no claim of identical personal effects and does not treat retrogrades as causes of device failures, disease or financial loss. Event times are computable facts; personal meaning is interpretive tradition."
+      ]
+    },
+    "houses": [],
+    "sources": [
+      {
+        "label": "Swiss Ephemeris · ephemeris and technical reference",
+        "url": "https://www.astro.com/swisseph/"
+      },
+      {
+        "label": "U.S. Naval Observatory · 2026 Moon phases",
+        "url": "https://aa.usno.navy.mil/calculated/moon/phases?year=2026"
+      },
+      {
+        "label": "Astrological key dates 2026 · CHANI",
+        "url": "https://www.chani.com/this-year/key-dates/astrological-key-dates-of-2026"
+      },
+      {
+        "label": "NASA/JPL Horizons · planetary ephemerides",
+        "url": "https://ssd.jpl.nasa.gov/horizons/"
+      }
+    ]
+  },
+  {
     id: "full-moon-taurus-sun-square-pluto-2026-10-26",
     published: "2026-10-26",
     status: "archive",
