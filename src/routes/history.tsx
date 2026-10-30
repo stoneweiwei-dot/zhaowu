@@ -86,7 +86,7 @@ function HistoryPage() {
     <main className="history-page">
       <div className="history-topline"><Link to="/">← {copy.back}</Link><span>{copy.local}</span></div>
       <section className="history-hero"><p>{copy.kicker}</p><h1>{copy.title}</h1><p>{copy.lead}</p></section>
-      {hasBirth ? <section className="zw-saved-report-card"><h2>{tr(locale, "已保存的出生資料", "已保存的出生资料", "Saved birth details")}</h2><p>{tr(locale, "可繼續查看命盤，或用這份生辰提出新問題。", "可继续查看命盘，或用这份生辰提出新问题。", "Continue to your chart or ask a new question using these details.")}</p><a href="/#birth-form">{tr(locale, "查看命盤／繼續提問", "查看命盘／继续提问", "Open chart / ask a question")}</a></section> : null}
+      {hasBirth ? <section className="zw-saved-report-card"><h2>{tr(locale, "已保存的出生資料", "已保存的出生资料", "Saved birth details")}</h2><p>{tr(locale, "可繼續查看命盤，或用這份生辰提出新問題。", "可继续查看命盘，或用这份生辰提出新问题。", "Continue to your chart or ask a new question using these details.")}</p><Link to="/" hash="birth-form">{tr(locale, "查看命盤／繼續提問", "查看命盘／继续提问", "Open chart / ask a question")}</Link></section> : null}
       {reports.map(({ result, savedAt, cloudSaved }) => <article key={result.id} className="zw-saved-report-card">
         <small>{new Date(savedAt).toLocaleString()} · {cloudSaved ? tr(locale, "已安全備份", "已安全备份", "Securely backed up") : copy.local}</small>
         <h2>{result.question}</h2>
@@ -99,7 +99,7 @@ function HistoryPage() {
           <BrandIcon name="reports" size="lg" />
           <h2>{copy.empty}</h2>
           <p>{copy.start}</p>
-          <div><a href="/#birth-form">{copy.createFirst}</a></div>
+          <div><Link to="/" hash="birth-form">{copy.createFirst}</Link></div>
           <details className="mt-5 text-sm leading-7">
             <summary className="min-h-11 cursor-pointer">{tr(locale, "之前建立過或已付款，卻找不到報告？", "之前建立过或已付款，却找不到报告？", "Created or paid for a report before?")}</summary>
             <p>{tr(locale, "請先回到購買時的裝置與瀏覽器（包括當時使用的 App 內建瀏覽器），不要再次付款。會員登入目前不會自動同步或還原報告。請保留付款收據與原有報告連結，以便核對購買權限。", "请先回到购买时的设备与浏览器（包括当时使用的 App 内置浏览器），不要再次付款。会员登录目前不会自动同步或恢复报告。请保留付款收据与原有报告链接，以便核对购买权限。", "Return to the device and browser used for purchase, including an in-app browser if applicable. Do not pay again. Signing in does not currently sync or restore reports. Keep your receipt and original report link for purchase verification.")}</p>

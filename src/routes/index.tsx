@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
 import { lazy, Suspense, useState, useEffect } from "react";
 import { useAuthState } from "@/lib/auth/provider";
@@ -353,7 +354,7 @@ function Home() {
         <>
           {activeSection === "form" ? <section className="zw-report-wayfinding">
             <h2>{locale === "en" ? (current ? "Your report is ready" : "Create your report") : locale === "zh-Hans" ? (current ? "你的报告已生成" : "开始排盘与提问") : (current ? "你的報告已生成" : "開始排盤與提問")}</h2>
-            <a href="/history">{locale === "en" ? "My saved reports" : locale === "zh-Hans" ? "查看我的报告" : "查看我的報告"}</a>
+            <Link to="/history">{locale === "en" ? "My saved reports" : locale === "zh-Hans" ? "查看我的报告" : "查看我的報告"}</Link>
             {current ? <a href="#report">{locale === "en" ? "Read this answer" : locale === "zh-Hans" ? "直接看本次答案" : "直接看本次答案"}</a> : null}
             {user?.isOwner ? <p className="zw-owner-access-note">{locale === "en" ? "Owner access: all report content is available without payment." : locale === "zh-Hans" ? "站主已登入：所有报告内容免费阅读，无需购买。" : "站主已登入：所有報告內容免費閱讀，無需購買。"}</p> : null}
           </section> : null}
@@ -396,15 +397,19 @@ function Home() {
       {activeSection === "quiz" && (
         <div className="zw-hero-secondary-panel zw-subview-panel">
           <div className="zhaowu-home-fun-grid" style={{ padding: "0 16px" }}>
-            {copy.cards.map((card) => (
-              <a key={card.title} href={card.href} className="zhaowu-home-fun-card" aria-label={card.title}>
+            {copy.cards.map((card) => {
+              const [cardTo, cardQuery] = card.href.split("?");
+              const cardSearch = cardQuery ? Object.fromEntries(new URLSearchParams(cardQuery)) : undefined;
+              return (
+              <Link key={card.title} to={cardTo} search={cardSearch} className="zhaowu-home-fun-card" aria-label={card.title}>
                 <span className="min-w-0">
                   <strong>{card.title}</strong>
                   <small>{card.hint}</small>
                 </span>
                 <span className="zhaowu-home-fun-arrow" aria-hidden>›</span>
-              </a>
-            ))}
+              </Link>
+              );
+            })}
             <button
               type="button"
               className="zhaowu-home-fun-card text-left"

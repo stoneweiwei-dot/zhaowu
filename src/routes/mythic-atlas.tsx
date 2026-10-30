@@ -1,5 +1,5 @@
 import { CuratedVideoShelf } from "@/components/curated-video-shelf";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { ARTWORKS, BRANCHES, CHRONICLES, COPY, l, OBSERVATION_CHAPTERS, ORDERS, REALMS, SOURCE_LABELS, tr, type Side, type SourceKind } from "./-mythic-atlas-data";
@@ -120,6 +120,6 @@ function MythicAtlasPage() {
     </section>
 
     <CuratedVideoShelf placement="mythic" />
-    <footer className="hq-footer"><span>{tr(COPY.title, locale)} · {tr(COPY.subtitle, locale)}</span><strong>STONE 原創</strong><a href="/">ZHAOWU 昭梧</a></footer>
+    <footer className="hq-footer"><span>{tr(COPY.title, locale)} · {tr(COPY.subtitle, locale)}</span><strong>STONE 原創</strong><Link to="/">ZHAOWU 昭梧</Link></footer>
   </main>;
 }

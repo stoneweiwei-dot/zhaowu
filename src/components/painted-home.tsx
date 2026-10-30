@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import { FROST_SKIN_ID, SEASONAL_AUTO_ID, SOLAR_TERMS_24, seasonalState, frostEdition } from '@/lib/seasonal-skins';
 import type { CSSProperties } from 'react';
 import { useSkin, type SkinDef } from '@/lib/theme-skins';
@@ -44,10 +45,10 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
   return <section className="zw-painted-home zw-v2-home" data-home-v2 data-composition={layout} data-reference-art={!skin || FULL_PAINTING_HOMES.has(skin.id)} data-tone={dark ? 'dark' : 'light'} style={style}>
     <section className="zw-v2-hero" aria-labelledby="zw-v2-title">
       <header className="zw-v2-masthead">
-        <a className="zw-v2-wordmark" href="/" aria-label="昭梧 ZHAOWU">
+        <Link className="zw-v2-wordmark" to="/" aria-label="昭梧 ZHAOWU">
           <img src="/brand-ui/header-gourd-wordmark-r113.png" alt="" width="48" height="48" />
           <span><strong>昭梧</strong><small>Z H A O W U</small></span>
-        </a>
+        </Link>
       </header>
       <div className="zw-v2-opening">
         <p className="zw-v2-eyebrow">{t('東方時間文化 · 個人命書', '东方时间文化 · 个人命书', 'EASTERN TIME CULTURE · PERSONAL DESTINY BOOK')}</p>
@@ -65,7 +66,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
             {t('開始免費排盤', '开始免费排盘', 'Start my free chart')} <span aria-hidden="true">→</span>
           </button>
           <p className="zw-v2-free-note">{t('免費 · 免登入 · 約 1 分鐘開始', '免费 · 免登录 · 约 1 分钟开始', 'Free · no sign-in · begin in about 1 minute')}</p>
-          <a className="zw-v2-sample" href="/sample-report">{t('先看公開命書示例', '先看公开命书示例', 'View a sample report')} <span aria-hidden="true">›</span></a>
+          <Link className="zw-v2-sample" to="/sample-report">{t('先看公開命書示例', '先看公开命书示例', 'View a sample report')} <span aria-hidden="true">›</span></Link>
         </div>
       </div>
       <figure className="zw-v2-painting">
@@ -88,7 +89,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
       <blockquote>{frostOnly.quote[locale]}</blockquote>
       <small>{t('中國傳統物候意象', '中国传统物候意象', 'Traditional Chinese seasonal imagery')}</small>
     </aside>}
-    <a className="ph-mythic-entry" href="/mythic-atlas" data-home-mythic-atlas-entry>
+    <Link className="ph-mythic-entry" to="/mythic-atlas" data-home-mythic-atlas-entry>
       <img src="/mythic-atlas/originals/01-skeleton-puppet.webp" alt="" loading="lazy" width="941" height="1672" />
       <span>
         <small>{t('昭梧原創圖錄', '昭梧原创图录', 'ZHAOWU ORIGINAL ATLAS')}</small>
@@ -96,14 +97,14 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
         <em>{t('十二幅原創圖 · 八大支系 · 三十五位人物', '十二幅原创图 · 八大支系 · 三十五位人物', 'Twelve original plates · eight lineages · thirty-five figures')}</em>
       </span>
       <i aria-hidden>›</i>
-    </a>
-    <a className="ph-guaili-bookcase" href="/guaili-luanshen" data-home-guaili-collection>
+    </Link>
+    <Link className="ph-guaili-bookcase" to="/guaili-luanshen" data-home-guaili-collection>
       <span><small>{t('幽明萬象錄・獨立系列書目', '幽明万象录・独立系列书目', 'HIDDEN & MANIFEST · SERIES INDEX')}</small>
         <strong>{t('三界異聞錄｜七卷全書', '三界异闻录｜七卷全书', 'Tales of the Three Realms · The Seven Volumes')}</strong>
         <em>{t('十二地支四態・十二流煞・八災十年編年', '十二地支四态・十二流煞・八灾十年编年', 'Twelve branches · Twelve currents · The final chronicle')}</em></span>
       <i aria-hidden="true">↗</i>
-    </a>
+    </Link>
     <CuratedVideoShelf placement="home" />
-    <nav className="ph-bottom-nav" aria-label={t('頁面導覽','页面导航','Page navigation')}><a href="/" aria-current="page"><BrandIcon name="home"/><span>{t('首頁','首页','Home')}</span></a><button onClick={() => onOpen('form')}><BrandIcon name="reports"/><span>{t('命盤','命盘','Chart')}</span></button><button onClick={() => onOpen('today')}><BrandIcon name="calendar"/><span>{t('指引','指引','Today')}</span></button><a href="/history"><BrandIcon name="account"/><span>{t('我的','我的','Account')}</span></a></nav>
+    <nav className="ph-bottom-nav" aria-label={t('頁面導覽','页面导航','Page navigation')}><Link to="/" aria-current="page"><BrandIcon name="home"/><span>{t('首頁','首页','Home')}</span></Link><button onClick={() => onOpen('form')}><BrandIcon name="reports"/><span>{t('命盤','命盘','Chart')}</span></button><button onClick={() => onOpen('today')}><BrandIcon name="calendar"/><span>{t('指引','指引','Today')}</span></button><Link to="/history"><BrandIcon name="account"/><span>{t('我的','我的','Account')}</span></Link></nav>
   </section>;
 }

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 import { GUAILI_COPY, GUAILI_VOLUMES, GUAILI_ZODIAC, GUAILI_YEARS } from "./-mythic-atlas-guaili-data";
 import { l, tr } from "./-mythic-atlas-data";
@@ -17,9 +17,9 @@ function GuailiCollectionPage() {
   const refer = l("本書所有卷目共用已發布的《幽明萬象錄》資料，書目不另存一份原稿。點選卷名可直接抵達原卷。", "本书所有卷目共用已发布的《幽明万象录》资料，书目不另存一份原稿。点选卷名可直接抵达原卷。", "All chapters point to the published Chronicle of Hidden and Manifest Worlds. This index does not create another version of the manuscript.");
   return <main className="huangquan hqc-index" data-guaili-collection>
     <nav className="hqc-breadcrumb" aria-label={tr(l("所在位置","所在位置","Breadcrumb"), locale)}>
-      <a href="/">{tr(l("昭梧","昭梧","ZHAOWU"), locale)}</a>
+      <Link to="/">{tr(l("昭梧","昭梧","ZHAOWU"), locale)}</Link>
       <span aria-hidden="true">/</span>
-      <a href="/mythic-atlas">{tr(l("幽明萬象錄","幽明万象录","Mythic Archive"), locale)}</a>
+      <Link to="/mythic-atlas">{tr(l("幽明萬象錄","幽明万象录","Mythic Archive"), locale)}</Link>
       <span aria-hidden="true">/</span>
       <span>{tr(l("三界異聞錄","三界异闻录","Tales of the Three Realms"), locale)}</span>
     </nav>
@@ -30,7 +30,7 @@ function GuailiCollectionPage() {
         <p className="hqc-deck">{tr(GUAILI_COPY.subtitle, locale)}</p>
         <p className="hqc-lead">{tr(GUAILI_COPY.intro, locale)}</p>
         <p className="hqc-axiom">{tr(GUAILI_COPY.principle, locale)}</p>
-        <a className="hqc-reading-link" href="/mythic-atlas#guaili">{tr(read, locale)} <span aria-hidden="true">›</span></a>
+        <Link className="hqc-reading-link" to="/mythic-atlas" hash="guaili">{tr(read, locale)} <span aria-hidden="true">›</span></Link>
       </div>
       <figure className="hqc-painting">
         <img src="/mythic-atlas/originals/07-mountain-sea-bestiary.webp" width={941} height={1672} alt={tr(l("災異山海・STONE 原創圖", "灾异山海・STONE 原创图", "Mountain and Sea Calamities, original STONE artwork"), locale)} />
@@ -50,11 +50,11 @@ function GuailiCollectionPage() {
       </div>
       <ol className="hqc-booklist">
         {GUAILI_VOLUMES.map((chapter, i) => <li key={chapter.no}>
-          <a href={`/mythic-atlas#guaili-volume-${i+1}`}>
+          <Link to="/mythic-atlas" hash={`guaili-volume-${i+1}`}>
             <span className="hqc-number">{chapter.no}</span>
             <span className="hqc-mainline"><strong>{tr(chapter.title, locale)}</strong><small>{tr(chapter.lead, locale)}</small></span>
             <span className="hqc-arrow" aria-hidden="true">↗</span>
-          </a>
+          </Link>
         </li>)}
       </ol>
     </section>
@@ -66,12 +66,12 @@ function GuailiCollectionPage() {
       </div>
       <ol className="hqc-zodiac">
         {GUAILI_ZODIAC.map((branch, i) => <li key={i}>
-          <a href={`/mythic-atlas#guaili-${ZODIAC_PLATES[i].branch}`}>
+          <Link to="/mythic-atlas" hash={`guaili-${ZODIAC_PLATES[i].branch}`}>
             <img src={`/mythic-atlas/zodiac/${ZODIAC_PLATES[i].image}`} alt="" width={941} height={1672} loading="lazy" decoding="async" />
             <span>{String(i+1).padStart(2,"0")}</span>
             <strong>{tr(branch.earthly,locale)}</strong>
             <small>{tr(branch.shadow,locale)}</small>
-          </a>
+          </Link>
         </li>)}
       </ol>
     </section>
@@ -83,16 +83,16 @@ function GuailiCollectionPage() {
       </div>
       <ol className="hqc-years">
         {GUAILI_YEARS.map((event,i) => <li key={i}>
-          <a href={`/mythic-atlas#guaili-year-${i+1}`}>
+          <Link to="/mythic-atlas" hash={`guaili-year-${i+1}`}>
             <span>{tr(event.year,locale)}</span><strong>{tr(event.name,locale)}</strong><span aria-hidden="true">↗</span>
-          </a>
+          </Link>
         </li>)}
       </ol>
       <blockquote className="hqc-final-line">{tr(GUAILI_COPY.finalQuote,locale)}</blockquote>
     </section>
     <footer className="hqc-footer">
       <p>{tr(GUAILI_COPY.sourceNotice, locale)}</p>
-      <a href="/mythic-atlas#guaili-sources">{tr(l("考據與創作界線", "考据与创作界线", "Sources and authorship boundaries"),locale)}</a>
+      <Link to="/mythic-atlas" hash="guaili-sources">{tr(l("考據與創作界線", "考据与创作界线", "Sources and authorship boundaries"),locale)}</Link>
       <p>STONE Original · ZHAOWU</p>
     </footer>
   </main>;

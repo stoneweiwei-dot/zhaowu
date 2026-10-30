@@ -16,9 +16,9 @@ test("the separate Guaili group has one real canonical route and visible homepag
   assert.match(index, /createFileRoute\("\/guaili-luanshen"\)/);
   assert.match(index, /data-guaili-collection/);
   assert.match(home, /data-home-guaili-collection/);
-  assert.match(home, /href="\/guaili-luanshen"/);
-  assert.match(atlas, /href="\/guaili-luanshen"/);
-  assert.match(index, /href="\/mythic-atlas#guaili"/);
+  assert.match(home, /to="\/guaili-luanshen"/);
+  assert.match(atlas, /to="\/guaili-luanshen"/);
+  assert.match(index, /to="\/mythic-atlas" hash="guaili"/);
 });
 test("seven-volume, twelve-branch and four-year indexes reuse one source of truth", () => {
   for (const token of ["GUAILI_VOLUMES", "GUAILI_ZODIAC", "GUAILI_YEARS"]) assert.ok(index.includes(token));
@@ -27,7 +27,7 @@ test("seven-volume, twelve-branch and four-year indexes reuse one source of trut
   assert.match(index, /GUAILI_YEARS\.map/);
   assert.match(source, /export const GUAILI_VOLUMES/);
   for (const pair of [["guaili-volume", "volume"], ["guaili-year", "year"]]) {
-    assert.ok(index.includes('mythic-atlas#' + pair[0]), pair[0]);
+    assert.ok(index.includes('hash={`' + pair[0]), pair[0]);
     assert.ok(body.includes('id={`' + pair[0] + '-${index+1}`}'), pair[0]);
   }
   assert.match(body, /id=\{`guaili-\$\{ZODIAC_PLATES\[index\]\.branch\}`\}/);
