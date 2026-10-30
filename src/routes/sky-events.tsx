@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
-import { SKY_EVENT_CATEGORIES, getArchivedSkyEvents, getFeaturedSkyEvent } from "@/lib/sky-events";
+import { SKY_EVENT_CATEGORIES, getArchivedSkyEvents, getFeaturedSkyEvent, getTodaySkyUpdatedDate } from "@/lib/sky-events";
 import { TodaySkyCards } from "@/components/today-sky-cards";
+import { isSkyReportArchived } from "@/lib/sky-week-presentation";
 import "@/sky-events.css";
 import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
 
@@ -119,6 +120,7 @@ function SkyEventsPage() {
   const lang: Lang = locale === "en" ? "en" : locale === "zh-Hans" ? "zh-Hans" : "zh-Hant";
   const event = getFeaturedSkyEvent();
   const archive = getArchivedSkyEvents();
+  const showCurrentWeek = !isSkyReportArchived(getTodaySkyUpdatedDate());
   const isSaturn = event.id === "saturn-opposition-2026";
   const isSunNodeTrine = event.id === "sun-trine-north-node-2026-10-20";
   const illustrationAlt = locale === "en"
@@ -151,13 +153,15 @@ function SkyEventsPage() {
 
       <nav className="sky-events-shortcuts" aria-label={labels.navigation}>
         <a href="#sky-featured">{labels.feature}</a>
-        <a href="#sky-week">{labels.week}</a>
+        {showCurrentWeek ? <a href="#sky-week">{labels.week}</a> : null}
         <a href="#sky-archive">{labels.archive}</a>
       </nav>
 
-      <section className="sky-week-public" id="sky-week" aria-label={labels.week}>
-        <TodaySkyCards />
-      </section>
+      {showCurrentWeek ? (
+        <section className="sky-week-public" id="sky-week" aria-label={labels.week}>
+          <TodaySkyCards />
+        </section>
+      ) : null}
 
       <article className="sky-event-article" id="sky-featured">
         <div className="sky-event-kind-tags" aria-label={labels.featureKinds.join(" / ")}>
@@ -179,7 +183,7 @@ function SkyEventsPage() {
           </figure>
         ) : null}
 
-        <details className="sky-section-disclosure sky-event-details">
+        <details className="sky-section-disclosure sky-event-details" open={event.id === "zhaowu-sky-quarter-2026-10-04-2027-01-04"}>
           <summary><strong>{labels.eventDetails}</strong><span>{labels.expand}</span></summary>
           <div className="sky-event-disclosure-body">
         <div className="sky-event-timeline">
