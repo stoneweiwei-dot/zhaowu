@@ -15,6 +15,13 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-10-30-article-view-count-protection",
+    date: "2026-10-30",
+    zhHant: { title: "文章瀏覽數防灌水", summary: "文章瀏覽數改為只能經由計數功能增加，同一位訪客短時間內重複開啟不再重複計算，並加上整體上限防止灌水。顯示方式、命盤計算與付款流程不變。" },
+    zhHans: { title: "文章浏览数防灌水", summary: "文章浏览数改为只能经由计数功能增加，同一位访客短时间内重复打开不再重复计算，并加上整体上限防止灌水。显示方式、命盘计算与付款流程不变。" },
+    en: { title: "Article view counts protected from inflation", summary: "Article view counts can now only grow through the counting function; repeat opens by the same visitor within a short window are not re-counted, and an overall ceiling prevents inflation. Display, chart calculation and payments are unchanged." },
+  },
+  {
     id: "2026-10-30-request-rate-limit-foundation",
     date: "2026-10-30",
     zhHant: { title: "請求頻率限制基礎", summary: "加入通用的請求頻率限制，為登入、優惠碼與文章互動提供防濫用保護的共同基礎；目前訪客操作、命盤計算與付款流程不變。" },
