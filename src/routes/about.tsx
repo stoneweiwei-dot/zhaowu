@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
+import { stoneMark } from "@/lib/stone-mark";
 import { useState, type CSSProperties } from "react";
 import "@/about-zhaowu.css";
 
@@ -265,7 +266,7 @@ function AboutZhaowu() {
         <Link to="/login">{detailed.returnLogin}</Link>
       </nav>
       <details className="zw-about-notes"><summary>{editor.notes}</summary><p>{detailed.limits}</p><p>{editor.calculations}</p></details>
-      <small>STONE 原創 · ZHAOWU</small>
+      <small>{stoneMark(locale)} · ZHAOWU</small>
     </footer>
   </main>;
 }

@@ -337,7 +337,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
               onClick={() => void handleUnlock("system")}
               className="mt-3 w-full rounded-full bg-cinnabar py-2 text-xs font-medium text-cream hover:opacity-90 disabled:opacity-60"
             >
-              {purchasing === "system" ? "…" : (locale === "en" ? `Unlock ${reportAccessPrice("system", "bazi").price}` : `解鎖 ${reportAccessPrice("system", "bazi").price}`)}
+              {purchasing === "system" ? "…" : (locale === "en" ? `Unlock ${reportAccessPrice("system", "bazi").price}` : locale === "zh-Hans" ? `解锁 ${reportAccessPrice("system", "bazi").price}` : `解鎖 ${reportAccessPrice("system", "bazi").price}`)}
             </button>
           </div>
 

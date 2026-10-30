@@ -249,7 +249,7 @@ function EarthOnlineQuiz() {
 
   return (
     <main className="earth-online-shell">
-      <div className="earth-online-ambient" aria-hidden="true"><span>乾</span><span>道</span><span>史</span><span>莊</span></div>
+      <div className="earth-online-ambient" aria-hidden="true"><span>乾</span><span>道</span><span>史</span><span>{locale === "zh-Hans" ? "庄" : "莊"}</span></div>
 
       <nav className="earth-online-nav" aria-label={copy.back}>
         <Link to="/fun-tests" className="earth-online-back">← {copy.back}</Link>

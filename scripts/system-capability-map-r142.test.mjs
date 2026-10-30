@@ -43,13 +43,13 @@ test("r142 keeps the four governance boundaries explicit", () => {
   assert.match(routeSource, /data-boundary-count/);
   assert.match(mapSource, /Starseed/);
   assert.match(mapSource, /D60.*never circularly rectify birth time/s);
-  assert.match(mapSource, /deterministic engine/);
+  assert.match(mapSource, /must not say a chart has been calculated/);
 });
 
 test("r142 does not misreport incomplete Vedic and synthesis work as active", () => {
   const vedicBlock = mapSource.slice(mapSource.indexOf('id: "vedic-jyotish"'), mapSource.indexOf('id: "dharma-one-palm"'));
   assert.match(vedicBlock, /status: "partial"/);
-  assert.match(vedicBlock, /deterministic D1\/D9\/Dasha calculations are never fabricated/);
+  assert.match(vedicBlock, /no estimated chart is shown/);
 
   const synthesisBlock = mapSource.slice(mapSource.indexOf('id: "cross-system-synthesis"'), mapSource.indexOf('id: "birth-time-rectification"'));
   assert.match(synthesisBlock, /status: "planned"/);

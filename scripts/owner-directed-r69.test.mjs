@@ -16,7 +16,8 @@ test("free direct-answer card delivers the engine's question-specific answer wit
 });
 
 test("header uses the current owner gourd wordmark", () => {
-  assert.match(brand, /HEADER_MARK = "\/brand-ui\/header-gourd-wordmark-r113\.png"/);
+  assert.match(brand, /header-gourd-wordmark-r113-144\.webp/);
+  assert.match(brand, /header-gourd-wordmark-r113-288\.webp/);
   assert.match(brand, /<img className="zhaowu-brand-seal__image"/);
   assert.doesNotMatch(brand, /logo-icon-gourd|<svg|zhaowu-brand-seal__canopy|__character/);
   assert.match(design, /zhaowu-brand-seal__image/);

@@ -10898,7 +10898,7 @@ html[data-zw-theme="night"] .stone-login-signature {
   letter-spacing: .18em !important;
 }
 
-#five-element-wardrobe > header h2 {
+#five-element-wardrobe > header :is(h1, h2) {
   max-width: 680px;
   margin-top: 8px !important;
   color: #27231e !important;
@@ -11157,7 +11157,7 @@ html[data-zw-theme="night"] .stone-login-signature {
   color: #eae6d7 !important;
 }
 
-[data-zw-theme="night"] #five-element-wardrobe > header h2,
+[data-zw-theme="night"] #five-element-wardrobe > header :is(h1, h2),
 [data-zw-theme="night"] #five-element-wardrobe > div[aria-live="polite"] p:first-child {
   color: #f2ecdc !important;
 }
@@ -11263,7 +11263,7 @@ html[data-zw-theme="night"] .stone-login-signature {
 }
 
 @media (max-width: 390px) {
-  #five-element-wardrobe > header h2 {
+  #five-element-wardrobe > header :is(h1, h2) {
     font-size: 25px !important;
   }
 
@@ -12420,7 +12420,7 @@ html[data-zw-theme="night"] .zhaowu-home-layout #birth-form .zhaowu-customer-rec
   padding-inline: 2px;
 }
 
-html[data-zw-theme="night"] #five-element-wardrobe > header h2,
+html[data-zw-theme="night"] #five-element-wardrobe > header :is(h1, h2),
 html[data-zw-theme="night"] #five-element-wardrobe > header p,
 html[data-zw-theme="night"] #five-element-wardrobe [data-daily-colors-today],
 html[data-zw-theme="night"] #five-element-wardrobe [data-daily-colors-today] p,

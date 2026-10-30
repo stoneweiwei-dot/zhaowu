@@ -81,7 +81,7 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
   const latest = contents[0] ?? null;
   async function removeArticle(id: string) {
     const article = contents.find((item) => item.id === id);
-    if (!article || !window.confirm(locale === "en" ? `Remove “${article.title[locale]}” from public articles?` : `將「${article.title[locale]}」從公開文章下架？可在後台還原。`)) return;
+    if (!article || !window.confirm(locale === "en" ? `Remove “${article.title[locale]}” from public articles?` : locale === "zh-Hans" ? `将「${article.title[locale]}」从公开文章下架？可在后台还原。` : `將「${article.title[locale]}」從公開文章下架？可在後台還原。`)) return;
     try {
       const result = await ownerData<{ article: ArticleOverride }>("article.archive", { id, archived: true });
       setOverrides((current) => [...(current ?? []).filter((row) => row.id !== id), result.article]);
@@ -192,7 +192,7 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
       <section id="life-view" className="rounded-2xl border border-line/80 bg-paper px-5 py-5">
         <p role="status" className="text-sm text-ink-mute">{articlesError
           ? (locale === "en" ? "Articles are temporarily unavailable." : locale === "zh-Hans" ? "文章暂时无法加载。" : "文章暫時無法載入。")
-          : overrides === null ? (locale === "en" ? "Loading articles…" : "文章載入中…") : copy.empty}</p>
+          : overrides === null ? (locale === "en" ? "Loading articles…" : locale === "zh-Hans" ? "文章加载中…" : "文章載入中…") : copy.empty}</p>
       </section>
     );
   }

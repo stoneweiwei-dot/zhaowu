@@ -38,10 +38,10 @@ export function AuspiciousGallerySection({ mode = "preview" }: { mode?: Auspicio
         eyebrow: "昭梧 · 吉象图鉴",
         title: "昭梧吉象图鉴",
         lead: "从昭梧总图库整理出的结缘圣像、吉祥风水、瑞兽与命理意象。",
-        previewNote: "一回一幅。刷新页面或重新登入，会换一张吉祥图。",
+        previewNote: "一回一幅。刷新页面或重新登录，会换一张吉祥图。",
         fullNote: "完整图鉴分批展开，点开任一图片即可查看原图。",
         card: "昭梧吉象",
-        mark: "STONE 原創",
+        mark: "STONE 原创",
         open: "进入完整图鉴",
         more: "再看 24 张",
         count: (value: number) => `当前图鉴共 ${value} 张`,
@@ -88,7 +88,9 @@ export function AuspiciousGallerySection({ mode = "preview" }: { mode?: Auspicio
     >
       <header className="max-w-3xl">
         <p className="text-[10px] tracking-[0.3em] text-cinnabar">{copy.eyebrow}</p>
-        <h2 className="mt-2 font-display text-3xl leading-tight sm:text-4xl">{copy.title}</h2>
+        {mode === "full"
+          ? <h1 className="mt-2 font-display text-3xl leading-tight sm:text-4xl">{copy.title}</h1>
+          : <h2 className="mt-2 font-display text-3xl leading-tight sm:text-4xl">{copy.title}</h2>}
         <p className="mt-3 text-sm leading-7 text-ink-soft">{copy.lead}</p>
         <p className="mt-2 text-xs leading-6 text-ink-mute">{mode === "preview" ? copy.previewNote : copy.fullNote}</p>
         {mode === "full" ? (

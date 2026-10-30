@@ -61,7 +61,7 @@ export const ZIWEI_RULE_SOURCES = {
   },
   huoLingNatal: {
     id: 'quanshu-v2-huo-ling', label: '火星、鈴星', confidence: 'variant_locked',
-    evidence: ['《紫微斗數全書》卷二：安火鈴二星訣（明載四组三合起位）', 'iztro 2.6.0 pinned implementation：由年支定起子時位，再順數生時'],
+    evidence: ['《紫微斗數全書》卷二：安火鈴二星訣（明載四組三合起位）', 'iztro 2.6.0 pinned implementation：由年支定起子時位，再順數生時'],
     note: '古訣正文足以鎖定四組起位；完整時辰步進另以 pinned deterministic implementation 交叉驗證。',
   },
   kongJieNatal: {

@@ -40,7 +40,7 @@ export function SoulVolumeGallery({ locale }: { locale: Locale }) {
   return (
     <section className={"sc-atlas sc-atlas--" + (locale === "en" ? "en" : "zh")} aria-label={label}>
       <div className="sc-atlas-heading"><h2>{label}</h2><p>{intro}</p></div>
-      <div className="sc-atlas-tabs" role="group" aria-label={locale === "en" ? "Choose a volume" : "選擇卷次"}>
+      <div className="sc-atlas-tabs" role="group" aria-label={locale === "en" ? "Choose a volume" : locale === "zh-Hans" ? "选择卷次" : "選擇卷次"}>
         {volumes.map((v, i) => (
           <button key={i} type="button" className={"sc-atlas-tab" + (i === active ? " is-active" : "")}
             aria-pressed={i === active} onClick={() => setActive(i)}>

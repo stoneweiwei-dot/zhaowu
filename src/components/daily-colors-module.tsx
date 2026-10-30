@@ -116,7 +116,9 @@ export function DailyColorsModule({ variant, date }: { variant: Variant; date?: 
     >
       <header>
         <p data-daily-colors-date>{formatDailyColorDate(almanac.date, locale)}</p>
-        <h2>{compact ? (locale === "en" ? "Today's dress colour" : locale === "zh-Hans" ? "今日穿衣" : "今日穿衣") : page.title}</h2>
+        {variant === "page"
+          ? <h1>{page.title}</h1>
+          : <h2>{compact ? (locale === "en" ? "Today's dress colour" : locale === "zh-Hans" ? "今日穿衣" : "今日穿衣") : page.title}</h2>}
         <p>{compact ? `${page.todaySuit}：${recommended.name} · ${recommended.colorsLabel}` : page.subtitle}</p>
       </header>
 
