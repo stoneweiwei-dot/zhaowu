@@ -14,6 +14,7 @@ import {
   type DisplayLanguage,
 } from "@/lib/display-language";
 import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSiteStats } from "@/lib/site-stats";
+import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
 import { JourneyNavigation } from "@/components/journey-navigation";
 import { SiteUtilityDock } from "@/components/site-utility-dock";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -53,7 +54,12 @@ function updateMeta(selector: string, content: string) {
 }
 
 function releaseSummaryForLanguage(summary: string, version: string, language: DisplayLanguage) {
-  if (language === "zh-Hant" || language === "zh-Hans") return summary;
+  if (language === "zh-Hans") {
+    return version === SITE_RELEASE_FALLBACK.version
+      ? SITE_RELEASE_FALLBACK.summary["zh-Hans"]
+      : toSimplifiedCustomerText(summary);
+  }
+  if (language === "zh-Hant") return summary;
   if (language === "ja") return `最新の本番更新：${version} には、現在のUI・コンテンツ・安定性に関する修正が含まれています。`;
   if (language === "ko") return `최신 프로덕션 업데이트: ${version}에는 현재 UI, 콘텐츠 및 안정성 수정 사항이 포함되어 있습니다.`;
   if (language === "hi") return `नवीनतम प्रोडक्शन अपडेट: ${version} में वर्तमान इंटरफ़ेस, सामग्री और स्थिरता से जुड़े सुधार शामिल हैं।`;
@@ -267,10 +273,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
             {!isHome ? (
               <div className="zhaowu-header-primary">
-                <Link to="/" className="zhaowu-brand-link text-ink" aria-label={t("brand")}>
-                <BrandSeal />
+                <Link to="/" className="zhaowu-brand-link text-ink" aria-label={`${t("brand")} ${t("tagline")}`}>
+                <BrandSeal decorative />
                 <span className="zhaowu-brand-copy">
-                  <span className="zhaowu-brand-name font-display" aria-hidden="true">{t("brand")}</span>
+                  <span className="zhaowu-brand-name font-display">{t("brand")}</span>
                   <span className="zhaowu-brand-tagline">{t("tagline")}</span>
                 </span>
               </Link>

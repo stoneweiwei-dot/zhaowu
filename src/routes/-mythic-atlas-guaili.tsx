@@ -34,8 +34,8 @@ export function GuailiBook({ locale }: { locale: Locale }) {
         <p>{tr(GUAILI_COPY.volumesLead, locale)}</p>
       </div>
       <div className="hq-guaili-volumes">
-        {GUAILI_VOLUMES.map((volume, index) => <details key={volume.no} id={`guaili-volume-${index+1}`} open={index === 6 ? true : undefined}>
-          <summary><span className="hq-guaili-volume-number">{volume.no}</span><span className="hq-guaili-volume-title">{tr(volume.title, locale)}<small>{tr(volume.lead, locale)}</small></span></summary>
+        {GUAILI_VOLUMES.map((volume, index) => <details key={volume.no.hant} id={`guaili-volume-${index+1}`} open={index === 6 ? true : undefined}>
+          <summary><span className="hq-guaili-volume-number">{tr(volume.no, locale)}</span><span className="hq-guaili-volume-title">{tr(volume.title, locale)}<small>{tr(volume.lead, locale)}</small></span></summary>
           <p>{tr(volume.text, locale)}</p>
         </details>)}
       </div>

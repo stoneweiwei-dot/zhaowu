@@ -4333,7 +4333,7 @@ html[lang="en"] body {
   font-kerning: normal;
 }
 
-html[lang="en"] :is(.font-display, .zhaowu-home-lead h1, .zhaowu-home-sheet-shell h2, .zhaowu-home-sheet-shell h3, .zhaowu-updates-page h1, [data-owner-console] h1, [data-owner-console] h2, [data-owner-gallery-console] h1, [data-owner-gallery-console] h2) {
+html[lang="en"] :is(.font-display, .zhaowu-home-lead h1, .zhaowu-home-sheet-shell h2, .zhaowu-home-sheet-shell h3, #five-element-wardrobe > header h1, .zhaowu-updates-page h1, [data-owner-console] h1, [data-owner-console] h2, [data-owner-gallery-console] h1, [data-owner-gallery-console] h2) {
   font-family: "Iowan Old Style", Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif !important;
   font-kerning: normal;
   text-rendering: optimizeLegibility;

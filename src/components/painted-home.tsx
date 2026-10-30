@@ -3,6 +3,7 @@ import { FROST_SKIN_ID, SEASONAL_AUTO_ID, SOLAR_TERMS_24, seasonalState, frostEd
 import type { CSSProperties } from 'react';
 import { useSkin, type SkinDef } from '@/lib/theme-skins';
 import { useI18n } from '@/lib/i18n';
+import { stoneMark } from '@/lib/stone-mark';
 import { BrandIcon } from '@/components/brand-icon';
 import { HomeTree } from '@/components/home-tree';
 import { CuratedVideoShelf } from '@/components/curated-video-shelf';
@@ -46,7 +47,15 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
     <section className="zw-v2-hero" aria-labelledby="zw-v2-title">
       <header className="zw-v2-masthead">
         <Link className="zw-v2-wordmark" to="/" aria-label="昭梧 ZHAOWU">
-          <img src="/brand-ui/header-gourd-wordmark-r113.png" alt="" width="48" height="48" />
+          <img
+            src="/brand-ui/header-gourd-wordmark-r113-144.webp"
+            srcSet="/brand-ui/header-gourd-wordmark-r113-144.webp 144w, /brand-ui/header-gourd-wordmark-r113-288.webp 288w"
+            sizes="48px"
+            alt=""
+            width={48}
+            height={48}
+            decoding="async"
+          />
           <span><strong>昭梧</strong><small>Z H A O W U</small></span>
         </Link>
       </header>
@@ -71,7 +80,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
       </div>
       <figure className="zw-v2-painting">
         <img src={editorialArt} alt={t('昭梧原創藝術畫境', '昭梧原创艺术画境', 'Original ZHAOWU artwork')} width="1248" height="1248" decoding="async" fetchPriority="high" />
-        <figcaption>STONE 原創 · ZHAOWU</figcaption>
+        <figcaption>{stoneMark(locale)} · ZHAOWU</figcaption>
       </figure>
       <a className="zw-v2-discover" href="#home-guide">{t('往下探索昭梧', '继续探索昭梧', 'Discover more of ZHAOWU')} <span aria-hidden="true">↓</span></a>
     </section>
@@ -80,8 +89,16 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
       <p className="ph-seasonal-term"><span lang="zh">{locale === 'zh-Hans' ? seasonalAuto.term.hans : seasonalAuto.term.zh}</span><span lang="en">{seasonalAuto.term.en}</span></p>
       <p>{seasonalAuto.hou[locale]}</p>
       <blockquote>{t('初候・二候・三候，循時而變。', '初候・二候・三候，循时而变。', 'Three pentads, changing with the seasons.')}</blockquote>
-      <small>{locale === 'en' ? `Pentad ${houNumber} / 72 · Sydney calendar schedule` : `第 ${houNumber} / 72 候 · 悉尼節氣日程`}</small>
-      <small>{t('傳統中國物候，不代表澳洲當地氣候。非霜降節氣沿用已上架畫作。', '传统中国物候，不代表澳洲当地气候。非霜降节气沿用已上架画作。', 'Traditional Chinese imagery, not a Sydney weather forecast. Other terms reuse published artwork.')}</small>
+      <small className="ph-seasonal-meta">{t(
+        `七十二候 · 第 ${houNumber} 候｜節氣時刻依悉尼時間計算`,
+        `七十二候 · 第 ${houNumber} 候｜节气时刻按悉尼时间计算`,
+        `Pentad ${houNumber} of 72 · solar-term times follow Sydney time`,
+      )}</small>
+      <small className="ph-seasonal-disclaimer">{t(
+        '傳統中國物候意象，不代表澳洲當地氣候。霜降以外的節氣沿用已上架畫作。',
+        '传统中国物候意象，不代表澳洲当地气候。霜降以外的节气沿用已上架画作。',
+        'Traditional Chinese seasonal imagery, not a Sydney weather forecast. Terms other than Frost’s Descent reuse existing artwork.',
+      )}</small>
     </aside>}
     {frostOnly && <aside className="ph-seasonal-note" data-seasonal-note>
       <p className="ph-seasonal-term"><span lang="zh">霜降</span><span lang="en">Frost’s Descent</span></p>

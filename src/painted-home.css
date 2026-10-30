@@ -630,7 +630,7 @@ html body #root .zw-painted-home .ph-seasonal-note { margin: 12px 5% 16px; paddi
 html body #root .zw-painted-home .ph-seasonal-term { display:flex; flex-wrap:wrap; gap:4px 12px; font-size:18px; line-height:1.6; }
 html body #root .zw-painted-home .ph-seasonal-note p { line-height:1.7; }
 html body #root .zw-painted-home .ph-seasonal-note blockquote { margin:8px 0; font-size:16px; line-height:1.8; }
-html body #root .zw-painted-home .ph-seasonal-note small { font-size:13px; color:var(--zws-soft); }
+html body #root .zw-painted-home .ph-seasonal-note small { display:block; margin-top:4px; font-size:13px; color:var(--zws-soft); }
 
 /* Permanent homepage entrance: visible without opening the four-step accordion. */
 html body #root .zw-painted-home .ph-mythic-entry {

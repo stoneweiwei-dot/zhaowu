@@ -20,7 +20,7 @@ const STATUS: Record<PromoStatus, { text: string; cls: string }> = {
 
 const systemLabel = (id: PromoSystemId) => PROMO_SYSTEMS.find((s) => s.id === id)?.label ?? id;
 const dateText = (iso: string | null) => iso
-  ? `${new Date(iso).toLocaleString("zh-TW", { timeZone: "Australia/Sydney", hour12: false })}（雪梨時間）`
+  ? `${new Date(iso).toLocaleString("zh-TW", { timeZone: "Australia/Sydney", hour12: false })}（悉尼時間）`
   : "永不過期";
 const scopeText = (c: OwnerPromoCode) => c.systemId
   ? `指定系統・${systemLabel(c.systemId)}`

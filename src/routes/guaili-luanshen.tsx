@@ -50,9 +50,9 @@ function GuailiCollectionPage() {
         <p>{tr(refer, locale)}</p>
       </div>
       <ol className="hqc-booklist">
-        {GUAILI_VOLUMES.map((chapter, i) => <li key={chapter.no}>
+        {GUAILI_VOLUMES.map((chapter, i) => <li key={chapter.no.hant}>
           <Link to="/mythic-atlas" hash={`guaili-volume-${i+1}`}>
-            <span className="hqc-number">{chapter.no}</span>
+            <span className="hqc-number">{tr(chapter.no, locale)}</span>
             <span className="hqc-mainline"><strong>{tr(chapter.title, locale)}</strong><small>{tr(chapter.lead, locale)}</small></span>
             <span className="hqc-arrow" aria-hidden="true">↗</span>
           </Link>
