@@ -20,7 +20,7 @@ export const LEGAL_DOCS: Record<LegalDocKey, Record<LegalLocale, LegalDoc>> = {
             "你主動輸入的資料：出生日期、時間、出生地（城市）、你輸入的問題文字，以及你選擇的語言與顯示偏好。",
             "付款資料：付款由 Stripe 處理，我們不會接觸或保存你的信用卡號。我們只保存用來核對訂單的紀錄：Checkout 工作階段編號、購買項目、金額、幣別、付款狀態，以及一組隨機的瀏覽器存取金鑰（不含姓名或電郵）。",
             "自動收集的技術資料：IP 位址、瀏覽器與裝置類型、造訪頁面與時間（由託管服務的伺服器日誌產生）；用於不重複計算訪客數的隨機訪客編號。",
-            "匿名品質統計：為檢查答案是否切題，網站會向統計服務 PostHog 傳送匿名事件（隨機工作階段編號、問題類型分類、處理時間、問題內容的雜湊指紋）。答案被判定為不合格時，會附上已遮蔽電郵、電話與日期、並截短至 180 字的問題摘要。我們關閉了 IP 地理定位，也不建立個別使用者檔案。",
+            "匿名品質統計：為檢查答案是否切題，網站會向統計服務 PostHog 傳送匿名事件（隨機工作階段編號、問題類型分類、處理時間、問題長度區間，以及問題內容的不可逆指紋）。事件不包含問題原文。頁面網址只傳送路徑，不含查詢字串或錨點。我們關閉了 IP 地理定位，也不建立個別使用者檔案。",
             "存放在你瀏覽器的資料：語言、主題、你的生辰與已產生的報告、付款存取金鑰。這些資料保存在你的裝置（localStorage／sessionStorage），清除瀏覽器資料即可刪除。"
           ]
         },
@@ -120,7 +120,7 @@ export const LEGAL_DOCS: Record<LegalDocKey, Record<LegalLocale, LegalDoc>> = {
             "你主动输入的数据：出生日期、时间、出生地（城市）、你输入的问题文本，以及你选择的语言与显示偏好。",
             "付款数据：付款由 Stripe 处理，我们不会接触或保存你的信用卡号。我们只保存用来核对订单的纪录：Checkout 工作阶段编号、购买项目、金额、币别、付款状态，以及一组随机的浏览器访问密钥（不含姓名或电邮）。",
             "自动收集的技术数据：IP 地址、浏览器与设备类型、造访页面与时间（由托管服务的服务器日志产生）；用于不重复计算访客数的随机访客编号。",
-            "匿名品质统计：为检查答案是否切题，网站会向统计服务 PostHog 发送匿名事件（随机工作阶段编号、问题类型分类、处理时间、问题内容的哈希指纹）。答案被判定为不合格时，会附上已屏蔽电邮、电话与日期、并截短至 180 字的问题摘要。我们关闭了 IP 地理定位，也不创建个别用户文件。",
+            "匿名品质统计：为检查答案是否切题，网站会向统计服务 PostHog 发送匿名事件（随机工作阶段编号、问题类型分类、处理时间、问题长度区间，以及问题内容的不可逆指纹）。事件不包含问题原文。页面网址只发送路径，不含查询字符串或锚点。我们关闭了 IP 地理定位，也不创建个别用户文件。",
             "存放在你浏览器的数据：语言、主题、你的生辰与已产生的报告、付款访问密钥。这些数据保存在你的设备（localStorage／sessionStorage），清除浏览器数据即可删除。"
           ]
         },
@@ -220,7 +220,7 @@ export const LEGAL_DOCS: Record<LegalDocKey, Record<LegalLocale, LegalDoc>> = {
             "Information you enter: date, time and place of birth, the question you type, and your language and display preferences.",
             "Payment information: payments are handled by Stripe. We never see or store your card number. We keep only the records needed to verify an order: the Checkout session ID, product, amount, currency, payment status, and a random browser access key (no name or email).",
             "Technical data collected automatically: IP address, browser and device type, pages visited and timestamps (from hosting-provider server logs), and a random visitor ID used to avoid double-counting visits.",
-            "Anonymous quality analytics: to check whether answers are on topic, the site sends anonymous events to PostHog (a random session ID, question category, processing time and a hashed fingerprint of the question). When an answer is judged unsatisfactory, a short summary of the question (emails, phone numbers and dates masked, truncated to 180 characters) is attached. IP geolocation is disabled and no individual user profiles are created.",
+            "Anonymous quality analytics: to check whether answers are on topic, the site sends anonymous events to PostHog (a random session ID, question category, processing time, a question-length bucket and a non-reversible fingerprint of the question). The question text itself is not sent. Page URLs are sent as the path only, without a query string or hash. IP geolocation is disabled and no individual user profiles are created.",
             "Data kept in your browser: language, theme, your birth details and generated reports, and your payment access key. These stay on your device (localStorage/sessionStorage) and are removed when you clear your browser data."
           ]
         },
