@@ -16,6 +16,8 @@ end;
 $function$;
 grant execute on function public.increment_life_view_article_view(text) to public, anon, authenticated, service_role;
 drop function if exists public._engagement_allow(text, text);
+drop function if exists public._rate_limit_hash(text, text);
+drop table if exists public.life_view_article_ids;
 grant all on table public.life_view_article_views to anon, authenticated;
 create policy life_view_counts_insert on public.life_view_article_views
   for insert to anon, authenticated with check (view_count >= 0);

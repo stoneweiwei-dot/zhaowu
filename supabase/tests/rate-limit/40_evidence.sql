@@ -1,3 +1,7 @@
+\echo '=== (0) allowlist seeded from ARTICLE_CATALOG; test fixtures added as owner ==='
+select count(*) as seeded_catalog_ids from public.life_view_article_ids;
+insert into public.life_view_article_ids (article_id)
+select unnest(array['existing-article','ceiling-article']) union all select 'peer-'||g from generate_series(0,19) g;
 \echo '=== (1) direct anon UPDATE / INSERT / DELETE on life_view_article_views ==='
 set role anon;
 select set_config('request.headers', '{"x-forwarded-for":"203.0.113.7, 198.51.100.200","cf-connecting-ip":"198.51.100.200"}', false) as headers \gset
@@ -24,6 +28,19 @@ select count(*) filter (where ok) as allowed, count(*) filter (where not ok) as 
 from (select set_config('request.headers', json_build_object('x-forwarded-for','10.'||(g/250)||'.'||(g%250)||'.1, 198.51.100.99','cf-connecting-ip','198.51.100.99')::text, false),
              public._engagement_allow('view','peer-'||(g%20)) ok from generate_series(1,700) g) s;
 select count(*) as per_ip_buckets, bool_and(bucket_key ~ '^view:ip:[0-9a-f]{64}$') as all_hashed from public.rate_limit_buckets where bucket_key like 'view:ip:%';
+\echo '--- 1000 random unknown ids (anon): rows / buckets before vs after; then a real catalog article ---'
+select (select count(*) from public.life_view_article_views) as rows_before, (select count(*) from public.rate_limit_buckets) as buckets_before \gset
+set role anon;
+select count(*) filter (where v = 0) as returned_0, count(*) as calls
+from (select set_config('request.headers', json_build_object('x-forwarded-for','198.18.'||(g/250)||'.'||(g%250)||', 198.51.100.66','cf-connecting-ip','198.51.100.66')::text, false),
+             public.increment_life_view_article_view('rnd-'||md5(random()::text||g)) v from generate_series(1,1000) g) s;
+reset role;
+select :rows_before as rows_before, (select count(*) from public.life_view_article_views) as rows_after,
+       :buckets_before as buckets_before, (select count(*) from public.rate_limit_buckets) as buckets_after;
+set role anon;
+select set_config('request.headers', '{"x-forwarded-for":"203.0.113.90, 198.51.100.200","cf-connecting-ip":"198.51.100.200"}', false) as headers \gset
+select public.increment_life_view_article_view('cause-action-kindness-life') as real_catalog_article_first_view;
+reset role;
 \echo '=== (3) PR C primitives: 5 failed logins lock the key; success clears it ==='
 select i as failed_attempt, public.record_rate_limit_attempt('login:ip:demo' || left(i::text, 0), false) as blocked from generate_series(1,6) i;
 select public.check_rate_limit('login:ip:demo') as blocked_now;
