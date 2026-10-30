@@ -23,7 +23,7 @@ test("ordinary visitors use device-local access while the owner entry remains ex
   assert.doesNotMatch(shell, /to="\/login"/);
   assert.match(shell, /to="\/history"/);
   assert.match(shell, /無需註冊/);
-  assert.match(paintedHome, /href="\/history"/);
+  assert.match(paintedHome, /to="\/history"/);
   assert.doesNotMatch(paintedHome, /href="\/account"/);
   assert.doesNotMatch(account, /會員登入|會員登入／註冊|登入或註冊後|Sign in \/ Register/);
   assert.doesNotMatch(shell, /className="zhaowu-header-login"/);
