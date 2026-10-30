@@ -21,6 +21,11 @@
       "zh-Hans": { "title": "昭梧知识库｜命理文章与命理小知识", "description": "文章与短札读观点与研究；命理小知识查方法、术语与判读规则，证据等级分开标示。" },
       "en": { "title": "ZHAOWU Knowledge Base | Essays & Reference Cards", "description": "Essays and notes on viewpoints and research; concise reference cards for methods, terms and reading rules." }
     },
+    "/knowledge/nine-heavens-lamps": {
+      "zh-Hant": { "title": "九重天外，無人掌燈｜緣起、業果與無我的哲學寓言｜昭梧", "description": "四幅圖境與完整玄學寓言，從青燈、黑焰、風與放下執取的故事，深入理解佛教緣起、無我、業果相續及空性的哲學界線。" },
+      "zh-Hans": { "title": "九重天外，无人掌灯｜缘起、业果与无我的哲学寓言｜昭梧", "description": "四幅图境与完整玄学寓言，从青灯、黑焰、风与放下执取的故事，深入理解佛教缘起、无我、业果相续及空性的哲学边界。" },
+      "en": { "title": "Beyond Nine Heavens, No Keeper of the Lamp | ZHAOWU", "description": "An illustrated parable in four scenes about dependent origination, karma, non-self and emptiness, followed by a sourced Buddhist philosophy explanation." }
+    },
     "/knowledge/five-elements-tone-qi": {
       "zh-Hant": { "title": "五行五色、五音與五氣｜傳統象義與使用邊界", "description": "五行對應的色、音、氣是傳統象義系統，用來理解功能語言，不是物理測量，也不直接改變命局。" },
       "zh-Hans": { "title": "五行五色、五音与五气｜传统象义与使用边界", "description": "五行对应的色、音、气是传统象义系统，用来理解功能语言，不是物理测量，也不直接改变命局。" },
