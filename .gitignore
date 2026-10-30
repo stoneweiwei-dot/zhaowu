@@ -1,4 +1,6 @@
 node_modules/
+# Retired owner-music deploy key. Never commit a replacement ciphertext or private key.
+lib/owner-music-ssh.json
 dist/
 test-results/
 playwright-report/

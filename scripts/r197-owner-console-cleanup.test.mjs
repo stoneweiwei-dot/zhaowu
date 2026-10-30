@@ -60,13 +60,7 @@ test("r214 public owner-music GET is a separate function from the Git writer", a
   assert.match(writeApi, /from ["']\.\.\/lib\/owner-auth\.js["']/);
   assert.match(writeApi, /OWNER_REQUIRED/);
   assert.doesNotMatch(publicRead, /isomorphic-git\/http\/node|isomorphic-git|ssh2/);
-  assert.doesNotMatch(git, /import git from ["']isomorphic-git["']/);
-  assert.doesNotMatch(git, /import \{ Client \} from ["']ssh2["']/);
-  assert.doesNotMatch(git, /import http from ["']isomorphic-git\/http\/node["']/);
-  assert.match(git, /import\("isomorphic-git"\)/);
-  assert.match(git, /import\("ssh2"\)/);
-  // r223/r224: the writer no longer fetches the branch over git at all (see
-  // scripts/owner-music-git-plumbing.test.mjs), so isomorphic-git's HTTP
-  // transport is gone entirely rather than merely lazy-loaded.
+  assert.doesNotMatch(git, /isomorphic-git|ssh2|owner-music-ssh|createDecipheriv/);
+  assert.match(git, /ZHAOWU_OWNER_MUSIC_GITHUB_TOKEN/);
   assert.doesNotMatch(git, /isomorphic-git\/http\/node/);
 });

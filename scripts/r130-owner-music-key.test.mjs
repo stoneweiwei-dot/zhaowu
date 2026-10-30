@@ -10,8 +10,8 @@ test("owner music read and write APIs are physically split off the SPA rewrite",
   const writeApi = await source("api/owner-music-write.js");
   const publicRead = await source("lib/owner-music-public.js");
   const git = await source("lib/owner-music-git.js");
-  const ssh = await source("lib/owner-music-ssh.json");
   const vercel = JSON.parse(await source("vercel.json"));
+  await assert.rejects(source("lib/owner-music-ssh.json"));
   assert.match(api, /readOwnerMusicManifest/);
   assert.doesNotMatch(api, /OWNER_KEY_SHA256|OWNER_REQUIRED|owner-music-git|isomorphic-git|ssh2/);
   assert.match(writeApi, /from ["']\.\.\/lib\/owner-auth\.js["']/);
@@ -23,12 +23,11 @@ test("owner music read and write APIs are physically split off the SPA rewrite",
   assert.match(publicRead, /readOwnerMusicManifest/);
   assert.doesNotMatch(publicRead, /isomorphic-git|ssh2/);
   assert.match(git, /owner-music/);
-  assert.match(git, /decryptOwnerSshKey/);
-  assert.doesNotMatch(ssh, /BEGIN OPENSSH PRIVATE KEY/);
-  assert.match(ssh, /aes-256-gcm/);
+  assert.match(git, /ZHAOWU_OWNER_MUSIC_GITHUB_TOKEN/);
+  assert.doesNotMatch(git, /decryptOwnerSshKey|owner-music-ssh|ssh2|BEGIN OPENSSH PRIVATE KEY|aes-256-gcm|createDecipheriv/);
   assert.equal(vercel.functions["api/owner-music.js"].maxDuration, 10);
   assert.equal(vercel.functions["api/owner-music-write.js"].maxDuration, 60);
-  assert.equal(vercel.functions["api/owner-music-write.js"].includeFiles, "lib/owner-music-ssh.json");
+  assert.equal(vercel.functions["api/owner-music-write.js"].includeFiles, undefined);
   assert.equal(vercel.functions["api/owner-music.js"].includeFiles, undefined);
   assert.deepEqual(vercel.git.deploymentEnabled, { "**": false, main: true });
   assert.match(vercel.ignoreCommand, /git diff --quiet/);

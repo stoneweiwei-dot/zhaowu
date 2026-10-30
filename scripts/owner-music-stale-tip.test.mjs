@@ -18,6 +18,10 @@ function stubGithub(t) {
     seen.push(u);
     const json = (body) => ({ ok: true, status: 200, json: async () => body });
     if (u.includes("/git/refs/heads/")) return json({ object: { sha: STALE } });
+    if (u.includes("/git/commits/")) {
+      const sha = u.split("/git/commits/")[1].split("?")[0];
+      return json({ sha, tree: { sha: `tree-${sha}` } });
+    }
     if (u.includes("/git/trees/")) return json({ truncated: false, tree: [] });
     return { ok: false, status: 404, json: async () => ({}) };
   };
@@ -35,7 +39,8 @@ test("withRepo rebuilds on GitHub's real tip when the push says the read tip was
   });
   assert.equal(result, "ok");
   assert.deepEqual(tips, [STALE, REAL]);
-  assert.ok(seen.some((u) => u.includes(`/git/trees/${REAL}`)), "second attempt must read the tree of the real tip");
+  assert.ok(seen.some((u) => u.includes(`/git/commits/${REAL}`)), "second attempt must read the real tip commit");
+  assert.ok(seen.some((u) => u.includes(`/git/trees/tree-${REAL}`)), "second attempt must read that commit's tree");
 });
 
 test("withRepo does not retry ordinary failures and gives up after 3 stale-tip retries", async (t) => {

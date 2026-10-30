@@ -42,8 +42,7 @@
       "maxDuration": 10
     },
     "api/owner-music-write.js": {
-      "maxDuration": 60,
-      "includeFiles": "lib/owner-music-ssh.json"
+      "maxDuration": 60
     }
   },
   "headers": [

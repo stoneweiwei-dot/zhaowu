@@ -1,3 +1,11 @@
+## 2026-10-30｜移除已提交的加密 SSH 金鑰與 SSH 音樂上傳（C1）
+
+- ACTIVE：`lib/owner-music-ssh.json` 不得再存在於工作樹或部署包。站主音樂與共用皮膚寫入不再解密 SSH 私鑰，也不再走 `ssh2` / `git-receive-pack`。
+- ACTIVE：寫入改走 GitHub Git Data API，憑證只來自伺服器環境變數 `ZHAOWU_OWNER_MUSIC_GITHUB_TOKEN`。未設定時寫入失敗關閉。公開讀取、`/api/owner-music` 播放、Cookie 閘門與 12 MB 上限不變。密碼登入仍是音樂寫入條件；Passkey 不能上傳。
+- SUPERSEDES：r130 把密碼加密的 SSH blob 提交進庫的做法，以及 r199「SSH push 維持不變」裡對 SSH 傳輸的部分。r200「寫入路徑才可動態載入 isomorphic-git」在該依賴已從音樂寫入移除後不再要求載入它；公開 GET 仍不得載入。
+- 歷史提交裡的密文不在本次改寫 Git 歷史。正式站改用新權杖並確認寫入後，站主應到 GitHub 刪除舊的 owner-music deploy key。不要為了驗收去解密或列印舊金鑰。
+- PROTECTED：不改排盤、付款、登入驗證器、報告、Supabase schema，也不建立第二個 Production。
+
 ## 2026-10-28｜《借星》九幅原創圖像優先發布／禁止幾何假圖（站主最新指令）
 
 - **ACTIVE / HIGH PRIORITY**：圖像是站主的核心輸出。任何涉及《借星》九幕的生成、網站發布、後台圖片管理與後續修正，必須先遵循 `docs/BORROW-STAR-ARTWORK-PUBLISHING.md`，再處理同範圍非關鍵視覺修飾。每幕一張獨立生成的 9:16 真正原創畫作；保留原始 PNG 與可追溯 hash，網站使用永久本地 WebP/AVIF。
@@ -544,7 +552,7 @@
 
 ## 2026-09-24 r200 公開音樂 runtime supersession
 
-- ACTIVE：`isomorphic-git/http/node` 不得在公開音樂 GET 路徑頂層靜態載入；只可在站主寫入流程進入 `withRepo()` 後動態載入。
+- SUPERSEDED for the write-path import：公開音樂 GET 仍不得載入 `isomorphic-git`。寫入路徑改由 2026-10-30 C1 移除 SSH 與 isomorphic-git，不再要求動態載入。
 - ACTIVE：任何 runtime warning 修復都必須在 Production exact SHA 上實際呼叫對應 endpoint，再以部署後時間窗查 Vercel runtime errors；source contract／CI 通過不能代替這一步。
 - r199 的音樂後台資訊減法繼續有效；r200 只收口 Node runtime 依賴載入邊界。
 
