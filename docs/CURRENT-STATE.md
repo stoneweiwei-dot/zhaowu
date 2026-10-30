@@ -19,6 +19,7 @@ Launch triage follows `AGENTS.md`: P0 blocks revenue/core operation; P1 is batch
 - 2026-10-15：開場影片 60 秒內完整播放；全站預設 English（中文瀏覽器才預設中文）；首頁版本更新與站主入口移至頁尾；換頁淡入；付費區新增優惠碼（`promo-code` Edge Function，與 Stripe 分離）。細節見 Instruction Registry 同日條目。
 - 2026-10-16：測驗結果圖改接圖庫——`/quiz/divine-affinity` 依答案（主本緣＋次本緣＋作答序列的穩定雜湊）從 `public/quiz-art/divine/` 已審核畫像挑圖，五行測驗（`/fun-tests?test=element`）依主元素接已通過 QC 的天干畫作；線條 SVG 只在圖片載入失敗時作備援。動物測驗（`/fun-tests?test=animal`）圖庫沒有真實動物畫像，改用 8 種動物圖騰（`src/components/animal-totem-art.tsx`），不再顯示人臉 SVG；六道測驗改用 6 個象徵圖（`src/components/realm-emblem-art.tsx`），不再顯示人臉 SVG。選圖邏輯在 `src/lib/quiz-result-art.ts`。
 - 2026-10-15：中國大陸可讀取／可登入基礎——Production 訪客端 Supabase 請求經同網域 `/sb/*` Vercel rewrite，站主背景音樂經同網域 `/api/owner-music?track=<id>` 代理串流，天文腳本自家託管（細節見 Instruction Registry）。2026-10-17 正式 canonical 改為 `zhao-wu.com`，並納入同源 Supabase 代理白名單；舊 `.vercel.app` 入口保留。
+- 2026-10-30：站主音樂寫入不再使用已提交的加密 SSH 金鑰或 `ssh2`。寫入憑證改為伺服器環境變數 `ZHAOWU_OWNER_MUSIC_GITHUB_TOKEN`；未設定時寫入失敗關閉。公開播放路徑不變。舊 deploy key 需在新權杖於 Production 生效後由站主撤銷。Git 歷史不在本次改寫。
 - 2026-10-27：新增 `/sample-report` 三語公開命書示例，所有人物與資料均為虛構；分享網址固定加入 `utm_source=zhaowu&utm_medium=share`，原 query／hash（含付款與 access token）仍全部丟棄。站點採單一路徑即時切換繁／簡／英，故不建立指向同一 URL 的虛假 `hreflang` alternate；canonical 仍由每個公開路由自指。jsDelivr 僅保留給站主專用 ffmpeg core 的自家託管失敗備援，不屬公開訪客必要依賴。
 
 

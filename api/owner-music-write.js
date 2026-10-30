@@ -167,7 +167,7 @@ export default async function handler(req, res) {
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
     const owner = await authenticateOwner(req);
     if (!owner) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
-    // The Git deploy key is sealed with the owner password, so a Passkey session cannot write music.
+    // Music writes stay on a password session. A passkey session cannot publish audio.
     if (owner.kind !== "secret") return json(res, 403, { ok: false, error: "OWNER_PASSWORD_REQUIRED" });
     const secret = owner.secret;
 
@@ -240,8 +240,8 @@ export default async function handler(req, res) {
   }
 }
 
-// Node's AggregateError.message (thrown by Promise.allSettled, e.g. an
-// isomorphic-git FS failure such as ENOSPC) is generic boilerplate text
+// Node's AggregateError.message (thrown by Promise.allSettled, e.g. a
+// filesystem failure such as ENOSPC) is generic boilerplate text
 // ("There are multiple errors that were thrown by the method...") with no
 // length cap — surfacing it verbatim made the owner UI's error banner huge
 // and unreadable. Use the first concrete inner error instead, and always cap

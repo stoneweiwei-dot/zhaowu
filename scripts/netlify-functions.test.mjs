@@ -29,9 +29,9 @@ test("Netlify archive stays build-frozen and proxies legacy PWA origins to Verce
   assert.match(netlify, /for = "\/release\.json"[\s\S]*Cache-Control = "no-store, no-cache, must-revalidate, max-age=0"/);
 });
 
-test("owner music bundles its sealed key instead of reading beside the serverless bundle", () => {
-  assert.match(ownerMusicGit, /import sealedKey from "\.\/owner-music-ssh\.json" with \{ type: "json" \}/);
-  assert.doesNotMatch(ownerMusicGit, /readFileSync\(new URL\("\.\/owner-music-ssh\.json"/);
+test("owner music writer does not bundle a sealed SSH key", () => {
+  assert.doesNotMatch(ownerMusicGit, /owner-music-ssh|sealedKey|ssh2|BEGIN OPENSSH PRIVATE KEY/);
+  assert.match(ownerMusicGit, /ZHAOWU_OWNER_MUSIC_GITHUB_TOKEN/);
 });
 
 for (const endpoint of endpoints) {
