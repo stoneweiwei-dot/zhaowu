@@ -72,7 +72,7 @@ Launch triage follows `AGENTS.md`: P0 blocks revenue/core operation; P1 is batch
 **出生資料 → 四柱與基礎解釋 → 單一完整報告 → 可選追問**
 
 - 公開不存在路由使用昭梧雙語 404 引導頁，提供返回首頁與查看最新更新；Vite SPA fallback 仍由 TanStack Router 判定 client-side not found。
-- 公開回應由 Vercel 全域補上 `X-Content-Type-Options: nosniff` 與 `Referrer-Policy: strict-origin-when-cross-origin`；Vercel 既有 HSTS 維持有效。
+- 公開回應由 Vercel 全域補上 `X-Content-Type-Options: nosniff` 與 `Referrer-Policy: strict-origin-when-cross-origin`；HSTS 為 `max-age=63072000; includeSubDomains`（不 preload），頁面與靜態檔的 `ACAO` 覆寫為 `https://zhao-wu.com`（2026-10-30 金曜 r1）。
 
 - 紫微、七政、西占、印度古法、一掌經／前世今生、生命靈數六類專卷的基本盤與計算落位公開；盤後文字解讀按次付費（快速讀為免費迎新、不再出售；標準單盤 US$9.90／A$14.90／¥68；八字與紫微深度單盤 US$16.90／A$24.90／¥108；六盤全讀 US$26.90／A$39.90／¥168，不含八字），均一次性付款、不自動續費。依據 `docs/INSTRUCTION-REGISTRY.md` 2026-10-19「固定多幣別報告定價」與 `src/lib/report-access.ts`。
 - 天機雙盤／星宮等未納入六類公開產品的內部 routes 仍維持 owner-only。
