@@ -273,12 +273,12 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                           alt={locale === "en" ? "Existing ZHAOWU original Song-inspired landscape painting" : locale === "zh-Hans" ? "昭梧现有宋式山水原创画作" : "昭梧現有宋式山水原創畫作"}
                           className="absolute inset-x-0 top-0 h-[60%] w-full object-cover"
                           width="941" height="1672" decoding="async" loading="lazy" />
-                        <div className="absolute inset-x-0 top-[48%] h-[17%] bg-gradient-to-b from-transparent to-[#F7F3EA]" aria-hidden="true" />
-                        <div className="absolute inset-x-0 bottom-0 flex h-[49%] flex-col justify-start bg-[#F7F3EA] px-[8%] pb-6 pt-3 text-[#263E33]">
+                        <div className="absolute inset-x-0 top-[43%] h-[17%] bg-gradient-to-b from-transparent to-[#F7F3EA]" aria-hidden="true" />
+                        <div className="absolute inset-x-0 bottom-0 flex h-[54%] flex-col justify-start bg-[#F7F3EA] px-[8%] pb-3 pt-2 text-[#263E33]">
                           <p className="text-[10px] tracking-[0.22em] text-[#796A53]">{locale === "en" ? "ZHAOWU · REFLECTIONS" : locale === "zh-Hans" ? "昭梧观象 · 观世录" : "昭梧觀象 · 觀世錄"}</p>
-                          <p className="mt-4 font-display text-[clamp(1.7rem,6vw,2.5rem)] font-semibold leading-[1.35]">{locale === "en" ? <>Life Within<br />Impermanence</> : locale === "zh-Hans" ? <>无常之中<br />见生机</> : <>無常之中<br />見生機</>}</p>
-                          <p className="mt-4 text-[clamp(0.8rem,3vw,1.04rem)] leading-7 text-[#315E50]">{locale === "en" ? "What changes can transform." : locale === "zh-Hans" ? "无常非苦，执常为苦。" : "無常非苦，執常為苦。"}</p>
-                          <div className="mt-5 border-t border-[#CABEA9] pt-4 text-[clamp(0.75rem,2.7vw,0.98rem)] leading-7 text-[#4A4A44]">
+                          <p className="mt-3 font-display text-[clamp(1.45rem,5vw,2.2rem)] font-semibold leading-[1.35]">{locale === "en" ? <>Life Within<br />Impermanence</> : locale === "zh-Hans" ? <>无常之中<br />见生机</> : <>無常之中<br />見生機</>}</p>
+                          <p className="mt-3 text-[clamp(0.75rem,2.8vw,1rem)] leading-7 text-[#315E50]">{locale === "en" ? "What changes can transform." : locale === "zh-Hans" ? "无常非苦，执常为苦。" : "無常非苦，執常為苦。"}</p>
+                          <div className="mt-3 border-t border-[#CABEA9] pt-3 text-[clamp(0.72rem,2.6vw,0.94rem)] leading-7 text-[#4A4A44]">
                             {locale === "en" ? <>Change opens possibility.<br />Conditions make action matter.<br />Releasing fixation makes room for freedom.</> : locale === "zh-Hans" ? <>因无常，故可变。<br />因缘起，故可为。<br />因不执，故自在。</> : <>因無常，故可變。<br />因緣起，故可為。<br />因不執，故自在。</>}
                           </div>
                         </div>
