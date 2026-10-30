@@ -118,4 +118,16 @@ Impermanence describes reality; dependent origination explains conditions; non-a
 
 The aphorism “Impermanence is not suffering; clinging to permanence is” and the concluding lines above are original editorial interpretations, not verbatim quotations from Buddhist scripture.`,
   },
+  illustrations: [
+    {
+      src: "/articles/impermanence-life-20261030-stone-original.webp",
+      afterParagraph: 1,
+      display: "wide",
+      alt: {
+        "zh-Hant": "昭梧原創直式圖文畫卷：古樹綻花、山河日升，圖上題寫無常、緣起與不執的哲思。",
+        "zh-Hans": "昭梧原创直式图文画卷：古树绽花、山河日升，图上题写无常、缘起与不执的哲思。",
+        en: "Original ZHAOWU portrait artwork: a flowering tree above changing mountains, with Chinese reflections on impermanence and renewal.",
+      },
+    },
+  ],
 };
