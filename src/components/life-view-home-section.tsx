@@ -265,6 +265,27 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
               {isOpen ? (
                 <div className="mt-4 border-l border-cinnabar/20 pl-4 text-[15px] leading-8 text-ink">
                   <div className="mb-3 flex items-center justify-between gap-3 text-xs text-ink-mute"><time dateTime={article.publishedAt}>{article.publishedAt}</time><span>{viewsLabel(article.id)}</span></div>
+                  {article.id === "impermanence-life-20261030" ? (
+                    <figure className="mx-auto mb-7 max-w-[420px] overflow-hidden border border-line/70 bg-[#F7F3EA]" aria-label={locale === "en" ? "Illustrated impermanence essay cover" : locale === "zh-Hans" ? "无常与生机文章意境封面" : "無常與生機文章意境封面"}>
+                      {/* Reuse an existing approved in-repository painting. This is an editorial cover composition, not a claim that the chat-generated image was uploaded. */}
+                      <div className="relative aspect-[9/16] overflow-hidden">
+                        <img src="/articles/stone-cause-and-action.webp"
+                          alt={locale === "en" ? "Existing ZHAOWU original Song-inspired landscape painting" : locale === "zh-Hans" ? "昭梧现有宋式山水原创画作" : "昭梧現有宋式山水原創畫作"}
+                          className="absolute inset-x-0 top-0 h-[60%] w-full object-cover"
+                          width="941" height="1672" decoding="async" loading="lazy" />
+                        <div className="absolute inset-x-0 top-[43%] h-[17%] bg-gradient-to-b from-transparent to-[#F7F3EA]" aria-hidden="true" />
+                        <div className="absolute inset-x-0 bottom-0 flex h-[54%] flex-col justify-start bg-[#F7F3EA] px-[8%] pb-3 pt-2 text-[#263E33]">
+                          <p className="text-[10px] tracking-[0.22em] text-[#796A53]">{locale === "en" ? "ZHAOWU · REFLECTIONS" : locale === "zh-Hans" ? "昭梧观象 · 观世录" : "昭梧觀象 · 觀世錄"}</p>
+                          <p className="mt-3 font-display text-[clamp(1.45rem,5vw,2.2rem)] font-semibold leading-[1.35]">{locale === "en" ? <>Life Within<br />Impermanence</> : locale === "zh-Hans" ? <>无常之中<br />见生机</> : <>無常之中<br />見生機</>}</p>
+                          <p className="mt-3 text-[clamp(0.75rem,2.8vw,1rem)] leading-7 text-[#315E50]">{locale === "en" ? "What changes can transform." : locale === "zh-Hans" ? "无常非苦，执常为苦。" : "無常非苦，執常為苦。"}</p>
+                          <div className="mt-3 border-t border-[#CABEA9] pt-3 text-[clamp(0.72rem,2.6vw,0.94rem)] leading-7 text-[#4A4A44]">
+                            {locale === "en" ? <>Change opens possibility.<br />Conditions make action matter.<br />Releasing fixation makes room for freedom.</> : locale === "zh-Hans" ? <>因无常，故可变。<br />因缘起，故可为。<br />因不执，故自在。</> : <>因無常，故可變。<br />因緣起，故可為。<br />因不執，故自在。</>}
+                          </div>
+                        </div>
+                      </div>
+                      <figcaption className="border-t border-line/60 px-4 py-3 text-center text-[11px] leading-5 text-ink-mute">{locale === "en" ? "Editorial cover using an existing ZHAOWU painting · Commentary, not a canonical scripture quote." : locale === "zh-Hans" ? "封面采用昭梧现有画作；题句为原创阐释，非经文原句。" : "封面採用昭梧現有畫作；題句為原創詮釋，非經文原句。"}</figcaption>
+                    </figure>
+                  ) : null}
                   {article.id === "stellar-life-cycle-interactive" ? <StellarLifeCycleInteractive /> : null}
                   {paragraphs.map((paragraph, paragraphIndex) => {
                     const illustration = article.illustrations?.find((item) => item.afterParagraph === paragraphIndex + 1);
