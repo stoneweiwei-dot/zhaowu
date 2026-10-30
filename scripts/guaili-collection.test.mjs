@@ -48,7 +48,8 @@ test("new group has three language SEO entries and a public sitemap URL", () => 
 });
 test("new group remains text-oriented, mobile-friendly and retains original artwork", () => {
   assert.match(index, /07-mountain-sea-bestiary\.webp/);
-  assert.match(index, /mythic-atlas\/zodiac\/\$\{ZODIAC_PLATES\[i\]\.image\}/);
+  // 2026-10-30: renders the web WebP derivative of the same original zodiac plate.
+  assert.match(index, /mythicWebPlate\("zodiac", ZODIAC_PLATES\[i\]\.image\)/);
   assert.match(index, /STONE Original/);
   assert.match(css, /@container \(max-width:389px\)/);
   assert.doesNotMatch(index, /十二鬼月|Twelve Ghost Moons/);

@@ -5,6 +5,7 @@ import {
   GUAILI_TWELVE, GUAILI_VOLUMES, GUAILI_YEARS, GUAILI_ZODIAC,
 } from "./-mythic-atlas-guaili-data";
 import { ZODIAC_PLATES } from "./-mythic-atlas-zodiac-essay";
+import { mythicWebPlate } from "@/lib/mythic-web-assets";
 
 const simplifiedCurrents = ["同炉","仪光","祝骨","强郎","文卿","退奇","铜聋","耆耆","赤伯","东僧","天贼","是谁"];
 
@@ -20,7 +21,7 @@ export function GuailiBook({ locale }: { locale: Locale }) {
           <blockquote>{tr(GUAILI_COPY.principle, locale)}</blockquote>
         </div>
         <figure className="hq-guaili-opening-art">
-          <img src="/mythic-atlas/originals/07-shanhaijing-atlas.png"
+          <img src={mythicWebPlate("originals", "07-shanhaijing-atlas.png")}
             alt={tr(l("昭梧原創《災異山海》圖版","昭梧原创《灾异山海》图版","Original STONE plate of Mountain and Sea calamities"), locale)}
             width={941} height={1672} loading="lazy" />
           <figcaption>{tr(l("《災異山海》｜沿用本館既有 STONE 原創圖錄，不冒稱新繪", "《灾异山海》｜沿用本馆既有 STONE 原创图录，不冒称新绘", "Mountain and Sea · An existing STONE original, reused here"), locale)}</figcaption>
@@ -55,7 +56,7 @@ export function GuailiBook({ locale }: { locale: Locale }) {
           <summary><span className="hq-guaili-zodiac-mark">{String(index + 1).padStart(2, "0")}</span><strong>{tr(path.earthly, locale)}</strong><span className="hq-guaili-zodiac-short">{tr(path.shadow, locale)}</span></summary>
           <figure className="hq-guaili-plate">
             <a href={`/mythic-atlas/zodiac/${ZODIAC_PLATES[index].image}`} target="_blank" rel="noopener noreferrer" aria-label={tr(l(`開啟${tr(path.earthly, "zh-Hant")}原圖`, `打开${tr(path.earthly, "zh-Hans")}原图`, `Open original plate: ${tr(path.earthly, "en")}`), locale)}>
-              <img src={`/mythic-atlas/zodiac/${ZODIAC_PLATES[index].image}`} width={941} height={1672} loading="lazy" decoding="async" alt={tr(l(`${tr(path.earthly, "zh-Hant")}四態原創畫作：凡體、${tr(path.shadow, "zh-Hant")}、${tr(path.beast, "zh-Hant")}、${tr(path.god, "zh-Hant")}`, `${tr(path.earthly, "zh-Hans")}四态原创画作：凡体、${tr(path.shadow, "zh-Hans")}、${tr(path.beast, "zh-Hans")}、${tr(path.god, "zh-Hans")}`, `Original four-aspect plate of ${tr(path.earthly, "en")}`), locale)} />
+              <img src={mythicWebPlate("zodiac", ZODIAC_PLATES[index].image)} width={941} height={1672} loading="lazy" decoding="async" alt={tr(l(`${tr(path.earthly, "zh-Hant")}四態原創畫作：凡體、${tr(path.shadow, "zh-Hant")}、${tr(path.beast, "zh-Hant")}、${tr(path.god, "zh-Hant")}`, `${tr(path.earthly, "zh-Hans")}四态原创画作：凡体、${tr(path.shadow, "zh-Hans")}、${tr(path.beast, "zh-Hans")}、${tr(path.god, "zh-Hans")}`, `Original four-aspect plate of ${tr(path.earthly, "en")}`), locale)} />
             </a>
             <figcaption>{tr(l("STONE 原創 · 941 × 1672 原圖，點圖放大；圖中文字為繁體中文", "STONE 原创 · 941 × 1672 原图，点图放大；图中文字为繁体中文", "STONE Original · 941 × 1672 original; tap to enlarge. Lettering remains in Traditional Chinese."), locale)}</figcaption>
           </figure>
