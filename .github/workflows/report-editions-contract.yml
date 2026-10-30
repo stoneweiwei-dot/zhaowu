@@ -1,0 +1,45 @@
+name: Report edition price and copy contract
+
+on:
+  pull_request:
+    paths:
+      - "src/components/report-plan-comparison.tsx"
+      - "src/components/report-plan-comparison.css"
+      - "src/components/portrait-edition-showcase.tsx"
+      - "src/components/portrait-edition-showcase.css"
+      - "src/components/painted-home.tsx"
+      - "src/components/report-access-gate.tsx"
+      - "src/components/bazi-reading-unlock.tsx"
+      - "src/lib/report-access.ts"
+      - "scripts/report-editions-contract.test.mjs"
+      - ".github/workflows/report-editions-contract.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  price-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test scripts/report-editions-contract.test.mjs
+
+  static-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      # TanStack Router writes routeTree.gen.ts during the Vite build.
+      # The legacy workflow runs tsc before generation, so it fails on a
+      # pre-existing unregistered guaili route even when the source compiles.
+      - run: npx vite build
+      - run: npx tsc --noEmit
