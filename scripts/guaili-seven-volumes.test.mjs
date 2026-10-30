@@ -47,7 +47,7 @@ test("do not revive prohibited terminology or misattribute original lore to clas
 test("three languages, reusable illustration and mobile responsive styling exist", () => {
   assert.match(data, /import \{ l, type Localized \}/);
   assert.match(component, /tr\(GUAILI_COPY\.sourceNotice, locale\)/);
-  assert.match(component, /\/mythic-atlas\/originals\/07-mountain-sea-bestiary.webp/);
+  assert.match(component, /mythicWebPlate\("originals", "07-shanhaijing-atlas\.png"\)/);
   assert.match(css, /@container \(max-width:390px\)/);
   assert.doesNotMatch(component, /https?:\/\//);
 });
