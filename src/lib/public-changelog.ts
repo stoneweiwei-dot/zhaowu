@@ -17,9 +17,9 @@ export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
     id: "2026-10-30-request-rate-limit-foundation",
     date: "2026-10-30",
-    zhHant: { title: "請求頻率限制基礎", summary: "加入通用的請求頻率限制，為登入、優惠碼與文章互動提供防濫用保護的共同基礎；目前訪客操作、命盤計算與付款流程不變。" },
-    zhHans: { title: "请求频率限制基础", summary: "加入通用的请求频率限制，为登录、优惠码与文章互动提供防滥用保护的共同基础；目前访客操作、命盘计算与付款流程不变。" },
-    en: { title: "Request rate-limit foundation", summary: "Adds a shared request rate limit that sign-in, promo codes and article interactions can use for abuse protection. Visitor flows, chart calculation and payments are unchanged." },
+    zhHant: { title: "請求頻率限制基礎（待套用）", summary: "已備妥通用的請求頻率限制，作為登入、優惠碼與文章互動防濫用保護的共同基礎；資料庫變更待審核後套用，目前尚未生效。訪客操作、命盤計算與付款流程不變。" },
+    zhHans: { title: "请求频率限制基础（待套用）", summary: "已备妥通用的请求频率限制，作为登录、优惠码与文章互动防滥用保护的共同基础；数据库变更待审核后套用，目前尚未生效。访客操作、命盘计算与付款流程不变。" },
+    en: { title: "Request rate-limit foundation (pending)", summary: "A shared request rate limit for sign-in, promo codes and article interactions is prepared; the database change is pending review and not yet active. Visitor flows, chart calculation and payments are unchanged." },
   },
   {
     id: "2026-10-23-pwa-language-guide-empty-state",
