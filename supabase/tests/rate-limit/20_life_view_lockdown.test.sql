@@ -18,9 +18,10 @@ do $t$ begin
   raise notice 'PR B privilege checks: PASS';
 end $t$;
 
--- simulate PostgREST anon request from visitor A
+-- simulate PostgREST anon request from visitor A arriving via the Vercel /sb rewrite:
+-- Vercel sets x-forwarded-for = visitor, Cloudflare appends the Vercel egress (= cf-connecting-ip).
 set role anon;
-select set_config('request.headers', '{"x-forwarded-for":"203.0.113.7, 10.0.0.1"}', false);
+select set_config('request.headers', '{"x-forwarded-for":"203.0.113.7, 198.51.100.200","cf-connecting-ip":"198.51.100.200"}', false);
 do $$ begin perform 1 from public.life_view_article_views; raise notice 'anon select: PASS'; end $$;
 do $$ begin update public.life_view_article_views set view_count = 999999; raise exception 'anon could update'; exception when insufficient_privilege then raise notice 'anon update denied: PASS'; end $$;
 do $$ begin insert into public.life_view_article_views values ('junk-row', 5, now()); raise exception 'anon could insert'; exception when insufficient_privilege then raise notice 'anon insert denied: PASS'; end $$;
@@ -35,8 +36,8 @@ do $$ declare v bigint; begin
   v := public.increment_life_view_article_view('brand-new-article'); assert v = 1, 'new article row created: '||v;
   raise notice 'visitor A: PASS';
 end $$;
--- visitor B (different IP, cf-connecting-ip only)
-select set_config('request.headers', '{"cf-connecting-ip":"198.51.100.9"}', false);
+-- visitor B, also via Vercel, same egress IP as A
+select set_config('request.headers', '{"x-forwarded-for":"203.0.113.8, 198.51.100.200","cf-connecting-ip":"198.51.100.200"}', false);
 do $$ declare v bigint; begin
   v := public.increment_life_view_article_view('existing-article'); assert v = 43, 'second visitor counts: '||v;
   raise notice 'visitor B: PASS';
@@ -52,7 +53,8 @@ reset role;
 -- global per-article ceiling: 60 per 10 min across spoofed IPs
 do $$ declare v bigint; i int; begin
   for i in 1..80 loop
-    perform set_config('request.headers', json_build_object('x-forwarded-for', '192.0.2.'||i)::text, false);
+    -- direct supabase.co caller forging x-forwarded-for; Cloudflare appends the real peer
+    perform set_config('request.headers', json_build_object('x-forwarded-for', '192.0.2.'||i||', 198.51.100.66', 'cf-connecting-ip', '198.51.100.66')::text, false);
     v := public.increment_life_view_article_view('ceiling-article');
   end loop;
   assert v = 60, 'ceiling at 60: '||v;
@@ -94,4 +96,42 @@ do $$ begin
   assert (select max(char_length(bucket_key)) from public.rate_limit_buckets) <= 200, 'keys <= 200';
   assert not exists (select 1 from public.rate_limit_buckets where bucket_key like '%203.0.113%' or bucket_key like '%198.51%'), 'no raw IP in keys';
   raise notice 'like/share helper: PASS';
+end $$;
+
+-- client-IP parsing rule (keys are hashed, so recompute the expected hashes)
+create or replace function pg_temp.k(a text, ip text, art text) returns text language sql as
+$f$ select a||':ip:'||encode(extensions.digest(a||'|'||ip||'|'||art,'sha256'),'hex') $f$;
+create or replace function pg_temp.pk(a text, peer text) returns text language sql as
+$f$ select a||':peer:'||encode(extensions.digest(a||'|'||peer,'sha256'),'hex') $f$;
+do $$ begin
+  delete from public.rate_limit_buckets;
+  -- via Vercel: client = entry before the peer
+  perform set_config('request.headers', '{"x-forwarded-for":"203.0.113.21, 198.51.100.200","cf-connecting-ip":"198.51.100.200"}', false);
+  perform public._engagement_allow('view','parse-a');
+  assert exists (select 1 from public.rate_limit_buckets where bucket_key = pg_temp.k('view','203.0.113.21','parse-a')), 'vercel: visitor ip';
+  assert exists (select 1 from public.rate_limit_buckets where bucket_key = pg_temp.pk('view','198.51.100.200')), 'vercel: peer bucket';
+  -- direct, no XFF from client: Cloudflare XFF = peer -> client = peer
+  perform set_config('request.headers', '{"x-forwarded-for":"198.51.100.77","cf-connecting-ip":"198.51.100.77"}', false);
+  perform public._engagement_allow('view','parse-b');
+  assert exists (select 1 from public.rate_limit_buckets where bucket_key = pg_temp.k('view','198.51.100.77','parse-b')), 'direct: peer ip';
+  -- direct with forged chain: right-most claimed entry is used (forgeable) but the peer bucket is real
+  perform set_config('request.headers', '{"x-forwarded-for":"1.1.1.1, 192.0.2.9, 198.51.100.78","cf-connecting-ip":"198.51.100.78"}', false);
+  perform public._engagement_allow('view','parse-c');
+  assert exists (select 1 from public.rate_limit_buckets where bucket_key = pg_temp.k('view','192.0.2.9','parse-c')), 'forged: right-most claimed';
+  assert exists (select 1 from public.rate_limit_buckets where bucket_key = pg_temp.pk('view','198.51.100.78')), 'forged: peer bucket';
+  -- garbage header -> no per-IP key, ceiling only
+  perform set_config('request.headers', json_build_object('x-forwarded-for', repeat('x',100))::text, false);
+  assert public._engagement_allow('view','parse-d'), 'garbage ip still allowed by ceiling';
+  raise notice 'client-ip parsing: PASS';
+end $$;
+
+-- per-peer cap: a direct caller rotating forged x-forwarded-for values is bounded by its real peer IP
+do $$ declare i int; allowed int := 0; begin
+  delete from public.rate_limit_buckets;
+  for i in 1..700 loop
+    perform set_config('request.headers', json_build_object('x-forwarded-for', '10.'||(i/250)||'.'||(i%250)||'.1, 198.51.100.99', 'cf-connecting-ip', '198.51.100.99')::text, false);
+    if public._engagement_allow('view', 'peer-'||(i%20)) then allowed := allowed + 1; end if;
+  end loop;
+  assert allowed = 600, 'peer cap 600/10min: '||allowed;
+  raise notice 'per-peer cap: PASS';
 end $$;

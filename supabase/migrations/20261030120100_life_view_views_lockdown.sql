@@ -46,11 +46,14 @@ grant select, insert, update, delete on table public.life_view_article_views to 
 --    Keys (all <= 200 chars, no raw IP stored):
 --      '<action>:ip:<sha256(action|ip|article) hex>'   per visitor per article
 --      '<action>:article:<article_id>'                  global per-article ceiling (unspoofable)
---    IP source: PostgREST request.headers -> first x-forwarded-for entry, else cf-connecting-ip.
---    LIMITATION: these headers are proxy-supplied and spoofable by a caller that hits
---    *.supabase.co directly; the per-article ceiling bounds the damage. Stronger option:
---    move increments behind a Vercel API route / Edge Function that derives the client IP
---    from the platform and calls this logic with service_role (documented in PR body).
+--      '<action>:peer:<sha256(action|peer) hex>'      per connecting peer (cf-connecting-ip), all articles
+--    IP source (see comment in the body): peer = cf-connecting-ip (unforgeable at Supabase's
+--    Cloudflare edge); client = right-most x-forwarded-for entry that is not the peer
+--    (= the visitor set by Vercel for /sb traffic), else the peer.
+--    LIMITATION: a caller that hits *.supabase.co directly can choose the claimed client
+--    value; the per-peer bucket (its real IP) and the per-article ceiling bound the damage.
+--    Stronger option: move increments behind a Vercel function that reads x-real-ip /
+--    x-vercel-forwarded-for and calls this logic with service_role (documented in PR body).
 -- ---------------------------------------------------------------------------
 create or replace function public._engagement_allow(p_action text, p_article_id text)
 returns boolean
@@ -62,7 +65,10 @@ as $$
 declare
   v_headers  json;
   v_ip       text;
+  v_peer     text;
+  v_xff      text[];
   v_ip_max   int;
+  v_peer_max int;
   v_ip_win   int;
   v_art_max  int;
   v_art_win  int;
@@ -71,9 +77,9 @@ begin
   -- p_max_failures, so pass max + 1: events 1..max are allowed, event max+1 onwards is blocked
   -- until the lock (= one window) expires. Single atomic call per key, no check-then-act race.
   case p_action
-    when 'view'  then v_ip_max := 1;  v_ip_win := 1800;  v_art_max := 60;  v_art_win := 600;
-    when 'like'  then v_ip_max := 1;  v_ip_win := 86400; v_art_max := 30;  v_art_win := 600;
-    when 'share' then v_ip_max := 3;  v_ip_win := 3600;  v_art_max := 30;  v_art_win := 600;
+    when 'view'  then v_ip_max := 1;  v_ip_win := 1800;  v_peer_max := 600; v_art_max := 60;  v_art_win := 600;
+    when 'like'  then v_ip_max := 1;  v_ip_win := 86400; v_peer_max := 120; v_art_max := 30;  v_art_win := 600;
+    when 'share' then v_ip_max := 3;  v_ip_win := 3600;  v_peer_max := 120; v_art_max := 30;  v_art_win := 600;
     else raise exception 'unknown engagement action' using errcode = '22023';
   end case;
 
@@ -86,16 +92,44 @@ begin
   exception when others then
     v_headers := null;
   end;
-  v_ip := nullif(btrim(split_part(coalesce(v_headers ->> 'x-forwarded-for', ''), ',', 1)), '');
-  if v_ip is null then
-    v_ip := nullif(btrim(coalesce(v_headers ->> 'cf-connecting-ip', '')), '');
-  end if;
+  -- Client IP (research 2026-10-30, see PR body):
+  --  * Hosted Supabase sits behind Cloudflare. cf-connecting-ip = the TCP peer that reached
+  --    Cloudflare and cannot be forged (a client-supplied CF-Connecting-IP gets Cloudflare 403 / 1000,
+  --    also through the Vercel /sb rewrite). x-real-ip is stripped by Cloudflare.
+  --  * Cloudflare APPENDS the peer to any incoming x-forwarded-for, so element 1 is caller-controlled
+  --    on direct supabase.co calls.
+  --  * Through the site's Vercel external rewrite (/sb/*), Vercel overwrites x-forwarded-for with the
+  --    visitor IP, so SQL sees "visitor, <vercel egress>" and cf-connecting-ip = <vercel egress>.
+  -- Rule: peer = cf-connecting-ip; drop trailing x-forwarded-for entries equal to the peer; the
+  -- right-most remaining entry is the client claimed by the hop that reached Cloudflare (Vercel ->
+  -- real visitor). With no remaining entry the peer itself is the client (direct call, no XFF).
+  -- A direct caller can still choose the claimed value, so a second bucket is keyed on the
+  -- unforgeable peer (generous limit, because all /sb traffic shares Vercel egress IPs).
+  v_peer := nullif(btrim(coalesce(v_headers ->> 'cf-connecting-ip', '')), '');
+  v_xff := array_remove(
+             array(select btrim(e) from unnest(string_to_array(coalesce(v_headers ->> 'x-forwarded-for', ''), ',')) e),
+             '');
+  while coalesce(array_length(v_xff, 1), 0) > 0 and v_xff[array_length(v_xff, 1)] = v_peer loop
+    v_xff := v_xff[1:array_length(v_xff, 1) - 1];
+  end loop;
+  v_ip := coalesce(v_xff[array_length(v_xff, 1)], v_peer);
+  if char_length(v_ip) > 64 then v_ip := null; end if;      -- not an IP; ceiling still applies
+  if char_length(v_peer) > 64 then v_peer := null; end if;
 
   -- Per visitor per article (skipped when no client IP is visible; global ceiling still applies).
   if v_ip is not null then
     if public.record_rate_limit_attempt(
          p_action || ':ip:' || encode(extensions.digest(p_action || '|' || v_ip || '|' || p_article_id, 'sha256'), 'hex'),
          false, v_ip_max + 1, v_ip_win, v_ip_win) then
+      return false;
+    end if;
+  end if;
+
+  -- Per connecting peer, all articles (bounds direct callers that forge x-forwarded-for).
+  if v_peer is not null then
+    if public.record_rate_limit_attempt(
+         p_action || ':peer:' || encode(extensions.digest(p_action || '|' || v_peer, 'sha256'), 'hex'),
+         false, v_peer_max + 1, v_art_win, v_art_win) then
       return false;
     end if;
   end if;
