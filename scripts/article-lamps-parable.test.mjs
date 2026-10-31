@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+import { existsSync } from "node:fs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -7,19 +9,26 @@ const index = readFileSync("src/routes/knowledge.tsx", "utf8");
 const sitemap = readFileSync("public/sitemap.xml", "utf8");
 const routeMeta = JSON.parse(readFileSync("src/lib/route-meta.json", "utf8"));
 
-test("four independent portrait assets with direct text labels", () => {
- const labels = ["青燈相續", "黑焰與白燈", "風與燈芯", "無人掌燈"];
+test("four distinct original 9:16 PNG paintings and verified WebP production assets", () => {
+ const sha = ["a4cb28702a6100dc4a7d44264dbff10750ea39fa66ed2ae2be06256a5406a14a","943bb8e1621003155aa982082ffe2ce863c2f423eeff5def7b9ad438e1be9654","5f1d9722400f9d9e18b3391ad900c4a006f0333ce7f6b1578c98275c70bc0ee3","a515b2b9dafde3344dd5894daeb6192572128a65a868ea00644499acf90aafd1"];
+ const seen = new Set();
  for(let i=1;i<=4;i++){
-  const src="/articles/lamps-parable-0"+i+".svg";
-  const file="public"+src;
-  const svg=readFileSync(file,"utf8");
-  assert.match(svg,/^<\?xml version="1\.0"/);
-  assert.match(svg,/<svg[^>]+width="1080" height="1920" viewBox="0 0 1080 1920"/);
-  assert.equal((svg.match(/<svg\b/g)||[]).length,1,"one scene root per image");
-  assert.equal((svg.match(/<\/svg>/g)||[]).length,1);
-  assert.ok(svg.includes(labels[i-1]),"image includes a directly readable chapter name");
-  assert.ok(svg.includes("STONE 原創"),"approved creator credit");
-  assert.ok(route.includes(src),"image referenced by published route");
+  const src = "/articles/lamps-parable-0"+i+".webp";
+  const binary = readFileSync("public"+src);
+  const original = readFileSync("art-source/lamps/lamps-0"+i+"-original.png");
+  assert.ok(original.length>2000000, "Original source not a full image");
+  assert.equal(original.subarray(0,8).toString("hex"), "89504e470d0a1a0a", "Original PNG header");
+  assert.equal(original.readUInt32BE(16),941, "Original width");
+  assert.equal(original.readUInt32BE(20),1672, "Original height");
+  const actual = createHash("sha256").update(original).digest("hex");
+  assert.equal(actual,sha[i-1],"Correct original asset, no imagegen.png collision");
+  assert.ok(!seen.has(actual),"No duplicate scene");
+  seen.add(actual);
+  assert.equal(binary.toString("ascii",0,4),"RIFF");
+  assert.equal(binary.toString("ascii",8,12),"WEBP");
+  assert.ok(binary.length>200000,"Image must retain meaningful detail");
+  assert.ok(route.includes(src),"Route references real binary media");
+  assert.ok(!existsSync("public/articles/lamps-parable-0"+i+".svg"),"No placeholder SVG retained");
  }
 });
 

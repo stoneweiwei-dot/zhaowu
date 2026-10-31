@@ -13,7 +13,7 @@ const CHAPTERS: {
   paragraphs: Copy[];
 }[] = [
   {
-    image: "/articles/lamps-parable-01.svg",
+    image: "/articles/lamps-parable-01.webp",
     title: ["青燈相續", "青灯相续", "The Second Flame"],
     subtitle: ["殿中第一問", "殿中第一问", "The first question"],
     alt: ["九重雲殿前，青燈將盡而紫青新燈初燃的山水意象圖", "九重云殿前，青灯将尽而紫青新灯初燃的山水意象图", "A fading blue lamp and a newborn violet flame amid a celestial palace"],
@@ -24,7 +24,7 @@ const CHAPTERS: {
     ]
   },
   {
-    image: "/articles/lamps-parable-02.svg",
+    image: "/articles/lamps-parable-02.webp",
     title: ["黑焰與白燈", "黑焰与白灯", "The Dark Flame and the White Lamp"],
     subtitle: ["殿中第二問", "殿中第二问", "The second question"],
     alt: ["古橋兩端，一盞焦黑殘燈與一盞潔白蓮形瓷燈，細光相連", "古桥两端，一盏焦黑残灯与一盏洁白莲形瓷灯，细光相连", "A burnt lamp and a pale lotus lamp at opposite ends of a stone bridge"],
@@ -35,7 +35,7 @@ const CHAPTERS: {
     ]
   },
   {
-    image: "/articles/lamps-parable-03.svg",
+    image: "/articles/lamps-parable-03.webp",
     title: ["風與燈芯", "风与灯芯", "Wind, Oil and Wick"],
     subtitle: ["殿中第三問", "殿中第三问", "The third question"],
     alt: ["翠竹臨水樓臺，風動帳幔，桌上油燈搖晃而有人伸手遮風", "翠竹临水楼台，风动帐幔，桌上油灯摇晃而有人伸手遮风", "Wind moving bamboo and curtains around an oil lamp in a riverside pavilion"],
@@ -46,7 +46,7 @@ const CHAPTERS: {
     ]
   },
   {
-    image: "/articles/lamps-parable-04.svg",
+    image: "/articles/lamps-parable-04.webp",
     title: ["無人掌燈", "无人掌灯", "No Eternal Lamp-Keeper"],
     subtitle: ["最後的問答", "最后的问答", "The final exchange"],
     alt: ["山寺破曉，一位白衣修行者在舊燈旁放開手，蓮瓣向晨光飄去", "山寺破晓，一位白衣修行者在旧灯旁放开手，莲瓣向晨光飘去", "A white-robed practitioner releases their grip on a lamp at mountain dawn"],
@@ -99,7 +99,7 @@ function LampsParable() {
         {CHAPTERS.map((chapter,index)=>(
           <article key={chapter.image} aria-labelledby={`lamp-chapter-${index}`}>
             <figure className="mx-auto max-w-[560px]">
-              <img src={chapter.image} alt={t(locale,chapter.alt)} width={1080} height={1920} loading={index===0?"eager":"lazy"} decoding="async" className="block aspect-[9/16] h-auto w-full object-contain"/>
+              <img src={chapter.image} alt={t(locale,chapter.alt)} width={941} height={1672} loading={index===0?"eager":"lazy"} decoding="async" className="block aspect-[9/16] h-auto w-full object-contain"/>
               <figcaption className="px-5 pt-2 text-xs tracking-[0.08em] text-ink-soft">{t(locale, ["圖境", "图境", "Scene"])} {String(index+1).padStart(2,"0")} · STONE 原創</figcaption>
             </figure>
             <div className="mx-auto max-w-2xl px-5 pt-8 sm:pt-10">
