@@ -16,6 +16,7 @@ import {
   type ReportSystemId,
 } from "@/lib/report-access";
 import { oncePerSession, trackConversion } from "@/lib/observability/conversion-telemetry";
+import { watchReportAccess } from "@/lib/report-access-watch";
 import "@/report-access.css";
 
 type Copy = {
@@ -55,7 +56,7 @@ function copyFor(locale: Locale): Copy {
     systemBody: "Every section of this system, plus the personal profile written from your own chart",
       buy: "Unlock",
     unlocked: "Unlocked",
-    pending: "Payment received. Access is being confirmed…",
+    pending: "Checking payment status. If this takes longer, refresh this page before trying to pay again.",
     unavailable: "Checkout is not active yet. The prices and free/paid boundary are already fixed.",
     distinction: "You are purchasing the chart interpretation. A playable five-tone sequence matched to the chart is included as an additional gift.",
     toneBoundary: "Five-tone listening is a traditional cultural practice for rest and self-care, not medical or mental-health treatment.",
@@ -86,7 +87,7 @@ function copyFor(locale: Locale): Copy {
     systemBody: "本系统的全部段落，加上依你这张盘写成的个人命格专页",
     buy: "解锁",
     unlocked: "已解锁",
-    pending: "付款已收到，正在确认读取权限……",
+    pending: "正在确认付款状态。如等待较久，请先刷新本页，避免重复付款。",
     unavailable: "付款通道尚未启用；价格与免费／付费边界已经固定。",
     distinction: "你购买的是命盘解读；昭梧另随报告附赠依命盘功能取向配置、可直接播放的五音聆听曲。",
     toneBoundary: "此处“疗愈”指放松、调息与自我照顾的文化聆听，不替代医疗、心理治疗或专业诊断。",
@@ -117,7 +118,7 @@ function copyFor(locale: Locale): Copy {
     systemBody: "本系統的全部段落，加上依你這張盤寫成的個人命格專頁",
     buy: "解鎖",
     unlocked: "已解鎖",
-    pending: "付款已收到，正在確認讀取權限……",
+    pending: "正在確認付款狀態。如等待較久，請先重新整理本頁，避免重複付款。",
     unavailable: "付款通道尚未啟用；價格與免費／付費邊界已經固定。",
     distinction: "你購買的是命盤解讀；昭梧另隨報告附贈依命盤功能取向配置、可直接播放的五音聆聽曲。",
     toneBoundary: "此處「療癒」指放鬆、調息與自我照顧的文化聆聽，不替代醫療、心理治療或專業診斷。",
@@ -178,14 +179,12 @@ export function ReportAccessGate({
   const [promoSuccess, setPromoSuccess] = useState(false);
 
   useEffect(() => {
-    let cancelled = false;
-    void resolveReportAccess(system).then((result) => {
-      if (cancelled) return;
+    return watchReportAccess(() => resolveReportAccess(system), (result) => {
       setLevel(result.level);
       setOwner(result.owner === true);
       setPending(result.pending);
-    }).finally(() => { if (!cancelled) setChecking(false); });
-    return () => { cancelled = true; };
+      setChecking(false);
+    }, () => setChecking(false));
   }, [system]);
 
   useEffect(() => {

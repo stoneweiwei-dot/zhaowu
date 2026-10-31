@@ -217,7 +217,9 @@ export async function resolveReportAccess(system: ReportSystemId) {
       if (candidate === "system") stripeGranted = true;
       if (rank[candidate] > rank[level]) level = candidate;
     } catch {
-      /* One expired or invalid session must not block other valid purchases. */
+      // A transient lookup failure is unknown, not a confirmed non-payment.
+      // Continue checking other sessions; the bounded watcher may retry this one.
+      pending = true;
     }
   }
   {

@@ -56,7 +56,7 @@ const EN_PATTERN: Record<string, string> = {
 
 export function AnalysisForm() {
   const { t, locale } = useI18n();
-  const readingUnlocked = useBaziReadingAccess();
+  const { unlocked: readingUnlocked, pending: readingPaymentPending } = useBaziReadingAccess();
   const { user, profile, session } = useCurrentUserState();
   const setCurrent = useAppStore((s) => s.setCurrent);
   const setSavedId = useAppStore((s) => s.setSavedId);
@@ -570,7 +570,7 @@ export function AnalysisForm() {
                   <ChartTrustPanel chart={previewChart} locale={locale} />
                 </div>
               ) : null}
-            </details></> : <BaziReadingUnlock locale={locale} grade={rememberedGrade} />}
+            </details></> : <BaziReadingUnlock locale={locale} grade={rememberedGrade} pending={readingPaymentPending} />}
             <button type="button" className="zw-flow-next" onClick={() => selectStep(3)}>{locale === "en" ? "Ask a question" : locale === "zh-Hans" ? "继续：问个问题" : "繼續：問個問題"}<span aria-hidden="true"> →</span></button>
             <p className="zw-flow-note">{locale === "en" ? "Optional. Your birth details are already saved on this device." : locale === "zh-Hans" ? "提问是选填；生辰已保存在这台设备。" : "提問是選填；生辰已保存在這台裝置。"}</p>
           </div>
