@@ -1,0 +1,13 @@
+.daily-sky { color:#253440; background:#f6f0e3; border:1px solid #d6c7a7; border-radius:14px; padding:clamp(20px,5vw,36px); margin: 22px auto; line-height:1.8; }
+.daily-sky header { border-bottom:1px solid #d9c9a8; padding-bottom:18px; }
+.daily-sky h2 { font-family:serif; font-size:clamp(2rem,7vw,3.1rem); letter-spacing:.08em; line-height:1.25; margin:.15em 0; }
+.daily-sky h3 { font-family:serif; font-size:1.25rem; margin:0 0 .4em; }
+.daily-sky p { margin:.5em 0; }
+.daily-sky-kicker { color:#846734; font-size:.78rem; font-weight:700; letter-spacing:.14em; }
+.daily-sky time { font-weight:600; }
+.daily-sky-stale { background:#fff7dc; color:#674909; border-left:3px solid #ad8239; padding:10px 14px; }
+.daily-sky-columns { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; padding:24px 0; }
+.daily-sky-columns section + section { border-left:1px solid #d9c9a8; padding-left:24px; }
+.daily-sky-quote { font-family:serif; font-size:clamp(1.3rem,4vw,1.8rem); text-align:center; border-block:1px solid #d9c9a8; padding:20px 0; }
+.daily-sky details { margin-top:22px; }.daily-sky summary { cursor:pointer; font-weight:700; }.daily-sky a { color:#355d66; overflow-wrap:anywhere; }.daily-sky-note { font-size:.9rem; }
+@media(max-width:520px){.daily-sky-columns{grid-template-columns:1fr;gap:18px}.daily-sky-columns section+section{border-left:0;border-top:1px solid #d9c9a8;padding:18px 0 0}}
