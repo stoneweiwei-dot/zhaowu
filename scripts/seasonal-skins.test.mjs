@@ -1,8 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
-import { FROST_PHASES, FROST_END, FROST_SECTIONS, SOLAR_TERMS_24, seasonalState, solarTermsForYear, solarTermInstant, frostEdition, seasonalSkinId } from '../src/lib/seasonal-skins.ts';
+import { FROST_PHASES, FROST_END, FROST_SECTIONS, SOLAR_TERMS_24, seasonalState, solarTermsForYear, solarTermInstant, frostEdition, seasonalSkinId, seasonalVisualSkinId } from '../src/lib/seasonal-skins.ts';
 import { SITE_SKIN_IDS } from '../lib/owner-site-skin-public.js';
+
+test('southern imagery maps six months apart without changing the actual term', () => {
+  for (const [i, term] of SOLAR_TERMS_24.entries()) {
+    assert.equal(seasonalVisualSkinId(term, 'north'), term.skinId);
+    assert.equal(seasonalVisualSkinId(term, 'unknown'), term.skinId);
+    assert.equal(seasonalVisualSkinId(term, 'south'), SOLAR_TERMS_24[(i + 12) % 24].skinId);
+  }
+  assert.equal(seasonalState(new Date('2026-10-31T00:00:00Z')).term.zh, '霜降');
+});
 
 test('auto spans all seasons, and Sydney civil 00:01 switch is timezone independent', () => {
   assert.equal(seasonalSkinId(new Date('2026-10-22T13:00:59.999Z')), 'pine-ink');

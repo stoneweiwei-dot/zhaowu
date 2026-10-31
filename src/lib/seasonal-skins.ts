@@ -54,6 +54,13 @@ export const SOLAR_TERMS_24 = [
   {month:12,day:22,longitude:270,zh:"冬至",hans:"冬至",en:"Winter Solstice",skinId:"day-flute",hou:[{"zh-Hant":"蚯蚓結","zh-Hans":"蚯蚓结","en":"Earthworms curl together"},{"zh-Hant":"麋角解","zh-Hans":"麋角解","en":"Elk shed their antlers"},{"zh-Hant":"水泉動","zh-Hans":"水泉动","en":"Spring water begins to flow"}]}
 ] as const;
 export type SolarTermSpec = (typeof SOLAR_TERMS_24)[number];
+export type Hemisphere = 'north' | 'south' | 'unknown';
+/** Select a roughly opposite-season existing painting, never alter the real term. */
+export function seasonalVisualSkinId(term: SolarTermSpec, hemisphere: Hemisphere): string {
+  if (hemisphere !== 'south') return term.skinId;
+  const index = SOLAR_TERMS_24.indexOf(term);
+  return index < 0 ? term.skinId : SOLAR_TERMS_24[(index + 12) % 24].skinId;
+}
 const MS_DAY = 86_400_000;
 const sydneyDayFormatter = new Intl.DateTimeFormat("en-GB", {timeZone:"Australia/Sydney",year:"numeric",month:"2-digit",day:"2-digit"});
 function sydneyDay(instant: Date): string {

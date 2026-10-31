@@ -1,4 +1,4 @@
-import { FROST_SKIN_ID, FROST_PHASES, SEASONAL_AUTO_ID, seasonalSkinId, seasonalState, frostEdition } from './seasonal-skins';
+import { FROST_SKIN_ID, FROST_PHASES, SEASONAL_AUTO_ID, seasonalState, seasonalVisualSkinId, frostEdition, type Hemisphere } from './seasonal-skins';
 import { useEffect, useState } from "react";
 
 /**
@@ -83,9 +83,10 @@ export const CURATED_SKINS = CURATED_SKIN_CATALOG
 export const SEASONAL_SKINS = SKINS.filter((skin) => skin.id.startsWith("solar-"));
 export const ARCHIVED_SKINS = SKINS.filter((skin) => !skin.id.startsWith("solar-") && !CURATED_SKIN_CATALOG.some((entry) => entry.id === skin.id));
 
+let visitorHemisphere: Hemisphere = 'unknown';
 export function skinById(id: string | null | undefined) {
   const auto = id === SEASONAL_AUTO_ID ? seasonalState() : null;
-  const resolved = auto ? auto.term.skinId : id;
+  const resolved = auto ? seasonalVisualSkinId(auto.term, visitorHemisphere) : id;
   const skin = SKINS.find((s) => s.id === resolved) ?? null;
   if (!skin) return null;
   if (auto) {
@@ -120,9 +121,11 @@ export function applySkin(id: string, persist = false) {
     const state = seasonalState();
     root.setAttribute("data-zws-term", state.term.zh);
     root.setAttribute("data-zws-hou", String(state.houIndex + 1));
+    root.setAttribute("data-zws-hemisphere", visitorHemisphere);
   } else {
     root.removeAttribute("data-zws-term");
     root.removeAttribute("data-zws-hou");
+    root.removeAttribute("data-zws-hemisphere");
   }
   if (skin) {
     root.setAttribute("data-zws", skin.id);
@@ -250,7 +253,7 @@ function refreshAutoSkinIfDue() {
   const root = document.documentElement;
   if (root.getAttribute("data-zws-selection") !== SEASONAL_AUTO_ID) return;
   const state = seasonalState();
-  if (root.getAttribute("data-zws") !== state.term.skinId ||
+  if (root.getAttribute("data-zws") !== seasonalVisualSkinId(state.term, visitorHemisphere) ||
       root.getAttribute("data-zws-hou") !== String(state.houIndex + 1)) {
     applySkin(SEASONAL_AUTO_ID);
   }
@@ -261,6 +264,15 @@ export function hydrateSkin() {
   // Last server-confirmed skin first; the koi default only for a first-ever visit.
   applySkin(cachedPublishedSkin() ?? SITE_DEFAULT_SKIN);
   void refreshSharedSkin();
+  // A same-origin coarse hemisphere response, never the IP address or coordinates.
+  void fetch('/api/zhaowu-capabilities?mode=visitor-hemisphere', { cache: 'no-store', credentials: 'same-origin' })
+    .then(response => response.ok ? response.json() : null)
+    .then(data => {
+      const next = data?.hemisphere;
+      if (next !== 'north' && next !== 'south') return;
+      visitorHemisphere = next;
+      if (readSkinId() === SEASONAL_AUTO_ID) applySkin(SEASONAL_AUTO_ID);
+    }).catch(() => { /* Keep original theme when IP location is unavailable. */ });
   if (!seasonalTickerStarted) {
     seasonalTickerStarted = true;
     window.setInterval(refreshAutoSkinIfDue, 30_000);
