@@ -50,6 +50,21 @@ test("BaZi payment unlocks BaZi alone, never Zi Wei", async () => {
   } finally { browser.restore(); }
 });
 
+test("a temporary entitlement lookup failure remains unconfirmed rather than granting access", async () => {
+  const browser = browserFixture({ product: "system", system: "bazi" });
+  try {
+    globalThis.fetch = async (url) => {
+      if (url === "/api/owner-session") return Response.json({ authenticated: false });
+      if (String(url).includes("/functions/v1/stripe-checkout")) throw new Error("network unavailable");
+      if (String(url).includes("/functions/v1/promo-code")) return Response.json({ ok: true, paid: false });
+      throw new Error("unexpected request");
+    };
+    const access = await resolveReportAccess("bazi");
+    assert.equal(access.level, "quick");
+    assert.equal(access.pending, true);
+  } finally { browser.restore(); }
+});
+
 test("BaZi checkout preserves report ID and passes only opaque reference to Stripe", async () => {
   const browser = browserFixture({ product: "system", system: "bazi" });
   try {
