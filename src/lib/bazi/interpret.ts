@@ -141,15 +141,6 @@ function weather(chart: Chart): string {
   return `当前流年为${chart.currentYear}。`;
 }
 
-function moveScore(text: string): number {
-  const move = ["轉", "转", "離", "离", "走", "換", "换", "創", "创", "出國", "出国", "分手", "結束", "结束", "辭", "辞", "跳", "搬", "開", "开", "新工作", "新公司", "新職位", "新职位", "升遷", "升迁", "成長", "成长", "薪資高", "薪资高", "收入高"];
-  const stay = ["留", "穩", "稳", "等", "維持", "维持", "繼續", "继续", "復合", "复合", "保留"];
-  let n = 0;
-  for (const k of move) if (text.includes(k)) n += 1;
-  for (const k of stay) if (text.includes(k)) n -= 1;
-  return n;
-}
-
 type ChoicePart = { label: "A" | "B" | null; text: string };
 
 function choiceParts(question: string): ChoicePart[] {
@@ -174,38 +165,14 @@ function choiceName(part: ChoicePart): string {
   return part.label ? `${part.label}（${text}）` : `「${text}」`;
 }
 
-function leanChoice(q: string, chart: Chart): string {
+export function leanChoice(q: string): string {
   const parts = choiceParts(q);
-  const strong = chart.strength.tendency.includes("旺");
   if (parts.length >= 2) {
-    const aPart = parts[0];
-    const bPart = parts[1];
-    const a = aPart.text
-      .replace(/^(?:我)?(?:應該|应该)?/, "")
-      .replace(/^[^：:]{0,24}[：:]/, "")
-      .replace(/[，,、]$/, "")
-      .trim();
-    const b = bPart.text.replace(/[？?。！!].*$/, "").trim();
-    const aMove = moveScore(a);
-    const bMove = moveScore(b);
-
-    if (a && b && aMove !== bMove) {
-      const moveChoice = aMove > bMove ? { ...aPart, text: a } : { ...bPart, text: b };
-      const stayChoice = aMove > bMove ? { ...bPart, text: b } : { ...aPart, text: a };
-      return strong
-        ? `直接回答：偏向 ${choiceName(moveChoice)}。原局偏滿時，更需要把能量轉成可衡量的成果與有效轉場；但要先確認新增責任、時間成本與退出條款仍在可承受範圍。`
-        : `直接回答：偏向 ${choiceName(stayChoice)}。原局承載偏弱時，應先保住穩定資源與可持續節奏；除非另一選項的支援、規則與退出條款明顯更完整。`;
-    }
-
-    return `直接回答：目前不能可靠強選。你已提出 ${choiceName(aPart)} 與 ${choiceName(bPart)}，但兩邊還缺少能拉開差異的現實條件；請至少用同一標準補上收益、責任、時間投入、穩定性與退出成本。`;
+    return `直接回答：目前不能可靠強選。你提出的 ${choiceName(parts[0])} 與 ${choiceName(parts[1])}，需要比較收益、責任、時間投入、支援和退出成本；也要結合完整命局及當前運勢，不能單憑身強身弱決定去留。`;
   }
-
   if (q.includes("該不該") || q.includes("该不该") || q.includes("要不要")) {
-    return strong
-      ? "盤面偏滿，原則上可以動，但先控制退出成本，用小規模試行代替一次性全押。"
-      : "盤面承載優先，暫不建議一次性全押；先補穩定資源，再用小規模試行驗證。";
+    return "直接回答：目前條件不足，不能可靠判定該不該做。請先比較實際收益、風險、支援與退出成本，再結合完整命局及當前運勢判斷。";
   }
-
   return "目前問題缺少可比較的兩個明確選項，不作強行二選一。";
 }
 
@@ -288,7 +255,7 @@ export function interpret(question: string, chart: Chart, relation: RelationPref
       directAnswer = `结论：钱的事不能只看“财星多不多”，要看你撑不撑得住财、有没有稳定的产出和能重复变现的路子。你这张盘目前偏向${structure.label}${structure.established ? "" : "方向"}，${structure.remedy.disease}；所以先把底子和流通理顺，再谈扩张。${fiveElementWealthBehaviorHint(chart.dayMasterElement)}。这只是辅助参考，不能单靠它断定你会不会发财、什么时候发财，或哪一笔投资稳赚。`;
       break;
     case "choice":
-      directAnswer = leanChoice(question, chart);
+      directAnswer = leanChoice(question);
       break;
     case "timing":
       directAnswer = `结论：时间题必须用原局 + 大运 + 流年判断，不能单凭一个流年字直接定“必成日期”。${now}${chart.currentDayun ? ` 当前大运提供的是${chart.currentDayun.ganZhi}这一阶段背景；具体到月份，需要再看该问题所属领域与流月是否形成同向触发。` : " 大运资料不足时，时间结论降级。"}`;
