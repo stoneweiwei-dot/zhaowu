@@ -46,7 +46,7 @@ test("web film is a faststart MP4 well under the original size, with a WebP post
 
 test("pages render web derivatives and keep original links", () => {
   const main = readFileSync("src/routes/mythic-atlas.tsx", "utf8");
-  assert.match(main, /href=\{`\/mythic-atlas\/originals\/\$\{art\.file\}`\}/);
+  assert.match(main, /src=\{`\/mythic-atlas\/originals\/\$\{art\.file\}`\}/);
   assert.match(main, /<img src=\{mythicWebPlate\("originals", art\.file\)\}/);
   assert.match(main, /<img src=\{mythicWebThumb\("originals", art\.file\)\}/);
   assert.match(main, /poster=\{MYTHIC_WEB_FILM_POSTER\}/);

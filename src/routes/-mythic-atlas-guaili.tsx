@@ -6,6 +6,7 @@ import {
 } from "./-mythic-atlas-guaili-data";
 import { ZODIAC_PLATES } from "./-mythic-atlas-zodiac-essay";
 import { mythicWebPlate } from "@/lib/mythic-web-assets";
+import { MythicImageViewer } from "./-mythic-image-viewer";
 
 const simplifiedCurrents = ["同炉","仪光","祝骨","强郎","文卿","退奇","铜聋","耆耆","赤伯","东僧","天贼","是谁"];
 
@@ -55,9 +56,9 @@ export function GuailiBook({ locale }: { locale: Locale }) {
         {GUAILI_ZODIAC.map((path, index) => <details key={index} id={`guaili-${ZODIAC_PLATES[index].branch}`}>
           <summary><span className="hq-guaili-zodiac-mark">{String(index + 1).padStart(2, "0")}</span><strong>{tr(path.earthly, locale)}</strong><span className="hq-guaili-zodiac-short">{tr(path.shadow, locale)}</span></summary>
           <figure className="hq-guaili-plate">
-            <a href={`/mythic-atlas/zodiac/${ZODIAC_PLATES[index].image}`} target="_blank" rel="noopener noreferrer" aria-label={tr(l(`開啟${tr(path.earthly, "zh-Hant")}原圖`, `打开${tr(path.earthly, "zh-Hans")}原图`, `Open original plate: ${tr(path.earthly, "en")}`), locale)}>
+            <MythicImageViewer src={`/mythic-atlas/zodiac/${ZODIAC_PLATES[index].image}`} locale={locale} label={tr(l(`開啟${tr(path.earthly, "zh-Hant")}原圖`, `打开${tr(path.earthly, "zh-Hans")}原图`, `Open original plate: ${tr(path.earthly, "en")}`), locale)}>
               <img src={mythicWebPlate("zodiac", ZODIAC_PLATES[index].image)} width={941} height={1672} loading="lazy" decoding="async" alt={tr(l(`${tr(path.earthly, "zh-Hant")}四態原創畫作：凡體、${tr(path.shadow, "zh-Hant")}、${tr(path.beast, "zh-Hant")}、${tr(path.god, "zh-Hant")}`, `${tr(path.earthly, "zh-Hans")}四态原创画作：凡体、${tr(path.shadow, "zh-Hans")}、${tr(path.beast, "zh-Hans")}、${tr(path.god, "zh-Hans")}`, `Original four-aspect plate of ${tr(path.earthly, "en")}`), locale)} />
-            </a>
+            </MythicImageViewer>
             <figcaption>{tr(l("STONE 原創 · 941 × 1672 原圖，點圖放大；圖中文字為繁體中文", "STONE 原创 · 941 × 1672 原图，点图放大；图中文字为繁体中文", "STONE Original · 941 × 1672 original; tap to enlarge. Lettering remains in Traditional Chinese."), locale)}</figcaption>
           </figure>
           <dl>
