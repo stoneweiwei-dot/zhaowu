@@ -81,7 +81,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
       <p>{seasonalAuto.hou[locale]}</p>
       <blockquote>{t('初候・二候・三候，循時而變。', '初候・二候・三候，循时而变。', 'Three pentads, changing with the seasons.')}</blockquote>
       <small>{locale === 'en' ? `Pentad ${houNumber} / 72 · Sydney calendar schedule` : `第 ${houNumber} / 72 候 · 悉尼節氣日程`}</small>
-      <small>{t('傳統中國物候，不代表澳洲當地氣候。非霜降節氣沿用已上架畫作。', '传统中国物候，不代表澳洲当地气候。非霜降节气沿用已上架画作。', 'Traditional Chinese imagery, not a Sydney weather forecast. Other terms reuse published artwork.')}</small>
+      <small>{t('節氣及物候為中國傳統名稱；畫面依粗略位置調整南北季節，位置不明時沿用原畫。畫作為既有素材，非當地天氣預報。', '节气及物候为中国传统名称；画面依粗略位置调整南北季节，位置不明时沿用原画。画作为现有素材，非当地天气预报。', 'Traditional Chinese term and pentad names are unchanged. Artwork adapts to approximate hemisphere when available; existing art is reused and is not a local weather forecast.')}</small>
     </aside>}
     {frostOnly && <aside className="ph-seasonal-note" data-seasonal-note>
       <p className="ph-seasonal-term"><span lang="zh">霜降</span><span lang="en">Frost’s Descent</span></p>
