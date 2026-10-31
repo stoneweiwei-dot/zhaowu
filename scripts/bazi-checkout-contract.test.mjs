@@ -65,6 +65,34 @@ test("BaZi checkout preserves report ID and passes only opaque reference to Stri
   } finally { clearPurchaseConsent(); browser.restore(); }
 });
 
+for (const mode of ["throws", "silent"]) {
+  for (const system of ["bazi", "ziwei"]) {
+    test(`checkout blocks ${system} when storage ${mode}`, async () => {
+      const browser = browserFixture({ product: "system", system });
+      try {
+        recordPurchaseConsent();
+        globalThis.localStorage.setItem = mode === "throws" ? () => { throw new Error("storage blocked"); } : () => {};
+        await assert.rejects(startReportCheckout("system", system, "11111111-1111-4111-8111-111111111111"), /CHECKOUT_STORAGE_UNAVAILABLE/);
+        assert.equal(browser.redirected(), "");
+      } finally { clearPurchaseConsent(); browser.restore(); }
+    });
+  }
+}
+
+test("checkout blocks when the report reference cannot be saved after the storage probe", async () => {
+  const browser = browserFixture({ product: "system", system: "bazi" });
+  try {
+    recordPurchaseConsent();
+    const set = globalThis.localStorage.setItem;
+    globalThis.localStorage.setItem = (key, value) => {
+      if (key === "zhaowu.pending-bazi-report.v1") throw new Error("quota");
+      set(key, value);
+    };
+    await assert.rejects(startReportCheckout("system", "bazi", "11111111-1111-4111-8111-111111111111"), /CHECKOUT_STORAGE_UNAVAILABLE/);
+    assert.equal(browser.redirected(), "");
+  } finally { clearPurchaseConsent(); browser.restore(); }
+});
+
 test("USD prices and webhook entitlement agree with new Stripe link", () => {
   assert.match(client, /system: FIXED_REPORT_PRICES\.standard\.usd/);
   assert.match(webhook, /plink_1URIwkFAzopdCCax8ZVKkNPH: \{ product: "system", system: "bazi", amount: 1999 \}/);

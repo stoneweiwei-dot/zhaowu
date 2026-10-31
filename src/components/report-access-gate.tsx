@@ -203,7 +203,9 @@ export function ReportAccessGate({
       await startReportCheckout(product, system);
     } catch (cause) {
       const code = cause instanceof Error ? cause.message : "";
-      setError(code === "PAYMENT_NOT_CONFIGURED" ? copy.unavailable : copy.unavailable);
+      setError(code === "CHECKOUT_STORAGE_UNAVAILABLE"
+        ? (locale === "en" ? "This browser cannot save your purchase for recovery. Allow site storage or use another browser before paying." : locale === "zh-Hans" ? "无法在此浏览器保存付款凭证。请允许网站存储数据或使用其他浏览器后再付款。" : "無法在此瀏覽器保存付款憑證。請允許網站儲存資料或使用其他瀏覽器後再付款。")
+        : copy.unavailable);
       setBusy(null);
     }
   }
