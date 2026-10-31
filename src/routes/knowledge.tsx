@@ -63,6 +63,7 @@ function KnowledgePage() {
         <h2 className="font-display text-xl text-ink">{tr(locale,"知識文章","知识文章","Knowledge articles")}</h2>
         <ul className="space-y-3 text-sm leading-7 text-ink-soft">
           <li><Link className="underline underline-offset-4" to="/knowledge/five-elements-tone-qi">{tr(locale,"五行五色、五音與五氣","五行五色、五音与五气","Five Elements, colours, tones and qi")}</Link></li>
+          <li><Link className="underline underline-offset-4" to="/knowledge/nine-heavens-lamps">{tr(locale,"九重天外，無人掌燈 · 緣起四境","九重天外，无人掌灯 · 缘起四境","Beyond Nine Heavens · Four lamps and dependent origination")}</Link></li>
           <li><Link className="underline underline-offset-4" to="/knowledge/shushu-boundary">{tr(locale,"術數的邊界","术数的边界","The boundary of the divination arts")}</Link></li>
           <li><Link className="underline underline-offset-4" to="/knowledge/system-map">{tr(locale,"昭梧命理系統能力地圖","昭梧命理系统能力地图","Zhaowu system capability map")}</Link></li>
         </ul>
