@@ -6,6 +6,7 @@ import { MYTHIC_WEB_FILM, MYTHIC_WEB_FILM_POSTER, mythicWebPlate, mythicWebThumb
 import { ARTWORKS, BRANCHES, CHRONICLES, COPY, l, OBSERVATION_CHAPTERS, ORDERS, REALMS, SOURCE_LABELS, tr, type Side, type SourceKind } from "./-mythic-atlas-data";
 import { BorrowStarInterlude } from "./-mythic-atlas-borrow-star";
 import { GuailiBook } from "./-mythic-atlas-guaili";
+import { MythicImageViewer } from "./-mythic-image-viewer";
 import "./-mythic-atlas-guaili.css";
 import "./mythic-atlas.css";
 
@@ -15,7 +16,7 @@ function Plate({ index, locale, priority = false }: { index: number; locale: Loc
   const art = ARTWORKS[index - 1];
   return <figure className="hq-plate">
     <div className="hq-image-frame">
-      <a className="hq-full-plate" href={`/mythic-atlas/originals/${art.file}`} target="_blank" rel="noopener noreferrer" aria-label={tr(l("開啟完整 STONE 原創 PNG 原圖", "打开完整 STONE 原创 PNG 原图", "Open full-resolution STONE original PNG"), locale)}><img src={mythicWebPlate("originals", art.file)} alt={tr(art.title, locale)} width={941} height={1672} loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : "auto"} /></a>
+      <MythicImageViewer className="hq-full-plate" src={`/mythic-atlas/originals/${art.file}`} locale={locale} label={tr(l("開啟完整 STONE 原創 PNG 原圖", "打开完整 STONE 原创 PNG 原图", "Open full-resolution STONE original PNG"), locale)}><img src={mythicWebPlate("originals", art.file)} alt={tr(art.title, locale)} width={941} height={1672} loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : "auto"} /></MythicImageViewer>
       <span className="hq-original-mark">STONE 原創</span>
     </div>
     <figcaption><strong>{String(index).padStart(2, "0")} · {tr(art.title, locale)}</strong><span>{tr(COPY.inspiredBy, locale)}：{tr(art.source, locale)}</span></figcaption>
