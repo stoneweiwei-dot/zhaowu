@@ -242,8 +242,24 @@ export async function resolveReportAccess(system: ReportSystemId) {
 export async function startReportCheckout(product: ReportAccessProduct, system: ReportSystemId, reportId?: string) {
   // Every purchase entry point must collect the Terms/Privacy consent first (PurchaseConsent).
   if (!hasPurchaseConsent()) throw new Error("CONSENT_REQUIRED");
+  // The success return must persist a Stripe session before its URL is cleaned.
+  // Do not accept a payment if this browser cannot save the recovery capability.
+  try {
+    const probeKey = "zhaowu.checkout-storage-probe";
+    const probeValue = "x".repeat(4096);
+    localStorage.setItem(probeKey, probeValue);
+    if (localStorage.getItem(probeKey) !== probeValue) throw new Error("storage readback failed");
+    localStorage.removeItem(probeKey);
+  } catch {
+    throw new Error("CHECKOUT_STORAGE_UNAVAILABLE");
+  }
   const accessKey = reportAccessKey();
   if (!accessKey) throw new Error("ACCESS_KEY_UNAVAILABLE");
+  try {
+    if (localStorage.getItem(ACCESS_KEY_STORAGE) !== accessKey) throw new Error("access key not saved");
+  } catch {
+    throw new Error("CHECKOUT_STORAGE_UNAVAILABLE");
+  }
   if (product !== "system") throw new Error("PAYMENT_LINK_MISSING");
   const link = PAYMENT_LINKS[system];
   if (!link) throw new Error("PAYMENT_LINK_MISSING");
@@ -251,7 +267,10 @@ export async function startReportCheckout(product: ReportAccessProduct, system: 
   // A session ID/URL/localStorage marker is NOT an entitlement: the server
   // still verifies the paid Stripe session before showing gated content.
   if (system === "bazi" && product === "system" && /^[0-9a-f-]{36}$/i.test(reportId || "")) {
-    try { localStorage.setItem("zhaowu.pending-bazi-report.v1", reportId!); } catch { /* Recovery remains available in My reports. */ }
+    try {
+      localStorage.setItem("zhaowu.pending-bazi-report.v1", reportId!);
+      if (localStorage.getItem("zhaowu.pending-bazi-report.v1") !== reportId) throw new Error("report reference not saved");
+    } catch { throw new Error("CHECKOUT_STORAGE_UNAVAILABLE"); }
   }
   if (system === "bazi" && product === "system") {
     try { localStorage.setItem(BAZI_RETURN_STORAGE, "bazi"); } catch { /* The success query still opens the birth flow. */ }

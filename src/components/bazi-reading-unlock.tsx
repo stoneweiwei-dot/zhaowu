@@ -32,7 +32,7 @@ export function BaziReadingUnlock({ locale, reportId, grade }: { locale: Locale;
     setBusy(true);
     setError("");
     try { await startReportCheckout("system", "bazi", reportId); }
-    catch { setError(text("暫時無法前往付款，請稍後重試。", "暂时无法前往付款，请稍后重试。", "Checkout could not open. Please try again.")); setBusy(false); }
+    catch (cause) { setError(cause instanceof Error && cause.message === "CHECKOUT_STORAGE_UNAVAILABLE" ? text("無法在此瀏覽器保存付款憑證。請允許網站儲存資料或使用其他瀏覽器後再付款。", "无法在此浏览器保存付款凭证。请允许网站存储数据或使用其他浏览器后再付款。", "This browser cannot save your purchase for recovery. Allow site storage or use another browser before paying.") : text("暫時無法前往付款，請稍後重試。", "暂时无法前往付款，请稍后重试。", "Checkout could not open. Please try again.")); setBusy(false); }
   }
   return <section className="mb-4 mt-4 border-t border-line/60 pt-4" data-bazi-reading-locked>
     <h3 className="font-display text-lg">{text("完整命書", "完整命书", "Full BaZi reading")}</h3>

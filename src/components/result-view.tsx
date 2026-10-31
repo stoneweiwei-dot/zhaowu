@@ -75,8 +75,10 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     setPurchaseError(null);
     try {
       await startReportCheckout(product, "bazi", result.id);
-    } catch {
-      setPurchaseError(locale === "en" ? "Checkout channel is not active yet. Pricing and boundary are locked." : locale === "zh-Hans" ? toSimplifiedCustomerText("付款通道尚未啟用；價格與免費／付費邊界已經固定。") : "付款通道尚未啟用；價格與免費／付費邊界已經固定。");
+    } catch (cause) {
+      setPurchaseError(cause instanceof Error && cause.message === "CHECKOUT_STORAGE_UNAVAILABLE"
+        ? (locale === "en" ? "This browser cannot save your purchase for recovery. Allow site storage or use another browser before paying." : locale === "zh-Hans" ? "无法在此浏览器保存付款凭证。请允许网站存储数据或使用其他浏览器后再付款。" : "無法在此瀏覽器保存付款憑證。請允許網站儲存資料或使用其他瀏覽器後再付款。")
+        : (locale === "en" ? "Checkout channel is not active yet. Pricing and boundary are locked." : locale === "zh-Hans" ? toSimplifiedCustomerText("付款通道尚未啟用；價格與免費／付費邊界已經固定。") : "付款通道尚未啟用；價格與免費／付費邊界已經固定。"));
       setPurchasing(null);
     }
   }
