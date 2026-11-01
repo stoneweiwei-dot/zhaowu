@@ -13,7 +13,7 @@ test("public runtime retires the dragon mascot and keeps one quiet utility dock"
   assert.doesNotMatch(shell, /GreenDragonGuide/);
   assert.match(shell, /<SiteUtilityDock \/>/);
   assert.match(dock, /data-site-utility-dock/);
-  assert.match(dock, /<BackgroundMusic \/>/);
+  assert.match(dock, /<BackgroundMusic visible=\{panel === "music"\} \/>/);
   assert.match(dock, /data-utility-panel="music"/);
   assert.match(dock, /data-utility-panel="guide"/);
   assert.match(music, /data-background-music-player/);
