@@ -37,6 +37,9 @@ jobs:
       - name: Owner API, OAuth, queue, and Passkey regression tests
         run: |
           node --test scripts/owner-promo-admin.test.mjs scripts/loading-gallery-group.test.mjs scripts/owner-console-links.test.mjs scripts/owner-content-hub.test.mjs scripts/r197-owner-console-cleanup.test.mjs scripts/owner-supabase-origin.test.mjs scripts/owner-session-skin-delegation.test.mjs scripts/owner-social-publisher.test.mjs scripts/social-autopublish.test.mjs scripts/owner-passkey.test.mjs scripts/owner-passkey-service-preflight.test.mjs scripts/owner-session-passkey-api.test.mjs scripts/shared-site-skin.test.mjs
+      - name: Music playlist, loop, owner list and mobile utility regression
+        run: |
+          node --test scripts/music-playlist-choice.test.mjs scripts/r149-music-player-controls.test.mjs scripts/r157-dragon-assistant-music.test.mjs scripts/r156-owner-bulk-actions.test.mjs
       - name: Generate routes, build and typecheck
         run: |
           # Vite's TanStack Router plugin regenerates routeTree.gen.ts. Typechecking
