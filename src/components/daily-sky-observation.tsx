@@ -3,10 +3,111 @@ import { sydneyDate } from "@/lib/daily-sky-date";
 import { useEffect, useState } from "react";
 import "@/daily-sky-observation.css";
 
-// This is a dated observation, not a live ephemeris. Keep the source instant explicit.
-const OBSERVATION_DATE = "2026-10-31";
+type Lang = "zh-Hant" | "zh-Hans" | "en";
+type LocalText = Record<Lang, string>;
+type DatedObservation = {
+  date: string;
+  moon: LocalText;
+  planets: LocalText;
+  events: LocalText;
+  weather: LocalText;
+  sources: Array<{ title: string; url: string }>;
+};
+
+// Dated, sourced observation snapshots. An unverified planetary event is never
+// represented as absent. Future daily records belong to the verified generator.
+export const OBSERVATIONS: DatedObservation[] = [
+  {
+    date: "2026-10-31",
+    moon: {
+      "zh-Hant": "虧凸月；05:02 過中天時照明約 73.3%。00:11 月出，09:55 月落。",
+      "zh-Hans": "亏凸月；05:02 过中天时照明约 73.3%。00:11 月出，09:55 月落。",
+      en: "Waning gibbous; ~73.3% illuminated at its 05:02 transit. Moonrise 00:11; moonset 09:55."
+    },
+    planets: {
+      "zh-Hant": "晚間土星約 22:54 過中天；黎明前的木星、火星須觀察東北方低空。",
+      "zh-Hans": "晚间土星约 22:54 过中天；黎明前的木星、火星须观察东北方低空。",
+      en: "Saturn transits around 22:54. Jupiter and Mars are in the pre-dawn northeastern sky."
+    },
+    events: {
+      "zh-Hant": "S／A 行星事件尚未經雙引擎核驗；不宣稱無事件。",
+      "zh-Hans": "S／A 行星事件尚未经过双引擎核验；不宣称无事件。",
+      en: "S/A planetary events are awaiting independent ephemeris verification; no absence claim is made."
+    },
+    weather: {
+      "zh-Hant": "當日天氣和光害資料尚未核實。",
+      "zh-Hans": "当日天气和光害资料尚未核实。",
+      en: "Weather and light-pollution data for this date were not verified."
+    },
+    sources: [
+      { title: "Timeanddate · Sydney Moon, October 2026", url: "https://www.timeanddate.com/moon/australia/sydney?month=10&year=2026" },
+      { title: "Timeanddate · Sydney planetary visibility", url: "https://www.timeanddate.com/astronomy/night/australia/sydney" }
+    ]
+  },
+  {
+    date: "2026-11-01",
+    moon: {
+      "zh-Hant": "虧凸月；06:02 過中天時照明 62.0%。01:03 東北偏東月出，11:07 西北偏西月落。",
+      "zh-Hans": "亏凸月；06:02 过中天时照明 62.0%。01:03 东北偏东月出，11:07 西北偏西月落。",
+      en: "Waning gibbous; 62.0% illuminated at the 06:02 transit. Rises ENE at 01:03; sets WNW at 11:07."
+    },
+    planets: {
+      "zh-Hant": "土星晚間容易觀察，約 22:50 過中天。11月2日黎明前，火星 02:22、木星 02:34 升起；金星約 04:57 升起但貼近地平線。水星過近太陽，不建議尋找。",
+      "zh-Hans": "土星晚间容易观察，约 22:50 过中天。11月2日黎明前，火星 02:22、木星 02:34 升起；金星约 04:57 升起但贴近地平线。水星过近太阳，不建议寻找。",
+      en: "Saturn is readily visible in the evening, transiting around 22:50. Before dawn on 2 Nov, Mars rises 02:22, Jupiter 02:34 and low-horizon Venus 04:57. Mercury is too close to the Sun for practical viewing."
+    },
+    events: {
+      "zh-Hant": "本日 S／A 行星事件與未來72小時預告尚待獨立星曆核驗。這不代表沒有重大事件。",
+      "zh-Hans": "本日 S／A 行星事件与未来72小时预告尚待独立星历核验。这不代表没有重大事件。",
+      en: "Today's S/A planetary events and the 72-hour forecast await independent ephemeris validation. This does not mean there are no major events."
+    },
+    weather: {
+      "zh-Hant": "澳洲氣象局11月1日17:00預報：悉尼地區多雲間晴，今晚可能有陣雨，越晚機率越低。市區光害較強；建議避開街燈，實地確認雲況。",
+      "zh-Hans": "澳大利亚气象局11月1日17:00预报：悉尼地区多云间晴，今晚可能有阵雨，越晚概率越低。市区光害较强；建议避开街灯，实地确认云况。",
+      en: "The Australian Bureau of Meteorology's 17:00 forecast says partly cloudy, with a slight chance of showers becoming less likely later tonight. Urban light pollution is substantial; check clouds and avoid bright streetlights."
+    },
+    sources: [
+      { title: "Timeanddate · Sydney Moon, November 2026", url: "https://www.timeanddate.com/moon/australia/sydney?month=11&year=2026" },
+      { title: "Timeanddate · Sydney planetary visibility, 1 Nov", url: "https://www.timeanddate.com/astronomy/night/australia/sydney" },
+      { title: "Australian Bureau of Meteorology · Sydney area forecast, issued 1 Nov 2026 17:00 AEDT", url: "https://www.bom.gov.au/places/nsw/austral/forecast/" }
+    ]
+  }
+];
+
+const UI: Record<Lang, {
+  title: string; subtitle: string; archived: string; moon: string;
+  planets: string; events: string; weather: string; sources: string;
+  daily: string; why: string; actions: string; signature: string; note: string; tips: string[];
+}> = {
+  "zh-Hant": {
+    title: "每日觀象", subtitle: "觀天象 · 知時序", archived: "歷史觀測紀錄，尚未更新到今日",
+    moon: "月相與升落", planets: "行星動態", events: "行星事件核驗", weather: "觀測提醒",
+    sources: "完整紀錄及資料來源", daily: "天空正在發生什麼", why: "如何理解",
+    actions: "今日可做的事", signature: "觀天有時，行事有度",
+    note: "以上為天文觀測。占星象徵與八字判斷不屬同一證據層，另行標示。",
+    tips: ["今晚看土星前先查看雲量與雨勢。", "避開街燈並選擇安全、視野開闊的位置。", "若想看木星與火星，安排11月2日黎明前觀測。"]
+  },
+  "zh-Hans": {
+    title: "每日观象", subtitle: "观天象 · 知时序", archived: "历史观测记录，尚未更新到今日",
+    moon: "月相与升落", planets: "行星动态", events: "行星事件核验", weather: "观测提醒",
+    sources: "完整记录及数据来源", daily: "天空正在发生什么", why: "如何理解",
+    actions: "今天可做的事", signature: "观天有时，行事有度",
+    note: "以上为天文观测。占星象征与八字判断不属同一证据层，另行标示。",
+    tips: ["今晚看土星前先查看云量与雨势。", "避开街灯并选择安全、视野开阔的位置。", "如想看木星与火星，安排11月2日黎明前观测。"]
+  },
+  en: {
+    title: "Daily Sky", subtitle: "Observe the sky · Mark the seasons", archived: "Archived observation; today's update is not available",
+    moon: "Moon phase and rise/set", planets: "Planet visibility", events: "Planetary event verification", weather: "Viewing advice",
+    sources: "Full record and sources", daily: "What is happening in the sky?", why: "How to interpret it",
+    actions: "Practical things to do", signature: "Watch the sky; act with care",
+    note: "Astronomy is presented here as observation. Astrological symbolism and BaZi judgments are separate evidence layers.",
+    tips: ["Check clouds and rain before viewing Saturn tonight.", "Choose a safe open view away from streetlights.", "For Jupiter and Mars, plan an observation before dawn on 2 November."]
+  }
+};
+
 export function DailySkyObservation() {
   const { locale } = useI18n();
+  const lang: Lang = locale === "en" ? "en" : locale === "zh-Hans" ? "zh-Hans" : "zh-Hant";
   const [today, setToday] = useState(() => sydneyDate(new Date()));
   useEffect(() => {
     const update = () => setToday(sydneyDate(new Date()));
@@ -14,18 +115,41 @@ export function DailySkyObservation() {
     document.addEventListener("visibilitychange", update);
     return () => { window.clearInterval(timer); document.removeEventListener("visibilitychange", update); };
   }, []);
-  const lang = locale === "en" ? "en" : locale === "zh-Hans" ? "zh-Hans" : "zh-Hant";
-  const text = {
-    "zh-Hant": { title: "每日觀象", subtitle: "觀天象 · 知時序", date: "2026年10月31日｜悉尼", stale: "歷史觀測資料：尚未更新至今日", moonTitle: "月相與升落", moon: "虧凸月；05:02 過中天時照明 73.3%。00:11 月出，09:55 月落。", planetsTitle: "行星與觀測", planets: "10月31日晚間可留意土星；約22:54過中天。11月1日黎明前可留意東北方的木星與火星。實際能見度取決於雲量與地平線。", eventsTitle: "重要事件", events: "今日行星事件及未來72小時預告尚待獨立核驗。", weather: "天氣及光害資料暫缺；請於出門前查看當地預報，選擇遠離燈光的安全地點。", line: "抬頭看天，留意時序。", source: "觀測資料與來源", notice: "以上為天文觀測資料；占星象徵另見下方專欄。" },
-    "zh-Hans": { title: "每日观象", subtitle: "观天象 · 知时序", date: "2026年10月31日｜悉尼", stale: "历史观测资料：尚未更新至今日", moonTitle: "月相与升落", moon: "亏凸月；05:02 过中天时照明 73.3%。00:11 月出，09:55 月落。", planetsTitle: "行星与观测", planets: "10月31日晚间可留意土星；约22:54过中天。11月1日黎明前可留意东北方的木星与火星。实际能见度取决于云量与地平线。", eventsTitle: "重要事件", events: "今日行星事件及未来72小时预告尚待独立核验。", weather: "天气及光害资料暂缺；请于出门前查看当地预报，选择远离灯光的安全地点。", line: "抬头看天，留意时序。", source: "观测资料与来源", notice: "以上为天文观测资料；占星象征另见下方专栏。" },
-    en: { title: "Daily Sky", subtitle: "Observe the sky · Mark the seasons", date: "31 October 2026 | Sydney", stale: "Archived observation: today’s update is not yet available", moonTitle: "Moon phase and rise/set", moon: "Waning gibbous; 73.3% illuminated at its 05:02 meridian passage. Moonrise 00:11; moonset 09:55.", planetsTitle: "Planets and viewing", planets: "Look for Saturn on the evening of 31 October; it transits around 22:54. Before dawn on 1 November, look northeast for Jupiter and Mars. Clouds and the horizon affect visibility.", eventsTitle: "Notable events", events: "Today's planetary events and the 72-hour outlook are awaiting independent verification.", weather: "Weather and light-pollution data are unavailable. Check the local forecast and choose a safe location away from bright lights.", line: "Look up, and notice the changing sky.", source: "Observation sources", notice: "These are astronomical observations. Astrological symbolism is presented separately below." }
-  }[lang];
-  const stale = today !== OBSERVATION_DATE;
-  return <section className="daily-sky" aria-label={text.title}>
-    <header><span className="daily-sky-kicker">ZHAOWU · SYDNEY SKY</span><h2>{text.title}</h2><p>{text.subtitle}</p><time dateTime={OBSERVATION_DATE}>{text.date}</time></header>
-    {stale && <p className="daily-sky-stale" role="status">{text.stale}</p>}
-    <div className="daily-sky-columns"><section><h3>{text.moonTitle}</h3><p>{text.moon}</p></section><section><h3>{text.planetsTitle}</h3><p>{text.planets}</p></section></div>
-    <p className="daily-sky-quote">{text.line}</p><section><h3>{text.eventsTitle}</h3><p>{text.events}</p><p>{text.weather}</p></section>
-    <details><summary>{text.source}</summary><ul><li><a href="https://www.timeanddate.com/moon/australia/sydney?month=10&amp;year=2026">Timeanddate · Sydney Moon · 31 Oct 2026</a></li><li><a href="https://www.timeanddate.com/astronomy/night/australia/sydney">Timeanddate · Sydney planets · 31 Oct 2026</a></li><li><a href="https://whatsintheskytonight.com/in/australia">What's in the sky tonight · Australia</a></li></ul></details><p className="daily-sky-note">{text.notice}</p>
-  </section>;
+  const observation = OBSERVATIONS.filter((entry) => entry.date <= today).at(-1);
+  const ui = UI[lang];
+  if (!observation) return null;
+  const stale = observation.date !== today;
+  return (
+    <section className="daily-sky" aria-label={ui.title}>
+      <header>
+        <span className="daily-sky-kicker">ZHAOWU · SYDNEY SKY</span>
+        <h2>{ui.title}</h2><p>{ui.subtitle}</p>
+        <time dateTime={observation.date}>{observation.date} · Australia/Sydney (AEDT/ AEST)</time>
+      </header>
+      {stale && <p className="daily-sky-stale" role="status">{ui.archived}</p>}
+      <div className="daily-sky-columns">
+        <section><h3>{ui.moon}</h3><p>{observation.moon[lang]}</p></section>
+        <section><h3>{ui.planets}</h3><p>{observation.planets[lang]}</p></section>
+      </div>
+      <p className="daily-sky-quote">{ui.signature}</p>
+      <section><h3>{ui.daily}</h3><p>{observation.moon[lang]}</p></section>
+      <section><h3>{ui.why}</h3><p>{observation.date === "2026-11-01"
+        ? (lang === "en" ? "Late spring in Sydney brings later sunsets, while planetary visibility depends on the actual horizon and weather, not on astrology." : lang === "zh-Hans" ? "悉尼正值春末，日落渐晚；能否看见行星取决于地平线和天气，不代表命运变化。" : "悉尼正值春末，日落漸晚；能否看見行星取決於地平線和天氣，不代表命運變化。")
+        : ui.note}</p></section>
+      <section><h3>{ui.events}</h3><p>{observation.events[lang]}</p></section>
+      <section><h3>{ui.weather}</h3><p>{observation.weather[lang]}</p></section>
+      {observation.date === "2026-11-01" && <section><h3>{ui.actions}</h3><ul>{ui.tips.map((tip) => <li key={tip}>{tip}</li>)}</ul></section>}
+      <details>
+        <summary>{ui.sources}</summary>
+        <p><time dateTime={observation.date}>{observation.date}</time> · Australia/Sydney</p>
+        <ul>{observation.sources.map((source) => <li key={source.url}>
+          <a href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</a>
+        </li>)}</ul>
+        {OBSERVATIONS.filter((entry) => entry.date < observation.date).map((old) =>
+          <details key={old.date}><summary>{old.date}</summary><p>{old.moon[lang]}</p><p>{old.planets[lang]}</p></details>
+        )}
+      </details>
+      <p className="daily-sky-note">{ui.note}</p>
+    </section>
+  );
 }
