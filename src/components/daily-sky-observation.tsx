@@ -69,7 +69,7 @@ export const OBSERVATIONS: DatedObservation[] = [
     sources: [
       { title: "Timeanddate · Sydney Moon, November 2026", url: "https://www.timeanddate.com/moon/australia/sydney?month=11&year=2026" },
       { title: "Timeanddate · Sydney planetary visibility, 1 Nov", url: "https://www.timeanddate.com/astronomy/night/australia/sydney" },
-      { title: "Australian Bureau of Meteorology · Sydney area forecast, issued 1 Nov 2026 17:00 AEDT", url: "https://www.bom.gov.au/places/nsw/austral/forecast/" }
+      { title: "Australian Bureau of Meteorology · Sydney area forecast, issued 1 Nov 2026 17:00 AEDT", url: "https://www.bom.gov.au/places/nsw/sydney/forecast/" }
     ]
   }
 ];
@@ -119,12 +119,14 @@ export function DailySkyObservation() {
   const ui = UI[lang];
   if (!observation) return null;
   const stale = observation.date !== today;
+  const zoneName = new Intl.DateTimeFormat("en-AU", { timeZone: "Australia/Sydney", timeZoneName: "short" })
+    .formatToParts(new Date(`${observation.date}T12:00:00Z`)).find((part) => part.type === "timeZoneName")?.value ?? "Australia/Sydney";
   return (
     <section className="daily-sky" aria-label={ui.title}>
       <header>
         <span className="daily-sky-kicker">ZHAOWU · SYDNEY SKY</span>
         <h2>{ui.title}</h2><p>{ui.subtitle}</p>
-        <time dateTime={observation.date}>{observation.date} · Australia/Sydney (AEDT/ AEST)</time>
+        <time dateTime={observation.date}>{observation.date} · Australia/Sydney ({zoneName})</time>
       </header>
       {stale && <p className="daily-sky-stale" role="status">{ui.archived}</p>}
       <div className="daily-sky-columns">
