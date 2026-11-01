@@ -30,6 +30,7 @@ import {
 } from "@/lib/report-access";
 import { directAnswerCoversQuestion } from "@/lib/qa/answer-quality";
 import { foodPreferenceAnswer } from "@/lib/report/food-preference-answer";
+import { watchReportAccess } from "@/lib/report-access-watch";
 
 const RESULT_COPY = {
   "zh-Hant": { syncFailed: "內容已完成，但雲端同步暫時失敗；畫面內容不受影響。", fullFailed: "補充內容暫時未能生成。", saved: "完整報告已保存。", saveFailed: "保存失敗。", saving: "保存中…", updateSaved: "更新已保存報告", fullGenerate: "補充", fullGenerating: "整理中…", imageReady: "個人命象已生成並保存。", imageMatched: "已為你配對並保存圖庫命象。", imageLoadFailed: "命象圖未能載入；文字內容不受影響。", next: "下一步", evidence: "命盤與天干地支圖", evidenceLead: "", decree: "命理解讀", chartDetail: "展開命盤與人物詳解" },
@@ -50,19 +51,18 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [ownerAccess, setOwnerAccess] = useState(false);
   const [purchasing, setPurchasing] = useState<ReportAccessProduct | null>(null);
   const [purchaseError, setPurchaseError] = useState<string | null>(null);
+  const [paymentPending, setPaymentPending] = useState(false);
   const consent = usePurchaseConsent(result.dataGrade);
 
   useEffect(() => {
-    let active = true;
-    void resolveReportAccess("bazi").then((acc) => {
-      if (!active) return;
+    return watchReportAccess(() => resolveReportAccess("bazi"), (acc) => {
       setAccessLevel(acc.level);
       setOwnerAccess(Boolean(acc.owner));
+      setPaymentPending(acc.pending && acc.level !== "system");
       if (!acc.owner && acc.level !== "system" && oncePerSession("paywall:bazi")) {
         trackConversion("zhaowu_paywall_viewed", { system: "bazi", level: acc.level });
       }
-    }).catch(() => { if (active) { setAccessLevel("none"); setOwnerAccess(false); } });
-    return () => { active = false; };
+    }, () => { setAccessLevel("none"); setOwnerAccess(false); });
   }, []);
 
   useEffect(() => {
@@ -75,8 +75,10 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     setPurchaseError(null);
     try {
       await startReportCheckout(product, "bazi", result.id);
-    } catch {
-      setPurchaseError(locale === "en" ? "Checkout channel is not active yet. Pricing and boundary are locked." : locale === "zh-Hans" ? toSimplifiedCustomerText("付款通道尚未啟用；價格與免費／付費邊界已經固定。") : "付款通道尚未啟用；價格與免費／付費邊界已經固定。");
+    } catch (cause) {
+      setPurchaseError(cause instanceof Error && cause.message === "CHECKOUT_STORAGE_UNAVAILABLE"
+        ? (locale === "en" ? "This browser cannot save your purchase for recovery. Allow site storage or use another browser before paying." : locale === "zh-Hans" ? "无法在此浏览器保存付款凭证。请允许网站存储数据或使用其他浏览器后再付款。" : "無法在此瀏覽器保存付款憑證。請允許網站儲存資料或使用其他瀏覽器後再付款。")
+        : (locale === "en" ? "Checkout channel is not active yet. Pricing and boundary are locked." : locale === "zh-Hans" ? toSimplifiedCustomerText("付款通道尚未啟用；價格與免費／付費邊界已經固定。") : "付款通道尚未啟用；價格與免費／付費邊界已經固定。"));
       setPurchasing(null);
     }
   }
@@ -320,7 +322,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           <p className="my-4 rounded-lg border border-wood/30 bg-wood/5 p-3 text-center text-xs leading-5 text-ink-soft" data-owner-free-access>
             {locale === "en" ? "Owner signed in: every reading is free — nothing to buy." : locale === "zh-Hans" ? "站主已登入：全部内容免费阅读，无需购买。" : "站主已登入：全部內容免費閱讀，無需購買。"}
           </p>
-        ) : (
+        ) : !unlocked ? (
         <div className="mx-auto my-4 grid max-w-sm grid-cols-1 gap-3">
           <div className="flex flex-col justify-between rounded-lg border-2 border-cinnabar/80 bg-cinnabar/5 p-4 text-center relative shadow-sm">
             <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-cinnabar px-2 py-0.5 text-[10px] text-cream font-medium">
@@ -342,10 +344,11 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           </div>
 
         </div>
-        )}
+        ) : null}
 
-        <PurchaseConsent locale={locale} checked={consent.checked} needed={consent.needed} onChange={consent.toggle} grade={result.dataGrade} gradeAck={consent.gradeAck} gradeNeeded={consent.gradeNeeded} onGradeChange={consent.toggleGrade} />
+        {!unlocked && <PurchaseConsent locale={locale} checked={consent.checked} needed={consent.needed} onChange={consent.toggle} grade={result.dataGrade} gradeAck={consent.gradeAck} gradeNeeded={consent.gradeNeeded} onGradeChange={consent.toggleGrade} />}
 
+        {paymentPending ? <p className="mt-2 text-xs text-ink-mute" role="status">{locale === "en" ? "Checking payment status. If this takes longer, refresh this page before trying to pay again." : locale === "zh-Hans" ? "正在确认付款状态。如等待较久，请先刷新本页，避免重复付款。" : "正在確認付款狀態。如等待較久，請先重新整理本頁，避免重複付款。"}</p> : null}
         {purchaseError ? (
           <p className="mt-2 text-xs text-cinnabar" role="alert">{purchaseError}</p>
         ) : null}

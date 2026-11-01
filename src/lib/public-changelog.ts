@@ -22,6 +22,13 @@ export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
     en: { title: "Request rate-limit foundation (pending)", summary: "A shared request rate limit for sign-in, promo codes and article interactions is prepared; the database change is pending review and not yet active. Visitor flows, chart calculation and payments are unchanged." },
   },
   {
+    id: "2026-10-30-mythic-atlas-lighter-images",
+    date: "2026-10-30",
+    zhHant: { title: "黃泉圖錄與怪力亂神圖片載入更快", summary: "黃泉圖錄、十二生肖與怪力亂神頁面改用網頁尺寸的圖片與 720p 影片，載入量減少約九成；點圖仍可開啟原始全尺寸檔案。命盤計算與付款流程不變。" },
+    zhHans: { title: "黄泉图录与怪力乱神图片加载更快", summary: "黄泉图录、十二生肖与怪力乱神页面改用网页尺寸的图片与 720p 影片，加载量减少约九成；点图仍可打开原始全尺寸文件。命盘计算与付款流程不变。" },
+    en: { title: "Faster Mythic Atlas and Guaili images", summary: "The Mythic Atlas, zodiac and Guaili pages now load web-sized images and a 720p film, about 90% less data; tapping an image still opens the full-resolution original. Chart calculation and payments are unchanged." },
+  },
+  {
     id: "2026-10-23-pwa-language-guide-empty-state",
     date: "2026-10-23",
     zhHant: { title: "安裝版語言對應、導覽頁收編、空內容區塊不再顯示", summary: "安裝為 App 後，名稱與語言標記會跟隨繁中／簡中／英文；舊的 /guide 網址改導向首頁導覽；吉象圖鑑與影片區在沒有內容時直接隱藏，不再出現空區塊。命盤計算與付款流程不變。" },

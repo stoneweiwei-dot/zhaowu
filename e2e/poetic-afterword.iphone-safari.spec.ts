@@ -48,7 +48,8 @@ test("verified-owner preview renders the literary afterword at the end without m
     paywall: [...document.querySelectorAll("[data-report-paywall]")].map(el=>el.getAttribute("data-report-paywall")),
     snippet: (document.body?.innerText||"").slice(-550),
   }))));
-  await expect(page.locator('[data-report-access="bundle"]')).toBeVisible({ timeout: 12_000 });
+  // Owner full access is ReportAccessLevel "system". The retired "bundle" level is not rendered.
+  await expect(page.locator('[data-report-access="system"]')).toBeVisible({ timeout: 12_000 });
   const debug = await page.evaluate(() => ({
     language: document.documentElement.lang,
     storedLanguage: localStorage.getItem("zhaowu.locale"),

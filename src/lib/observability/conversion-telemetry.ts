@@ -13,6 +13,8 @@
  *   - 只在白名单 host 上报；不落 person profile，不带地理位置处理。
  */
 
+import { sanitizePosthogProperties } from "@/lib/observability/posthog-privacy";
+
 const env = (import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env ?? {};
 
 const POSTHOG_KEY = String(env.VITE_POSTHOG_KEY || "phc_w6rhtrMQLLBczV4uNvsDWGb4zq2GCknyeqa2YWScrs3G").trim();
@@ -66,19 +68,18 @@ export function trackConversion(event: ConversionEvent, properties: Record<strin
   const payload = {
     api_key: POSTHOG_KEY,
     event,
-    properties: {
+    properties: sanitizePosthogProperties({
       distinct_id: `zhaowu:${sid}`,
       $session_id: sid,
       $process_person_profile: false,
       $geoip_disable: true,
-      // Never send the query string or hash: the Stripe return URL carries
-      // `session_id=cs_live_…`, which the app treats as a purchase capability.
-      $current_url: `${window.location.origin}${window.location.pathname}`,
+      // Path only. A Stripe return URL can carry report, session_id,
+      // access_key and client_reference_id in the query string.
       $host: window.location.host,
       app: "zhaowu",
       funnel_contract: "STONE-F1",
       ...properties,
-    },
+    }, window.location.href),
     timestamp: new Date().toISOString(),
   };
   void fetch(`${POSTHOG_HOST}/capture/`, {

@@ -36,6 +36,8 @@ test("the illustrated essay points to the twelve originals in branch order", () 
   const actual = [...essay.matchAll(/image:"(\d\d-[a-z-]+\.png)"/g)].map((match) => match[1]);
   assert.deepEqual(actual, originals.map(([name]) => name));
   const view = readFileSync("src/routes/-mythic-atlas-guaili.tsx", "utf8");
-  assert.match(view, /<img src=\{`\/mythic-atlas\/zodiac\/\$\{ZODIAC_PLATES\[index\]\.image\}`\}/);
+  // 2026-10-30: the page renders the web WebP derivative; the exact original PNG stays the full-plate link.
+  assert.match(view, /<img src=\{mythicWebPlate\("zodiac", ZODIAC_PLATES\[index\]\.image\)\}/);
+  assert.match(view, /<MythicImageViewer src=\{`\/mythic-atlas\/zodiac\/\$\{ZODIAC_PLATES\[index\]\.image\}`\}/);
   assert.match(view, /loading="lazy"/);
 });
