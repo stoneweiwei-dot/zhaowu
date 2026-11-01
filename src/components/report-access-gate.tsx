@@ -3,6 +3,7 @@ import { FiveToneGift } from "@/components/five-tone-gift";
 import { PremiumPoeticAfterword, type PremiumPoeticContext } from "@/components/premium-poetic-afterword";
 import { PurchaseConsent, usePurchaseConsent } from "@/components/purchase-consent";
 import { DataGradeFooter } from "@/components/data-grade-footer";
+import { ReportPlanComparison } from "@/components/report-plan-comparison";
 import { assessBirthRecord } from "@/lib/bazi/data-grade";
 import type { Locale } from "@/lib/i18n";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
@@ -65,7 +66,7 @@ function copyFor(locale: Locale): Copy {
       quick: "Included with the report · 1 chart-matched primary-tone track",
       system: "Included with the report · 3 support, primary, and release tracks",
     },
-    welcomeGift: "🎁 New-user welcome gift · Quick read is free for everyone",
+    welcomeGift: "Complimentary first reading · Open to every visitor",
     promoToggle: "Have a code?",
     promoPlaceholder: "Enter code",
     promoSubmit: "Apply",
@@ -96,7 +97,7 @@ function copyFor(locale: Locale): Copy {
       quick: "随报告附赠｜命盘主音 1 首",
       system: "随报告附赠｜生扶音・主音・疏导音 3 首",
     },
-    welcomeGift: "🎁 新用户的福利 · 快速读对所有人免费开放",
+    welcomeGift: "免費試讀 · 所有訪客均可閱讀".replace("免費試讀 · 所有訪客均可閱讀","免费试读 · 向所有访客开放"),
     promoToggle: "有优惠码？",
     promoPlaceholder: "输入代码",
     promoSubmit: "使用",
@@ -127,7 +128,7 @@ function copyFor(locale: Locale): Copy {
       quick: "隨報告附贈｜命盤主音 1 首",
       system: "隨報告附贈｜生扶音・主音・疏導音 3 首",
     },
-    welcomeGift: "🎁 新用戶的福利 · 快速讀對所有人免費開放",
+    welcomeGift: "免費試讀 · 所有訪客均可閱讀",
     promoToggle: "有優惠碼？",
     promoPlaceholder: "輸入代碼",
     promoSubmit: "使用",
@@ -139,10 +140,6 @@ function copyFor(locale: Locale): Copy {
     },
   };
 }
-
-const tiers: Array<{ id: ReportAccessProduct; copy: "system"; body: "systemBody" }> = [
-  { id: "system", copy: "system", body: "systemBody" },
-];
 
 export function ReportAccessGate({
   system,
@@ -243,23 +240,13 @@ export function ReportAccessGate({
         <p>{copy.lead}</p>
         <p className="zhaowu-report-distinction">{copy.distinction}</p>
       </header>
-      <div className="zhaowu-report-pricing" role="list">
-        <article role="listitem" className="is-free">
-          <strong>{copy.free}</strong>
-          <span>$0</span>
-          <p>{copy.freeBody}</p>
-        </article>
-        {tiers.map((tier) => (
-          <article role="listitem" key={tier.id} className={tier.id === "system" ? "is-featured" : undefined}>
-            <strong>{copy[tier.copy]}</strong>
-            <span>{reportAccessPrice(tier.id, system).price}</span>
-            <p>{copy[tier.body]}</p>
-            <small>{copy.bonus[tier.id]}</small>
-            <button type="button" disabled={busy !== null} onClick={() => void purchase(tier.id)}>
-              {busy === tier.id ? "…" : `${copy.buy} ${reportAccessPrice(tier.id, system).price}`}
-            </button>
-          </article>
-        ))}
+      <ReportPlanComparison locale={locale} system={system} />
+      <div className="zhaowu-report-pricing zw-editions-purchase">
+        <p>{copy.system} · {reportAccessPrice("system", system).price}</p>
+        <small>{copy.systemBody}</small>
+        <button type="button" disabled={busy !== null} onClick={() => void purchase("system")}>
+          {busy === "system" ? "…" : `${copy.buy} ${reportAccessPrice("system", system).price}`}
+        </button>
       </div>
       <div className="zhaowu-report-promo" data-report-promo>
         {!promoOpen ? (

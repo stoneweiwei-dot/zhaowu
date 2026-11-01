@@ -6,6 +6,7 @@ import { useI18n } from '@/lib/i18n';
 import { BrandIcon } from '@/components/brand-icon';
 import { HomeTree } from '@/components/home-tree';
 import { CuratedVideoShelf } from '@/components/curated-video-shelf';
+import { PortraitEditionShowcase } from '@/components/portrait-edition-showcase';
 import '@/guaili-collection-entry.css';
 import '@/home-mobile-v2.css';
 
@@ -76,6 +77,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
       <a className="zw-v2-discover" href="#home-guide">{t('往下探索昭梧', '继续探索昭梧', 'Discover more of ZHAOWU')} <span aria-hidden="true">↓</span></a>
     </section>
     <HomeTree t={t} onOpen={onOpen} />
+    <PortraitEditionShowcase locale={locale} />
     {seasonalAuto && <aside className="ph-seasonal-note" data-seasonal-note data-solar-term={seasonalAuto.term.zh} data-solar-hou={seasonalAuto.houIndex + 1}>
       <p className="ph-seasonal-term"><span lang="zh">{locale === 'zh-Hans' ? seasonalAuto.term.hans : seasonalAuto.term.zh}</span><span lang="en">{seasonalAuto.term.en}</span></p>
       <p>{seasonalAuto.hou[locale]}</p>
