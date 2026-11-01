@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 import { SKY_EVENT_CATEGORIES, getArchivedSkyEvents, getFeaturedSkyEvent, getTodaySkyUpdatedDate } from "@/lib/sky-events";
 import { TodaySkyCards } from "@/components/today-sky-cards";
+import { DailySkyObservation } from "@/components/daily-sky-observation";
 import { isSkyReportArchived } from "@/lib/sky-week-presentation";
 import "@/sky-events.css";
 import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
@@ -150,6 +151,8 @@ function SkyEventsPage() {
         <p>{ui.lead}</p>
         <div className="sky-events-truth-note">{ui.note}</div>
       </header>
+
+      <DailySkyObservation />
 
       <nav className="sky-events-shortcuts" aria-label={labels.navigation}>
         <a href="#sky-featured">{labels.feature}</a>
