@@ -147,7 +147,7 @@ export function SiteUtilityDock() {
           <strong>{copy.music}</strong>
           <button type="button" onClick={() => setPanel(null)} aria-label={copy.close}>×</button>
         </div>
-        <BackgroundMusic />
+        <BackgroundMusic visible={panel === "music"} />
       </section>
 
       <section className="zhaowu-site-utility-panel zhaowu-site-guide-panel" data-utility-panel="guide" hidden={panel !== "guide"} aria-label={copy.title}>
