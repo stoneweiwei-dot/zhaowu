@@ -13,7 +13,7 @@ test("public runtime retires the dragon mascot and keeps one quiet utility dock"
   assert.doesNotMatch(shell, /GreenDragonGuide/);
   assert.match(shell, /<SiteUtilityDock \/>/);
   assert.match(dock, /data-site-utility-dock/);
-  assert.match(dock, /<BackgroundMusic \/>/);
+  assert.match(dock, /<BackgroundMusic visible=\{panel === "music"\} \/>/);
   assert.match(dock, /data-utility-panel="music"/);
   assert.match(dock, /data-utility-panel="guide"/);
   assert.match(music, /data-background-music-player/);
@@ -27,8 +27,8 @@ test("quiet utility dock preserves music transport and site-guide actions", asyn
   assert.match(dock, /askSiteGuide/);
   assert.match(dock, /defaultSiteGuide/);
   assert.match(dock, /#birth-form/);
-  assert.match(dock, /#home-today-guide/);
-  assert.match(dock, /\/fun-tests/);
+  assert.match(dock, /JOURNEY_COPY/);
+  assert.match(dock, /moreLinks/);
   assert.match(dock, /\/history/);
   assert.match(music, /上一首/);
   assert.match(music, /下一首/);

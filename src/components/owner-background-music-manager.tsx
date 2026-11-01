@@ -59,8 +59,8 @@ export function OwnerBackgroundMusicManager() {
     upload: tr(locale, "＋ 選擇音樂", "＋ 选择音乐", "+ Choose music"),
     limit: tr(locale, "來源 ≤200 MB · 直傳 ≤12MB · 自動轉碼／分段上傳", "来源 ≤200 MB · 直传 ≤12MB · 自动转码／分段上传", "Source ≤200 MB · direct ≤12MB · auto-convert / chunked upload"),
     processing: tr(locale, "處理中…", "处理中…", "Processing…"),
-    current: tr(locale, "目前播放", "当前播放", "Currently playing"),
-    use: tr(locale, "使用此曲", "使用此曲", "Use track"),
+    current: tr(locale, "網站預設曲", "网站默认曲", "Website default"),
+    use: tr(locale, "設為預設", "设为默认", "Set default"),
     preview: tr(locale, "試聽", "试听", "Preview"),
     pause: tr(locale, "暫停", "暂停", "Pause"),
     more: tr(locale, "更多", "更多", "More"),
@@ -252,12 +252,18 @@ export function OwnerBackgroundMusicManager() {
           <button type="button" disabled={busy || !selectedIds.length} className="min-h-9 rounded-full bg-cinnabar px-3 text-[11px] text-cream disabled:opacity-35" onClick={() => void onBatchDelete()}>{c.deleteSelected}</button>
         </div>
         <audio ref={previewRef} crossOrigin="anonymous" preload="none" playsInline onPlaying={() => setPreviewPlaying(true)} onPause={() => setPreviewPlaying(false)} onEnded={() => { setPreviewPlaying(false); window.dispatchEvent(new CustomEvent("zhaowu-music-command", { detail: { command: "resume" } })); }} onError={() => { setPreviewPlaying(false); setErrorMessage(c.previewFailed); window.dispatchEvent(new CustomEvent("zhaowu-music-command", { detail: { command: "resume" } })); }} />
-        <div className="mt-3 space-y-2">
-          {!tracks.length ? <p className="text-sm text-ink-mute">{c.empty}</p> : null}
-          {tracks.map((track) => {
+        <div className="mt-4" data-owner-music-playlist>
+          <h3 className="font-display text-lg text-ink">{tr(locale, "公開播放清單", "公开播放列表", "Public playlist")} <span className="text-sm font-normal text-ink-mute">· {tracks.length}</span></h3>
+          <p className="mt-1 text-xs leading-5 text-ink-mute">{tr(locale,
+            "訪客可自由選曲；整張清單預設循環。此處的「網站預設曲」只決定首次開啟時的選曲，不會覆蓋客人的選擇。",
+            "访客可自由选曲；整张列表默认循环。「网站默认曲」只决定首次进入时的曲目，不会覆盖访客选择。",
+            "Visitors can choose any track; the playlist loops by default. Website default only determines the initial track.")}</p>
+          {!tracks.length ? <p className="mt-3 text-sm text-ink-mute">{c.empty}</p> : null}
+          <div role="list" aria-label={tr(locale, "音樂曲目列表", "音乐曲目列表", "Music tracks")} className="mt-3 space-y-1">
+          {tracks.map((track, index) => {
             const selected = selectedIds.includes(track.id);
             const displayName = musicDisplayName(track.name, locale);
-            return <article key={track.id} data-owner-selectable-file="music" className={`border-t border-line/70 pt-3 ${selected ? "bg-wood/[0.045]" : ""}`}>
+            return <article key={track.id} role="listitem" data-owner-selectable-file="music" className={`border-t border-line/70 pt-3 ${selected ? "bg-wood/[0.045]" : ""}`}>
             <div className="space-y-2 py-1">
               <div className="flex min-w-0 items-start gap-2">
                 <button type="button" disabled={busy || track.enabled} aria-pressed={selected} onClick={() => toggleSelected(track)} className={`mt-0.5 inline-flex min-h-9 min-w-[3.75rem] shrink-0 items-center justify-center rounded-full border px-2.5 text-[11px] font-medium transition ${selected ? "border-wood bg-wood text-cream" : "border-line bg-paper/60 text-ink-soft"} ${track.enabled ? "cursor-not-allowed opacity-35" : ""}`} title={track.enabled ? c.activeCannotSelect : c.select}>
@@ -274,7 +280,7 @@ export function OwnerBackgroundMusicManager() {
                       <button type="button" disabled={busy} className="min-h-11 rounded-full border border-line px-3 text-xs" onClick={() => { setEditingId(null); setEditingName(""); }}>{c.cancel}</button>
                     </div>
                   ) : (
-                    <div className="flex flex-wrap items-center gap-2"><div className="min-w-0 flex-1"><h3 className="break-words font-display text-[15px] leading-5 text-ink [overflow-wrap:anywhere]">{displayName.primary}</h3>{displayName.secondary ? <p className="mt-0.5 break-words text-[12px] leading-5 text-ink-mute">{displayName.secondary}</p> : null}</div>{track.enabled ? <span className="rounded-full border border-wood/30 bg-wood/5 px-2 py-0.5 text-[10px] text-wood">{c.current}</span> : null}</div>
+                    <div className="flex flex-wrap items-center gap-2"><span className="text-xs tabular-nums text-ink-mute">{String(index + 1).padStart(2, "0")}</span><div className="min-w-0 flex-1"><h3 className="break-words font-display text-[15px] leading-5 text-ink [overflow-wrap:anywhere]">{displayName.primary}</h3>{displayName.secondary ? <p className="mt-0.5 break-words text-[12px] leading-5 text-ink-mute">{displayName.secondary}</p> : null}</div>{track.enabled ? <span className="rounded-full border border-wood/30 bg-wood/5 px-2 py-0.5 text-[10px] text-wood">{c.current}</span> : null}</div>
                   )}
                   <p className="mt-1 whitespace-nowrap text-xs text-ink-mute">{formatCodec(track)} · {formatSize(track.fileSize)}</p>
                 </div>
@@ -288,6 +294,7 @@ export function OwnerBackgroundMusicManager() {
             </div>
           </article>;
           })}
+          </div>
         </div>
       </section>
     </div>, document.body) : null}
