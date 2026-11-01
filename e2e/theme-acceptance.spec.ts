@@ -220,6 +220,10 @@ for (const skin of SKINS) {
       localStorage.setItem('zhaowu.report-access-sessions.v1', JSON.stringify(['cs_test_themeacceptance1234567890']));
     }, { birth, result });
     await open(`/?report=${result.id}#report`, '#report');
+    const paidGate = page.locator('[data-destiny-unlock-gate]');
+    await expect(paidGate.getByText(language === 'en' ? '✓ Unlocked' : '✓ 已解鎖', { exact: true })).toBeVisible();
+    await expect(paidGate.getByRole('button', { name: /^(Unlock|解鎖|解锁)\s/ })).toHaveCount(0);
+    await expect(paidGate.getByRole('checkbox')).toHaveCount(0);
     await page.getByRole('button', { name: language === 'en' ? 'View full reading' : '查看完整深批', exact: true }).click();
     await expect(page.locator('.zhaowu-report-continuous-sheet')).toBeVisible();
     await page.locator('[data-professional-report] > summary').click();

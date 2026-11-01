@@ -2,9 +2,11 @@ import { CuratedVideoShelf } from "@/components/curated-video-shelf";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useI18n, type Locale } from "@/lib/i18n";
+import { MYTHIC_WEB_FILM, MYTHIC_WEB_FILM_POSTER, mythicWebPlate, mythicWebThumb } from "@/lib/mythic-web-assets";
 import { ARTWORKS, BRANCHES, CHRONICLES, COPY, l, OBSERVATION_CHAPTERS, ORDERS, REALMS, SOURCE_LABELS, tr, type Side, type SourceKind } from "./-mythic-atlas-data";
 import { BorrowStarInterlude } from "./-mythic-atlas-borrow-star";
 import { GuailiBook } from "./-mythic-atlas-guaili";
+import { MythicImageViewer } from "./-mythic-image-viewer";
 import "./-mythic-atlas-guaili.css";
 import "./mythic-atlas.css";
 
@@ -14,7 +16,7 @@ function Plate({ index, locale, priority = false }: { index: number; locale: Loc
   const art = ARTWORKS[index - 1];
   return <figure className="hq-plate">
     <div className="hq-image-frame">
-      <a className="hq-full-plate" href={`/mythic-atlas/originals/${art.file}`} target="_blank" rel="noopener noreferrer" aria-label={tr(l("開啟完整 STONE 原創 PNG 原圖", "打开完整 STONE 原创 PNG 原图", "Open full-resolution STONE original PNG"), locale)}><img src={`/mythic-atlas/originals/${art.file}`} alt={tr(art.title, locale)} width={941} height={1672} loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : "auto"} /></a>
+      <MythicImageViewer className="hq-full-plate" src={`/mythic-atlas/originals/${art.file}`} locale={locale} label={tr(l("開啟完整 STONE 原創 PNG 原圖", "打开完整 STONE 原创 PNG 原图", "Open full-resolution STONE original PNG"), locale)}><img src={mythicWebPlate("originals", art.file)} alt={tr(art.title, locale)} width={941} height={1672} loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : "auto"} /></MythicImageViewer>
       <span className="hq-original-mark">STONE 原創</span>
     </div>
     <figcaption><strong>{String(index).padStart(2, "0")} · {tr(art.title, locale)}</strong><span>{tr(COPY.inspiredBy, locale)}：{tr(art.source, locale)}</span></figcaption>
@@ -90,7 +92,8 @@ function MythicAtlasPage() {
       <div className="hq-section-heading"><span>卷三</span><h2>{tr(COPY.chronicle, locale)}</h2></div>
       <div className="hq-chronicle-intro"><Plate index={11} locale={locale} /><div className="hq-chronicles">{CHRONICLES.map((chapter, chapterIndex) => <article key={chapter.no}><span>{chapter.no}</span><div><h3>{tr(chapter.title, locale)}</h3><strong>{tr(chapter.lead, locale)}</strong><p>{tr(chapter.text, locale)}</p><div className="hq-chronicle-art"><Plate index={([5, 11, 10, 12] as const)[chapterIndex]} locale={locale} /></div></div></article>)}</div></div>
       <figure className="hq-original-film" id="huangquan-film">
-        <video controls playsInline preload="metadata" poster="/mythic-atlas/originals/01-skeleton-puppet.png" aria-label={tr(l("《幽明萬象錄》完整原版影片","《幽明万象录》完整原版影片","Full original film of the Chronicle of Hidden and Manifest Worlds"), locale)}>
+        <video controls playsInline preload="metadata" poster={MYTHIC_WEB_FILM_POSTER} aria-label={tr(l("《幽明萬象錄》完整原版影片","《幽明万象录》完整原版影片","Full original film of the Chronicle of Hidden and Manifest Worlds"), locale)}>
+          <source src={MYTHIC_WEB_FILM} type="video/mp4" />
           <source src="/mythic-atlas/films/huangquan-chronicles.mp4" type="video/mp4" />
           {tr(l("目前瀏覽器無法播放此影片。","当前浏览器无法播放此视频。","This browser cannot play the video."), locale)}
         </video>
@@ -104,7 +107,7 @@ function MythicAtlasPage() {
     <section className="hq-section" id="paintings">
       <div className="hq-section-heading"><span>卷四</span><h2>{tr(COPY.paintings, locale)}</h2><p>{tr(COPY.imageNotice, locale)}</p></div>
       <div className="hq-gallery-feature"><Plate index={selectedPlate + 1} locale={locale} /><div><p className="hq-kicker">{tr(COPY.plate, locale)}</p><h3>{tr(ARTWORKS[selectedPlate].title, locale)}</h3><p>{tr(ARTWORKS[selectedPlate].note, locale)}</p><p className="hq-gallery-source">{tr(COPY.inspiredBy, locale)}：{tr(ARTWORKS[selectedPlate].source, locale)}</p></div></div>
-      <div className="hq-thumbnails" aria-label={tr(COPY.selectPlate, locale)}>{ARTWORKS.map((art, index) => <button key={art.file} type="button" className={selectedPlate === index ? "is-active" : ""} aria-pressed={selectedPlate === index} onClick={() => setSelectedPlate(index)}><img src={`/mythic-atlas/originals/${art.file}`} alt="" width={94} height={167} loading="lazy" /><span>{String(index + 1).padStart(2, "0")}</span></button>)}</div>
+      <div className="hq-thumbnails" aria-label={tr(COPY.selectPlate, locale)}>{ARTWORKS.map((art, index) => <button key={art.file} type="button" className={selectedPlate === index ? "is-active" : ""} aria-pressed={selectedPlate === index} onClick={() => setSelectedPlate(index)}><img src={mythicWebThumb("originals", art.file)} alt="" width={94} height={167} loading="lazy" /><span>{String(index + 1).padStart(2, "0")}</span></button>)}</div>
     </section>
 
     <BorrowStarInterlude locale={locale} />

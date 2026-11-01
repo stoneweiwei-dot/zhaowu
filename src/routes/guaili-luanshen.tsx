@@ -6,6 +6,7 @@ import { ZODIAC_PLATES } from "./-mythic-atlas-zodiac-essay";
 import "./mythic-atlas.css";
 import "./-mythic-atlas-guaili.css";
 import "./guaili-luanshen.css";
+import { mythicWebPlate } from "@/lib/mythic-web-assets";
 
 export const Route = createFileRoute("/guaili-luanshen")({ component: GuailiCollectionPage });
 
@@ -67,7 +68,7 @@ function GuailiCollectionPage() {
       <ol className="hqc-zodiac">
         {GUAILI_ZODIAC.map((branch, i) => <li key={i}>
           <Link to="/mythic-atlas" hash={`guaili-${ZODIAC_PLATES[i].branch}`}>
-            <img src={`/mythic-atlas/zodiac/${ZODIAC_PLATES[i].image}`} alt="" width={941} height={1672} loading="lazy" decoding="async" />
+            <img src={mythicWebPlate("zodiac", ZODIAC_PLATES[i].image)} alt="" width={941} height={1672} loading="lazy" decoding="async" />
             <span>{String(i+1).padStart(2,"0")}</span>
             <strong>{tr(branch.earthly,locale)}</strong>
             <small>{tr(branch.shadow,locale)}</small>

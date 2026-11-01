@@ -1,4 +1,11 @@
 import { createClient } from "npm:@supabase/supabase-js@2.95.0";
+import {
+  clientPromoRejection,
+  isCustomerPromoCode,
+  promoExhausted,
+  promoRejectLog,
+  promoRejectReason,
+} from "./redeem-policy.mjs";
 
 // Owner 2026-10-15: temporary free-access / promo codes for the report paywall.
 // Deliberately isolated from stripe-checkout / stripe-webhook / report_purchase_entitlements —
@@ -84,7 +91,13 @@ function isAccessKey(value: unknown): value is string {
 }
 
 function isCode(value: unknown): value is string {
-  return typeof value === "string" && /^[A-Za-z0-9-]{3,64}$/.test(value.trim());
+  return isCustomerPromoCode(value);
+}
+
+async function rejectPromo(req: Request, env: Runtime, reason: string, code: string) {
+  console.info(JSON.stringify(await promoRejectLog(reason, code)));
+  const rejection = clientPromoRejection(reason);
+  return json(req, env, rejection.body, rejection.status);
 }
 
 async function handleVerify(req: Request, env: Runtime, admin: ReturnType<typeof adminClient>): Promise<Response> {
@@ -124,16 +137,9 @@ async function handleRedeem(req: Request, env: Runtime, admin: ReturnType<typeof
     .ilike("code", code)
     .maybeSingle();
   if (lookupError) return json(req, env, { ok: false, error: { code: "PROMO_STORE_ERROR" } }, 502);
-  if (!promo || !promo.active) return json(req, env, { ok: false, error: { code: "PROMO_NOT_FOUND" } }, 404);
-  if (promo.expires_at && new Date(promo.expires_at).getTime() <= Date.now()) {
-    return json(req, env, { ok: false, error: { code: "PROMO_EXPIRED" } }, 410);
-  }
-  if (promo.system_id && promo.system_id !== system) {
-    return json(req, env, { ok: false, error: { code: "PROMO_WRONG_SYSTEM" } }, 409);
-  }
-  if (promo.product_id !== "system") {
-    return json(req, env, { ok: false, error: { code: "PROMO_NOT_FOUND" } }, 404);
-  }
+  if (!promo) return rejectPromo(req, env, "not_found", code);
+  const reason = promoRejectReason(promo, system);
+  if (reason) return rejectPromo(req, env, reason, code);
 
   const redemptionSystemId = system;
   const granted = { ok: true, paid: true, product: "system" as const, system };
@@ -147,9 +153,7 @@ async function handleRedeem(req: Request, env: Runtime, admin: ReturnType<typeof
   if (existingError) return json(req, env, { ok: false, error: { code: "PROMO_STORE_ERROR" } }, 502);
   if (existing) return json(req, env, granted);
 
-  if (promo.max_redemptions !== null && promo.redeemed_count >= promo.max_redemptions) {
-    return json(req, env, { ok: false, error: { code: "PROMO_EXHAUSTED" } }, 410);
-  }
+  if (promoExhausted(promo)) return rejectPromo(req, env, "exhausted", code);
   const { error: insertError } = await admin
     .from("promo_redemptions")
     .insert({ promo_code_id: promo.id, access_key: accessKey, product_id: promo.product_id, system_id: redemptionSystemId });
@@ -168,7 +172,7 @@ async function handleRedeem(req: Request, env: Runtime, admin: ReturnType<typeof
     // Lost the race for the last slot (or the code lapsed between the checks above and now).
     // Compensate by removing the redemption row we just inserted so no orphaned grant remains.
     await admin.from("promo_redemptions").delete().match({ promo_code_id: promo.id, access_key: accessKey, system_id: redemptionSystemId });
-    return json(req, env, { ok: false, error: { code: "PROMO_EXHAUSTED" } }, 410);
+    return rejectPromo(req, env, "slot_lost", code);
   }
 
   return json(req, env, granted);

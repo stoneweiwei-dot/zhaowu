@@ -259,6 +259,7 @@ export function questionsAreEquivalent(a: string, b: string): boolean {
   return union > 0 && intersection / union >= 0.68;
 }
 
+/** Legacy scrubber kept for existing QA tests. PostHog capture must not send question text. */
 export function redactQuestion(value: string): string {
   return value
     .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[email]")

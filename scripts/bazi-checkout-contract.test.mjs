@@ -50,6 +50,21 @@ test("BaZi payment unlocks BaZi alone, never Zi Wei", async () => {
   } finally { browser.restore(); }
 });
 
+test("a temporary entitlement lookup failure remains unconfirmed rather than granting access", async () => {
+  const browser = browserFixture({ product: "system", system: "bazi" });
+  try {
+    globalThis.fetch = async (url) => {
+      if (url === "/api/owner-session") return Response.json({ authenticated: false });
+      if (String(url).includes("/functions/v1/stripe-checkout")) throw new Error("network unavailable");
+      if (String(url).includes("/functions/v1/promo-code")) return Response.json({ ok: true, paid: false });
+      throw new Error("unexpected request");
+    };
+    const access = await resolveReportAccess("bazi");
+    assert.equal(access.level, "quick");
+    assert.equal(access.pending, true);
+  } finally { browser.restore(); }
+});
+
 test("BaZi checkout preserves report ID and passes only opaque reference to Stripe", async () => {
   const browser = browserFixture({ product: "system", system: "bazi" });
   try {
@@ -62,6 +77,34 @@ test("BaZi checkout preserves report ID and passes only opaque reference to Stri
     assert.equal(browser.data.get("zhaowu.pending-bazi-report.v1"), id);
     assert.equal(browser.data.get("zhaowu.pending-bazi-return.v1"), "bazi");
     assert.ok(browser.redirected().includes("9B600ja510QNgoH5582sM0C"));
+  } finally { clearPurchaseConsent(); browser.restore(); }
+});
+
+for (const mode of ["throws", "silent"]) {
+  for (const system of ["bazi", "ziwei"]) {
+    test(`checkout blocks ${system} when storage ${mode}`, async () => {
+      const browser = browserFixture({ product: "system", system });
+      try {
+        recordPurchaseConsent();
+        globalThis.localStorage.setItem = mode === "throws" ? () => { throw new Error("storage blocked"); } : () => {};
+        await assert.rejects(startReportCheckout("system", system, "11111111-1111-4111-8111-111111111111"), /CHECKOUT_STORAGE_UNAVAILABLE/);
+        assert.equal(browser.redirected(), "");
+      } finally { clearPurchaseConsent(); browser.restore(); }
+    });
+  }
+}
+
+test("checkout blocks when the report reference cannot be saved after the storage probe", async () => {
+  const browser = browserFixture({ product: "system", system: "bazi" });
+  try {
+    recordPurchaseConsent();
+    const set = globalThis.localStorage.setItem;
+    globalThis.localStorage.setItem = (key, value) => {
+      if (key === "zhaowu.pending-bazi-report.v1") throw new Error("quota");
+      set(key, value);
+    };
+    await assert.rejects(startReportCheckout("system", "bazi", "11111111-1111-4111-8111-111111111111"), /CHECKOUT_STORAGE_UNAVAILABLE/);
+    assert.equal(browser.redirected(), "");
   } finally { clearPurchaseConsent(); browser.restore(); }
 });
 

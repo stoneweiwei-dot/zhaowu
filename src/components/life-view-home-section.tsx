@@ -272,7 +272,9 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                       <Fragment key={`${article.id}-${paragraphIndex}`}>
                         <p className={paragraphIndex ? "mt-4" : ""}>{paragraph}</p>
                         {illustration ? (
-                          <figure className={illustration.display === "wide"
+                          <figure className={article.id === "impermanence-life-20261030"
+                            ? "mx-auto my-6 w-full max-w-[540px] overflow-hidden bg-paper"
+                            : illustration.display === "wide"
                             ? "mx-auto my-6 w-full max-w-[640px] overflow-hidden rounded-2xl border border-line/70 bg-paper shadow-[0_8px_24px_rgba(86,62,31,0.06)]"
                             : "mx-auto my-6 w-[72%] max-w-[300px] overflow-hidden rounded-[28px] border border-line/70 bg-paper shadow-[0_8px_24px_rgba(86,62,31,0.06)]"}>
                             <a href={illustration.src} target="_blank" rel="noopener noreferrer" aria-label={trImageOpenLabel(locale)} className="block cursor-zoom-in">
@@ -282,6 +284,8 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                               loading="lazy"
                               decoding="async"
                               className="block h-auto w-full"
+                              width={article.id === "impermanence-life-20261030" ? 900 : undefined}
+                              height={article.id === "impermanence-life-20261030" ? 1600 : undefined}
                               onError={(event) => {
                                 event.currentTarget.classList.add("life-view-broken-image");
                                 const figure = event.currentTarget.closest("figure");

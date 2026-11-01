@@ -6,9 +6,9 @@ import {
   evaluateAnswerQuality,
   getUsedModules,
   questionsAreEquivalent,
-  redactQuestion,
   stableQuestionFingerprint,
 } from "@/lib/qa/answer-quality";
+import { coarseErrorType, questionLengthBucket, sanitizePosthogProperties } from "@/lib/observability/posthog-privacy";
 
 const POSTHOG_KEY = String(env.VITE_POSTHOG_KEY || "phc_w6rhtrMQLLBczV4uNvsDWGb4zq2GCknyeqa2YWScrs3G").trim();
 const POSTHOG_HOST = String(env.VITE_POSTHOG_HOST || "https://us.i.posthog.com").replace(/\/$/, "");
@@ -96,17 +96,16 @@ function capture(event: string, properties: Record<string, unknown>) {
   const payload = {
     api_key: POSTHOG_KEY,
     event,
-    properties: {
+    properties: sanitizePosthogProperties({
       distinct_id: `zhaowu:${sid}`,
       $session_id: sid,
       $process_person_profile: false,
       $geoip_disable: true,
-      $current_url: window.location.href,
       $host: window.location.host,
       app: "zhaowu",
       qa_contract: "STONE-R6.1-P0",
       ...properties,
-    },
+    }, window.location.href),
     timestamp: new Date().toISOString(),
   };
   void fetch(`${POSTHOG_HOST}/capture/`, {
@@ -117,11 +116,6 @@ function capture(event: string, properties: Record<string, unknown>) {
     mode: "cors",
     credentials: "omit",
   }).catch(() => undefined);
-}
-
-function compactError(error: unknown) {
-  if (error instanceof Error) return error.message.slice(0, 180);
-  return String(error ?? "unknown").slice(0, 180);
 }
 
 export function trackAnswerResult({ result, expectedKind, startedAt, source }: TrackResultArgs) {
@@ -144,7 +138,9 @@ export function trackAnswerResult({ result, expectedKind, startedAt, source }: T
     modules_used: modulesUsed,
     latency_ms: Math.max(0, Date.now() - startedAt),
     locale: result.locale ?? "unknown",
+    system: "bazi",
     question_fingerprint: stableQuestionFingerprint(result.question),
+    question_length_bucket: questionLengthBucket(result.question.length),
     reask_count: reaskCount,
     direct_answer_length: result.reading.directAnswer?.length ?? 0,
     answer_length: [result.reading.directAnswer, result.reading.rhythm, result.reading.action, result.reading.lastLine].join(" ").length,
@@ -159,8 +155,6 @@ export function trackAnswerResult({ result, expectedKind, startedAt, source }: T
     capture("zhaowu_answer_quality_failed", {
       ...common,
       regression_id: result.id,
-      original_question_redacted: redactQuestion(result.question),
-      incorrect_answer_redacted: redactQuestion(result.reading.directAnswer ?? ""),
       expected_coverage: `direct answer for ${evaluation.detectedIntent}/${evaluation.questionFocus}; only relevant R6.1 modules`,
       fixing_commit: "pending",
       post_fix_retest: "pending",
@@ -172,10 +166,11 @@ export function trackAnswerError({ question, source, error, startedAt }: TrackEr
   if (!telemetryAllowed()) return;
   capture("zhaowu_answer_error", {
     source,
+    system: "bazi",
     question_focus: detectQuestionFocus(question),
     latency_ms: Math.max(0, Date.now() - startedAt),
     question_fingerprint: stableQuestionFingerprint(question),
-    question_redacted: redactQuestion(question),
-    error: compactError(error),
+    question_length_bucket: questionLengthBucket(question.length),
+    error_type: coarseErrorType(error),
   });
 }

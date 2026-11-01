@@ -84,6 +84,7 @@ insert into public.life_view_article_ids (article_id) values
   ('gate-of-life-ankh-astrology-simulation-2026'),
   ('having-versus-possessing'),
   ('huagai-tomb-storage-depth'),
+  ('impermanence-life-20261030'),
   ('inner-fengshui-mind-speech-action'),
   ('karma-cause-result-responsibility-without-judging-others'),
   ('keep-one-clear-place-within'),

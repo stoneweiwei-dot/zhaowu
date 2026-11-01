@@ -439,7 +439,7 @@
 
 - 正式站 `index.html` 已靜態提供 title、description、canonical、完整 Open Graph 與 Twitter Card；`public/og.jpg` 為 1200×630 JPEG，既有 `og-preview` build/test 契約維持。不得因看到 `<div id="root"></div>` 就誤判 SEO／社群預覽標籤缺失，也不因這項誤判重寫成 Next.js／SSR。
 - ACTIVE：TanStack Router root 使用昭梧雙語 `notFoundComponent`，不存在路由須顯示可理解的 404 說明與返回首頁／最新更新入口，不再只顯示框架預設 `Not Found`。
-- ACTIVE：Vercel 公開回應全域加入 `X-Content-Type-Options: nosniff` 與 `Referrer-Policy: strict-origin-when-cross-origin`；平台既有 HSTS 不重複覆寫。未加入 `X-Frame-Options: DENY`，避免未經需求驗證就破壞合法預覽／嵌入。
+- ACTIVE：Vercel 公開回應全域加入 `X-Content-Type-Options: nosniff` 與 `Referrer-Policy: strict-origin-when-cross-origin`；HSTS 原為平台預設不覆寫，已由 2026-10-30 金曜 r1 取代（見下方）。未加入 `X-Frame-Options: DENY`，避免未經需求驗證就破壞合法預覽／嵌入。
 - 不改：首頁一次性 `IntroGate`、PWA、命理計算、報告、登入、付款、Supabase schema 與 Storage。
 
 ## 2026-09-29 r220 全站清理（分支／PR／CI／Vercel／Supabase Edge Functions）
@@ -1017,3 +1017,10 @@
 - 先前 #917 在原畫分段未進 Git 且宣告 BLOCKED 時合併，導致所有 Production 建置 ENOENT。為發布已完成的社群後台退場修正，完整原文與原始 manifest/hashes 無損移至 `docs/unpublished/sudhana-fifty-three-visits.md`，暫時從公開文章索引及生產 manifest 移除。
 - **不得當成原畫已發布。** `scripts/assemble-sudhana-art.mjs` 保留原本 hash 檢查，檔案齊全才可恢復公開；不生成 SVG、替代圖、不關閉其他文章的原畫品質驗收。
 - 不碰現有客戶報告、支付、登錄、Supabase、Storage、社群排程，也不建立第二個正式站。
+
+## 2026-10-30 金曜 r1｜HSTS includeSubDomains＋頁面不再回 `ACAO: *`
+
+- ACTIVE：`vercel.json` 全域 `/(.*)` 明確設 `Strict-Transport-Security: max-age=63072000; includeSubDomains`。**刻意不加 `preload`**：preload 清單難以撤回，需站主另行決定。取代 2026-09-29「平台既有 HSTS 不重複覆寫」一句。
+- ACTIVE：Vercel 對靜態檔預設回 `Access-Control-Allow-Origin: *` 且無法刪除，故以 `/((?!api/|sb/).*)` 覆寫為 `https://zhao-wu.com`。`/api/*` 自身不設 CORS；`/sb/*` 是 Supabase 代理，保持上游原樣，不在本項範圍。
+- 依據：程式內無跨來源讀取本站 HTML／靜態檔的使用者；`www` 與 `stone-zhaowu-official.vercel.app` 一律 308 到 `zhao-wu.com`。回歸：`scripts/security-headers.test.mjs`。
+- 不改：CSP、登入、付款、資料庫、路由、多語系、排盤。

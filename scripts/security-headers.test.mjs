@@ -49,3 +49,23 @@ test("Permissions-Policy keeps geolocation for the daily almanac widget", () => 
   assert.match(policy, /camera=\(\)/);
   assert.match(policy, /microphone=\(\)/);
 });
+
+test("HSTS covers subdomains but is deliberately not preloaded (金曜 r1)", () => {
+  const hsts = header("Strict-Transport-Security");
+  assert.match(hsts, /max-age=63072000/);
+  assert.match(hsts, /includeSubDomains/);
+  assert.doesNotMatch(hsts, /preload/i, "preload is hard to revoke; needs a separate owner decision");
+});
+
+test("pages and static files do not advertise wildcard CORS; /api and /sb are excluded", () => {
+  const entry = vercel.headers.find((e) => e.headers.some((h) => h.key === "Access-Control-Allow-Origin"));
+  assert.ok(entry, "expected an explicit same-origin ACAO override for Vercel's static default '*'");
+  assert.equal(entry.source, "/((?!api/|sb/).*)");
+  const acao = entry.headers.find((h) => h.key === "Access-Control-Allow-Origin").value;
+  assert.equal(acao, "https://zhao-wu.com");
+  for (const e of vercel.headers) {
+    for (const h of e.headers) {
+      if (h.key.toLowerCase() === "access-control-allow-origin") assert.notEqual(h.value.trim(), "*", `wildcard ACAO on ${e.source}`);
+    }
+  }
+});
