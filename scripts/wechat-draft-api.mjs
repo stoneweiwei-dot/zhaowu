@@ -8,6 +8,7 @@
  */
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
 
 const API = "https://api.weixin.qq.com";
 export class WechatApiError extends Error {
@@ -81,7 +82,7 @@ async function main() {
   const result = await createAndVerifyDraft(article, token);
   process.stdout.write(JSON.stringify(result) + "\n");
 }
-if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   main().catch(error => {
     // Only our own static error codes: do not leak tokens, fetch URLs, or upstream bodies.
     process.stderr.write((error instanceof WechatApiError ? error.message : "WECHAT_API_INPUT_OR_RUNTIME_ERROR") + "\n");
