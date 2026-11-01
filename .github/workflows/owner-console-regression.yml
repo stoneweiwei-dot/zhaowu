@@ -36,8 +36,10 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - name: Owner API, OAuth, queue, and Passkey regression tests
         run: |
-          node --test scripts/owner-promo-admin.test.mjs scripts/loading-gallery-group.test.mjs scripts/owner-console-links.test.mjs scripts/owner-supabase-origin.test.mjs scripts/owner-session-skin-delegation.test.mjs scripts/owner-social-publisher.test.mjs scripts/social-autopublish.test.mjs scripts/owner-passkey.test.mjs scripts/owner-passkey-service-preflight.test.mjs scripts/owner-session-passkey-api.test.mjs scripts/shared-site-skin.test.mjs
-      - name: Typecheck and production bundle
+          node --test scripts/owner-promo-admin.test.mjs scripts/loading-gallery-group.test.mjs scripts/owner-console-links.test.mjs scripts/owner-content-hub.test.mjs scripts/r197-owner-console-cleanup.test.mjs scripts/owner-supabase-origin.test.mjs scripts/owner-session-skin-delegation.test.mjs scripts/owner-social-publisher.test.mjs scripts/social-autopublish.test.mjs scripts/owner-passkey.test.mjs scripts/owner-passkey-service-preflight.test.mjs scripts/owner-session-passkey-api.test.mjs scripts/shared-site-skin.test.mjs
+      - name: Generate routes, build and typecheck
         run: |
-          npm run check
+          # Vite's TanStack Router plugin regenerates routeTree.gen.ts. Typechecking
+          # first fails on newly added route files even when the runtime is valid.
           ./node_modules/.bin/vite build
+          npm run check

@@ -24,8 +24,15 @@ const OwnerThemeSkinsManager = lazy(() => import("@/components/owner-theme-skins
 import { ConsoleOverview, type OverviewTarget } from "@/components/owner/console-overview";
 import { ReportEditor } from "@/components/owner/report-editor";
 const OwnerDevicesManager = lazy(() => import("@/components/owner-devices-manager").then((m) => ({ default: m.OwnerDevicesManager })));
-type ConsoleView = "overview" | "reports" | "images" | "opening" | "themes" | "promo" | "articles" | "devices";
-const CONSOLE_VIEWS: ConsoleView[] = ["overview", "reports", "images", "opening", "themes", "promo", "articles", "devices"];
+type ConsoleView = "overview" | "reports" | "images" | "opening" | "themes" | "promo" | "articles" | "music" | "devices";
+const CONSOLE_VIEWS: ConsoleView[] = ["overview", "reports", "images", "opening", "themes", "promo", "articles", "music", "devices"];
+type ConsoleGroup = "overview" | "content" | "customers" | "settings";
+function consoleGroup(view: ConsoleView): ConsoleGroup {
+  if (view === "overview") return "overview";
+  if (view === "reports" || view === "promo") return "customers";
+  if (view === "themes" || view === "devices") return "settings";
+  return "content";
+}
 
 /** Initial tab: `?view=` (used by Meta OAuth returns) otherwise the overview. */
 function initialConsoleView(): ConsoleView {
@@ -353,31 +360,43 @@ function AccountPage() {
             </button>
           </div>
         </div>
-        <nav className="mt-4 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-2" aria-label={tr(locale, "站主後台導覽", "站主后台导航", "Owner console navigation")}>
+        <nav className="mt-4 grid grid-cols-2 gap-2" aria-label={tr(locale, "後台主要分類", "后台主要分类", "Console sections")}>
           {([
             ["overview", tr(locale, "總覽", "总览", "Overview")],
-            ["reports", tr(locale, "客戶報告", "客户报告", "Reports")],
-            ["images", tr(locale, "背景與圖片", "背景与图片", "Images")],
-            ["opening", tr(locale, "影片素材", "视频素材", "Film library")],
-            ["themes", tr(locale, "主題皮膚", "主题皮肤", "Themes")],
-            ["promo", tr(locale, "優惠碼", "优惠码", "Promo codes")],
-            ["articles", tr(locale, "文章管理", "文章管理", "Articles")],
-            ["devices", tr(locale, "登入與裝置", "登录与设备", "Sign-in")],
+            ["articles", tr(locale, "內容與素材", "内容与素材", "Content & media")],
+            ["reports", tr(locale, "客戶與營運", "客户与运营", "Customers & operations")],
+            ["themes", tr(locale, "網站設定", "网站设置", "Site settings")],
           ] as [ConsoleView, string][]).map(([view, label]) => (
-            <a
-              key={view}
-              id={`console-tab-${view}`}
+            <a key={view} id={view === "overview" ? "console-tab-overview" : undefined}
               href={consoleViewHref(view)}
-              aria-controls={`console-panel-${view}`}
-              aria-current={consoleView === view ? "page" : undefined}
-              onClick={(event) => {
-                event.preventDefault();
-                selectConsoleView(view);
-              }}
-              className={`flex min-h-11 min-w-0 items-center justify-center whitespace-normal rounded-xl border px-2.5 py-2 text-center text-sm font-medium leading-5 transition sm:rounded-full sm:px-4 ${consoleView === view ? "border-wood bg-wood text-cream" : "border-line bg-paper/60 text-ink-soft"}`}
+              aria-current={consoleGroup(consoleView) === consoleGroup(view) ? "page" : undefined}
+              onClick={(event) => { event.preventDefault(); selectConsoleView(view); }}
+              className={`flex min-h-12 min-w-0 items-center justify-center rounded-xl border px-3 py-2 text-center text-sm font-medium leading-5 transition ${consoleGroup(consoleView) === consoleGroup(view) ? "border-wood bg-wood text-cream" : "border-line bg-paper/60 text-ink-soft"}`}
             >{label}</a>
           ))}
         </nav>
+        {consoleView !== "overview" ? (
+          <nav className="mt-3 flex flex-wrap gap-2" aria-label={tr(locale, "目前分類的管理項目", "当前分类的管理项目", "Tools in this section")}>
+            {(consoleGroup(consoleView) === "content" ? ([
+              ["articles", tr(locale, "文章管理", "文章管理", "Articles")],
+              ["music", tr(locale, "上傳音樂", "上传音乐", "Upload music")],
+              ["images", tr(locale, "圖片與背景", "图片与背景", "Images")],
+              ["opening", tr(locale, "影片素材", "视频素材", "Videos")],
+            ] as [ConsoleView, string][]) : consoleGroup(consoleView) === "customers" ? ([
+              ["reports", tr(locale, "客戶報告", "客户报告", "Reports")],
+              ["promo", tr(locale, "優惠碼", "优惠码", "Promo codes")],
+            ] as [ConsoleView, string][]) : ([
+              ["themes", tr(locale, "主題皮膚", "主题皮肤", "Themes")],
+              ["devices", tr(locale, "登入與裝置", "登录与设备", "Sign-in & devices")],
+            ] as [ConsoleView, string][])).map(([view, label]) => (
+              <a key={view} id={`console-tab-${view}`} href={consoleViewHref(view)}
+                aria-current={consoleView === view ? "page" : undefined}
+                onClick={(event) => { event.preventDefault(); selectConsoleView(view); }}
+                className={`inline-flex min-h-11 items-center justify-center rounded-full border px-4 py-2 text-sm ${consoleView === view ? "border-wood bg-wood text-cream" : "border-line bg-paper/60 text-ink-soft"}`}
+              >{label}</a>
+            ))}
+          </nav>
+        ) : null}
       </header>
 
       <div id="console-panel-overview" role="region" aria-labelledby="console-tab-overview" hidden={consoleView !== "overview"}>
@@ -508,8 +527,17 @@ function AccountPage() {
 
       </div>
 
+      <div id="console-panel-music" role="region" aria-labelledby="console-tab-music" hidden={consoleView !== "music"}>
+        <section className="seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
+          <h2 className="font-display text-2xl text-ink">{tr(locale, "網站背景音樂", "网站背景音乐", "Website music")}</h2>
+          <p className="mt-2 text-sm leading-6 text-ink-soft">{tr(locale,
+            "點選下方「背景音樂管理」，即可上傳、試聽、啟用、改名或管理曲目。",
+            "点击下方「背景音乐管理」，即可上传、试听、启用、改名或管理曲目。",
+            "Open the music manager below to upload, preview, activate or rename tracks.")}</p>
+          <div data-owner-music-slot />
+        </section>
+      </div>
       <div id="console-panel-images" role="region" aria-labelledby="console-tab-images" hidden={consoleView !== "images"}>
-        <div data-owner-music-slot />
         {visitedViews.has("images") ? <Suspense fallback={<p role="status" className="p-5 text-ink">{tr(locale, "載入圖庫…", "加载图库…", "Loading gallery…")}</p>}><OwnerGalleryManager session={session} locale={locale} /></Suspense> : null}
       </div>
       <div id="console-panel-opening" role="region" aria-labelledby="console-tab-opening" hidden={consoleView !== "opening"}>

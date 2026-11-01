@@ -191,8 +191,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const viewsTotalLabel = displayText(language, "累計瀏覽", "累计浏览", "Total views", "累計閲覧", "누적 조회", "कुल दृश्य");
   const latestLabel = displayText(language, "最新更新", "最新更新", "Latest update", "最新更新", "최신 업데이트", "नवीनतम अपडेट");
   const siteControlsLabel = displayText(language, "網站控制", "网站控制", "Site controls", "サイト操作", "사이트 메뉴", "साइट नियंत्रण");
-  const galleryLabel = displayText(language, "圖庫", "图库", "Gallery", "ギャラリー", "갤러리", "गैलरी");
-  const openGalleryLabel = displayText(language, "打開圖庫", "打开图库", "Open Gallery", "ギャラリーを開く", "갤러리 열기", "गैलरी खोलें");
+  const galleryLabel = displayText(language, "素材管理", "素材管理", "Media", "素材管理", "미디어", "मीडिया");
+  const openGalleryLabel = displayText(language, "打開內容與素材管理", "打开内容与素材管理", "Open content and media management", "コンテンツ管理を開く", "콘텐츠 관리를 열기", "कंटेंट प्रबंधन खोलें");
   const dayModeLabel = displayText(language, "切換日間模式", "切换日间模式", "Switch to day mode", "昼モードに切り替える", "주간 모드로 전환", "दिन मोड पर जाएँ");
   const nightModeLabel = displayText(language, "切換夜間模式", "切换夜间模式", "Switch to night mode", "夜モードに切り替える", "야간 모드로 전환", "रात मोड पर जाएँ");
   const languageVisualLabel = displayText(language, "語言", "语言", "Language", "言語", "언어", "भाषा");
@@ -276,7 +276,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               </Link>
 
               <div className="zhaowu-header-account-actions">
-                {user?.isOwner && pathname !== "/gallery" ? <Link to="/gallery" className="zhaowu-header-utility zhaowu-header-gallery" aria-label={openGalleryLabel}>{galleryLabel}</Link> : null}
+                {user?.isOwner && pathname !== "/account" ? <a href="/account?view=images" className="zhaowu-header-utility zhaowu-header-gallery" aria-label={openGalleryLabel}>{galleryLabel}</a> : null}
                 {isPending ? <span className="zhaowu-header-pending" /> : user?.isOwner ? <>
                   {pathname !== "/account" ? <Link to="/account" className="zhaowu-header-utility"><BrandIcon name="account" />{t("navAdmin")}</Link> : null}
                   <button type="button" onClick={() => void signOut()} className="zhaowu-header-utility zhaowu-header-signout">{t("logout")}</button>
