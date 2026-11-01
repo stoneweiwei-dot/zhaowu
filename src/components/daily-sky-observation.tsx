@@ -90,9 +90,9 @@ export const OBSERVATIONS: DatedObservation[] = [
       en: "Today's S/A planetary events and the 72-hour outlook await independent ephemeris verification; this does not mean there are no major events."
     },
     weather: {
-      "zh-Hant": "天氣預報顯示上午可能有陣雨；觀測前請確認最新雲量。光害資料暫缺，請選擇安全且遠離強光的位置。",
-      "zh-Hans": "天气预报显示上午可能有阵雨；观察前请确认最新云量。光害数据暂缺，请选择安全且远离强光的位置。",
-      en: "The forecast indicates possible morning showers; check current cloud cover before observing. Light-pollution data are unavailable; choose a safe location away from bright lights."
+      "zh-Hant": "當日可追溯的觀測時段天氣和光害資料暫缺；出門前請確認最新預報，選擇安全且遠離強光的位置。",
+      "zh-Hans": "当日可追溯的观测时段天气和光害资料暂缺；出门前请确认最新预报，选择安全且远离强光的位置。",
+      en: "Traceable weather and light-pollution data for the viewing period are unavailable. Check the latest forecast and choose a safe location away from bright lights."
     },
     sources: [
       { title: "Timeanddate · Sydney Moon, 2 Nov 2026", url: "https://www.timeanddate.com/moon/australia/sydney?month=11&year=2026" },
