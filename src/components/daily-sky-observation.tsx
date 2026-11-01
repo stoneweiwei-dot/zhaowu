@@ -71,6 +71,33 @@ export const OBSERVATIONS: DatedObservation[] = [
       { title: "Timeanddate · Sydney planetary visibility, 1 Nov", url: "https://www.timeanddate.com/astronomy/night/australia/sydney" },
       { title: "Australian Bureau of Meteorology · Sydney area forecast, issued 1 Nov 2026 17:00 AEDT", url: "https://www.bom.gov.au/places/nsw/sydney/forecast/" }
     ]
+  },
+  {
+    date: "2026-11-02",
+    moon: {
+      "zh-Hant": "下弦月於悉尼時間07:28發生；06:58過中天時照明50.4%。月出01:46（方位65°），月落12:17（方位292°）。",
+      "zh-Hans": "下弦月于悉尼时间07:28发生；06:58过中天时照明50.4%。月出01:46（方位65°），月落12:17（方位292°）。",
+      en: "Last quarter occurs at 07:28 Sydney time. At the 06:58 transit the Moon is 50.4% illuminated; it rises at 01:46 (65°) and sets at 12:17 (292°)."
+    },
+    planets: {
+      "zh-Hant": "11月2日黎明前：火星02:22、木星02:34升起，朝東北方觀察；金星04:57升起、貼近地平線。實際可見性受雲量和地形影響。",
+      "zh-Hans": "11月2日黎明前：火星02:22、木星02:34升起，朝东北方观察；金星04:57升起、贴近地平线。实际可见性受云量和地形影响。",
+      en: "Before dawn on 2 November, Mars rises at 02:22 and Jupiter at 02:34; look northeast. Venus rises at 04:57, low on the horizon. Clouds and terrain affect visibility."
+    },
+    events: {
+      "zh-Hant": "本日S／A行星事件及未來72小時預告尚待獨立星曆核驗，不代表沒有重大事件。",
+      "zh-Hans": "本日S／A行星事件及未来72小时预告尚待独立星历核验，不代表没有重大事件。",
+      en: "Today's S/A planetary events and the 72-hour outlook await independent ephemeris verification; this does not mean there are no major events."
+    },
+    weather: {
+      "zh-Hant": "天氣預報顯示上午可能有陣雨；觀測前請確認最新雲量。光害資料暫缺，請選擇安全且遠離強光的位置。",
+      "zh-Hans": "天气预报显示上午可能有阵雨；观察前请确认最新云量。光害数据暂缺，请选择安全且远离强光的位置。",
+      en: "The forecast indicates possible morning showers; check current cloud cover before observing. Light-pollution data are unavailable; choose a safe location away from bright lights."
+    },
+    sources: [
+      { title: "Timeanddate · Sydney Moon, 2 Nov 2026", url: "https://www.timeanddate.com/moon/australia/sydney?month=11&year=2026" },
+      { title: "Timeanddate · Sydney planets, 1–2 Nov 2026", url: "https://www.timeanddate.com/astronomy/night/australia/sydney" }
+    ]
   }
 ];
 
