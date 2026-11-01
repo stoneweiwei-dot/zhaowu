@@ -168,6 +168,7 @@ export function DailySkyObservation() {
       <section><h3>{ui.events}</h3><p>{observation.events[lang]}</p></section>
       <section><h3>{ui.weather}</h3><p>{observation.weather[lang]}</p></section>
       {observation.date === "2026-11-01" && <section><h3>{ui.actions}</h3><ul>{ui.tips.map((tip) => <li key={tip}>{tip}</li>)}</ul></section>}
+      {observation.date === "2026-11-02" && <section><h3>{ui.actions}</h3><ul>{(lang === "en" ? ["Check the latest clouds and weather before observing.", "Choose a safe site with an open northeastern horizon.", "Before sunrise, look for Jupiter and Mars; do not point optical equipment near the Sun."] : lang === "zh-Hans" ? ["观测前查看最新云量及天气。", "选择安全、东北方视野开阔的地点。", "日出前寻找木星与火星；光学器材不要指向太阳附近。"] : ["觀測前查看最新雲量及天氣。", "選擇安全、東北方視野開闊的地點。", "日出前尋找木星與火星；光學器材不要指向太陽附近。"]).map((tip) => <li key={tip}>{tip}</li>)}</ul></section>}
       <details>
         <summary>{ui.sources}</summary>
         <p><time dateTime={observation.date}>{observation.date}</time> · Australia/Sydney</p>
