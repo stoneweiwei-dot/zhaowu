@@ -69,7 +69,7 @@ function buildPlaybackOrder(tracks: OwnerMusicTrack[], currentId: string | null,
   return current ? [current, ...rest] : rest;
 }
 
-export function BackgroundMusic() {
+export function BackgroundMusic({ visible = false }: { visible?: boolean } = {}) {
   const { locale } = useI18n();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const unlockStartedRef = useRef(false);
@@ -153,10 +153,12 @@ export function BackgroundMusic() {
     }
   }, []);
 
+  // Listing is a read-only fetch: show tracks on opening the visitor's music panel
+  // without starting audio or requiring a play gesture.
   useEffect(() => {
-    if (!requested) return;
+    if (!visible && !requested) return;
     void refreshAsset();
-  }, [requested, refreshAsset]);
+  }, [visible, requested, refreshAsset]);
 
   useEffect(() => {
     const onChange = () => {
@@ -436,6 +438,9 @@ export function BackgroundMusic() {
         shuffle: "Shuffle",
         controls: "Music controls",
         close: "Close music controls",
+        playlist: "Choose a track",
+        empty: "No tracks available yet.",
+        playlistHint: "Tap a title to play. The playlist loops by default.",
       }
     : locale === "zh-Hans"
       ? {
@@ -450,6 +455,9 @@ export function BackgroundMusic() {
           shuffle: "随机播放",
           controls: "音乐控制",
           close: "收起音乐控制",
+          playlist: "点选歌曲",
+          empty: "目前没有可播放的曲目。",
+          playlistHint: "点选曲名即可播放，默认整张列表循环。",
         }
       : {
           playing: "播放中",
@@ -463,6 +471,9 @@ export function BackgroundMusic() {
           shuffle: "隨機播放",
           controls: "音樂控制",
           close: "收起音樂控制",
+          playlist: "選擇曲目",
+          empty: "目前沒有可播放的曲目。",
+          playlistHint: "點選曲名即可播放，預設整張清單循環。",
         };
 
   const transportButton = "inline-grid min-h-11 min-w-11 place-items-center rounded-full border border-line/80 bg-paper/75 text-base leading-none text-ink-soft transition hover:text-ink active:scale-[0.97]";
@@ -521,6 +532,32 @@ export function BackgroundMusic() {
         </button>
       </div>
       <p data-music-mode-status className="mt-1 text-center text-[11px] font-semibold tracking-wide text-ink-mute">{modeStatus}</p>
+      <div className="mt-3 border-t border-line/70 pt-3" data-public-music-playlist>
+        <h3 className="font-display text-base text-ink">{copy.playlist} <span className="text-xs font-normal text-ink-mute">· {tracks.length}</span></h3>
+        <p className="mt-1 text-xs leading-5 text-ink-mute">{copy.playlistHint}</p>
+        {loading && !tracks.length ? <p role="status" className="mt-3 text-sm text-ink-mute">{copy.loading}</p> : null}
+        {!loading && !tracks.length ? <p className="mt-3 text-sm text-ink-mute">{copy.empty}</p> : null}
+        <ol className="mt-3 max-h-72 list-none space-y-1 overflow-y-auto overscroll-contain pr-1" aria-label={copy.playlist}>
+          {tracks.map((track, index) => {
+            const title = musicDisplayName(track.name, locale);
+            const selected = track.id === currentId;
+            return <li key={track.id}>
+              <button type="button" data-background-music-control data-music-playlist-track={track.id}
+                aria-current={selected ? "true" : undefined}
+                aria-label={`${title.primary}${title.secondary ? ` · ${title.secondary}` : ""}`}
+                onClick={() => { if (!previewOwnsAudioRef.current) selectTrack(track, true); }}
+                className={`flex min-h-12 w-full min-w-0 items-center gap-3 rounded-xl border px-3 py-2 text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wood ${selected ? "border-wood/50 bg-wood/10 text-ink" : "border-line/55 bg-paper/50 text-ink-soft hover:border-wood/40"}`}>
+                <span className="w-7 shrink-0 text-center text-xs tabular-nums text-ink-mute">{String(index + 1).padStart(2, "0")}</span>
+                <span className="min-w-0 flex-1">
+                  <span className="block break-words text-sm font-medium leading-5 text-ink">{title.primary}</span>
+                  {title.secondary ? <span className="block break-words text-xs leading-4 text-ink-mute">{title.secondary}</span> : null}
+                </span>
+                <span className="shrink-0 text-xs text-wood" aria-hidden="true">{selected && playing ? "♫" : selected ? "●" : "▶"}</span>
+              </button>
+            </li>;
+          })}
+        </ol>
+      </div>
       <span className="sr-only" aria-live="polite">{playing ? legacyPlayingStatus : copy.paused}</span>
     </section>
   );
