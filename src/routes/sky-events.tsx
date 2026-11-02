@@ -124,10 +124,10 @@ function SkyEventsPage() {
   const showCurrentWeek = !isSkyReportArchived(getTodaySkyUpdatedDate());
   const isSaturn = event.id === "saturn-opposition-2026";
   const ui = locale === "en"
-    ? { title: "Recent Sky Events", lead: "Astronomical reality × symbolic astrology", back: "Home", science: "Astronomy layer · verifiable", symbolic: "Astrology layer · symbolic", houses: "Where this sign falls in your natal chart", sources: "Sources & verification", watch: "What this desk will publish first", archive: "Earlier sky events", note: "Astronomy and astrology are not presented as the same kind of knowledge. Measurable celestial motion is factual; personal meaning is a symbolic interpretive tradition." }
+    ? { title: "The Sky Now", lead: "Astronomical reality × symbolic astrology", back: "Home", science: "Astronomy layer · verifiable", symbolic: "Astrology layer · symbolic", houses: "Where this sign falls in your natal chart", sources: "Sources & verification", watch: "What this desk will publish first", archive: "Earlier sky events", note: "Astronomy and astrology are not presented as the same kind of knowledge. Measurable celestial motion is factual; personal meaning is a symbolic interpretive tradition." }
     : locale === "zh-Hans"
-      ? { title: "近日天象", lead: "天文实况 × 星象解读", back: "返回首页", science: "天文层｜可验证事实", symbolic: "占星层｜象征性解读", houses: "本次星座落入本命不同宫位", sources: "资料来源与核验", watch: "本专栏第一时间发布", archive: "早前天象", note: "本站不会把天文学与占星解释混成同一种证据。可测量的天体运动属于事实层；个人意义属于传统占星的象征解释层。" }
-      : { title: "近日天象", lead: "天文實況 × 星象解讀", back: "返回首頁", science: "天文層｜可驗證事實", symbolic: "占星層｜象徵性解讀", houses: "本次星座落入本命不同宮位", sources: "資料來源與核驗", watch: "本專欄第一時間發布", archive: "早前天象", note: "本站不會把天文學與占星解讀混成同一種證據。可測量的天體運動屬於事實層；個人意義屬於傳統占星的象徵解讀層。" };
+      ? { title: "此时天象", lead: "天文实况 × 星象解读", back: "返回首页", science: "天文层｜可验证事实", symbolic: "占星层｜象征性解读", houses: "本次星座落入本命不同宫位", sources: "资料来源与核验", watch: "本专栏第一时间发布", archive: "早前天象", note: "本站不会把天文学与占星解释混成同一种证据。可测量的天体运动属于事实层；个人意义属于传统占星的象征解释层。" }
+      : { title: "此時天象", lead: "天文實況 × 星象解讀", back: "返回首頁", science: "天文層｜可驗證事實", symbolic: "占星層｜象徵性解讀", houses: "本次星座落入本命不同宮位", sources: "資料來源與核驗", watch: "本專欄第一時間發布", archive: "早前天象", note: "本站不會把天文學與占星解讀混成同一種證據。可測量的天體運動屬於事實層；個人意義屬於傳統占星的象徵解讀層。" };
 
   const labels = locale === "en"
     ? { navigation: "On this page", feature: "Featured event", week: "This week", archive: "Earlier events", expand: "Open section", eventDetails: "What is fact, and what is interpretation?", longRead: "Read the full interpretation", sourceDetails: "Sources and verification", featureKinds: ["Astronomy facts", "Astrological symbolism"] }
@@ -144,8 +144,6 @@ function SkyEventsPage() {
         <p>{ui.lead}</p>
         <div className="sky-events-truth-note">{ui.note}</div>
       </header>
-
-      <DailySkyObservation />
 
       <nav className="sky-events-shortcuts" aria-label={labels.navigation}>
         <a href="#sky-featured">{labels.feature}</a>
@@ -211,6 +209,8 @@ function SkyEventsPage() {
         </details>
       </article>
 
+
+      <DailySkyObservation />
 
       <details className="sky-section-disclosure sky-watch-disclosure">
         <summary><strong>{ui.watch}</strong><span>{SKY_EVENT_CATEGORIES.length}</span></summary>
