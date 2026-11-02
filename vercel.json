@@ -21,7 +21,7 @@
       "maxDuration": 60
     },
     "api/owner-music.js": {
-      "maxDuration": 10
+      "maxDuration": 30
     },
     "api/mingshu-doctor.js": {
       "maxDuration": 10
