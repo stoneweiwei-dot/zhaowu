@@ -2,6 +2,7 @@ import { BaziReadingUnlock, useBaziReadingAccess } from "@/components/bazi-readi
 import { JourneySteps } from "@/components/journey-steps";
 import { currentJourneyStep, type JourneyStep } from "@/lib/site-journey";
 import { CharacterPanel } from "@/components/character-panel";
+import { FreeStemBranchAtlas } from "@/components/free-stem-branch-atlas";
 import { BirthDataNotice } from "@/components/birth-data-notice";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { analyzeLife } from "@/lib/actions";
@@ -545,6 +546,7 @@ export function AnalysisForm() {
               <BaziChart chart={previewChart} showHeader={false} expandDetails={false} />
               <CharacterPanel chart={previewChart} />
             </details>
+            <FreeStemBranchAtlas chart={previewChart} />
             {readingUnlocked ? <><details className="zhaowu-chart-details zhaowu-bazi-fold" data-fold="terms">
               <summary>{copy.foundation}</summary>
               <section className="zhaowu-bazi-foundation" aria-labelledby="zhaowu-bazi-foundation-title">
