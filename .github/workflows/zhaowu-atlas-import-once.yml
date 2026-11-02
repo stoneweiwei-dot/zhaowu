@@ -1,0 +1,47 @@
+name: One-time free atlas binary transfer
+on:
+  push:
+    branches:
+      - feat/free-stem-branch-atlas-trilingual-20261102
+    paths:
+      - .github/workflows/zhaowu-atlas-import-once.yml
+permissions:
+  contents: write
+jobs:
+  import-verified-scenes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Pillow for one-time image processing
+        run: python -m pip install --disable-pip-version-check Pillow==11.3.0
+      - name: Pin original archive hash and import 22 cropped art files
+        run: python scripts/import-free-atlas-once.py
+      - name: Verify complete scene output
+        run: |
+          python - <<'PY'
+          import json, hashlib, pathlib
+          m=json.loads(pathlib.Path('public/report-visuals/atlas/manifest.json').read_text())
+          assert len(m["assets"])==22
+          assert sum(a['id'].startswith('stems/') for a in m['assets'])==10
+          assert sum(a['id'].startswith('branches/') for a in m['assets'])==12
+          for a in m['assets']:
+              p=pathlib.Path('public')/a['file']
+              data=p.read_bytes()
+              assert len(data)==a['bytes'] and data[:4]==b'RIFF' and data[8:12]==b'WEBP'
+              assert hashlib.sha256(data).hexdigest()==a['sha256']
+          print('PASS: 22 asset digests validated')
+          PY
+      - name: Commit verified assets, retire one-time importer
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/report-visuals/atlas
+          git rm -f scripts/import-free-atlas-once.py .github/workflows/zhaowu-atlas-import-once.yml
+          git commit -m "art(report): import 22 permanent verified free atlas scene assets"
+          git push origin HEAD:feat/free-stem-branch-atlas-trilingual-20261102
