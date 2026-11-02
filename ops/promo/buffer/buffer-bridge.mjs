@@ -43,7 +43,8 @@ export function validateInput(config, content) {
   for (const k of allowed) {
     const t = targets[k];
     if (!t?.enabled) continue;
-    if (!t.channel_id || !t.expected_name) throw new Error(`${k}: verified channel ID/name required`);
+    if (typeof t.channel_id !== 'string' || !t.channel_id.trim() || typeof t.expected_name !== 'string' || !t.expected_name.trim()) throw new Error(`${k}: verified channel ID/name required`);
+    if (k === 'facebook' && (typeof t.expected_service_id !== 'string' || !t.expected_service_id.trim())) throw new Error('facebook: verified Page service ID required');
     if (typeof content.captions?.[k] !== 'string' || !content.captions[k].trim()) throw new Error(`${k}: caption required`);
     if (k === 'threads' && [...content.captions[k]].length > 500) throw new Error('Threads text too long');
     if (k === 'instagram' && [...content.captions[k]].length > 2200) throw new Error('Instagram caption too long');
@@ -76,7 +77,7 @@ export function buildPostMutation({channel, text, dueAt, imageUrl='', imageAlt='
 export function draftPlan(config, content) {
   const dueAt = validateInput(config, content);
   return Object.entries(config.targets).filter(([,t])=>t.enabled).map(([service,t])=>({
-    service, channel_id:t.channel_id, expected_name:t.expected_name,
+    service, channel_id:t.channel_id, expected_name:t.expected_name, expected_service_id:t.expected_service_id,
     dueAt, text:content.captions[service],
     imageUrl: service==='instagram' ? content.image_url : '',
     imageAlt: service==='instagram' ? content.image_alt : '',
@@ -97,12 +98,14 @@ async function bufferQuery(query, token, fetchImpl=fetch) {
 
 export async function readAccountChannels(token, fetchImpl=fetch) {
   const account = await bufferQuery('query {account {organizations {id name}}}',token,fetchImpl);
-  const orgs = account?.account?.organizations || [];
+  const orgs = account?.account?.organizations;
+  if (!Array.isArray(orgs)) throw new Error('Incomplete Buffer organizations response');
   const output=[];
   for (const org of orgs) {
-    const query = `query { channels(input: {organizationId: ${graphString(org.id)}}) {id name displayName service isQueuePaused} }`;
+    const query = `query { channels(input: {organizationId: ${graphString(org.id)}}) {id name displayName service serviceId type isQueuePaused isDisconnected isLocked externalLink} }`;
     const r = await bufferQuery(query, token, fetchImpl);
-    for (const ch of r.channels || []) output.push({...ch,organizationId:org.id,organizationName:org.name});
+    if (!Array.isArray(r?.channels)) throw new Error('Incomplete Buffer channels response');
+    for (const ch of r.channels) output.push({...ch,organizationId:org.id,organizationName:org.name});
   }
   return output;
 }
@@ -114,33 +117,55 @@ export function validateTargetChannels(plan, channels) {
     if (normalized(c.service)!==p.service) throw new Error(`${p.service}: wrong provider ${c.service}`);
     const names = [normalized(c.name),normalized(c.displayName)];
     if (!names.includes(normalized(p.expected_name))) throw new Error(`${p.service}: channel name mismatch; actual ${c.name}/${c.displayName}`);
+    for (const key of ['isQueuePaused','isDisconnected','isLocked']) {
+      if (typeof c[key] !== 'boolean') throw new Error(`${p.service}: missing ${key} status`);
+    }
     if (c.isQueuePaused) throw new Error(`${p.service}: queue paused`);
     if (c.isDisconnected || c.isLocked) throw new Error(`${p.service}: channel disconnected or locked`);
     if (p.service === 'facebook' && normalized(c.type) !== 'page') throw new Error('Facebook target must be a Page, not a personal profile');
+    if (p.service === 'facebook' && (!p.expected_service_id || c.serviceId !== p.expected_service_id)) throw new Error('Facebook Page service ID mismatch');
   }
 }
 
 export async function checkScheduled(token, org, channelId, dueAt, fetchImpl=fetch) {
-  const localDate = (()=>{ const parts=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:ZONE,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(dueAt)).map(x=>[x.type,x.value])); return `${parts.year}-${parts.month}-${parts.day}`; })();
-  const dayEnd = new Date(`${localDate}T00:00:00.000Z`); dayEnd.setUTCDate(dayEnd.getUTCDate()+1);
-  const tomorrow=dayEnd.toISOString().slice(0,10);
-  const start=sydneyTimeToUtc(localDate,'00:00');
-  const end=sydneyTimeToUtc(tomorrow,'00:00');
-  const q = `query {posts(first: 100, input: {organizationId: ${graphString(org)}, filter: {status: [scheduled, sent], channelIds: [${graphString(channelId)}], startDate: ${graphString(start)}, endDate: ${graphString(end)}}}){edges{node{id text dueAt sentAt createdAt channelId}}pageInfo{hasNextPage}}}`;
+  // Search all scheduled/sent records: Buffer's date filters use createdAt/dueAt,
+  // so a post actually sent on the target date could otherwise be missed.
+  const q = `query {posts(first: 100, input: {organizationId: ${graphString(org)}, filter: {status: [scheduled, sent], channelIds: [${graphString(channelId)}]}}){edges{node{id dueAt sentAt channelId status}}pageInfo{hasNextPage}}}`;
   const res=await bufferQuery(q,token,fetchImpl);
-  if (res.posts?.pageInfo?.hasNextPage) throw new Error('More than 100 scheduled posts; cannot safely deduplicate');
-  // Fail closed for one post per channel per Australia/Sydney day.
+  const posts=res?.posts;
+  if (!posts || !Array.isArray(posts.edges) || typeof posts.pageInfo?.hasNextPage !== 'boolean') throw new Error('Incomplete Buffer posts response; cannot safely deduplicate');
+  if (posts.pageInfo.hasNextPage) throw new Error('More than 100 scheduled/sent posts; cannot safely deduplicate');
   const fmt=new Intl.DateTimeFormat('en-CA',{timeZone:ZONE,year:'numeric',month:'2-digit',day:'2-digit'});
-  const day=(iso)=>{const parts=Object.fromEntries(fmt.formatToParts(new Date(iso)).map(x=>[x.type,x.value])); return `${parts.year}-${parts.month}-${parts.day}`;};
+  const day=iso=>{const d=new Date(iso); if (!Number.isFinite(d.getTime())) throw new Error('Invalid post timestamp'); const p=Object.fromEntries(fmt.formatToParts(d).map(x=>[x.type,x.value])); return `${p.year}-${p.month}-${p.day}`;};
   const wanted=day(dueAt);
-  return (res.posts?.edges||[]).map(x=>x.node).find(p => {
-    const scheduledForDay = p.dueAt && day(p.dueAt) === wanted;
-    const sentOnDay = p.sentAt && day(p.sentAt) === wanted;
-    return scheduledForDay || sentOnDay;
-  });
+  let match;
+  for (const edge of posts.edges) {
+    const p=edge?.node;
+    if (!p || !p.id || p.channelId !== channelId || !['scheduled','sent'].includes(p.status) || !Object.hasOwn(p,'dueAt') || !Object.hasOwn(p,'sentAt')) throw new Error('Incomplete or unexpected Buffer post; cannot safely deduplicate');
+    if (p.status === 'scheduled' && !p.dueAt || p.status === 'sent' && !p.sentAt) throw new Error('Missing post timestamp; cannot safely deduplicate');
+    const same=(p.dueAt && day(p.dueAt)===wanted) || (p.sentAt && day(p.sentAt)===wanted);
+    if (same && !match) match=p;
+  }
+  return match;
+}
+
+export async function inspectPlan({plan, token, fetchImpl=fetch}) {
+  if (!plan.length) throw new Error('No approved channels enabled');
+  const channels=await readAccountChannels(token,fetchImpl);
+  validateTargetChannels(plan,channels);
+  const results=[];
+  for (const p of plan) {
+    const org=channels.find(x=>x.id===p.channel_id).organizationId;
+    const existing=await checkScheduled(token,org,p.channel_id,p.dueAt,fetchImpl);
+    results.push({service:p.service,channel_id:p.channel_id,existing:existing ? {id:existing.id,status:existing.status} : null});
+  }
+  return results;
 }
 
 export async function enqueuePlan({plan, token, fetchImpl=fetch, now=new Date()}) {
+  if (plan.some(p=>p.service === 'instagram')) throw new Error('Instagram enqueue blocked pending verified public image and direct-publishing capability');
+  const checks=await inspectPlan({plan,token,fetchImpl});
+  if (checks.some(c=>c.existing)) throw new Error('Existing post found; stop all channels');
   const channels=await readAccountChannels(token,fetchImpl);
   validateTargetChannels(plan,channels);
   if (new Date(plan[0]?.dueAt).getTime() - now.getTime() < 120_000) throw new Error('Publish time too soon/past; stop instead of instant publish');
@@ -161,24 +186,29 @@ export async function enqueuePlan({plan, token, fetchImpl=fetch, now=new Date()}
 
 async function main() {
   const args=process.argv.slice(2);
-  const action=args.includes('--check')?'check':args.includes('--enqueue')?'enqueue':'dry-run';
+  const action=args.includes('--list-channels')?'list-channels':args.includes('--check')?'check':args.includes('--enqueue')?'enqueue':'dry-run';
   const cfgPath=args.find(x=>x.startsWith('--config='))?.slice(9) || './config.example.json';
   const postPath=args.find(x=>x.startsWith('--post='))?.slice(7) || './post.example.json';
-  if (action==='check') {
+  if (action==='list-channels') {
     const channels=await readAccountChannels(process.env.BUFFER_API_KEY);
-    console.log(JSON.stringify(channels.map(c=>({id:c.id,name:c.name,displayName:c.displayName,service:c.service,type:c.type,organizationName:c.organizationName,isQueuePaused:c.isQueuePaused,isDisconnected:c.isDisconnected,isLocked:c.isLocked,externalLink:c.externalLink})),null,2));
+    console.log(JSON.stringify({mode:'list-channels',liveWrites:false,channels},null,2));
     return;
   }
   const config=JSON.parse(readFileSync(resolve(cfgPath),'utf8'));
   const post=JSON.parse(readFileSync(resolve(postPath),'utf8'));
+  const plan=draftPlan(config,post);
+  if (!plan.length) throw new Error('No approved channels enabled');
+  if (action==='check') {
+    const results=await inspectPlan({plan,token:process.env.BUFFER_API_KEY});
+    console.log(JSON.stringify({mode:'check',liveWrites:false,results,limitations:['Buffer only; check Metricool and existing schedules separately','Instagram media URL, actual image dimensions and automatic-publishing capability require independent verification']},null,2));
+    if (results.some(r=>r.existing)) throw new Error('Existing Buffer post found; preflight blocked');
+    return;
+  }
   if (action==='dry-run') {
-    const dueAt=sydneyTimeToUtc(post.local_date,config.publish_time);
-    console.log(JSON.stringify({mode:'dry-run',liveWrites:false,local:`${post.local_date} ${config.publish_time} ${ZONE}`,dueAt, enabledTargets:Object.keys(config.targets).filter(x=>config.targets[x].enabled),warnings:['Channel IDs not configured means queue is not ready','IG requires approved public image and professional account']},null,2));
+    console.log(JSON.stringify({mode:'dry-run',liveWrites:false,local:`${post.local_date} ${config.publish_time} ${ZONE}`,dueAt:plan[0].dueAt,enabledTargets:plan.map(p=>p.service),limitations:['Input validation only; no account, duplicate, public image or actual image dimension checks']},null,2));
     return;
   }
   if (process.env.ENABLE_BUFFER_QUEUE !== 'YES_I_APPROVED') throw new Error('Queue blocked until ENABLE_BUFFER_QUEUE=YES_I_APPROVED');
-  const plan=draftPlan(config,post);
-  if (!plan.length) throw new Error('No approved channels enabled');
   console.log(JSON.stringify(await enqueuePlan({plan,token:process.env.BUFFER_API_KEY}),null,2));
 }
 
