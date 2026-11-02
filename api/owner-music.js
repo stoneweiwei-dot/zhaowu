@@ -93,7 +93,7 @@ function upstreamCandidates(row) {
 // 200 with the whole file; synthesize a correct 206 response without buffering it.
 function audioByteRange(value, size) {
   if (!value || !Number.isSafeInteger(size) || size <= 0) return null;
-  const match = /^bytes=(\\d*)-(\\d*)$/.exec(value);
+  const match = /^bytes=(\d*)-(\d*)$/.exec(value);
   if (!match || (!match[1] && !match[2])) return null;
   let start;
   let end;
