@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 import { SKY_EVENT_CATEGORIES, getArchivedSkyEvents, getFeaturedSkyEvent, getTodaySkyUpdatedDate } from "@/lib/sky-events";
 import { TodaySkyCards } from "@/components/today-sky-cards";
+import { DailySkyObservation } from "@/components/daily-sky-observation";
 import { isSkyReportArchived } from "@/lib/sky-week-presentation";
 import "@/sky-events.css";
 import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
@@ -122,13 +123,6 @@ function SkyEventsPage() {
   const archive = getArchivedSkyEvents();
   const showCurrentWeek = !isSkyReportArchived(getTodaySkyUpdatedDate());
   const isSaturn = event.id === "saturn-opposition-2026";
-  const isSunNodeTrine = event.id === "sun-trine-north-node-2026-10-20";
-  const illustrationAlt = locale === "en"
-    ? "A geocentric diagram showing the Sun and calculated North Node about 120 degrees apart; the Node is not a visible body."
-    : locale === "zh-Hans"
-      ? "地心示意图：太阳与计算得出的北交点相隔约 120°；交点不是可见天体。"
-      : "地心示意圖：太陽與計算所得的北交點相隔約 120°；交點不是可見天體。";
-  const glyph = isSunNodeTrine ? "☉△☊" : isSaturn ? "♄" : event.id === "venus-scorpio-2026" ? "♀" : event.id.startsWith("mars-") ? "♂" : "✦";
   const ui = locale === "en"
     ? { title: "Recent Sky Events", lead: "Astronomical reality × symbolic astrology", back: "Home", science: "Astronomy layer · verifiable", symbolic: "Astrology layer · symbolic", houses: "Where this sign falls in your natal chart", sources: "Sources & verification", watch: "What this desk will publish first", archive: "Earlier sky events", note: "Astronomy and astrology are not presented as the same kind of knowledge. Measurable celestial motion is factual; personal meaning is a symbolic interpretive tradition." }
     : locale === "zh-Hans"
@@ -151,6 +145,8 @@ function SkyEventsPage() {
         <div className="sky-events-truth-note">{ui.note}</div>
       </header>
 
+      <DailySkyObservation />
+
       <nav className="sky-events-shortcuts" aria-label={labels.navigation}>
         <a href="#sky-featured">{labels.feature}</a>
         {showCurrentWeek ? <a href="#sky-week">{labels.week}</a> : null}
@@ -168,20 +164,16 @@ function SkyEventsPage() {
           {labels.featureKinds.map((label, index) => <span key={label} className={index === 0 ? "is-fact" : "is-symbol"}>{label}</span>)}
         </div>
         <header className="sky-event-title">
-          <div className={`sky-event-orbit ${isSaturn ? "is-saturn" : ""}`} aria-hidden="true"><span>{glyph}</span></div>
+          <figure className="sky-event-art">
+            <img src="/mythic-atlas/originals/12-stars-and-constellations.webp"
+              width={320} height={400} loading="lazy" decoding="async"
+              alt={lang === "en" ? "Traditional celestial constellation painting; editorial artwork, not a live astronomical image."
+                : lang === "zh-Hans" ? "传统星宿绘画，用作栏目配图，并非实时天文影像。"
+                : "傳統星宿繪畫，作為欄目配圖，並非即時天文影像。"} />
+            <figcaption>{lang === "en" ? "Archived celestial artwork" : lang === "zh-Hans" ? "既有星宿画作" : "既有星宿畫作"}</figcaption>
+          </figure>
           <div><span className="sky-events-kicker">{event.published}</span><h2>{event.title[lang]}</h2><p>{event.subtitle[lang]}</p></div>
         </header>
-
-        {isSunNodeTrine ? (
-          <figure className="sky-event-illustration">
-            <img src="/articles/sun-trine-north-node-2026.svg" alt={illustrationAlt} loading="lazy" />
-            <figcaption>{locale === "en"
-              ? "A geometric guide to the 120° tropical-zodiac aspect; the North Node is a calculated orbital point."
-              : locale === "zh-Hans"
-                ? "120° 热带黄道相位示意；北交点是计算出的轨道交点。"
-                : "120° 熱帶黃道相位示意；北交點是計算出的軌道交點。"}</figcaption>
-          </figure>
-        ) : null}
 
         <details className="sky-section-disclosure sky-event-details" open={event.id === "zhaowu-sky-quarter-2026-10-04-2027-01-04"}>
           <summary><strong>{labels.eventDetails}</strong><span>{labels.expand}</span></summary>
