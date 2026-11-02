@@ -99,19 +99,27 @@ test("status and public row shape", () => {
   assert.equal("system_id" in row, false);
 });
 
-test("promo function auth is the same gate as zhaowu-owner-data", () => {
+test("promo function trusts only the fail-closed server bridge after Vercel owner auth", () => {
+  const secret = "s".repeat(40);
+  const h = (o) => new Headers(o);
+  const good = { "x-zhaowu-server-bridge": "r162", "x-zhaowu-bridge-secret": secret };
+
+  assert.equal(authorizeBridgeHeaders(h(good), secret).ok, true);
+  assert.equal(authorizeBridgeHeaders(h({ ...good, "x-zhaowu-server-bridge": "r1" }), secret).error, "BRIDGE_REQUIRED");
+  assert.equal(authorizeBridgeHeaders(h({ ...good, "x-zhaowu-bridge-secret": "x".repeat(40), "x-zhaowu-owner-secret": "cannot-bypass" }), secret).error, "BRIDGE_UNAUTHORIZED");
+  assert.equal(authorizeBridgeHeaders(h(good), "").error, "BRIDGE_NOT_CONFIGURED");
+  assert.equal(authorizeBridgeHeaders(h(good), "short").error, "BRIDGE_NOT_CONFIGURED");
+});
+
+test("owner-data keeps its independent owner-password gate", () => {
   const ownerKey = "test-owner-key";
   const ownerHash = createHash("sha256").update(ownerKey, "utf8").digest("hex");
   const secret = "s".repeat(40);
   const h = (o) => new Headers(o);
   const good = { "x-zhaowu-server-bridge": "r162", "x-zhaowu-bridge-secret": secret, "x-zhaowu-owner-secret": ownerKey };
-  for (const fn of [authorizeBridgeHeaders, dataAuthorize]) {
-    assert.equal(fn(h(good), secret, ownerHash).ok, true);
-    assert.equal(fn(h({ ...good, "x-zhaowu-server-bridge": "r1" }), secret, ownerHash).error, "BRIDGE_REQUIRED");
-    assert.equal(fn(h({ ...good, "x-zhaowu-bridge-secret": "x".repeat(40) }), secret, ownerHash).error, "BRIDGE_UNAUTHORIZED");
-    assert.equal(fn(h({ ...good, "x-zhaowu-owner-secret": "nope" }), secret, ownerHash).error, "OWNER_UNAUTHORIZED");
-    assert.equal(fn(h({}), secret, ownerHash).ok, false);
-  }
+
+  assert.equal(dataAuthorize(h(good), secret, ownerHash).ok, true);
+  assert.equal(dataAuthorize(h({ ...good, "x-zhaowu-owner-secret": "nope" }), secret, ownerHash).error, "OWNER_UNAUTHORIZED");
 });
 
 test("owner-data routes promo.* to the isolated function, everything else unchanged", () => {
