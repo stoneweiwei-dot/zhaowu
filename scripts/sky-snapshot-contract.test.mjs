@@ -18,3 +18,11 @@ test("public sky route uses native picture and avoids synthetic planet orbits", 
   assert.match(css, /sky-event-timeline\{display:grid;grid-template-columns:minmax\(0,1fr\)/);
   assert.match(css, /prefers-reduced-motion:reduce/);
 });
+
+test("Sydney 3 November snapshot includes three languages, rise/set and sourced phase", () => {
+  const src = read("src/components/daily-sky-observation.tsx");
+  assert.match(src, /date: "2026-11-03"/);
+  for (const datum of ["02:22", "13:25", "07:50", "38.9%"]) assert.ok(src.includes(datum), datum);
+  for (const term of ["殘月", "残月", "Waning crescent", "not passed two-engine validation"]) assert.ok(src.includes(term), term);
+  assert.match(src, /3 Nov 2026/);
+});
