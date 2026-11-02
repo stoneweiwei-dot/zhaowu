@@ -1,0 +1,9 @@
+{
+  "timezone": "Australia/Sydney",
+  "publish_time": "08:45",
+  "targets": {
+    "facebook": {"enabled": false, "channel_id": "", "expected_name": "昭梧 Zhaowu"},
+    "instagram": {"enabled": false, "channel_id": "", "expected_name": "fkofflove"},
+    "threads": {"enabled": false, "channel_id": "", "expected_name": "fkofflove"}
+  }
+}
