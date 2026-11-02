@@ -71,7 +71,7 @@ type Verification = {
   ok?: boolean;
   paid?: boolean;
   pending?: boolean;
-  product?: ReportAccessProduct;
+  product?: ReportAccessProduct | "bundle";
   system?: ReportSystemId | null;
   error?: { code?: string } | string;
 };
@@ -184,7 +184,9 @@ export async function redeemPromoCode(code: string, system: ReportSystemId): Pro
 
 function levelFor(verification: Verification, system: ReportSystemId): ReportAccessLevel {
   if (!verification.paid || !verification.product) return "none";
-  if (verification.system !== system) return "none";
+  // Legacy bundle grants are returned by the live promo service with system: null.
+  if (verification.product === "bundle" && verification.system === null) return "system";
+  if (verification.system !== system || verification.product === "bundle") return "none";
   return verification.product;
 }
 
