@@ -10212,3 +10212,48 @@ html[lang="en"] #zhaowu-main-content :is(h1, h2, h3) {
   #zhaowu-main-content main > h1 { font-size: clamp(30px, 8vw, 39px) !important; }
   .zhaowu-site-header .zhaowu-brand-name { font-size: 19px !important; }
 }
+
+/* 2026-11-02: visitor music playlist must never shrink to a one-glyph column on mobile.
+   The music section is a grid; explicitly give it a zero-minimum full-width track,
+   then reserve space for the number, two-line title and play marker. */
+html body [data-background-music-player] {
+  width: 100% !important;
+  min-width: 0 !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  justify-items: stretch !important;
+}
+html body [data-background-music-player] [data-public-music-playlist],
+html body [data-background-music-player] [data-public-music-playlist] > ol,
+html body [data-background-music-player] [data-public-music-playlist] > ol > li {
+  display: block;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+html body [data-background-music-player] [data-public-music-playlist] > ol {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+html body [data-background-music-player] [data-music-playlist-track] {
+  display: grid !important;
+  grid-template-columns: 30px minmax(0, 1fr) 18px;
+  align-items: center;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  column-gap: 10px;
+}
+html body [data-background-music-player] [data-music-playlist-track] > span:nth-child(2) {
+  display: block;
+  min-width: 0 !important;
+  width: 100% !important;
+  overflow: hidden;
+}
+html body [data-background-music-player] [data-music-playlist-track] > span:nth-child(2) > span {
+  display: block;
+  width: 100%;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+}
