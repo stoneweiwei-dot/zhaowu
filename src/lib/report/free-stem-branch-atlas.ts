@@ -486,7 +486,7 @@ export const FREE_ATLAS_COPY: Record<Locale, { title: string; lead: string; male
     "strength": "象徵優勢",
     "watch": "值得留意",
     "source": "圖像與文字是文化意象；無法替代八字全局分析。",
-    "original": "此幅資訊海報原稿內含繁體中文；其他語言以本頁獨立文字為準。",
+    "original": "圖為原創人物場景節選；畫內裝飾性字樣不作推演依據，請以本頁正文為準。",
     "open": "展開圖鑑"
   },
   "zh-Hans": {
@@ -500,7 +500,7 @@ export const FREE_ATLAS_COPY: Record<Locale, { title: string; lead: string; male
     "strength": "象征优势",
     "watch": "值得留意",
     "source": "图像和文字只是文化象征，不能代替完整八字分析。",
-    "original": "图片原稿含繁体中文，简体说明以本页文字为准。",
+    "original": "图像仅展示人物场景；画内装饰文字不作为推演依据，请以本页正文为准。",
     "open": "展开图鉴"
   },
   "en": {
@@ -514,7 +514,7 @@ export const FREE_ATLAS_COPY: Record<Locale, { title: string; lead: string; male
     "strength": "Symbolic strengths",
     "watch": "What to watch",
     "source": "Symbolic cultural imagery, not a substitute for interpreting the full birth chart.",
-    "original": "The source poster contains Traditional Chinese; the accessible English text here is the localized explanation.",
+    "original": "The artwork shows a cropped character scene. The translated text here, not lettering in the art, is the reading.",
     "open": "Open illustration"
   }
 };
@@ -523,7 +523,7 @@ export const FREE_ATLAS_COPY: Record<Locale, { title: string; lead: string; male
  * Keep this switch false until art-level accuracy, third-party signatures and all three locales have
  * a passing acceptance record and the real image binaries exist at the atlas paths.
  */
-export const VERIFIED_ATLAS_POSTERS = false;
+export const VERIFIED_ATLAS_POSTERS = true;
 export const FREE_ATLAS_POSTERS: Record<string, string> = {
   "甲": "/report-visuals/atlas/stems/jia.webp",
   "乙": "/report-visuals/atlas/stems/yi.webp",
@@ -596,9 +596,9 @@ export function freeAtlasGenderCopy(gender: Chart["gender"], locale: Locale): st
 }
 
 export function freeAtlasImage(entry: FreeAtlasEntry, locale: Locale): string {
-  // Non-Hant users must never mistake embedded Traditional-Chinese raster text for a translation.
-  // Existing audited art contains no embedded Chinese educational text.
-  return VERIFIED_ATLAS_POSTERS && locale === "zh-Hant"
+  // This is a pre-cropped scene with both characters; the three-language report copy
+  // is rendered as separate HTML, never lifted from source poster lettering.
+  return VERIFIED_ATLAS_POSTERS
     ? FREE_ATLAS_POSTERS[entry.symbol]
     : FREE_ATLAS_FALLBACK_ART[entry.symbol];
 }

@@ -31,20 +31,22 @@ export function FreeStemBranchAtlas({ chart }: { chart: Chart }) {
             <details className="zw-free-atlas__item" key={entry.symbol} data-free-atlas-symbol={entry.symbol} open={i === 0}>
               <summary><span lang="zh">{entry.symbol}</span><span>{entry.roman}</span><span>{entry.kind === "stem" ? copy.stem : copy.branch}</span></summary>
               <div className="zw-free-atlas__body">
-                <img
-                  src={imagePath}
-                  alt={entry.heading[locale]}
-                  width={entry.kind === "stem" ? 720 : 1080}
-                  height={entry.kind === "stem" ? 773 : 1080}
-                  loading="lazy"
-                  decoding="async"
-                  onError={() => setFailedArt(prev => prev.includes(entry.symbol) ? prev : [...prev, entry.symbol])}
-                />
+                <div className={"zw-free-atlas__art " + (failedArt.includes(entry.symbol) ? "is-fallback" : "is-poster")}>
+                  <img
+                    src={imagePath}
+                    alt={entry.heading[locale]}
+                    width={720}
+                    height={536}
+                    loading="lazy"
+                    decoding="async"
+                    onError={() => setFailedArt(prev => prev.includes(entry.symbol) ? prev : [...prev, entry.symbol])}
+                  />
+                </div>
                 <div className="zw-free-atlas__words">
                   <strong>{entry.heading[locale]}</strong>
                   <p><b>{copy.strength}</b> · {entry.strength[locale]}</p>
                   <p><b>{copy.watch}</b> · {entry.caution[locale]}</p>
-                  {VERIFIED_ATLAS_POSTERS && locale === "zh-Hant" ? <small>{copy.original}</small> : null}
+                  {VERIFIED_ATLAS_POSTERS ? <small>{copy.original}</small> : null}
                 </div>
               </div>
             </details>
