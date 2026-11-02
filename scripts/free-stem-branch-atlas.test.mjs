@@ -30,3 +30,18 @@ assert.match(form,/<FreeStemBranchAtlas chart=\{previewChart\}/);
 assert.match(report,/<FreeStemBranchAtlas chart=\{chart\}/);
 assert.match(component,/data-free-atlas-gender=\{chart.gender\}/);
 console.log("Free atlas: 10 stems + 12 branches, 3 locales, gender safety, dedupe and free path PASS");
+
+// Runtime contract: the exact chart determines the symbols; the submitted gender only selects the copy.
+const { selectFreeAtlas, freeAtlasGenderCopy, freeAtlasImage } = await import("../src/lib/report/free-stem-branch-atlas.ts");
+const example = { dayMaster: "壬", gender: "female", pillars: [
+  { zhi: "辰", ready: true }, { zhi: "酉", ready: true },
+  { zhi: "辰", ready: true }, { zhi: "巳", ready: false },
+] };
+assert.deepEqual(selectFreeAtlas(example).map(item => item.symbol), ["壬", "辰", "酉"]);
+assert.deepEqual(selectFreeAtlas({ ...example, gender: "male" }).map(item => item.symbol), ["壬", "辰", "酉"]);
+assert.deepEqual(selectFreeAtlas({ ...example, gender: "unspecified" }).map(item => item.symbol), ["壬", "辰", "酉"]);
+assert.match(freeAtlasGenderCopy("male", "zh-Hant"), /男性/);
+assert.match(freeAtlasGenderCopy("female", "zh-Hant"), /女性/);
+assert.match(freeAtlasGenderCopy("unspecified", "zh-Hant"), /中性/);
+assert.match(freeAtlasGenderCopy("female", "en"), /female/);
+assert.ok(!freeAtlasImage(selectFreeAtlas(example)[0], "en").includes("/atlas/"), "untranslated raster poster must not appear in English");
