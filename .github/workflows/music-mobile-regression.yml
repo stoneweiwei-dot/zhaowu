@@ -1,0 +1,29 @@
+name: Music mobile playback regression
+
+on:
+  pull_request:
+    paths:
+      - 'api/owner-music.js'
+      - 'lib/owner-music-public.js'
+      - 'src/zhaowu-design-system.css'
+      - 'src/components/background-music.tsx'
+      - 'scripts/music-playback-regression.test.mjs'
+      - 'vercel.json'
+      - '.github/workflows/music-mobile-regression.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audio-and-layout:
+    name: Node audio range and mobile playlist contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify Safari streaming and mobile playlist contracts
+        run: node --test scripts/music-playback-regression.test.mjs scripts/r149-music-player-controls.test.mjs scripts/music-playlist-choice.test.mjs
