@@ -1,3 +1,5 @@
+import { Readable } from "node:stream";
+import { pipeline } from "node:stream/promises";
 import {
   emptyManifest,
   readOwnerMusicManifest,
@@ -87,43 +89,124 @@ function upstreamCandidates(row) {
   return urls;
 }
 
+// Safari asks for byte ranges. Some GitHub raw endpoints ignore Range and return
+// 200 with the whole file; synthesize a correct 206 response without buffering it.
+function audioByteRange(value, size) {
+  if (!value || !Number.isSafeInteger(size) || size <= 0) return null;
+  const match = /^bytes=(\\d*)-(\\d*)$/.exec(value);
+  if (!match || (!match[1] && !match[2])) return null;
+  let start;
+  let end;
+  if (!match[1]) {
+    const suffix = Number(match[2]);
+    if (!Number.isSafeInteger(suffix) || suffix <= 0) return { invalid: true };
+    start = Math.max(0, size - suffix);
+    end = size - 1;
+  } else {
+    start = Number(match[1]);
+    end = match[2] ? Number(match[2]) : size - 1;
+  }
+  if (!Number.isSafeInteger(start) || !Number.isSafeInteger(end) || start >= size || start > end) {
+    return { invalid: true };
+  }
+  return { start, end: Math.min(end, size - 1) };
+}
+
+async function* audioSlice(chunks, start, end) {
+  let offset = 0;
+  for await (const chunk of chunks) {
+    const data = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+    const next = offset + data.length;
+    if (next > start && offset <= end) {
+      yield data.subarray(Math.max(0, start - offset), Math.min(data.length, end + 1 - offset));
+    }
+    offset = next;
+    if (offset > end) break;
+  }
+}
+
+function rangeNotSatisfiable(res, size) {
+  const headers = { "Content-Range": `bytes */${size}`, "Accept-Ranges": "bytes", "Cache-Control": "no-store" };
+  if (res && typeof res.setHeader === "function") {
+    for (const [name, value] of Object.entries(headers)) res.setHeader(name, value);
+    res.statusCode = 416;
+    return res.end();
+  }
+  return new Response(null, { status: 416, headers });
+}
+
 async function streamTrack(req, res, row) {
   const candidates = upstreamCandidates(row);
   const range = headerValue(req, "range").trim();
+  const method = (req?.method || "GET").toUpperCase();
+  const knownSize = Number(row?.fileSize);
+  const initialRange = audioByteRange(range, knownSize);
+  if (initialRange?.invalid) return rangeNotSatisfiable(res, knownSize);
+
   for (const target of candidates) {
     try {
       const upstream = await fetch(target, {
+        method,
         headers: range ? { Range: range } : undefined,
       });
-      if (!upstream.ok && upstream.status !== 206) continue;
-      const body = Buffer.from(await upstream.arrayBuffer());
-      const contentType = row?.contentType || upstream.headers.get("content-type") || "audio/mpeg";
-      const status = upstream.status === 206 ? 206 : 200;
+      if (!upstream.ok) continue;
+      if (method !== "HEAD" && !upstream.body) continue;
+      if ((upstream.headers.get("content-type") || "").includes("text/html")) continue;
+
+      const upstreamLength = Number(upstream.headers.get("content-length"));
+      const total = Number.isSafeInteger(upstreamLength) && upstreamLength > 0 ? upstreamLength : knownSize;
+      // Only slice the body if the upstream ignored the requested byte range.
+      const manualRange = upstream.status === 200 ? audioByteRange(range, total) : null;
+      if (manualRange?.invalid) return rangeNotSatisfiable(res, total);
+      const upstreamRange = upstream.headers.get("content-range");
+      if (upstream.status === 206 && !upstreamRange) continue;
+      const status = upstream.status === 206 || (manualRange && !manualRange.invalid) ? 206 : 200;
       const headers = {
-        "Content-Type": contentType,
-        "Content-Length": String(body.length),
-        "Accept-Ranges": "bytes",
+        "Content-Type": row?.contentType || upstream.headers.get("content-type") || "audio/mpeg",
         "Cache-Control": "public, max-age=86400, s-maxage=604800, stale-while-revalidate=604800",
         "X-Content-Type-Options": "nosniff",
       };
-      const contentRange = upstream.headers.get("content-range");
-      if (contentRange) headers["Content-Range"] = contentRange;
-      if (res && typeof res.setHeader === "function") {
-        for (const [key, value] of Object.entries(headers)) res.setHeader(key, value);
-        if (typeof res.status === "function") {
-          const response = res.status(status);
-          return typeof response.send === "function" ? response.send(body) : response.end(body);
-        }
-        res.statusCode = status;
-        return typeof res.end === "function" ? res.end(body) : undefined;
+      if (Number.isSafeInteger(total) && total > 0) headers["Accept-Ranges"] = "bytes";
+      if (status === 206 && manualRange && !manualRange.invalid) {
+        headers["Content-Range"] = `bytes ${manualRange.start}-${manualRange.end}/${total}`;
+        headers["Content-Length"] = String(manualRange.end - manualRange.start + 1);
+      } else {
+        if (status === 206 && upstreamRange) headers["Content-Range"] = upstreamRange;
+        if (Number.isSafeInteger(upstreamLength) && upstreamLength >= 0) headers["Content-Length"] = String(upstreamLength);
       }
-      return new Response(body, { status, headers });
-    } catch {
-      // Try next candidate
+
+      if (method === "HEAD") {
+        if (res && typeof res.setHeader === "function") {
+          for (const [name, value] of Object.entries(headers)) res.setHeader(name, value);
+          res.statusCode = status;
+          return res.end();
+        }
+        return new Response(null, { status, headers });
+      }
+
+      const input = Readable.fromWeb(upstream.body);
+      const output = manualRange && !manualRange.invalid
+        ? Readable.from(audioSlice(input, manualRange.start, manualRange.end))
+        : input;
+      if (res && typeof res.setHeader === "function") {
+        for (const [name, value] of Object.entries(headers)) res.setHeader(name, value);
+        res.statusCode = status;
+        await pipeline(output, res); // Backpressure + early client disconnect, no full-file Buffer.
+        return;
+      }
+      return new Response(Readable.toWeb(output), { status, headers });
+    } catch (error) {
+      // A stream cannot be restarted with another audio file after headers are sent.
+      if (res?.headersSent) {
+        if (!res.destroyed && typeof res.destroy === "function") res.destroy(error);
+        return;
+      }
+      // Before sending headers, a second trusted upstream can be tried.
     }
   }
   return redirectAudio(res, STATIC_FALLBACK_TRACK.url);
 }
+
 
 function redirectAudio(res, url) {
   const raw = playbackUrl(url);
