@@ -1,4 +1,4 @@
-name: Borrow Star art asset import
+name: Borrow Star art asset import (verified)
 on:
   workflow_dispatch:
   push:
