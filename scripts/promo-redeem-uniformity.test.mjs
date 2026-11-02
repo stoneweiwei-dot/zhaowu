@@ -88,3 +88,34 @@ test("redemption UI uses one neutral message for every invalid code", async () =
     }
   }
 });
+
+test("a server-verified legacy bundle unlocks the selected report", async () => {
+  const data = new Map([["zhaowu.report-access-key.v1", "12345678-1234-4234-8234-123456789abc"]]);
+  const previous = { window: globalThis.window, localStorage: globalThis.localStorage, fetch: globalThis.fetch };
+  globalThis.localStorage = {
+    getItem: (key) => data.get(key) ?? null,
+    setItem: (key, value) => { data.set(key, value); },
+    removeItem: (key) => { data.delete(key); },
+  };
+  globalThis.window = { location: { href: "/" } };
+  recordPurchaseConsent();
+  try {
+    globalThis.fetch = async () => ({
+      ok: true,
+      json: async () => ({ ok: true, paid: true, product: "bundle", system: null }),
+    });
+    assert.equal(await redeemPromoCode("TEST-BUNDLE-CODE", "bazi"), "system");
+    assert.equal(await redeemPromoCode("TEST-BUNDLE-CODE", "western"), "system");
+    globalThis.fetch = async () => ({
+      ok: true,
+      json: async () => ({ ok: true, paid: true, product: "system", system: "bazi" }),
+    });
+    assert.equal(await redeemPromoCode("TEST-SYSTEM-CODE", "western"), "none");
+  } finally {
+    clearPurchaseConsent();
+    for (const key of ["window", "localStorage", "fetch"]) {
+      if (previous[key] === undefined) delete globalThis[key];
+      else globalThis[key] = previous[key];
+    }
+  }
+});
