@@ -1,0 +1,29 @@
+name: Borrow Star art asset import
+on:
+  workflow_dispatch:
+  push:
+    branches: [fix/borrow-star-nine-art-20261102]
+    paths: [.github/workflows/borrow-star-art-import.yml]
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install playwright
+      - run: python -m playwright install --with-deps chromium
+      - run: python scripts/download-borrow-star-art.py
+      - run: python scripts/install-borrow-star-art.py
+      - name: Commit approved images to branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/mythic-atlas/borrow-star/*.webp
+          git diff --cached --check
+          git commit -m "art(mythic): add nine Borrow Star illustrated WebP assets"
+          git push
