@@ -98,6 +98,33 @@ export const OBSERVATIONS: DatedObservation[] = [
       { title: "Timeanddate · Sydney Moon, 2 Nov 2026", url: "https://www.timeanddate.com/moon/australia/sydney?month=11&year=2026" },
       { title: "Timeanddate · Sydney planets, 1–2 Nov 2026", url: "https://www.timeanddate.com/astronomy/night/australia/sydney" }
     ]
+  },
+  {
+    date: "2026-11-03",
+    moon: {
+      "zh-Hant": "殘月（下弦後）；月出02:22（東北偏東），月落13:25（西北偏西）。07:50過中天時月面照明38.9%。",
+      "zh-Hans": "残月（下弦后）；月出02:22（东北偏东），月落13:25（西北偏西）。07:50过中天时月面照明38.9%。",
+      en: "Waning crescent after last quarter. Moonrise 02:22 (ENE), moonset 13:25 (WNW); 38.9% illuminated at its 07:50 transit."
+    },
+    planets: {
+      "zh-Hant": "木星、火星宜在黎明前查看；土星宜日落後觀看。確切升落時間與當晚能見度尚未逐項核驗。",
+      "zh-Hans": "木星、火星宜在黎明前查看；土星宜日落后观看。确切升落时间与当晚能见度尚未逐项核验。",
+      en: "Look for Jupiter and Mars before sunrise and Saturn after sunset. Exact rise/set times and viewing conditions for this date are not yet independently checked."
+    },
+    events: {
+      "zh-Hant": "11月3日S／A事件及未來72小時預告尚未通過雙引擎核驗，不代表沒有重大事件。",
+      "zh-Hans": "11月3日S／A事件及未来72小时预告尚未通过双引擎核验，不代表没有重大事件。",
+      en: "3 November S/A events and the following 72-hour outlook have not passed two-engine validation; this is not an absence claim."
+    },
+    weather: {
+      "zh-Hant": "該日天氣與光害的時段觀測資料暫缺；出門前先查看當地預報，遠離強燈並留意地形。",
+      "zh-Hans": "该日天气与光害的时段观测数据暂缺；出门前先查看当地预报，远离强灯并留意地形。",
+      en: "Time-specific weather and light-pollution readings are unavailable. Check the local forecast and choose a safe, unobstructed site away from bright lights."
+    },
+    sources: [
+      { title: "Timeanddate · Sydney Moon, 3 Nov 2026", url: "https://www.timeanddate.com/moon/australia/sydney?month=11&year=2026" },
+      { title: "Timeanddate · Sydney night sky, planetary viewing reference", url: "https://www.timeanddate.com/astronomy/night/australia/sydney" }
+    ]
   }
 ];
 
@@ -174,6 +201,7 @@ export function DailySkyObservation() {
       <section><h3>{ui.weather}</h3><p>{observation.weather[lang]}</p></section>
       {observation.date === "2026-11-01" && <section><h3>{ui.actions}</h3><ul>{ui.tips.map((tip) => <li key={tip}>{tip}</li>)}</ul></section>}
       {observation.date === "2026-11-02" && <section><h3>{ui.actions}</h3><ul>{(lang === "en" ? ["Check the latest clouds and weather before observing.", "Choose a safe site with an open northeastern horizon.", "Before sunrise, look for Jupiter and Mars; do not point optical equipment near the Sun."] : lang === "zh-Hans" ? ["观测前查看最新云量及天气。", "选择安全、东北方视野开阔的地点。", "日出前寻找木星与火星；光学器材不要指向太阳附近。"] : ["觀測前查看最新雲量及天氣。", "選擇安全、東北方視野開闊的地點。", "日出前尋找木星與火星；光學器材不要指向太陽附近。"]).map((tip) => <li key={tip}>{tip}</li>)}</ul></section>}
+      {observation.date === "2026-11-03" && <section><h3>{ui.actions}</h3><ul>{(lang === "en" ? ["Check local cloud cover before dawn.", "Choose a safe eastern view of the sky, away from traffic and bright lights."] : lang === "zh-Hans" ? ["黎明前检查当地云量。", "选择安全、东侧视野开阔且远离强光的位置。"] : ["黎明前檢查當地雲量。", "選擇安全、東側視野開闊且遠離強光的位置。"]).map((tip) => <li key={tip}>{tip}</li>)}</ul></section>}
       <details>
         <summary>{ui.sources}</summary>
         <p><time dateTime={observation.date}>{observation.date}</time> · Australia/Sydney</p>
