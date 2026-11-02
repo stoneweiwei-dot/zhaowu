@@ -153,7 +153,8 @@ async function streamTrack(req, res, row) {
       if (method !== "HEAD" && !upstream.body) continue;
       if ((upstream.headers.get("content-type") || "").includes("text/html")) continue;
 
-      const upstreamLength = Number(upstream.headers.get("content-length"));
+      const lengthHeader = upstream.headers.get("content-length");
+      const upstreamLength = lengthHeader !== null && /^\d+$/.test(lengthHeader) ? Number(lengthHeader) : null;
       const total = Number.isSafeInteger(upstreamLength) && upstreamLength > 0 ? upstreamLength : knownSize;
       // Only slice the body if the upstream ignored the requested byte range.
       const manualRange = upstream.status === 200 ? audioByteRange(range, total) : null;
@@ -275,7 +276,7 @@ function staticFallbackPayload() {
 }
 
 export const config = {
-  maxDuration: 10,
+  maxDuration: 30,
 };
 
 export default async function handler(req, res) {
