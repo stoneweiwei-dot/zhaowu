@@ -11,3 +11,11 @@
 .daily-sky-quote { font-family:serif; font-size:clamp(1.3rem,4vw,1.8rem); text-align:center; border-block:1px solid #d9c9a8; padding:20px 0; }
 .daily-sky details { margin-top:22px; }.daily-sky summary { cursor:pointer; font-weight:700; }.daily-sky a { color:#355d66; overflow-wrap:anywhere; }.daily-sky-note { font-size:.9rem; }
 @media(max-width:520px){.daily-sky-columns{grid-template-columns:1fr;gap:18px}.daily-sky-columns section+section{border-left:0;border-top:1px solid #d9c9a8;padding:18px 0 0}}
+
+/* Dated records must remain readable without viewport horizontal scrolling. */
+.daily-sky{box-sizing:border-box;max-width:100%;min-width:0;overflow-wrap:anywhere;padding:clamp(14px,4vw,28px)}
+.daily-sky-record-notice{font-size:.93rem;font-weight:650;color:#5c4b2d;max-width:70ch}
+.daily-sky-columns>section{min-width:0}
+.daily-sky details>summary{min-height:44px;display:flex;align-items:center}
+.daily-sky details a:focus-visible,.daily-sky details summary:focus-visible{outline:3px solid #946b2f;outline-offset:3px}
+@media(max-width:390px){.daily-sky h2{font-size:clamp(1.6rem,8vw,2.1rem);letter-spacing:.03em}.daily-sky h3{font-size:1.15rem}.daily-sky-columns{gap:10px;padding:14px 0}}

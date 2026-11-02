@@ -107,26 +107,26 @@ const UI: Record<Lang, {
   daily: string; why: string; actions: string; signature: string; note: string; tips: string[];
 }> = {
   "zh-Hant": {
-    title: "每日觀象", subtitle: "觀天象 · 知時序", archived: "歷史觀測紀錄，尚未更新到今日",
+    title: "日期觀測紀錄", subtitle: "已核對日期的靜態快照 · 非自動每日更新", archived: "歷史觀測紀錄，尚未更新到今日",
     moon: "月相與升落", planets: "行星動態", events: "行星事件核驗", weather: "觀測提醒",
-    sources: "完整紀錄及資料來源", daily: "天空正在發生什麼", why: "如何理解",
-    actions: "今日可做的事", signature: "觀天有時，行事有度",
+    sources: "完整紀錄及資料來源", daily: "觀測摘要", why: "如何理解",
+    actions: "該日觀測建議", signature: "觀天有時，行事有度",
     note: "以上為天文觀測。占星象徵與八字判斷不屬同一證據層，另行標示。",
     tips: ["今晚看土星前先查看雲量與雨勢。", "避開街燈並選擇安全、視野開闊的位置。", "若想看木星與火星，安排11月2日黎明前觀測。"]
   },
   "zh-Hans": {
-    title: "每日观象", subtitle: "观天象 · 知时序", archived: "历史观测记录，尚未更新到今日",
+    title: "日期观测记录", subtitle: "已核对日期的静态快照 · 非自动每日更新", archived: "历史观测记录，尚未更新到今日",
     moon: "月相与升落", planets: "行星动态", events: "行星事件核验", weather: "观测提醒",
-    sources: "完整记录及数据来源", daily: "天空正在发生什么", why: "如何理解",
-    actions: "今天可做的事", signature: "观天有时，行事有度",
+    sources: "完整记录及数据来源", daily: "观测摘要", why: "如何理解",
+    actions: "该日观测建议", signature: "观天有时，行事有度",
     note: "以上为天文观测。占星象征与八字判断不属同一证据层，另行标示。",
     tips: ["今晚看土星前先查看云量与雨势。", "避开街灯并选择安全、视野开阔的位置。", "如想看木星与火星，安排11月2日黎明前观测。"]
   },
   en: {
-    title: "Daily Sky", subtitle: "Observe the sky · Mark the seasons", archived: "Archived observation; today's update is not available",
+    title: "Dated sky observation", subtitle: "Verified-date snapshot · not updated automatically", archived: "Archived observation; today's update is not available",
     moon: "Moon phase and rise/set", planets: "Planet visibility", events: "Planetary event verification", weather: "Viewing advice",
-    sources: "Full record and sources", daily: "What is happening in the sky?", why: "How to interpret it",
-    actions: "Practical things to do", signature: "Watch the sky; act with care",
+    sources: "Full record and sources", daily: "Observation summary", why: "How to interpret it",
+    actions: "Guidance for this recorded date", signature: "Watch the sky; act with care",
     note: "Astronomy is presented here as observation. Astrological symbolism and BaZi judgments are separate evidence layers.",
     tips: ["Check clouds and rain before viewing Saturn tonight.", "Choose a safe open view away from streetlights.", "For Jupiter and Mars, plan an observation before dawn on 2 November."]
   }
@@ -154,6 +154,11 @@ export function DailySkyObservation() {
         <span className="daily-sky-kicker">ZHAOWU · SYDNEY SKY</span>
         <h2>{ui.title}</h2><p>{ui.subtitle}</p>
         <time dateTime={observation.date}>{observation.date} · Australia/Sydney ({zoneName})</time>
+        <p className="daily-sky-record-notice">{lang === "en"
+          ? "This is a dated research record, not a live sky feed or a promise of daily updates."
+          : lang === "zh-Hans"
+            ? "此为指定日期的资料记录，并非实时天象或每日自动更新。"
+            : "此為指定日期的資料紀錄，並非即時天象或每日自動更新。"}</p>
       </header>
       {stale && <p className="daily-sky-stale" role="status">{ui.archived}</p>}
       <div className="daily-sky-columns">
@@ -161,7 +166,7 @@ export function DailySkyObservation() {
         <section><h3>{ui.planets}</h3><p>{observation.planets[lang]}</p></section>
       </div>
       <p className="daily-sky-quote">{ui.signature}</p>
-      <section><h3>{ui.daily}</h3><p>{observation.moon[lang]}</p></section>
+      
       <section><h3>{ui.why}</h3><p>{observation.date === "2026-11-01"
         ? (lang === "en" ? "Late spring in Sydney brings later sunsets, while planetary visibility depends on the actual horizon and weather, not on astrology." : lang === "zh-Hans" ? "悉尼正值春末，日落渐晚；能否看见行星取决于地平线和天气，不代表命运变化。" : "悉尼正值春末，日落漸晚；能否看見行星取決於地平線和天氣，不代表命運變化。")
         : ui.note}</p></section>
