@@ -21,3 +21,13 @@ test('homepage entrances and scene at mobile and desktop sizes', async ({ page }
     await expect(page.locator('[data-home-card]')).toHaveCount(0);
   }
 });
+
+test('homepage supports all three languages', async ({ page }) => {
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/?zw_entry=home', {waitUntil:'networkidle'});
+  for (const [language, title] of [['繁體中文', '我的命盤'], ['简体中文', '我的命盘'], ['English', 'My chart']]) {
+    await page.getByRole('radio', {name:language, exact:true}).click();
+    await expect(page.locator('[data-home-card="form"] .zw-entry strong')).toHaveText(title);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+  }
+});
