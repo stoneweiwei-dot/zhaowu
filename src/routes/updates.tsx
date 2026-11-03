@@ -42,7 +42,7 @@ function UpdatesPage() {
     : "";
 
   const title = displayText(language, "最新版本更新內容", "最新版本更新内容", "Latest release", "最新バージョン", "최신 버전", "नवीनतम संस्करण");
-  const currentLabel = displayText(language, "目前正式版本", "当前正式版本", "Current production release", "現在の正式版", "현재 프로덕션 버전", "वर्तमान प्रोडक्शन संस्करण");
+  const currentLabel = displayText(language, "最近編號版本", "最近编号版本", "Latest numbered release", "直近の番号付きリリース", "최근 번호가 지정된 릴리스", "नवीनतम क्रमांकित रिलीज़");
   const changesLabel = displayText(language, "每次改動", "每次改动", "Every change", "変更履歴", "변경 내역", "बदलाव");
   const changesIntro = displayText(
     language,
@@ -67,10 +67,16 @@ function UpdatesPage() {
         <p className="zhaowu-updates-label" id="current-release-title">{currentLabel}</p>
         <div className="zhaowu-updates-version-row">
           <strong>{release.version}</strong>
-          <span>{displayText(language, `第 ${release.updateNumber} 次更新`, `第 ${release.updateNumber} 次更新`, `Update ${release.updateNumber}`, `更新 ${release.updateNumber}`, `업데이트 ${release.updateNumber}`, `अपडेट ${release.updateNumber}`)}</span>
+          <span>{displayText(language, `正式版本序號 ${release.updateNumber}`, `正式版本序号 ${release.updateNumber}`, `Release number ${release.updateNumber}`, `更新 ${release.updateNumber}`, `업데이트 ${release.updateNumber}`, `अपडेट ${release.updateNumber}`)}</span>
         </div>
         {published ? <time dateTime={release.publishedAt ?? undefined}>{published}</time> : null}
         <ul>{details.map((item) => <li key={item}>{item}</li>)}</ul>
+      </section>
+
+      <section className="zhaowu-updates-card" aria-labelledby="development-history-title">
+        <p className="zhaowu-updates-label" id="development-history-title">{displayText(language, "開發紀錄", "开发记录", "Development history", "開発履歴", "개발 기록", "विकास इतिहास")}</p>
+        <p>{displayText(language, "截至 2026 年 11 月 3 日（悉尼時間），Git 主分支歷史共有 2,257 次提交。提交包含功能、修正及文件變動；一次正式發布可以包含多次提交。", "截至 2026 年 11 月 3 日（悉尼时间），Git 主分支历史共有 2,257 次提交。提交包含功能、修正及文档变动；一次正式发布可以包含多次提交。", "As of 3 November 2026 (Sydney time), the Git main branch history contains 2,257 commits. These include features, fixes and documentation; one formal release can contain multiple commits.", "2026年11月3日時点の Git 履歴：2,257 コミット。", "2026년 11월 3일 기준 Git 기록: 2,257개 커밋.", "3 नवंबर 2026 तक Git इतिहास में 2,257 कमिट।")}</p>
+        <a href="https://github.com/stoneweiwei-dot/zhaowu/commit/73a7e0fa9d50">{displayText(language, "查看統計基準", "查看统计基准", "View the reference commit", "基準コミット", "기준 커밋", "संदर्भ कमिट")}</a>
       </section>
 
       <section className="zhaowu-updates-card" aria-labelledby="public-changelog-title" data-public-changelog>

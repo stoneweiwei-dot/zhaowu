@@ -182,7 +182,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
     { value: "en" as const, label: "English", aria: "English" },
   ];
 
-  const updateLabel = displayText(language, "累計更新", "累计更新", "Updates", "更新", "누적 업데이트", "कुल अपडेट");
+  const updateLabel = displayText(language, "正式版本序號", "正式版本序号", "Release number", "正式版番号", "정식 버전 번호", "रिलीज़ संख्या");
   const todayLabel = displayText(language, "今日", "今日", "Today", "本日", "오늘", "आज");
   const totalLabel = displayText(language, "累計訪問", "累计访问", "Total visits", "累計訪問", "누적 방문", "कुल विज़िट");
   // Owner 2026-10-01: view counts must be visible. The header strip that used to carry them is hidden by the
