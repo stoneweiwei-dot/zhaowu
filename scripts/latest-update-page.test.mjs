@@ -24,11 +24,10 @@ test("release page carries bilingual content and never hardcodes a commit SHA", 
   assert.doesNotMatch(route, /[a-f0-9]{40}/i);
 });
 
- test("development commits are distinguished from numbered releases", () => {
-  assert.match(route, /截至 2026 年 11 月 3 日/);
-  assert.match(route, /2,257 次提交/);
+test("development commits are distinguished from numbered releases", () => {
+  assert.match(route, /development-history\.json/);
   assert.match(route, /一次正式發布可以包含多次提交/);
-  assert.match(route, /73a7e0fa9d50/);
+  assert.match(route, /history\.sha/);
   assert.match(shell, /正式版本序號/);
   assert.doesNotMatch(shell, /累計更新/);
 });

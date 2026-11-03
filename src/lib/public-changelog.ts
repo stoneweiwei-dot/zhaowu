@@ -15,6 +15,27 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-11-03-update-records",
+    date: "2026-11-03",
+    zhHant: { title: "更新紀錄與開發提交數", summary: "更新頁區分正式版本序號與 Git 開發提交，並在部署時計算可查證的提交數。" },
+    zhHans: { title: "更新记录与开发提交数", summary: "更新页区分正式版本序号与 Git 开发提交，并在部署时计算可核验的提交数。" },
+    en: { title: "Release and development history", summary: "The updates page distinguishes numbered releases from Git commits and calculates the verifiable commit count at deployment." },
+  },
+  {
+    id: "2026-11-03-sky-observations-layout",
+    date: "2026-11-03",
+    zhHant: { title: "此時天象閱讀版面與悉尼觀測", summary: "更新天象頁閱讀版面，並提供已標日期的悉尼觀測資料；觀測快照不代表自動持續更新。" },
+    zhHans: { title: "此时天象阅读版面与悉尼观测", summary: "更新天象页阅读版面，并提供已标日期的悉尼观测资料；观测快照不代表自动持续更新。" },
+    en: { title: "Sky page layout and Sydney observations", summary: "Updated the sky page layout and added dated Sydney observation snapshots; the snapshots do not update continuously." },
+  },
+  {
+    id: "2026-11-02-music-and-report-atlas",
+    date: "2026-11-02",
+    zhHant: { title: "音樂清單與免費命盤圖鑑", summary: "改善手機音樂清單和播放，免費報告加入十天干與十二地支圖鑑。" },
+    zhHans: { title: "音乐清单与免费命盘图鉴", summary: "改善手机音乐清单和播放，免费报告加入十天干与十二地支图鉴。" },
+    en: { title: "Music playlist and free chart illustrations", summary: "Improved the mobile music playlist and playback and added the ten stems and twelve branches illustrations to free reports." },
+  },
+  {
     id: "2026-10-30-mythic-atlas-lighter-images",
     date: "2026-10-30",
     zhHant: { title: "黃泉圖錄與怪力亂神圖片載入更快", summary: "黃泉圖錄、十二生肖與怪力亂神頁面改用網頁尺寸的圖片與 720p 影片，載入量減少約九成；點圖仍可開啟原始全尺寸檔案。命盤計算與付款流程不變。" },
@@ -280,3 +301,6 @@ export function publicChangeText(entry: PublicChangeEntry, language: string) {
   if (language === "zh-Hans") return entry.zhHans;
   return entry.zhHant;
 }
+
+/** Newest recorded change; stable source order breaks same-day ties. */
+export const SORTED_PUBLIC_CHANGELOG = [...PUBLIC_CHANGELOG].sort((a, b) => b.date.localeCompare(a.date));
