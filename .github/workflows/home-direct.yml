@@ -1,0 +1,31 @@
+name: Homepage direct navigation
+on:
+  pull_request:
+    paths:
+      - 'src/components/home-tree.tsx'
+      - 'src/components/painted-home.tsx'
+      - 'src/home-mobile-v2.css'
+      - 'e2e/home-direct.spec.ts'
+      - '.github/workflows/home-direct.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  homepage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test e2e/home-direct.spec.ts --project=desktop-chrome
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: homepage-screenshots
+          path: test-results
+          retention-days: 7
