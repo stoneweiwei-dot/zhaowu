@@ -53,6 +53,13 @@ export default async function handler(req, res) {
   if ((req.method || "GET") !== "GET") {
     return jsonResponse(res, 405, { ok: false, error: { code: "METHOD_NOT_ALLOWED" } });
   }
+  if (queryValue(req, "mode") === "visitor-hemisphere") {
+    const latitude = numberOrNull(headerValue(req, "x-vercel-ip-latitude"));
+    // Coarse IP coordinates can be wrong or unavailable. Do not expose them here.
+    const hemisphere = latitude === null || Math.abs(latitude) < 1 || Math.abs(latitude) > 90
+      ? "unknown" : latitude < 0 ? "south" : "north";
+    return jsonResponse(res, 200, { hemisphere });
+  }
   if (queryValue(req, "mode") === "visitor-location") {
     return jsonResponse(res, 200, visitorLocation(req));
   }
