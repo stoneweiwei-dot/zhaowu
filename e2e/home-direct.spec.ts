@@ -8,11 +8,14 @@ test('homepage entrances and scene at mobile and desktop sizes', async ({ page }
     await expect(page.locator('[data-home-card]')).toHaveCount(4);
     for (const card of await page.locator('[data-home-card]').all()) await expect(card.locator('.zw-entry')).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
-    await expect.poll(() => page.evaluate(() => document.documentElement.scrollHeight)).toBeGreaterThan(1000);
+    await expect.poll(() => page.evaluate(() => Math.max(document.documentElement.scrollHeight, document.querySelector('.zhaowu-home-sheet-shell')?.scrollHeight || 0))).toBeGreaterThan(1000);
     const colors = await page.locator('[data-home-card] .zw-entry').evaluateAll(cards => cards.map(c => ({ background: getComputedStyle(c).backgroundColor, text: getComputedStyle(c.querySelector('strong')!).webkitTextFillColor })));
     expect(colors[0].background).not.toBe(colors[1].background);
     expect(colors[1].text).not.toBe(colors[0].text);
-    await page.screenshot({path:`test-results/home-${width}.png`, fullPage:true});
+    await page.screenshot({path:`test-results/home-${width}.png`});
+    await page.locator('#home-guide').scrollIntoViewIfNeeded();
+    await expect.poll(() => page.evaluate(() => Number(getComputedStyle(document.documentElement).getPropertyValue('--zw-veil')))).toBeGreaterThan(0.5);
+    await page.screenshot({path:`test-results/guide-${width}.png`});
     await page.getByRole('button', { name: /開始免費排盤|开始免费排盘|Start my free chart/ }).first().click();
     await expect(page.locator('[data-home-card]')).toHaveCount(0);
   }
