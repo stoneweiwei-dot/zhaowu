@@ -13,6 +13,7 @@ import {
   useDisplayLanguage,
   type DisplayLanguage,
 } from "@/lib/display-language";
+import { SORTED_PUBLIC_CHANGELOG, publicChangeText } from "@/lib/public-changelog";
 import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSiteStats } from "@/lib/site-stats";
 import { JourneyNavigation } from "@/components/journey-navigation";
 import { SiteUtilityDock } from "@/components/site-utility-dock";
@@ -172,7 +173,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   }, []);
 
   const releaseDate = formatReleaseDate(stats.publishedAt, language);
-  const releaseSummary = releaseSummaryForLanguage(stats.latestSummary, stats.version, language);
+  const releaseSummary = SORTED_PUBLIC_CHANGELOG[0] ? publicChangeText(SORTED_PUBLIC_CHANGELOG[0], language).summary : releaseSummaryForLanguage(stats.latestSummary, stats.version, language);
   const numberLocale = intlTagFor(language);
   // Korean and Hindi remain implemented in the codebase but are intentionally
   // hidden from the public language selector until they are reactivated.
