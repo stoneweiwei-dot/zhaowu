@@ -96,7 +96,10 @@ export function skinById(id: string | null | undefined) {
       noteZh: auto.hou['zh-Hant'], noteHans: auto.hou['zh-Hans'], noteEn: auto.hou.en,
       // The 2026 Frost pack has real three-phase commissioned artwork;
       // remaining 23 terms use existing full-page skins until their own art is verified.
-      hero: skin.id === FROST_SKIN_ID ? FROST_PHASES[auto.houIndex].art : skin.hero,
+      hero: visitorHemisphere === 'south' && auto.term.zh === '立冬'
+        ? '/theme-skins/southern/start-winter-2026.webp'
+        : skin.id === FROST_SKIN_ID ? FROST_PHASES[auto.houIndex].art : skin.hero,
+      focus: visitorHemisphere === 'south' && auto.term.zh === '立冬' ? '100% 6%' : skin.focus,
     };
   }
   return skin.id === FROST_SKIN_ID ? { ...skin, hero: frostEdition().art } : skin;
