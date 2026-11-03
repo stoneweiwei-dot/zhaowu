@@ -358,3 +358,6 @@ html body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree
 /* The route fade leaves a transform in its final frame; disable it on this page so fixed art remains viewport-fixed. */
 html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-route-fade { animation:none; transform:none; }
 html body #root .zw-painted-home.zw-v2-home .zw-season-context { max-width:560px; margin:0 auto; padding:12px 24px 22px; background:rgba(250,246,238,.94); color:#4a4f48 !important; font-size:14px; line-height:1.6; }
+html body #root .zw-painted-home.zw-v2-home .zw-v2-opening { background:transparent; border-radius:0; text-shadow:0 1px 8px #fffaf0, 0 0 12px #fffaf0; }
+html body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry { background:rgba(250,246,238,.97) !important; color:#273b34 !important; }
+html body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry { background:#345e50 !important; color:#fffdf8 !important; }
