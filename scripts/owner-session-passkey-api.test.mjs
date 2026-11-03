@@ -18,7 +18,7 @@ function fakeEdge() {
   const fetchImpl = async (_url, init) => {
     const body = JSON.parse(init.body);
     const headers = new Headers(init.headers);
-    calls.push({ action: body.action, headers });
+    calls.push({ action: body.action, headers, url: _url });
     assert.equal(headers.get("x-zhaowu-bridge-secret"), BRIDGE);
     const reply = (value, status = 200) => new Response(JSON.stringify(value), { status });
     switch (body.action) {
@@ -164,7 +164,7 @@ test("device and passkey actions refuse anonymous callers and cross-site request
   });
 });
 
-test("Passkey sessions reach owner-data through the device header, but music upload and promo/article actions need the password", async () => {
+test("Passkey sessions can manage promo codes, while music and articles require the password", async () => {
   await withEdge(async (edge) => {
     const { phone, row } = await enrol(edge);
     const { verified } = await signIn(edge, phone);
@@ -180,14 +180,23 @@ test("Passkey sessions reach owner-data through the device header, but music upl
     const skin = await call(ownerData, { cookie, body: { action: "site-skin.publish", skin: "lotus-boat" } });
     assert.equal(skin.status, 200);
     assert.equal(edge.calls.findLast((item) => item.action === "site-skin.publish").headers.get("x-zhaowu-owner-device"), row.id);
-    // Promo codes and articles live in separate Edge Functions that only know the password.
-    for (const action of ["promo.list", "article.list"]) {
-      const refused = await call(ownerData, { cookie, body: { action } });
-      assert.equal(refused.status, 403, action);
-      assert.equal(refused.body.error, "OWNER_PASSWORD_REQUIRED");
+    for (const action of ["promo.list", "promo.create", "promo.update", "promo.setActive"]) {
+      const allowed = await call(ownerData, { cookie, body: { action } });
+      assert.equal(allowed.status, 200, action);
+      const promoCall = edge.calls.findLast((item) => item.action === action);
+      assert.match(promoCall.url, /\/functions\/v1\/zhaowu-owner-promo$/);
+      assert.equal(promoCall.headers.get("x-zhaowu-owner-device"), row.id);
+      assert.equal((await call(ownerData, { body: { action } })).status, 401, action);
+      assert.equal((await call(ownerData, { cookie, body: { action }, headers: { origin: "https://evil.test" } })).status, 403, action);
     }
+    const article = await call(ownerData, { cookie, body: { action: "article.list" } });
+    assert.equal(article.status, 403);
+    assert.equal(article.body.error, "OWNER_PASSWORD_REQUIRED");
     const music = await call(musicWrite, { cookie, body: Buffer.from("x"), headers: { "content-type": "audio/mpeg", "x-zhaowu-music-name": "a.mp3" } });
     assert.equal(music.status, 403);
     assert.equal(music.body.error, "OWNER_PASSWORD_REQUIRED");
+    edge.devices[0].revoked_at = "now";
+    clearOwnerDeviceCache();
+    assert.equal((await call(ownerData, { cookie, body: { action: "promo.list" } })).status, 401);
   });
 });
