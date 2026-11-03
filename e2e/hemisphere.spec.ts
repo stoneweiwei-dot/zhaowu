@@ -11,6 +11,7 @@ for (const [hemisphere, expected] of [['north','solar-frost-descent'], ['south',
     await expect(page.locator('html')).toHaveAttribute('data-zws', expected);
     await expect(page.locator('html')).toHaveAttribute('data-zws-term', '霜降');
     await expect(page.locator('[data-home-birth-entry]')).toBeVisible();
+    await expect(page.locator('.zw-v2-season')).toHaveCSS('-webkit-text-fill-color', 'rgb(255, 253, 248)');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
     await page.screenshot({path:`test-results/hemisphere-${hemisphere}.png`});
   });
