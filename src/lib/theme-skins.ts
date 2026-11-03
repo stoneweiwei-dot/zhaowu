@@ -99,6 +99,7 @@ export function skinById(id: string | null | undefined) {
       hero: visitorHemisphere === 'south' && auto.term.zh === '立冬'
         ? '/theme-skins/southern/start-winter-2026.webp'
         : skin.id === FROST_SKIN_ID ? FROST_PHASES[auto.houIndex].art : skin.hero,
+      focus: visitorHemisphere === 'south' && auto.term.zh === '立冬' ? '100% 6%' : skin.focus,
     };
   }
   return skin.id === FROST_SKIN_ID ? { ...skin, hero: frostEdition().art } : skin;
