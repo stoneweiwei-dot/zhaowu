@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { FROST_SKIN_ID, SEASONAL_AUTO_ID, SOLAR_TERMS_24, seasonalState, frostEdition } from '@/lib/seasonal-skins';
-import type { CSSProperties } from 'react';
+import { useEffect, type CSSProperties } from 'react';
 import { useSkin, type SkinDef } from '@/lib/theme-skins';
 import { useI18n } from '@/lib/i18n';
 import { BrandIcon } from '@/components/brand-icon';
@@ -34,8 +34,21 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
   // Every skin shows ITS OWN painting; the koi painting is only the no-skin / pastel-koi default.
   const art = skin?.hero || (dark ? '/theme-skins/reference-dragon.webp' : '/theme-skins/reference-koi.webp');
   // Keep published, owner-selected paintings; replace the disliked flute/default hero with an existing Song-style mist painting.
-  const editorialArt = !skin || /flute/i.test(skin.id) ? '/theme-skins/verdant-mist-art.webp' : art;
+  const editorialArt = !skin || /flute/i.test(skin.id) ? '/theme-skins/verdant-mist-art.webp' : art.endsWith('/option-still-valley.webp') ? art.replace('/option-still-valley.webp', '/option-still-valley-home.webp') : art;
+  useEffect(() => {
+    const shell = document.querySelector<HTMLElement>('#root > .zhaowu-home-sheet-shell:not(.zhaowu-login-shell)');
+    const update = () => {
+      const y = Math.max(shell?.scrollTop || 0, window.scrollY, document.documentElement.scrollTop, document.body.scrollTop);
+      document.documentElement.style.setProperty('--zw-veil', String(Math.min(.88, y / (window.innerHeight * .8) * .88)));
+    };
+    update(); window.addEventListener('scroll', update, { passive: true });
+    shell?.addEventListener('scroll', update, { passive: true });
+    document.addEventListener('scroll', update, { passive: true, capture: true });
+    window.addEventListener('resize', update);
+    return () => { window.removeEventListener('scroll', update); shell?.removeEventListener('scroll', update); document.removeEventListener('scroll', update, true); window.removeEventListener('resize', update); document.documentElement.style.removeProperty('--zw-veil'); };
+  }, []);
   const style = {
+    '--zw-scene': `url("${editorialArt}")`, '--zw-focus': skin?.focus || '50% 35%',
     '--ph-art': `url("${art}")`, '--ph-paper': skin?.swatch[0] || '#f7efdf',
     '--ph-ink': dark ? '#f8eace' : '#203f36', '--ph-muted': dark ? '#dfdacb' : '#595447',
     '--ph-accent': dark ? '#e1bd7d' : skin?.swatch[1] || '#557f79',
@@ -43,6 +56,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
     '--ph-on-accent': dark ? '#142b32' : '#fff9e9',
   } as CSSProperties;
   return <section className="zw-painted-home zw-v2-home" data-home-v2 data-composition={layout} data-reference-art={!skin || FULL_PAINTING_HOMES.has(skin.id)} data-tone={dark ? 'dark' : 'light'} style={style}>
+    <div className="zw-stage" aria-hidden="true" /><div className="zw-veil" aria-hidden="true" />
     <section className="zw-v2-hero" aria-labelledby="zw-v2-title">
       <header className="zw-v2-masthead">
         <Link className="zw-v2-wordmark" to="/" aria-label="昭梧 ZHAOWU">
@@ -69,26 +83,11 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
           <Link className="zw-v2-sample" to="/sample-report">{t('先看公開命書示例', '先看公开命书示例', 'View a sample report')} <span aria-hidden="true">›</span></Link>
         </div>
       </div>
-      <figure className="zw-v2-painting">
-        <img src={editorialArt} alt={t('昭梧原創藝術畫境', '昭梧原创艺术画境', 'Original ZHAOWU artwork')} width="1248" height="1248" decoding="async" fetchPriority="high" />
-        <figcaption>STONE 原創 · ZHAOWU</figcaption>
-      </figure>
+      {(seasonalAuto || frostOnly) && <p className="zw-v2-season">{seasonalAuto ? `${locale === 'en' ? seasonalAuto.term.en : locale === 'zh-Hans' ? seasonalAuto.term.hans : seasonalAuto.term.zh} · ${seasonalAuto.hou[locale]}` : `${t('霜降', '霜降', 'Frost’s Descent')} · ${frostOnly!.name[locale]}`}</p>}
       <a className="zw-v2-discover" href="#home-guide">{t('往下探索昭梧', '继续探索昭梧', 'Discover more of ZHAOWU')} <span aria-hidden="true">↓</span></a>
     </section>
     <HomeTree t={t} onOpen={onOpen} />
-    {seasonalAuto && <aside className="ph-seasonal-note" data-seasonal-note data-solar-term={seasonalAuto.term.zh} data-solar-hou={seasonalAuto.houIndex + 1}>
-      <p className="ph-seasonal-term"><span lang="zh">{locale === 'zh-Hans' ? seasonalAuto.term.hans : seasonalAuto.term.zh}</span><span lang="en">{seasonalAuto.term.en}</span></p>
-      <p>{seasonalAuto.hou[locale]}</p>
-      <blockquote>{t('初候・二候・三候，循時而變。', '初候・二候・三候，循时而变。', 'Three pentads, changing with the seasons.')}</blockquote>
-      <small>{locale === 'en' ? `Pentad ${houNumber} / 72 · Sydney calendar schedule` : `第 ${houNumber} / 72 候 · 悉尼節氣日程`}</small>
-      <small>{t('傳統中國物候，不代表澳洲當地氣候。非霜降節氣沿用已上架畫作。', '传统中国物候，不代表澳洲当地气候。非霜降节气沿用已上架画作。', 'Traditional Chinese imagery, not a Sydney weather forecast. Other terms reuse published artwork.')}</small>
-    </aside>}
-    {frostOnly && <aside className="ph-seasonal-note" data-seasonal-note>
-      <p className="ph-seasonal-term"><span lang="zh">霜降</span><span lang="en">Frost’s Descent</span></p>
-      <p>{frostOnly.name[locale]}</p>
-      <blockquote>{frostOnly.quote[locale]}</blockquote>
-      <small>{t('中國傳統物候意象', '中国传统物候意象', 'Traditional Chinese seasonal imagery')}</small>
-    </aside>}
+    {(seasonalAuto || frostOnly) && <p className="zw-season-context" data-seasonal-note data-solar-hou={seasonalAuto ? seasonalAuto.houIndex + 1 : undefined}>{t('傳統中國物候意象，不代表澳洲當地氣候。', '传统中国物候意象，不代表澳洲当地气候。', 'Traditional Chinese seasonal imagery, not a local weather forecast.')}{seasonalAuto && (locale === 'en' ? ` Pentad ${houNumber} / 72 · Sydney calendar schedule.` : ` 第 ${houNumber} / 72 候 · 悉尼節氣日程。`)}</p>}
     <Link className="ph-mythic-entry" to="/mythic-atlas" data-home-mythic-atlas-entry>
       <img src="/mythic-atlas/originals/01-skeleton-puppet.webp" alt="" loading="lazy" width="941" height="1672" />
       <span>
