@@ -1,5 +1,8 @@
 import { test, expect } from '@playwright/test';
 
+// Allow route interception to simulate unavailable images consistently.
+test.use({ serviceWorkers: 'block' });
+
 test('original artwork opens in place and can be closed without losing the page', async ({ page }) => {
   await page.goto('/mythic-atlas#guaili-zodiac');
   const section = page.locator('#guaili-zodiac');
@@ -51,7 +54,7 @@ test('whole artwork and controls fit at 320px', async ({ page }) => {
 });
 
 test('a failed original image leaves an accessible way back', async ({ page }) => {
-  await page.route('**/mythic-atlas/zodiac/*.png', route => route.abort());
+  await page.route('**/mythic-atlas/zodiac/*.png', route => route.fulfill({ status: 404, body: 'Not found' }));
   await page.goto('/mythic-atlas#guaili-zodiac');
   const section = page.locator('#guaili-zodiac');
   await section.locator('summary').first().click();
