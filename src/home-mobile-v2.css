@@ -361,3 +361,6 @@ html body #root .zw-painted-home.zw-v2-home .zw-season-context { max-width:560px
 html body #root .zw-painted-home.zw-v2-home .zw-v2-opening { background:transparent; border-radius:0; text-shadow:0 1px 8px #fffaf0, 0 0 12px #fffaf0; }
 html body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry { background:rgba(250,246,238,.97) !important; color:#273b34 !important; }
 html body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry { background:#345e50 !important; color:#fffdf8 !important; }
+/* A full-width mist preserves ink contrast across both seasonal paintings. */
+html body #root .zw-painted-home.zw-v2-home .zw-stage::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom,rgba(250,247,237,.76) 0%,rgba(250,247,237,.65) 35%,rgba(250,247,237,0) 62%); }
+html body #root .zw-painted-home.zw-v2-home .zw-v2-season { color:#fffdf8 !important; -webkit-text-fill-color:#fffdf8 !important; }
