@@ -26,10 +26,11 @@ test('original artwork opens in place and can be closed without losing the page'
 });
 
 test('whole artwork fits and a failed image still leaves an accessible way back', async ({ page }) => {
-  await page.setViewportSize({ width: 320, height: 700 });
   await page.goto('/mythic-atlas#guaili-zodiac');
   const section = page.locator('#guaili-zodiac');
   await section.locator('summary').first().click();
+  // Expand at the configured viewport, then test the viewer at 320px.
+  await page.setViewportSize({ width: 320, height: 700 });
   const link = section.locator('a[href^="/mythic-atlas/zodiac/"]').first();
   await link.click();
   const dialog = page.locator('dialog.hq-image-viewer[open]');
