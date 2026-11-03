@@ -25,7 +25,7 @@ test('original artwork opens in place and can be closed without losing the page'
   await expect(page.locator('dialog.hq-image-viewer[open]')).toHaveCount(0);
 });
 
-test('whole artwork fits and a failed image still leaves an accessible way back', async ({ page }) => {
+test('whole artwork and controls fit at 320px', async ({ page }) => {
   await page.goto('/mythic-atlas#guaili-zodiac');
   const section = page.locator('#guaili-zodiac');
   await section.locator('summary').first().click();
@@ -47,8 +47,17 @@ test('whole artwork fits and a failed image still leaves an accessible way back'
     expect(box!.x + box!.width).toBeLessThanOrEqual(320);
   }
   await dialog.getByRole('button').click();
+  await expect(link).toBeFocused();
+});
+
+test('a failed original image leaves an accessible way back', async ({ page }) => {
   await page.route('**/mythic-atlas/zodiac/*.png', route => route.abort());
+  await page.goto('/mythic-atlas#guaili-zodiac');
+  const section = page.locator('#guaili-zodiac');
+  await section.locator('summary').first().click();
+  const link = section.locator('a[href^="/mythic-atlas/zodiac/"]').first();
   await link.click();
+  const dialog = page.locator('dialog.hq-image-viewer[open]');
   await expect(dialog.getByRole('status')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(dialog).toBeHidden();
