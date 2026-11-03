@@ -23,7 +23,7 @@ test("public footer always exposes current release and cumulative update count",
   assert.equal(Number(version[2]), Number(updateNumber[1]), "rN in version must equal updateNumber");
   assert.ok(verification.includes(`ZHAOWU_RELEASE = "${version[1]}"`), "lib/zhaowu-verification.js must match site-stats.ts");
   assert.match(shell, /data-site-release/);
-  assert.match(shell, /累計更新/);
+  assert.match(shell, /正式版本序號/);
   assert.match(shell, /data-latest-change-report/);
 });
 
