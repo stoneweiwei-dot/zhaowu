@@ -1,0 +1,23 @@
+import { test, expect } from '@playwright/test';
+
+test.use({ serviceWorkers: 'block' });
+for (const [hemisphere, expected] of [['north','solar-frost-descent'], ['south','lotus-boat'], ['unknown','solar-frost-descent'], ['offline','solar-frost-descent']] as const) {
+  test(`seasonal artwork resolves for ${hemisphere}`, async ({ page }) => {
+    await page.setViewportSize({width:390,height:844});
+    await page.clock.install({time:new Date('2026-11-03T01:00:00Z')});
+    await page.route('**/api/owner-data?view=site-skin', r => r.fulfill({json:{skin:'solar-auto',configured:true}}));
+    await page.route('**/api/zhaowu-capabilities?mode=visitor-hemisphere', r => hemisphere === 'offline' ? r.abort() : r.fulfill({json:{hemisphere}}));
+    await page.goto('/?zw_entry=home', {waitUntil:'networkidle'});
+    await expect(page.locator('html')).toHaveAttribute('data-zws', expected);
+    await expect(page.locator('html')).toHaveAttribute('data-zws-term', '霜降');
+    await expect(page.locator('[data-home-birth-entry]')).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+    await page.screenshot({path:`test-results/hemisphere-${hemisphere}.png`});
+  });
+}
+test('manually selected artwork is preserved', async ({page}) => {
+  await page.route('**/api/owner-data?view=site-skin', r => r.fulfill({json:{skin:'butterfly-lotus',configured:true}}));
+  await page.route('**/api/zhaowu-capabilities?mode=visitor-hemisphere', r => r.fulfill({json:{hemisphere:'south'}}));
+  await page.goto('/?zw_entry=home', {waitUntil:'networkidle'});
+  await expect(page.locator('html')).toHaveAttribute('data-zws', 'butterfly-lotus');
+});

@@ -6,6 +6,10 @@ on:
       - 'src/components/painted-home.tsx'
       - 'src/home-mobile-v2.css'
       - 'e2e/home-direct.spec.ts'
+      - 'e2e/hemisphere.spec.ts'
+      - 'src/lib/seasonal-skins.ts'
+      - 'src/lib/theme-skins.ts'
+      - 'api/zhaowu-capabilities.js'
       - '.github/workflows/home-direct.yml'
   workflow_dispatch:
 permissions:
@@ -21,8 +25,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci --no-audit --no-fund
+      - run: node --import tsx --test scripts/seasonal-hemisphere.test.mjs
       - run: npx playwright install --with-deps chromium
-      - run: npx playwright test e2e/home-direct.spec.ts --project=desktop-chrome
+      - run: npx playwright test e2e/home-direct.spec.ts e2e/hemisphere.spec.ts --project=desktop-chrome
       - if: always()
         uses: actions/upload-artifact@v4
         with:

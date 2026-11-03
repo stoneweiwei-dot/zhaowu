@@ -34,7 +34,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
   // Every skin shows ITS OWN painting; the koi painting is only the no-skin / pastel-koi default.
   const art = skin?.hero || (dark ? '/theme-skins/reference-dragon.webp' : '/theme-skins/reference-koi.webp');
   // Keep published, owner-selected paintings; replace the disliked flute/default hero with an existing Song-style mist painting.
-  const editorialArt = !skin || /flute/i.test(skin.id) ? '/theme-skins/verdant-mist-art.webp' : art.endsWith('/option-still-valley.webp') ? art.replace('/option-still-valley.webp', '/option-still-valley-home.webp') : art;
+  const editorialArt = !skin || (!seasonalAuto && /flute/i.test(skin.id)) ? '/theme-skins/verdant-mist-art.webp' : art.endsWith('/option-still-valley.webp') ? art.replace('/option-still-valley.webp', '/option-still-valley-home.webp') : art;
   useEffect(() => {
     const shell = document.querySelector<HTMLElement>('#root > .zhaowu-home-sheet-shell:not(.zhaowu-login-shell)');
     const update = () => {
@@ -87,7 +87,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
       <a className="zw-v2-discover" href="#home-guide">{t('往下探索昭梧', '继续探索昭梧', 'Discover more of ZHAOWU')} <span aria-hidden="true">↓</span></a>
     </section>
     <HomeTree t={t} onOpen={onOpen} />
-    {(seasonalAuto || frostOnly) && <p className="zw-season-context" data-seasonal-note data-solar-hou={seasonalAuto ? seasonalAuto.houIndex + 1 : undefined}>{t('傳統中國物候意象，不代表澳洲當地氣候。', '传统中国物候意象，不代表澳洲当地气候。', 'Traditional Chinese seasonal imagery, not a local weather forecast.')}{seasonalAuto && (locale === 'en' ? ` Pentad ${houNumber} / 72 · Sydney calendar schedule.` : ` 第 ${houNumber} / 72 候 · 悉尼節氣日程。`)}</p>}
+    {(seasonalAuto || frostOnly) && <p className="zw-season-context" data-seasonal-note data-solar-hou={seasonalAuto ? seasonalAuto.houIndex + 1 : undefined}>{t('節氣為中國傳統名稱；畫作依粗略半球位置調整，位置不明沿用原畫，並非當地天氣預報。', '节气为中国传统名称；画作依粗略半球位置调整，位置不明沿用原画，并非当地天气预报。', 'Traditional Chinese seasonal names; existing artwork follows approximate hemisphere when available, not local weather.')}{seasonalAuto && (locale === 'en' ? ` Pentad ${houNumber} / 72 · Sydney calendar schedule.` : ` 第 ${houNumber} / 72 候 · 悉尼節氣日程。`)}</p>}
     <Link className="ph-mythic-entry" to="/mythic-atlas" data-home-mythic-atlas-entry>
       <img src="/mythic-atlas/originals/01-skeleton-puppet.webp" alt="" loading="lazy" width="941" height="1672" />
       <span>
