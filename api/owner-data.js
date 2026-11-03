@@ -229,8 +229,10 @@ export async function handleOwnerData(req, res, parsedPayload) {
       return json(res, 400, { ok: false, error: "UNKNOWN_SITE_SKIN" });
     }
     if (!ACTIONS.has(action)) return json(res, 400, { ok: false, error: "ACTION_NOT_ALLOWED" });
-    // Promo and article actions go to their own isolated Edge Functions, which only accept the owner password.
-    if (ownerUpstreamFunction(action) !== "zhaowu-owner-data" && owner.kind !== "secret") {
+    // Article actions still require a password-backed session. Promo actions accept
+    // a validated, non-revoked device session: the promo Edge Function requires
+    // the server-only bridge secret, and authenticateOwner checks the device.
+    if (ownerUpstreamFunction(action) === ARTICLE_FUNCTION && owner.kind !== "secret") {
       return json(res, 403, { ok: false, error: "OWNER_PASSWORD_REQUIRED" });
     }
     const sendUpstream = () => postOwnerUpstream(action, payload, owner, serverBridgeSecret);
