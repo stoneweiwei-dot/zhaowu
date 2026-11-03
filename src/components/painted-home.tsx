@@ -38,13 +38,14 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
   useEffect(() => {
     const shell = document.querySelector<HTMLElement>('#root > .zhaowu-home-sheet-shell:not(.zhaowu-login-shell)');
     const update = () => {
-      const y = shell && getComputedStyle(shell).overflowY === 'auto' ? shell.scrollTop : window.scrollY;
+      const y = Math.max(shell?.scrollTop || 0, window.scrollY, document.documentElement.scrollTop, document.body.scrollTop);
       document.documentElement.style.setProperty('--zw-veil', String(Math.min(.88, y / (window.innerHeight * .8) * .88)));
     };
     update(); window.addEventListener('scroll', update, { passive: true });
     shell?.addEventListener('scroll', update, { passive: true });
+    document.addEventListener('scroll', update, { passive: true, capture: true });
     window.addEventListener('resize', update);
-    return () => { window.removeEventListener('scroll', update); shell?.removeEventListener('scroll', update); window.removeEventListener('resize', update); document.documentElement.style.removeProperty('--zw-veil'); };
+    return () => { window.removeEventListener('scroll', update); shell?.removeEventListener('scroll', update); document.removeEventListener('scroll', update, true); window.removeEventListener('resize', update); document.documentElement.style.removeProperty('--zw-veil'); };
   }, []);
   const style = {
     '--zw-scene': `url("${editorialArt}")`, '--zw-focus': skin?.focus || '50% 35%',
