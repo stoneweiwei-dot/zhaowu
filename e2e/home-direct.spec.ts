@@ -13,7 +13,7 @@ test('homepage entrances and scene at mobile and desktop sizes', async ({ page }
     expect(colors[0].background).not.toBe(colors[1].background);
     expect(colors[1].text).not.toBe(colors[0].text);
     await page.screenshot({path:`test-results/home-${width}.png`});
-    await page.locator('#home-guide').scrollIntoViewIfNeeded();
+    await page.locator('[data-home-card] .zw-entry').nth(1).scrollIntoViewIfNeeded();
     await expect.poll(() => page.evaluate(() => Number(getComputedStyle(document.documentElement).getPropertyValue('--zw-veil')))).toBeGreaterThan(0.5);
     await page.screenshot({path:`test-results/guide-${width}.png`});
     await page.getByRole('button', { name: /開始免費排盤|开始免费排盘|Start my free chart/ }).first().click();
