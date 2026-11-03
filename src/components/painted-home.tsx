@@ -36,10 +36,15 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
   // Keep published, owner-selected paintings; replace the disliked flute/default hero with an existing Song-style mist painting.
   const editorialArt = !skin || /flute/i.test(skin.id) ? '/theme-skins/verdant-mist-art.webp' : art.endsWith('/option-still-valley.webp') ? art.replace('/option-still-valley.webp', '/option-still-valley-home.webp') : art;
   useEffect(() => {
-    const update = () => document.documentElement.style.setProperty('--zw-veil', String(Math.min(.88, window.scrollY / (window.innerHeight * .8) * .88)));
+    const shell = document.querySelector<HTMLElement>('#root > .zhaowu-home-sheet-shell:not(.zhaowu-login-shell)');
+    const update = () => {
+      const y = shell && getComputedStyle(shell).overflowY === 'auto' ? shell.scrollTop : window.scrollY;
+      document.documentElement.style.setProperty('--zw-veil', String(Math.min(.88, y / (window.innerHeight * .8) * .88)));
+    };
     update(); window.addEventListener('scroll', update, { passive: true });
+    shell?.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update);
-    return () => { window.removeEventListener('scroll', update); window.removeEventListener('resize', update); document.documentElement.style.removeProperty('--zw-veil'); };
+    return () => { window.removeEventListener('scroll', update); shell?.removeEventListener('scroll', update); window.removeEventListener('resize', update); document.documentElement.style.removeProperty('--zw-veil'); };
   }, []);
   const style = {
     '--zw-scene': `url("${editorialArt}")`, '--zw-focus': skin?.focus || '50% 35%',
