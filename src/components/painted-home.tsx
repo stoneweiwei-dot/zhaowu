@@ -12,7 +12,7 @@ import '@/home-mobile-v2.css';
 type Section = 'form' | 'today' | 'quiz' | 'notes';
 /** Skins whose painting is clean enough to show at full strength behind the home title. */
 const FULL_PAINTING_HOMES = new Set([
-  'solar-frost-descent', 'solar-start-winter', 'solar-minor-snow', 'solar-major-snow', 'solar-winter-solstice', 'solar-minor-cold', 'sydney-jacaranda', 'pastel-koi', 'dragon-lotus', 'lotus-boat', 'night-flute', 'day-flute', 'cloud-jade',
+  'solar-frost-descent', 'solar-start-winter', 'solar-minor-snow', 'solar-major-snow', 'solar-winter-solstice', 'solar-minor-cold', 'sydney-jacaranda', 'southern-summer', 'southern-autumn', 'southern-winter', 'pastel-koi', 'dragon-lotus', 'lotus-boat', 'night-flute', 'day-flute', 'cloud-jade',
   'dawn-dragon', 'moon-lotus-boat', 'bamboo-falls', 'petal-immortal', 'pink-lotus-stream', 'butterfly-lotus',
 ]);
 export function homeComposition(skin: SkinDef | null): 'scroll' | 'comic' | 'koi' {
@@ -29,7 +29,8 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
   const layout = homeComposition(skin);
   const seasonalAuto = id === SEASONAL_AUTO_ID ? seasonalState() : null;
   const frostOnly = !seasonalAuto && skin?.id === FROST_SKIN_ID ? frostEdition() : null;
-  const selectedPack = seasonalPackForSkin(seasonalAuto?.term.skinId ?? skin?.id ?? '');
+  const southernScene = !!skin && (skin.id === 'sydney-jacaranda' || skin.id.startsWith('southern-'));
+  const selectedPack = seasonalAuto && southernScene ? null : seasonalPackForSkin(seasonalAuto?.term.skinId ?? skin?.id ?? '');
   const manualState = !seasonalAuto && selectedPack ? seasonalState() : null;
   const selectedPhase = selectedPack ? selectedPack[seasonalAuto?.houIndex ?? (manualState && manualState.term.skinId === skin?.id ? manualState.houIndex : 0)] : null;
   const selectedTerm = !seasonalAuto && selectedPack ? SOLAR_TERMS_24.find(term => term.skinId === skin?.id) : null;

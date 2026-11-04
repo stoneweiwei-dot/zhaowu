@@ -36,14 +36,13 @@ test('Sydney jacaranda can be selected as a complete theme', async ({page}) => {
   await expect(page.locator('.stone-login-stage-media')).toHaveAttribute('src', /sydney-jacaranda-summer/);
 });
 
-for (const [when, expected] of [['2026-12-15T01:00:00Z','sydney-jacaranda'], ['2027-05-15T01:00:00Z','pine-ink']] as const) {
+for (const [when, expected] of [['2026-12-15T01:00:00Z','southern-summer'], ['2027-05-15T01:00:00Z','southern-autumn']] as const) {
   test(`southern seasonal selection ${when}`, async ({page}) => {
     await page.clock.install({time:new Date(when)});
     await page.route('**/api/owner-data?view=site-skin', r => r.fulfill({json:{skin:'solar-auto',configured:true}}));
     await page.route('**/api/zhaowu-capabilities?mode=visitor-hemisphere', r => r.fulfill({json:{hemisphere:'south'}}));
     await page.goto('/?zw_entry=home', {waitUntil:'networkidle'});
-    if (expected === 'sydney-jacaranda') await expect(page.locator('html')).toHaveAttribute('data-zws', expected);
-    else await expect(page.locator('html')).not.toHaveAttribute('data-zws', 'sydney-jacaranda');
+    await expect(page.locator('html')).toHaveAttribute('data-zws', expected);
   });
 }
 
@@ -125,5 +124,28 @@ for (const [instant, skin, phase, image] of [
     await expect(page.locator('.zw-season-mark').first()).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
     expect((await page.request.get(`/theme-skins/${skin}/${image}`)).status()).toBe(200);
+  });
+}
+
+for (const [when, skin, artwork] of [
+  ['2026-11-03T01:00:00Z','sydney-jacaranda','sydney-jacaranda-summer.webp'],
+  ['2026-12-15T01:00:00Z','southern-summer','option-falling-leaves.webp'],
+  ['2027-04-15T01:00:00Z','southern-autumn','autumn-blue-mountains.webp'],
+  ['2027-07-15T01:00:00Z','southern-winter','winter-eucalyptus.webp'],
+] as const) for (const width of [320,390]) {
+  test(`southern ${skin} homepage and login ${width}px`, async ({page}) => {
+    await page.setViewportSize({width,height:844});
+    await page.clock.install({time:new Date(when)});
+    await page.route('**/api/owner-data?view=site-skin', r => r.fulfill({json:{skin:'solar-auto',configured:true}}));
+    await page.route('**/api/zhaowu-capabilities?mode=visitor-hemisphere', r => r.fulfill({json:{hemisphere:'south'}}));
+    await page.goto('/?zw_entry=home',{waitUntil:'networkidle'});
+    await expect(page.locator('html')).toHaveAttribute('data-zws',skin);
+    await expect(page.locator('.zw-stage')).toHaveCSS('background-image', new RegExp(artwork.replace('.', '\\.')));
+    await expect(page.locator('[data-home-birth-entry]')).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+    await page.goto('/login',{waitUntil:'networkidle'});
+    await expect(page.locator('.stone-login-stage-media')).toHaveAttribute('src',new RegExp(artwork.replace('.', '\\.')));
+    await expect(page.locator('#login-title')).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
   });
 }

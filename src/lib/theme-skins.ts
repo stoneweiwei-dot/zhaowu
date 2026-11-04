@@ -86,6 +86,9 @@ export const SKINS: SkinDef[] = [
   { id: "solar-white-dew", ref: 48, mode: "light", zh: "白露・物候畫境", hans: "白露・物候画境", en: "White Dew · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-white-dew/1.webp", focus: "50% 50%", swatch: ["#eff2eb", "#3d5b4c", "#a9b7a1"] },
   { id: "solar-autumn-equinox", ref: 49, mode: "light", zh: "秋分・物候畫境", hans: "秋分・物候画境", en: "Autumn Equinox · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-autumn-equinox/1.webp", focus: "50% 50%", swatch: ["#f3efe6", "#515a42", "#baaa8b"] },
   { id: "solar-cold-dew", ref: 50, mode: "light", zh: "寒露・物候畫境", hans: "寒露・物候画境", en: "Cold Dew · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-cold-dew/1.webp", focus: "50% 50%", swatch: ["#f1f0e6", "#465b45", "#aeaf8c"] },
+  { id: "southern-summer", ref: 51, mode: "light", zh: "南境・夏日流光", hans: "南境・夏日流光", en: "Southern Summer", noteZh: "暖紙・溪光・草木黃落", noteHans: "暖纸・溪光・草木黄落", noteEn: "Warm paper, water and falling leaves", hero: "/theme-skins/solar-frost-descent/option-falling-leaves.webp", focus: "50% 50%", swatch: ["#f5eee1", "#52613e", "#b18b54"] },
+  { id: "southern-autumn", ref: 52, mode: "light", zh: "南境・秋山澄湖", hans: "南境・秋山澄湖", en: "Southern Autumn", noteZh: "桉林・暖金・山湖青", noteHans: "桉林・暖金・山湖青", noteEn: "Eucalyptus, warm gold and mountain lake", hero: "/theme-skins/southern/autumn-blue-mountains.webp", focus: "50% 50%", swatch: ["#f3f0e4", "#4a6044", "#b1985f"] },
+  { id: "southern-winter", ref: 53, mode: "light", zh: "南境・冬嵐青林", hans: "南境・冬岚青林", en: "Southern Winter", noteZh: "青林・湖霧・石青", noteHans: "青林・湖雾・石青", noteEn: "Green forest, lake mist and stone blue", hero: "/theme-skins/southern/winter-eucalyptus.webp", focus: "50% 50%", swatch: ["#edf2eb", "#315a50", "#8cae9c"] },
 ];
 
 export type SkinFamily = "soft" | "water" | "warm" | "green" | "night";
@@ -109,12 +112,16 @@ export const SEASONAL_SKINS = SKINS.filter((skin) => skin.id.startsWith("solar-"
 export const ARCHIVED_SKINS = SKINS.filter((skin) => !skin.id.startsWith("solar-") && !CURATED_SKIN_CATALOG.some((entry) => entry.id === skin.id));
 
 let visitorHemisphere: Hemisphere = 'unknown';
-/** Sydney spring uses the owner's requested picture now; summer retains it.
- * Other seasons keep the existing seasonal themes until approved art is ready. */
-function resolvedSeasonalSkin(term: Parameters<typeof seasonalVisualSkinId>[0], hemisphere: Hemisphere, now = new Date()): string {
+/** Southern meteorological seasons follow the Sydney civil calendar. */
+export function southernSkinForDate(now: Date): string {
   const month = Number(new Intl.DateTimeFormat('en', { timeZone: 'Australia/Sydney', month: 'numeric' }).format(now));
-  return hemisphere === 'south' && (month >= 9 || month <= 2)
-    ? 'sydney-jacaranda' : seasonalVisualSkinId(term, hemisphere);
+  if (month >= 9 && month <= 11) return 'sydney-jacaranda';
+  if (month === 12 || month <= 2) return 'southern-summer';
+  if (month <= 5) return 'southern-autumn';
+  return 'southern-winter';
+}
+function resolvedSeasonalSkin(term: Parameters<typeof seasonalVisualSkinId>[0], hemisphere: Hemisphere, now = new Date()): string {
+  return hemisphere === 'south' ? southernSkinForDate(now) : seasonalVisualSkinId(term, hemisphere);
 }
 export function skinById(id: string | null | undefined) {
   const auto = id === SEASONAL_AUTO_ID ? seasonalState() : null;

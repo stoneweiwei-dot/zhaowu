@@ -110,6 +110,10 @@ function SeasonalMark({ section }: { section: HomeSection }) {
     {section === 'today' && <><circle cx="18" cy="11" r="4"/><path d="M18 3v2m0 12v2M10 11H8m20 0h-2M9 23h15a4 4 0 0 0-4-5 6 6 0 0 0-10 1 3 3 0 0 0-1 4z"/></>}
     {section === 'quiz' && <><path d="M16 5l2.3 7.2L25 15l-6.7 2.7L16 25l-2.4-7.3L7 15l6.6-2.8z"/><path d="M7 5v4m-2-2h4m16 14v4m-2-2h4"/></>}
     {section === 'notes' && <><path d="M5 8c5-2 8-1 11 2v16c-3-3-6-4-11-2zm22 0c-5-2-8-1-11 2v16c3-3 6-4 11-2z"/><path d="M9 13h3m-3 4h3m8-4h3m-3 4h3"/></>}
+    <g className="zw-south-spring" strokeWidth="1"><circle cx="26" cy="26" r="1.3"/><path d="M26 22.5v1.5m0 4v1.5m-3.5-3.5H24m4 0h1.5m-6-2.5 1.1 1.1m2.8 2.8 1.1 1.1m0-5-1.1 1.1m-2.8 2.8-1.1 1.1"/></g>
+    <g className="zw-south-summer" strokeWidth="1"><path d="M22 28c1-4 4-6 7-6-1 4-3 7-7 6zm0 0 5-4"/></g>
+    <g className="zw-south-autumn" strokeWidth="1"><path d="M22 29c1-4 3-6 7-7m-5 5c-2-1-2-3-1-4 2 0 3 2 3 3m0-1c0-2 1-3 3-3 1 2 0 3-2 4"/></g>
+    <g className="zw-south-winter" strokeWidth="1"><path d="M22 25c1-2 3-2 4 0 2-1 3 0 3 2h-7zm0 4h7"/></g>
   </svg>;
 }
 
