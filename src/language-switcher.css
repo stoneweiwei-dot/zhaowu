@@ -93,7 +93,7 @@ html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt:focus-v
 @media (max-width: 520px) {
   html body #root .zw-langpick { width: 100%; justify-content: center; gap: 8px; }
   html body #root .zw-langpick .zw-langpick__label span { font-size: 12px; }
-  html body #root .zw-langpick .zw-langpick__track { flex: 1 1 auto; grid-auto-columns: minmax(0, 1fr); max-width: 340px; }
+  html body #root .zw-langpick .zw-langpick__track { flex: 1 1 auto; grid-template-columns: repeat(2, minmax(44px, 1fr)) minmax(max-content, 1fr); max-width: 340px; }
   html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt { min-width: 0 !important; padding: 0 10px !important; }
 }
 
@@ -103,7 +103,7 @@ html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt:focus-v
  */
 html body #root .zhaowu-site-header.is-home-compact .zw-langpick { width: auto; margin-left: auto; gap: 6px; }
 html body #root .zhaowu-site-header.is-home-compact .zw-langpick .zw-langpick__label span { display: none; }
-html body #root .zhaowu-site-header.is-home-compact .zw-langpick .zw-langpick__track { flex: 0 0 auto; grid-auto-columns: auto; max-width: none; }
+html body #root .zhaowu-site-header.is-home-compact .zw-langpick .zw-langpick__track { flex: 0 0 auto; grid-template-columns: none; grid-auto-columns: auto; max-width: none; }
 html body #root .zhaowu-site-header.is-home-compact .zw-langpick .zw-langpick__track button.zw-langpick__opt {
   min-width: 48px !important;
   padding: 0 11px !important;
