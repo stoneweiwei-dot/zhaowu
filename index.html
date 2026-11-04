@@ -59,7 +59,11 @@
     <script>
       (function () {
         try {
-          var savedLanguage = localStorage.getItem("zhaowu.display-language");
+          var path = String(location.pathname || "/").toLowerCase();
+          var routeLanguage = path === "/en" || path.indexOf("/en/") === 0 ? "en" : path === "/zh-hans" || path.indexOf("/zh-hans/") === 0 ? "zh-Hans" : "";
+          if (!routeLanguage && (path === "/about" || path === "/about/" || path === "/knowledge" || path === "/knowledge/" || /^\/knowledge\/(five-elements-tone-qi|nine-heavens-lamps|shushu-boundary|system-map|true-solar-time)\/?$/.test(path))) routeLanguage = "zh-Hant";
+          var savedLanguage = routeLanguage || localStorage.getItem("zhaowu.display-language");
+          if (routeLanguage) localStorage.setItem("zhaowu.display-language", routeLanguage);
           if (["zh-Hant", "zh-Hans", "en"].indexOf(savedLanguage) === -1) {
             savedLanguage = "en";
             var tags = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];

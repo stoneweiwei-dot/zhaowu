@@ -38,7 +38,7 @@ test("every sitemap URL has a route-meta entry (and vice versa)", () => {
 test("site shell consumes the route-meta resolver (runtime per-page meta)", () => {
   const shell = read("src/components/site-shell.tsx");
   assert.match(shell, /from "@\/lib\/route-meta"/);
-  assert.match(shell, /routeMetaFor\(pathname\)/);
+  assert.match(shell, /routeMetaFor\(routePath\)/);
   assert.match(shell, /routeMetaForLanguage\(routeMeta, language\)/);
   // Home fallback copy stays inline: unknown routes and ja/ko/hi defaults are unchanged.
   assert.match(shell, /Free BaZi Chart · Four Pillars/);
@@ -72,6 +72,40 @@ test("injectRouteMeta writes per-route title/description/og/canonical and drops 
   assert.match(out, /<div id="root"><\/div>/);
 });
 
+test("localized static route metadata has a self canonical and symmetric four-language alternates", () => {
+  const fixture = [
+    '<html lang="zh-Hant">',
+    "<head>",
+    '<meta property="og:locale" content="zh_TW" />',
+    '<link rel="canonical" href="https://zhao-wu.com/" />',
+    "</head>",
+  ].join("\n");
+  const out = injectRouteMeta(fixture, { title: "About", description: "About page" }, "/about", "https://zhao-wu.com", "en");
+  assert.match(out, /<html lang="en"/);
+  assert.match(out, /og:locale" content="en_AU"/);
+  assert.match(out, /canonical" href="https:\/\/zhao-wu\.com\/en\/about"/);
+  assert.equal((out.match(/rel="alternate" hreflang=/g) ?? []).length, 4);
+  assert.match(out, /hreflang="zh-Hant" href="https:\/\/zhao-wu\.com\/about"/);
+  assert.match(out, /hreflang="zh-Hans" href="https:\/\/zhao-wu\.com\/zh-Hans\/about"/);
+  assert.match(out, /hreflang="en" href="https:\/\/zhao-wu\.com\/en\/about"/);
+  assert.match(out, /hreflang="x-default" href="https:\/\/zhao-wu\.com\/about"/);
+});
+
+test("only the selected about and knowledge routes publish sitemap alternates", () => {
+  const sitemap = read("public/sitemap.xml");
+  assert.match(sitemap, /xmlns:xhtml="http:\/\/www\.w3\.org\/1999\/xhtml"/);
+  for (const path of ["/about", "/knowledge", "/knowledge/true-solar-time", "/knowledge/system-map"]) {
+    const row = sitemap.split("<url>").find((candidate) => candidate.includes(`<loc>https://zhao-wu.com${path}</loc>`));
+    assert.ok(row, `missing sitemap URL ${path}`);
+    assert.equal((row.match(/rel="alternate" hreflang=/g) ?? []).length, 4, `${path} alternate count`);
+  }
+  for (const path of ["/sample-report", "/updates"]) {
+    const row = sitemap.split("<url>").find((candidate) => candidate.includes(`<loc>https://zhao-wu.com${path}</loc>`));
+    assert.ok(row);
+    assert.doesNotMatch(row, /hreflang=/);
+  }
+});
+
 test("package.json build runs build-route-html after vite build", () => {
   const pkg = JSON.parse(read("package.json"));
   assert.match(pkg.scripts.build, /^vite build && node scripts\/build-route-html\.mjs && tsc --noEmit$/);
@@ -80,6 +114,7 @@ test("package.json build runs build-route-html after vite build", () => {
 test("vercel.json has no global SPA catch-all (soft-404 fix) and every client route is still reachable", () => {
   const vercel = JSON.parse(read("vercel.json"));
   assert.ok(!vercel.rewrites.some((r) => r.source === "/((?!api/).*)"), "global catch-all returns 200 for unknown URLs (soft 404)");
+  assert.ok(!vercel.rewrites.some((r) => r.source === "/en/:path*" || r.source === "/zh-Hans/:path*"), "locale catch-all would hide 404s");
   // Client-only routes need an explicit rewrite; public routes are prerendered by build-route-html.
   const rewritten = vercel.rewrites
     .filter((r) => r.destination === "/index.html")

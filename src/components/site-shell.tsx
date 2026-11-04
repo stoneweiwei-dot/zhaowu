@@ -23,6 +23,7 @@ import { resolveReportAccess } from "@/lib/report-access";
 import { routeMetaFor, routeMetaForLanguage, ROUTE_META_PATHS } from "@/lib/route-meta";
 import { applyBrandTheme, hydrateBrandTheme, NIGHT_MODE_ENABLED, useBrandTheme } from "@/lib/brand-theme";
 import { applySkin, readSkinId, hydrateSkin, refreshSharedSkin } from "@/lib/theme-skins";
+import { hasLocalizedPath, splitLocale, withLocale } from "@/lib/hreflang.js";
 import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
 import "@/legal-pages.css";
 import "@/brand-watermark.css";
@@ -203,7 +204,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
     // Per-route metadata from src/lib/route-meta.json for the three public
     // languages (zh-Hant/zh-Hans/en). Hidden languages (ja/ko/hi) and unknown
     // routes keep the previous inline site-wide defaults below.
-    const routeMeta = routeMetaFor(pathname);
+    const routePath = splitLocale(pathname).path;
+    const routeMeta = routeMetaFor(routePath);
     const routeEntry = routeMeta && (language === "zh-Hant" || language === "zh-Hans" || language === "en")
       ? routeMetaForLanguage(routeMeta, language)
       : null;
@@ -241,9 +243,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
   // SEO: private/account routes are noindex; sitemap-listed public routes self-canonicalise, everything else keeps "/".
   useEffect(() => {
     const origin = "https://zhao-wu.com";
-    const normalized = pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
+    const { locale, path: normalized } = splitLocale(window.location.pathname);
     const isPrivate = PRIVATE_ROUTES.some((route) => normalized === route || normalized.startsWith(`${route}/`));
-    const canonicalPath = SELF_CANONICAL_ROUTES.includes(normalized) ? normalized : "/";
+    const canonicalPath = SELF_CANONICAL_ROUTES.includes(normalized)
+      ? (hasLocalizedPath(normalized) ? withLocale(normalized, locale) : normalized)
+      : "/";
     const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (canonical) canonical.href = `${origin}${canonicalPath === "/" ? "/" : canonicalPath}`;
     updateMeta('meta[property="og:url"]', `${origin}${canonicalPath}`);
@@ -291,7 +295,15 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 value={language}
                 options={languageOptions}
                 label={languageVisualLabel}
-                onChange={setLanguage}
+                onChange={(next) => {
+                  const { path } = splitLocale(window.location.pathname);
+                  if (!hasLocalizedPath(path)) {
+                    setLanguage(next);
+                    return;
+                  }
+                  document.cookie = `zw_locale=${next}; path=/; max-age=31536000; samesite=lax`;
+                  window.location.assign(`${withLocale(path, next)}${window.location.search}${window.location.hash}`);
+                }}
               />
 
               {NIGHT_MODE_ENABLED ? <div className="zhaowu-header-mode-toggle" role="group" aria-label={language === "en" ? "Appearance" : "日夜模式"}>

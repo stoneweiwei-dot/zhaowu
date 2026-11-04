@@ -259,6 +259,270 @@
   ],
   "rewrites": [
     {
+      "source": "/en/account",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/astrology",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/auspicious-atlas",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/copyright",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/daily-colors",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/fun-tests",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/gallery",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/guaili-luanshen",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/history",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/indian-astrology",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/login",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/member",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/mythic-atlas",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/numerology",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/privacy",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/qizheng",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/sample-report",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/sky-events",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/social",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/soul-chapters",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/tea-guardian",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/terms",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/tianji-dual",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/tianji-xinggong",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/updates",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/yizhangjing",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/ziwei",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/auth/callback",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/fun-tests/earth-online",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/quiz/cultivation-destiny",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/quiz/divine-affinity",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/quiz/five-element-overdrive",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/quiz/six-realms",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/account",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/astrology",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/auspicious-atlas",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/copyright",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/daily-colors",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/fun-tests",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/gallery",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/guaili-luanshen",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/history",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/indian-astrology",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/login",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/member",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/mythic-atlas",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/numerology",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/privacy",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/qizheng",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/sample-report",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/sky-events",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/social",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/soul-chapters",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/tea-guardian",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/terms",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/tianji-dual",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/tianji-xinggong",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/updates",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/yizhangjing",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/ziwei",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/auth/callback",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/fun-tests/earth-online",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/quiz/cultivation-destiny",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/quiz/divine-affinity",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/quiz/five-element-overdrive",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh-Hans/quiz/six-realms",
+      "destination": "/index.html"
+    },
+    {
       "source": "/api/gallery-ingest-finalize",
       "destination": "https://plgpxusmemnmzckbwtiv.supabase.co/functions/v1/gallery-ingest-finalize"
     },

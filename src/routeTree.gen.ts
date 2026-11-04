@@ -42,6 +42,7 @@ import { Route as ZiweiRouteImport } from './routes/ziwei'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as FunTestsEarthOnlineRouteImport } from './routes/fun-tests.earth-online'
 import { Route as KnowledgeFiveElementsToneQiRouteImport } from './routes/knowledge.five-elements-tone-qi'
+import { Route as KnowledgeNineHeavensLampsRouteImport } from './routes/knowledge.nine-heavens-lamps'
 import { Route as KnowledgeShushuBoundaryRouteImport } from './routes/knowledge.shushu-boundary'
 import { Route as KnowledgeSystemMapRouteImport } from './routes/knowledge.system-map'
 import { Route as KnowledgeTrueSolarTimeRouteImport } from './routes/knowledge.true-solar-time'
@@ -216,6 +217,12 @@ const KnowledgeFiveElementsToneQiRoute =
     path: '/five-elements-tone-qi',
     getParentRoute: () => KnowledgeRoute,
   } as any)
+const KnowledgeNineHeavensLampsRoute =
+  KnowledgeNineHeavensLampsRouteImport.update({
+    id: '/nine-heavens-lamps',
+    path: '/nine-heavens-lamps',
+    getParentRoute: () => KnowledgeRoute,
+  } as any)
 const KnowledgeShushuBoundaryRoute = KnowledgeShushuBoundaryRouteImport.update({
   id: '/shushu-boundary',
   path: '/shushu-boundary',
@@ -287,6 +294,7 @@ export interface FileRoutesByFullPath {
   '/auth/callback': typeof AuthCallbackRoute
   '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
   '/knowledge/five-elements-tone-qi': typeof KnowledgeFiveElementsToneQiRoute
+  '/knowledge/nine-heavens-lamps': typeof KnowledgeNineHeavensLampsRoute
   '/knowledge/shushu-boundary': typeof KnowledgeShushuBoundaryRoute
   '/knowledge/system-map': typeof KnowledgeSystemMapRoute
   '/knowledge/true-solar-time': typeof KnowledgeTrueSolarTimeRoute
@@ -329,6 +337,7 @@ export interface FileRoutesByTo {
   '/auth/callback': typeof AuthCallbackRoute
   '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
   '/knowledge/five-elements-tone-qi': typeof KnowledgeFiveElementsToneQiRoute
+  '/knowledge/nine-heavens-lamps': typeof KnowledgeNineHeavensLampsRoute
   '/knowledge/shushu-boundary': typeof KnowledgeShushuBoundaryRoute
   '/knowledge/system-map': typeof KnowledgeSystemMapRoute
   '/knowledge/true-solar-time': typeof KnowledgeTrueSolarTimeRoute
@@ -372,6 +381,7 @@ export interface FileRoutesById {
   '/auth/callback': typeof AuthCallbackRoute
   '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
   '/knowledge/five-elements-tone-qi': typeof KnowledgeFiveElementsToneQiRoute
+  '/knowledge/nine-heavens-lamps': typeof KnowledgeNineHeavensLampsRoute
   '/knowledge/shushu-boundary': typeof KnowledgeShushuBoundaryRoute
   '/knowledge/system-map': typeof KnowledgeSystemMapRoute
   '/knowledge/true-solar-time': typeof KnowledgeTrueSolarTimeRoute
@@ -416,6 +426,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/fun-tests/earth-online'
     | '/knowledge/five-elements-tone-qi'
+    | '/knowledge/nine-heavens-lamps'
     | '/knowledge/shushu-boundary'
     | '/knowledge/system-map'
     | '/knowledge/true-solar-time'
@@ -458,6 +469,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/fun-tests/earth-online'
     | '/knowledge/five-elements-tone-qi'
+    | '/knowledge/nine-heavens-lamps'
     | '/knowledge/shushu-boundary'
     | '/knowledge/system-map'
     | '/knowledge/true-solar-time'
@@ -500,6 +512,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/fun-tests/earth-online'
     | '/knowledge/five-elements-tone-qi'
+    | '/knowledge/nine-heavens-lamps'
     | '/knowledge/shushu-boundary'
     | '/knowledge/system-map'
     | '/knowledge/true-solar-time'
@@ -780,6 +793,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KnowledgeFiveElementsToneQiRouteImport
       parentRoute: typeof KnowledgeRoute
     }
+    '/knowledge/nine-heavens-lamps': {
+      id: '/knowledge/nine-heavens-lamps'
+      path: '/nine-heavens-lamps'
+      fullPath: '/knowledge/nine-heavens-lamps'
+      preLoaderRoute: typeof KnowledgeNineHeavensLampsRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
     '/knowledge/shushu-boundary': {
       id: '/knowledge/shushu-boundary'
       path: '/shushu-boundary'
@@ -846,6 +866,7 @@ const FunTestsRouteWithChildren = FunTestsRoute._addFileChildren(
 
 interface KnowledgeRouteChildren {
   KnowledgeFiveElementsToneQiRoute: typeof KnowledgeFiveElementsToneQiRoute
+  KnowledgeNineHeavensLampsRoute: typeof KnowledgeNineHeavensLampsRoute
   KnowledgeShushuBoundaryRoute: typeof KnowledgeShushuBoundaryRoute
   KnowledgeSystemMapRoute: typeof KnowledgeSystemMapRoute
   KnowledgeTrueSolarTimeRoute: typeof KnowledgeTrueSolarTimeRoute
@@ -853,6 +874,7 @@ interface KnowledgeRouteChildren {
 
 const KnowledgeRouteChildren: KnowledgeRouteChildren = {
   KnowledgeFiveElementsToneQiRoute: KnowledgeFiveElementsToneQiRoute,
+  KnowledgeNineHeavensLampsRoute: KnowledgeNineHeavensLampsRoute,
   KnowledgeShushuBoundaryRoute: KnowledgeShushuBoundaryRoute,
   KnowledgeSystemMapRoute: KnowledgeSystemMapRoute,
   KnowledgeTrueSolarTimeRoute: KnowledgeTrueSolarTimeRoute,

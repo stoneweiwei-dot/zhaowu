@@ -1,0 +1,13 @@
+export type LocalePath = { locale: "zh-Hant" | "zh-Hans" | "en"; path: string };
+export const LOCALES: readonly ("zh-Hant" | "zh-Hans" | "en")[];
+export const DEFAULT_LOCALE: "zh-Hant";
+export const LOCALE_PREFIX: Record<"zh-Hant" | "zh-Hans" | "en", string>;
+export const HREFLANG_PATHS: Set<string>;
+export const LOCALIZED_PATHS: Set<string>;
+export function hasLocalizedPath(path: string): boolean;
+export function normalizePath(input: string): string;
+export function splitLocale(input: string): LocalePath;
+export function withLocale(path: string, locale?: string): string;
+export function htmlLang(locale: string): string;
+export function ogLocale(locale: string): string;
+export function hreflangTags(path: string, origin: string): string;

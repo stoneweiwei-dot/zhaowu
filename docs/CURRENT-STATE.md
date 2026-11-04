@@ -21,6 +21,7 @@ Launch triage follows `AGENTS.md`: P0 blocks revenue/core operation; P1 is batch
 - 2026-10-15：中國大陸可讀取／可登入基礎——Production 訪客端 Supabase 請求經同網域 `/sb/*` Vercel rewrite，站主背景音樂經同網域 `/api/owner-music?track=<id>` 代理串流，天文腳本自家託管（細節見 Instruction Registry）。2026-10-17 正式 canonical 改為 `zhao-wu.com`，並納入同源 Supabase 代理白名單；舊 `.vercel.app` 入口保留。
 - 2026-10-30：站主音樂寫入不再使用已提交的加密 SSH 金鑰或 `ssh2`。寫入憑證改為伺服器環境變數 `ZHAOWU_OWNER_MUSIC_GITHUB_TOKEN`；未設定時寫入失敗關閉。公開播放路徑不變。舊 deploy key 需在新權杖於 Production 生效後由站主撤銷。Git 歷史不在本次改寫。
 - 2026-10-27：新增 `/sample-report` 三語公開命書示例，所有人物與資料均為虛構；分享網址固定加入 `utm_source=zhaowu&utm_medium=share`，原 query／hash（含付款與 access token）仍全部丟棄。站點採單一路徑即時切換繁／簡／英，故不建立指向同一 URL 的虛假 `hreflang` alternate；canonical 仍由每個公開路由自指。jsDelivr 僅保留給站主專用 ffmpeg core 的自家託管失敗備援，不屬公開訪客必要依賴。
+- 2026-11-05：在新指令範圍內，`/about` 與 `/knowledge`（含知識文章）新增 `/zh-Hans/`、`/en/` 真實語言 URL；繁體保留無前綴路徑。僅此範圍輸出互指 hreflang 與 sitemap 語言 alternate；`/sample-report` 等其他路由仍使用單一路徑語言切換。
 
 
 ## 0.1 Complex question answering — 2026-10-07
