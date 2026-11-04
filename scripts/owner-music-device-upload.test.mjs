@@ -42,7 +42,7 @@ test('music uploads require a validated owner, deny revoked devices and cross-or
   clearOwnerDeviceCache(); active=false; assert.equal((await handler(req(deviceCookie))).status,401);
   clearOwnerDeviceCache(); active=true; assert.equal((await handler(req(''))).status,401);
   assert.equal((await handler(req(deviceCookie,'POST','https://evil.invalid'))).status,403);
-  assert.equal((await handler(req(deviceCookie,'DELETE'))).status,401);
+  assert.equal((await handler(req(deviceCookie,'DELETE'))).status,400); // authenticated device reaches validation
   assert.equal(writes,before);
   clearOwnerDeviceCache();globalThis.fetch=async()=>{throw new Error('offline')};assert.equal((await handler(req(deviceCookie))).status,401);
  } finally {globalThis.fetch=original;clearOwnerDeviceCache();for(const [k,v] of Object.entries(old)) if(v===undefined)delete process.env[k];else process.env[k]=v;}
