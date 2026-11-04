@@ -36,6 +36,17 @@ test('Sydney jacaranda can be selected as a complete theme', async ({page}) => {
   await expect(page.locator('.stone-login-stage-media')).toHaveAttribute('src', /sydney-jacaranda-summer/);
 });
 
+for (const [when, expected] of [['2026-12-15T01:00:00Z','sydney-jacaranda'], ['2027-05-15T01:00:00Z','pine-ink']] as const) {
+  test(`southern seasonal selection ${when}`, async ({page}) => {
+    await page.clock.install({time:new Date(when)});
+    await page.route('**/api/owner-data?view=site-skin', r => r.fulfill({json:{skin:'solar-auto',configured:true}}));
+    await page.route('**/api/zhaowu-capabilities?mode=visitor-hemisphere', r => r.fulfill({json:{hemisphere:'south'}}));
+    await page.goto('/?zw_entry=home', {waitUntil:'networkidle'});
+    if (expected === 'sydney-jacaranda') await expect(page.locator('html')).toHaveAttribute('data-zws', expected);
+    else await expect(page.locator('html')).not.toHaveAttribute('data-zws', 'sydney-jacaranda');
+  });
+}
+
 for (const width of [320, 390]) for (const locale of ['zh-Hant', 'zh-Hans', 'en']) {
  test(`login ${width} ${locale}: southern art and safe fallback`, async ({page}) => {
   await page.addInitScript(language => localStorage.setItem('zhaowu.display-language', language), locale);
