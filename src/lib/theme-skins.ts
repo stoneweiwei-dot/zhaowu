@@ -1,4 +1,4 @@
-import { FROST_SKIN_ID, FROST_PHASES, SEASONAL_AUTO_ID, seasonalState, seasonalVisualSkinId, frostEdition, type Hemisphere } from './seasonal-skins';
+import { FROST_SKIN_ID, FROST_PHASES, WINTER_SKIN_ID, START_WINTER_PHASES, SEASONAL_AUTO_ID, seasonalState, seasonalVisualSkinId, frostEdition, type Hemisphere } from './seasonal-skins';
 import { useEffect, useState } from "react";
 
 /**
@@ -63,6 +63,7 @@ export const SKINS: SkinDef[] = [
   { id: "song-gallery-frostleaf", ref: 25, mode: "light", zh: "霜葉照溪・宋式畫冊", hans: "霜叶照溪・宋式画册", en: "Frostleaf Brook · Song Gallery", noteZh: "秋葉赭・苔綠・溪石褐", noteHans: "秋叶赭・苔绿・溪石褐", noteEn: "Autumn rust, moss green and river-stone brown", hero: "/theme-skins/song-gallery-frostleaf-art.webp", focus: "50% 48%", swatch: ["#ead9c5", "#8a4d38", "#607f69"] },
   { id: "solar-frost-descent", ref: 26, mode: "light", zh: "霜降・霜林歸靜", hans: "霜降・霜林归静", en: "Frost’s Descent · Quiet Autumn", noteZh: "霜青・秋赭・淡金，三候輪替", noteHans: "霜青・秋赭・淡金，三候轮替", noteEn: "Frost teal, autumn ochre and pale gold; three seasonal scenes", hero: "/theme-skins/solar-frost-descent/hero-frost-descent.webp", focus: "50% 55%", swatch: ["#f6f1e6", "#375f5b", "#b87345"] },
   { id: "sydney-jacaranda", ref: 27, mode: "light", zh: "悉尼・藍花楹", hans: "悉尼・蓝花楹", en: "Sydney Jacaranda", noteZh: "紫花・海藍・雲白，悉尼畫境", noteHans: "紫花・海蓝・云白，悉尼画境", noteEn: "Jacaranda violet, harbour blue and cloud white", hero: "/theme-skins/southern/sydney-jacaranda-summer.webp", focus: "50% 50%", swatch: ["#f4f2f9", "#45406f", "#9986be"] },
+  { id: "solar-start-winter", ref: 28, mode: "light", zh: "立冬・藏息三候", hans: "立冬・藏息三候", en: "Start of Winter · Three Pentads", noteZh: "霜白・山青・暖絹，三候各有畫境", noteHans: "霜白・山青・暖绢，三候各有画境", noteEn: "Frost white, mountain blue and warm silk; three seasonal scenes", hero: "/theme-skins/solar-start-winter/water-begins-freezing.webp", focus: "50% 50%", swatch: ["#f5eee2", "#405d5a", "#b59b79"] },
 ];
 
 export type SkinFamily = "soft" | "water" | "warm" | "green" | "night";
@@ -103,17 +104,20 @@ export function skinById(id: string | null | undefined) {
       ...skin,
       zh: auto.term.zh, hans: auto.term.hans, en: auto.term.en,
       noteZh: auto.hou['zh-Hant'], noteHans: auto.hou['zh-Hans'], noteEn: auto.hou.en,
-      // The 2026 Frost pack has real three-phase commissioned artwork;
-      // remaining 23 terms use existing full-page skins until their own art is verified.
-      // The owner's selected summer painting also holds the place of missing
-      // southern seasonal art, until another approved painting is available.
+      // Keep the existing southern selection and resolve the northern pentad art.
       hero: skin.id === 'sydney-jacaranda'
         ? '/theme-skins/southern/sydney-jacaranda-summer.webp'
-        : skin.id === FROST_SKIN_ID ? FROST_PHASES[auto.houIndex].art : skin.hero,
+        : skin.id === FROST_SKIN_ID ? FROST_PHASES[auto.houIndex].art
+        : skin.id === WINTER_SKIN_ID ? START_WINTER_PHASES[auto.houIndex].art : skin.hero,
       focus: skin.id === 'sydney-jacaranda' ? '50% 50%' : skin.focus,
     };
   }
-  return skin.id === FROST_SKIN_ID ? { ...skin, hero: frostEdition().art } : skin;
+  if (skin.id === FROST_SKIN_ID) return { ...skin, hero: frostEdition().art };
+  if (skin.id === WINTER_SKIN_ID) {
+    const current = seasonalState();
+    return { ...skin, hero: START_WINTER_PHASES[current.term.zh === '立冬' ? current.houIndex : 0].art };
+  }
+  return skin;
 }
 
 export function readSkinId(): string {
@@ -143,7 +147,7 @@ export function applySkin(id: string, persist = false) {
   }
   if (skin) {
     root.setAttribute("data-zws", skin.id);
-    if (skin.id === FROST_SKIN_ID) root.style.setProperty('--zws-art', `url("${skin.hero}")`);
+    if (id === SEASONAL_AUTO_ID || skin.id === FROST_SKIN_ID || skin.id === WINTER_SKIN_ID) root.style.setProperty('--zws-art', `url("${skin.hero}")`);
     else root.style.removeProperty('--zws-art');
     root.setAttribute("data-zws-mode", skin.mode);
     if (skin.mode === "dark") root.setAttribute("data-zw-theme", "night");

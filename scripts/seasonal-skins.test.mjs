@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
-import { FROST_PHASES, FROST_END, FROST_SECTIONS, SOLAR_TERMS_24, seasonalState, solarTermsForYear, solarTermInstant, frostEdition, seasonalSkinId } from '../src/lib/seasonal-skins.ts';
+import { FROST_PHASES, FROST_END, FROST_SECTIONS, START_WINTER_PHASES, SOLAR_TERMS_24, seasonalState, solarTermsForYear, solarTermInstant, frostEdition, seasonalSkinId } from '../src/lib/seasonal-skins.ts';
 import { SITE_SKIN_IDS } from '../lib/owner-site-skin-public.js';
 
 test('auto spans all seasons, and Sydney civil 00:01 switch is timezone independent', () => {
@@ -17,6 +17,24 @@ test('each of the three scenes changes on its exact scheduled boundary', () => {
     for (const locale of ['zh-Hant','zh-Hans','en']) assert.ok(p.name[locale] && p.quote[locale]);
   });
   assert.equal(frostEdition(new Date(FROST_END)).current, false);
+});
+test('Start of Winter has distinct real paintings and changes on Sydney pentad boundaries', () => {
+  assert.equal(new Set(START_WINTER_PHASES.map(p => p.art)).size, 3);
+  const instants = ['2026-11-06T13:01:00Z', '2026-11-11T13:01:00Z', '2026-11-16T13:01:00Z'];
+  for (const [i, instant] of instants.entries()) {
+    const state = seasonalState(new Date(instant));
+    assert.equal(state.term.zh, '立冬');
+    assert.equal(state.houIndex, i);
+    for (const locale of ['zh-Hant', 'zh-Hans', 'en']) {
+      assert.ok(START_WINTER_PHASES[i].name[locale]);
+      assert.ok(START_WINTER_PHASES[i].quote[locale]);
+    }
+    const bytes = readFileSync(`public${START_WINTER_PHASES[i].art}`);
+    assert.equal(bytes.toString('ascii', 0, 4), 'RIFF');
+    assert.equal(bytes.toString('ascii', 8, 12), 'WEBP');
+  }
+  assert.equal(seasonalState(new Date('2026-11-11T13:00:59Z')).houIndex, 0);
+  assert.equal(seasonalState(new Date('2026-11-16T13:00:59Z')).houIndex, 1);
 });
 test('every scheduled painting and section is a real local WebP, not a placeholder', () => {
   for (const file of [...FROST_PHASES.map(p => `public${p.art}`), ...FROST_SECTIONS.map(s => `public/theme-skins/solar-frost-descent/${s}.webp`)]) {

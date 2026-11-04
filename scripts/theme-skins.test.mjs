@@ -230,7 +230,7 @@ test("all selectable skins share the Song editorial shell without overwriting th
   const homeCss = readFileSync("src/painted-home.css", "utf8");
   const skinCss = readFileSync("src/theme-skins-full.css", "utf8");
   const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
-  assert.equal(ids.length, 27);
+  assert.equal(ids.length, 28);
   assert.match(home, /return skin \? 'scroll' : 'koi'/);
   assert.match(home, /const art = skin\?\.hero/);
   assert.match(homeCss, /SONG GALLERY EDITION/);
