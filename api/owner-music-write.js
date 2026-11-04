@@ -167,10 +167,8 @@ export default async function handler(req, res) {
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
     const owner = await authenticateOwner(req);
     if (!owner) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
-    // Uploads also accept an authenticated, non-revoked trusted device. Other
-    // music mutations retain the existing password-session policy.
-    if (method !== "POST" && owner.kind !== "secret") return json(res, 403, { ok: false, error: "OWNER_PASSWORD_REQUIRED" });
-    const secret = owner.secret;
+    // Every mutation accepts a verified owner password or a non-revoked device.
+    // authenticateOwner already validates the sealed session and device status.
 
     if (method === "POST") {
       const declaredType = headerValue(req, "content-type").split(";")[0].trim().toLowerCase();
@@ -213,21 +211,21 @@ export default async function handler(req, res) {
       if (action === "rename" || Object.prototype.hasOwnProperty.call(body || {}, "name")) {
         const name = String(body?.name ?? "").trim();
         if (!name) return json(res, 400, { ok: false, error: "TRACK_NAME_REQUIRED" });
-        const manifest = await renameOwnerMusicTrack(secret, id, name);
+        const manifest = await renameOwnerMusicTrack(owner, id, name);
         return json(res, 200, { ...publicPayload(manifest), renamed: true });
       }
-      const manifest = await activateOwnerMusicTrack(secret, id);
+      const manifest = await activateOwnerMusicTrack(owner, id);
       return json(res, 200, { ...publicPayload(manifest), changed: true });
     }
 
     if (method === "DELETE") {
       const ids = Array.isArray(body?.ids) ? body.ids.map((value) => String(value ?? "").trim()).filter(Boolean) : [];
       if (ids.length) {
-        const manifest = await deleteOwnerMusicTracks(secret, ids);
+        const manifest = await deleteOwnerMusicTracks(owner, ids);
         return json(res, 200, { ...publicPayload(manifest), deleted: ids.length });
       }
       if (!id) return json(res, 400, { ok: false, error: "TRACK_REQUIRED" });
-      const manifest = await deleteOwnerMusicTrack(secret, id);
+      const manifest = await deleteOwnerMusicTrack(owner, id);
       return json(res, 200, { ...publicPayload(manifest), deleted: true });
     }
 
