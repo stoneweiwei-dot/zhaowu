@@ -10,6 +10,9 @@ type Astronomy = {
 type SkyPoint = { name: string; glyph: string; longitude: number; x: number; y: number };
 type Snapshot = { at: Date; points: SkyPoint[] };
 
+// This is an explicitly labelled ephemeris time-lapse, never a literal orbital speed.
+const PLAYBACK_DAYS = 90;
+const PLAYBACK_LOOP_MS = 45_000;
 const SCRIPT_ID = "zhaowu-sky-astronomy-engine";
 const SCRIPT_URL = "/vendor/astronomy-engine-2.1.19.browser.min.js";
 const BODIES = [
@@ -54,57 +57,103 @@ function makeSnapshot(engine: Astronomy, at: Date): Snapshot {
   return { at, points };
 }
 
+/**
+ * Native CSS interpolation between sampled, ephemeris-verified positions.
+ * Only 230 astronomy calculations are needed per 90-day playback, not a
+ * continuous React re-render or fake uniform orbital angular speed.
+ */
+function makeEphemerisTracks(engine: Astronomy, start: Date): string {
+  const frames: string[][] = BODIES.map(() => []);
+  const samples = 45;
+  for (let index = 0; index <= samples; index++) {
+    const at = new Date(start.getTime() + (PLAYBACK_DAYS * index / samples) * 86_400_000);
+    const frame = makeSnapshot(engine, at);
+    const offset = (index / samples * 100).toFixed(4);
+    frame.points.forEach((point, i) => {
+      frames[i].push(`${offset}% { left: ${point.x.toFixed(4)}%; top: ${point.y.toFixed(4)}%; }`);
+    });
+  }
+  return BODIES.map((planet, i) =>
+    `@keyframes sky-ephemeris-${planet.name} { ${frames[i].join(" ")} }`
+  ).join("\n");
+}
+
 const WORDS: Record<Lang, {
   tag: string; heading: string; loading: string; unavailable: string;
   guide: string; detail: string; explanation: string; clock: string;
-  data: string; original: string;
+  data: string; original: string; playback: string; simulation: string;
 }> = {
   "zh-Hant": {
     tag: "LIVE CELESTIAL DIAL", heading: "此刻天體運行", loading: "正在計算此刻行星位置",
     unavailable: "即時星曆暫不可用，觀象圖不顯示未核實座標。",
-    guide: "行星角度依本機時間及站內星曆計算；緩慢轉動的光線只作動畫提示。",
+    guide: "行星以星曆快轉演示未來90日的位置；悉尼時間及下方展開度數仍是此刻數據。",
     detail: "查看五顆行星的黃經度數", explanation: "圓圈半徑僅為排版間距，不代表行星與地球的實際距離。",
     clock: "悉尼時間", data: "熱帶黃經", original: "同源天文計算 · 不需定位或輸入生辰",
+    playback: "星曆快轉 · 90日／45秒", simulation: "依真實星曆加速播放的地心行星位置（非實際速度）",
   },
   "zh-Hans": {
     tag: "LIVE CELESTIAL DIAL", heading: "此刻天体运行", loading: "正在计算此刻行星位置",
     unavailable: "实时星历暂不可用，观象图不显示未经核实的坐标。",
-    guide: "行星角度依本机时间及站内星历计算；缓慢转动的光线只作动画提示。",
+    guide: "行星按星历快进演示未来90日的位置；悉尼时间和下方展开度数仍是此刻数据。",
     detail: "查看五颗行星的黄经度数", explanation: "圆圈半径仅为排版间距，不代表行星与地球的实际距离。",
     clock: "悉尼时间", data: "热带黄经", original: "同源天文计算 · 不需定位或输入生辰",
+    playback: "星历快进 · 90日／45秒", simulation: "依据真实星历加速播放的地心行星位置（非实际速度）",
   },
   en: {
     tag: "LIVE CELESTIAL DIAL", heading: "The sky in motion", loading: "Calculating current planetary positions",
     unavailable: "Current ephemeris unavailable; unverified positions are not displayed.",
-    guide: "Planetary angles are computed for the current instant using the self-hosted ephemeris. The moving light sweep is decorative.",
+    guide: "Planet symbols replay 90 days of calculated sky positions; the Sydney clock and expanded longitudes remain at the actual current instant.",
     detail: "View five planetary longitudes", explanation: "Track radii are visual spacing, not actual Earth–planet distances.",
     clock: "Sydney time", data: "Tropical longitude", original: "Local astronomical calculation · No location or birth details required",
+    playback: "Ephemeris time-lapse · 90 days / 45 sec", simulation: "Ephemeris-calculated geocentric planets, sped up for visibility (not actual orbital speed)",
   },
 };
 const localeCode: Record<Lang, string> = { "zh-Hant": "zh-TW", "zh-Hans": "zh-CN", en: "en-AU" };
 
 export function SkyCurrentMotion({ lang }: { lang: Lang }) {
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
+  const [trackStyles, setTrackStyles] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
   const copy = WORDS[lang];
 
   useEffect(() => {
     let cancelled = false;
     let timer: number | undefined;
-    loadAstronomy().then((engine) => {
-      if (cancelled) return;
-      const update = () => {
-        try {
-          const next = makeSnapshot(engine, new Date());
-          if (!cancelled) { setSnapshot(next); setFailed(false); }
-        } catch {
-          if (!cancelled) { setSnapshot(null); setFailed(true); }
+    let lastTrackTime = 0;
+    let engine: Astronomy | undefined;
+    const update = () => {
+      if (!engine || cancelled) return;
+      try {
+        const now = new Date();
+        const live = makeSnapshot(engine, now);
+        // Rebase the replay every five minutes while the tab is open.
+        if (!lastTrackTime || now.getTime() - lastTrackTime >= 300_000) {
+          const styles = makeEphemerisTracks(engine, now);
+          if (!cancelled) setTrackStyles(styles);
+          lastTrackTime = now.getTime();
         }
-      };
+        if (!cancelled) { setSnapshot(live); setFailed(false); }
+      } catch {
+        if (!cancelled) { setSnapshot(null); setTrackStyles(null); setFailed(true); }
+      }
+    };
+    const onVisibility = () => {
+      if (!document.hidden) { lastTrackTime = 0; update(); }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    loadAstronomy().then((loadedEngine) => {
+      if (cancelled) return;
+      engine = loadedEngine;
       update();
-      timer = window.setInterval(update, 60_000);
+      timer = window.setInterval(() => {
+        if (!document.hidden) update();
+      }, 60_000);
     }).catch(() => { if (!cancelled) setFailed(true); });
-    return () => { cancelled = true; if (timer !== undefined) window.clearInterval(timer); };
+    return () => {
+      cancelled = true;
+      document.removeEventListener("visibilitychange", onVisibility);
+      if (timer !== undefined) window.clearInterval(timer);
+    };
   }, []);
 
   const localClock = snapshot
@@ -123,8 +172,9 @@ export function SkyCurrentMotion({ lang }: { lang: Lang }) {
         <small>{copy.original}</small>
       </div>
       <div className="sky-motion-visual">
+        {trackStyles && <style>{trackStyles}</style>}
         {snapshot ? (
-          <div className="sky-motion-dial" role="img" aria-label={copy.heading}>
+          <div className="sky-motion-dial" role="img" aria-label={trackStyles ? copy.simulation : copy.heading}>
             <span className="sky-motion-lane lane-one" aria-hidden="true" />
             <span className="sky-motion-lane lane-two" aria-hidden="true" />
             <span className="sky-motion-lane lane-three" aria-hidden="true" />
@@ -137,12 +187,13 @@ export function SkyCurrentMotion({ lang }: { lang: Lang }) {
                 key={point.name}
                 className="sky-motion-planet"
                 aria-hidden="true"
-                title={point.name + ": " + point.longitude.toFixed(1) + "°"}
-                style={{ left: point.x + "%", top: point.y + "%" }}
+                title={point.name + ": " + point.longitude.toFixed(1) + "°" + (trackStyles ? " · " + copy.playback : "")}
+                style={{ left: point.x + "%", top: point.y + "%", animationName: trackStyles ? "sky-ephemeris-" + point.name : undefined }}
               >{point.glyph}</span>
             ))}
           </div>
         ) : <div className="sky-motion-fallback" role="status">{failed ? copy.unavailable : copy.loading}</div>}
+        {trackStyles && <p className="sky-motion-playback-label" aria-live="off">{copy.playback}</p>}
         <details className="sky-motion-details">
           <summary>{copy.detail}</summary>
           {snapshot ? (

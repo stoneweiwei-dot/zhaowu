@@ -69,3 +69,26 @@ test('interpretive-first reading and real ecliptic sky dial work without exposin
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect(page.locator('.sky-motion-sweep')).toHaveCSS('display', 'none');
 });
+
+test('sky planet glyphs move along computed longitude while the real current sky stays fixed', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/sky-events');
+  const dial = page.locator('.sky-current-motion');
+  await dial.scrollIntoViewIfNeeded();
+  await expect(dial.locator('.sky-motion-dial')).toBeVisible({ timeout: 20_000 });
+  const glyph = dial.locator('.sky-motion-planet').first();
+  const position = () => glyph.evaluate((node) => {
+    const computed = getComputedStyle(node);
+    return computed.left + ',' + computed.top;
+  });
+  const first = await position();
+  await expect(dial.locator('.sky-motion-playback-label')).toContainText(/90日|90 days/);
+  await expect.poll(position, { timeout: 8_000, intervals: [500, 900, 1200] }).not.toBe(first);
+  const realNow = await dial.locator('.sky-motion-details li').first().innerText();
+  await page.waitForTimeout(1000);
+  expect(await dial.locator('.sky-motion-details li').first().innerText()).toBe(realNow);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(dial.locator('.sky-motion-playback-label')).toBeHidden();
+  await expect(glyph).toHaveCSS('animation-name', 'none');
+});
