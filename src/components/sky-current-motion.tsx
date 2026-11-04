@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import "@/sky-current-motion.css";
 
 type Lang = "zh-Hant" | "zh-Hans" | "en";
@@ -13,7 +13,6 @@ type Snapshot = { at: Date; points: SkyPoint[] };
 // This is an explicitly labelled ephemeris time-lapse, never a literal orbital speed.
 const PLAYBACK_DAYS = 90;
 const PLAYBACK_LOOP_MS = 45_000;
-const PLAYBACK_TICK_MS = 450;
 const SCRIPT_ID = "zhaowu-sky-astronomy-engine";
 const SCRIPT_URL = "/vendor/astronomy-engine-2.1.19.browser.min.js";
 const BODIES = [
@@ -58,6 +57,27 @@ function makeSnapshot(engine: Astronomy, at: Date): Snapshot {
   return { at, points };
 }
 
+/**
+ * Native CSS interpolation between sampled, ephemeris-verified positions.
+ * Only 230 astronomy calculations are needed per 90-day playback, not a
+ * continuous React re-render or fake uniform orbital angular speed.
+ */
+function makeEphemerisTracks(engine: Astronomy, start: Date): string {
+  const frames: string[][] = BODIES.map(() => []);
+  const samples = 45;
+  for (let index = 0; index <= samples; index++) {
+    const at = new Date(start.getTime() + (PLAYBACK_DAYS * index / samples) * 86_400_000);
+    const frame = makeSnapshot(engine, at);
+    const offset = (index / samples * 100).toFixed(4);
+    frame.points.forEach((point, i) => {
+      frames[i].push(`${offset}% { left: ${point.x.toFixed(4)}%; top: ${point.y.toFixed(4)}%; }`);
+    });
+  }
+  return BODIES.map((planet, i) =>
+    `@keyframes sky-ephemeris-${planet.name} { ${frames[i].join(" ")} }`
+  ).join("\n");
+}
+
 const WORDS: Record<Lang, {
   tag: string; heading: string; loading: string; unavailable: string;
   guide: string; detail: string; explanation: string; clock: string;
@@ -92,89 +112,47 @@ const localeCode: Record<Lang, string> = { "zh-Hant": "zh-TW", "zh-Hans": "zh-CN
 
 export function SkyCurrentMotion({ lang }: { lang: Lang }) {
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
-  const [playback, setPlayback] = useState<Snapshot | null>(null);
-  const [reducedMotion, setReducedMotion] = useState(false);
-  const motionSection = useRef<HTMLElement | null>(null);
+  const [trackStyles, setTrackStyles] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
   const copy = WORDS[lang];
 
   useEffect(() => {
     let cancelled = false;
-    let liveTimer: number | undefined;
-    let playbackTimer: number | undefined;
-    let observer: IntersectionObserver | undefined;
-    let visible = true;
+    let timer: number | undefined;
+    let lastTrackTime = 0;
     let engine: Astronomy | undefined;
-    let baseUtc = Date.now();
-    let playbackStarted = performance.now();
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-    const readLiveSky = () => {
+    const update = () => {
       if (!engine || cancelled) return;
       try {
-        setSnapshot(makeSnapshot(engine, new Date()));
-        setFailed(false);
+        const now = new Date();
+        const live = makeSnapshot(engine, now);
+        // Rebase the replay every five minutes while the tab is open.
+        if (!lastTrackTime || now.getTime() - lastTrackTime >= 300_000) {
+          const styles = makeEphemerisTracks(engine, now);
+          if (!cancelled) setTrackStyles(styles);
+          lastTrackTime = now.getTime();
+        }
+        if (!cancelled) { setSnapshot(live); setFailed(false); }
       } catch {
-        setSnapshot(null);
-        setPlayback(null);
-        setFailed(true);
+        if (!cancelled) { setSnapshot(null); setTrackStyles(null); setFailed(true); }
       }
-    };
-    const replay = () => {
-      if (!engine || cancelled || document.hidden || !visible || reduced.matches) return;
-      try {
-        // Every frame uses the existing astronomical engine. Planetary angular
-        // speed is never invented; only the labelled playback clock is sped up.
-        const phase = ((performance.now() - playbackStarted) % PLAYBACK_LOOP_MS) / PLAYBACK_LOOP_MS;
-        const at = new Date(baseUtc + phase * PLAYBACK_DAYS * 86_400_000);
-        setPlayback(makeSnapshot(engine, at));
-      } catch {
-        // If time-lapse fails, keep the current sky and exact longitudes.
-        setPlayback(null);
-      }
-    };
-    const restart = () => {
-      baseUtc = Date.now();
-      playbackStarted = performance.now();
-      readLiveSky();
-      replay();
     };
     const onVisibility = () => {
-      if (!document.hidden) restart();
+      if (!document.hidden) { lastTrackTime = 0; update(); }
     };
-    const onMotionPreference = () => {
-      setReducedMotion(reduced.matches);
-      if (reduced.matches) setPlayback(null);
-      else restart();
-    };
-    setReducedMotion(reduced.matches);
-    reduced.addEventListener("change", onMotionPreference);
     document.addEventListener("visibilitychange", onVisibility);
-
     loadAstronomy().then((loadedEngine) => {
       if (cancelled) return;
       engine = loadedEngine;
-      readLiveSky();
-      setPlayback(makeSnapshot(loadedEngine, new Date()));
-      if (motionSection.current && typeof IntersectionObserver !== "undefined") {
-        observer = new IntersectionObserver(([entry]) => {
-          const showing = Boolean(entry?.isIntersecting);
-          if (showing && !visible) restart();
-          visible = showing;
-        }, { rootMargin: "60px" });
-        observer.observe(motionSection.current);
-      }
-      liveTimer = window.setInterval(readLiveSky, 60_000);
-      playbackTimer = window.setInterval(replay, PLAYBACK_TICK_MS);
+      update();
+      timer = window.setInterval(() => {
+        if (!document.hidden) update();
+      }, 60_000);
     }).catch(() => { if (!cancelled) setFailed(true); });
-
     return () => {
       cancelled = true;
-      observer?.disconnect();
-      reduced.removeEventListener("change", onMotionPreference);
       document.removeEventListener("visibilitychange", onVisibility);
-      if (liveTimer !== undefined) window.clearInterval(liveTimer);
-      if (playbackTimer !== undefined) window.clearInterval(playbackTimer);
+      if (timer !== undefined) window.clearInterval(timer);
     };
   }, []);
 
@@ -184,16 +162,8 @@ export function SkyCurrentMotion({ lang }: { lang: Lang }) {
       }).format(snapshot.at)
     : "";
 
-  const moving = !reducedMotion && playback !== null;
-  const displayPoints = playback && !reducedMotion ? playback.points : snapshot?.points ?? [];
-  const playbackDate = playback && !reducedMotion
-    ? new Intl.DateTimeFormat(localeCode[lang], {
-        timeZone: "Australia/Sydney", year: "numeric", month: "short", day: "numeric",
-      }).format(playback.at)
-    : "";
-
   return (
-    <section className="sky-current-motion" ref={motionSection} aria-label={copy.heading}>
+    <section className="sky-current-motion" aria-label={copy.heading}>
       <div className="sky-motion-copy">
         <span className="sky-motion-eyebrow">{copy.tag}</span>
         <h2>{copy.heading}</h2>
@@ -202,8 +172,9 @@ export function SkyCurrentMotion({ lang }: { lang: Lang }) {
         <small>{copy.original}</small>
       </div>
       <div className="sky-motion-visual">
+        {trackStyles && <style>{trackStyles}</style>}
         {snapshot ? (
-          <div className="sky-motion-dial" role="img" aria-label={moving ? copy.simulation : copy.heading}>
+          <div className="sky-motion-dial" role="img" aria-label={trackStyles ? copy.simulation : copy.heading}>
             <span className="sky-motion-lane lane-one" aria-hidden="true" />
             <span className="sky-motion-lane lane-two" aria-hidden="true" />
             <span className="sky-motion-lane lane-three" aria-hidden="true" />
@@ -211,18 +182,18 @@ export function SkyCurrentMotion({ lang }: { lang: Lang }) {
             <span className="sky-motion-lane lane-five" aria-hidden="true" />
             <span className="sky-motion-earth" aria-hidden="true">⊕</span>
             <span className="sky-motion-sweep" aria-hidden="true" />
-            {displayPoints.map((point) => (
+            {snapshot.points.map((point) => (
               <span
                 key={point.name}
                 className="sky-motion-planet"
                 aria-hidden="true"
-                title={point.name + ": " + point.longitude.toFixed(1) + "°" + (moving ? " · " + copy.playback : "")}
-                style={{ left: point.x + "%", top: point.y + "%" }}
+                title={point.name + ": " + point.longitude.toFixed(1) + "°" + (trackStyles ? " · " + copy.playback : "")}
+                style={{ left: point.x + "%", top: point.y + "%", animationName: trackStyles ? "sky-ephemeris-" + point.name : undefined }}
               >{point.glyph}</span>
             ))}
           </div>
         ) : <div className="sky-motion-fallback" role="status">{failed ? copy.unavailable : copy.loading}</div>}
-        {playback && !reducedMotion && <p className="sky-motion-playback-label" aria-live="off">{copy.playback} · <time dateTime={playback.at.toISOString()}>{playbackDate}</time></p>}
+        {trackStyles && <p className="sky-motion-playback-label" aria-live="off">{copy.playback}</p>}
         <details className="sky-motion-details">
           <summary>{copy.detail}</summary>
           {snapshot ? (
