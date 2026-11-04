@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
-import { FROST_PHASES, FROST_END, FROST_SECTIONS, START_WINTER_PHASES, SOLAR_TERMS_24, seasonalState, solarTermsForYear, solarTermInstant, frostEdition, seasonalSkinId } from '../src/lib/seasonal-skins.ts';
+import { FROST_PHASES, FROST_END, FROST_SECTIONS, START_WINTER_PHASES, SOLAR_TERMS_24, seasonalPackForSkin, seasonalState, solarTermsForYear, solarTermInstant, frostEdition, seasonalSkinId } from '../src/lib/seasonal-skins.ts';
 import { SITE_SKIN_IDS } from '../lib/owner-site-skin-public.js';
 
 test('auto spans all seasons, and Sydney civil 00:01 switch is timezone independent', () => {
-  assert.equal(seasonalSkinId(new Date('2026-10-22T13:00:59.999Z')), 'pine-ink');
+  assert.equal(seasonalSkinId(new Date('2026-10-22T13:00:59.999Z')), 'solar-cold-dew');
   assert.equal(seasonalSkinId(new Date('2026-10-22T13:01:00Z')), 'solar-frost-descent');
-  assert.equal(seasonalSkinId(new Date('2027-01-01T00:00Z')), 'day-flute');
+  assert.equal(seasonalSkinId(new Date('2027-01-01T00:00Z')), 'solar-winter-solstice');
 });
 test('each of the three scenes changes on its exact scheduled boundary', () => {
   FROST_PHASES.forEach((p, i) => {
@@ -110,14 +110,35 @@ test('all 72 pentads switch at the scheduled Sydney dates, no gaps or repeated i
   }
  }
 });
-test('homepage and theme manager display the pentad instead of pretending all 72 artworks are bespoke',()=>{
+test('homepage and theme manager display the individual pentad artworks',()=>{
   const home=readFileSync('src/components/painted-home.tsx','utf8');
   const themes=readFileSync('src/components/owner-theme-skins-manager.tsx','utf8');
   const resolver=readFileSync('src/lib/theme-skins.ts','utf8');
   assert.match(home,/data-solar-hou/);
   assert.match(home,/seasonalAuto\.hou\[locale\]/);
   assert.match(themes,/data-seasonal-72-list/);
-  assert.match(themes,/existing complete themes|沿用/);
+  assert.match(themes,/三候畫作/);
   assert.match(resolver,/window\.setInterval\(refreshAutoSkinIfDue, 30_000\)/);
   assert.match(resolver,/visibilitychange/);
+});
+
+test('all 72 pentads have distinct real artwork and trilingual copy', () => {
+  const paths = [];
+  for (const term of SOLAR_TERMS_24) {
+    const phases = term.skinId === 'solar-frost-descent' ? FROST_PHASES : seasonalPackForSkin(term.skinId);
+    assert.equal(phases?.length, 3, term.zh);
+    for (const phase of phases) {
+      for (const locale of ['zh-Hant', 'zh-Hans', 'en']) {
+        assert.ok(phase.name[locale]?.trim(), `${term.zh} ${locale} name`);
+        assert.ok(phase.quote[locale]?.trim(), `${term.zh} ${locale} quote`);
+      }
+      const bytes = readFileSync(`public${phase.art}`);
+      assert.equal(bytes.toString('ascii', 0, 4), 'RIFF', phase.art);
+      assert.equal(bytes.toString('ascii', 8, 12), 'WEBP', phase.art);
+      assert.ok(bytes.length > 10_000, phase.art);
+      paths.push(phase.art);
+    }
+  }
+  assert.equal(paths.length, 72);
+  assert.equal(new Set(paths).size, 72);
 });

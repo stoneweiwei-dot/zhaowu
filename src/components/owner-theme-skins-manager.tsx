@@ -1,4 +1,4 @@
-import { FROST_SKIN_ID, SEASONAL_AUTO_ID, FROST_PHASES, START_WINTER_PHASES, SOLAR_TERMS_24, seasonalState } from "@/lib/seasonal-skins";
+import { FROST_SKIN_ID, SEASONAL_AUTO_ID, FROST_PHASES, START_WINTER_PHASES, MINOR_SNOW_PHASES, MAJOR_SNOW_PHASES, WINTER_SOLSTICE_PHASES, MINOR_COLD_PHASES, SOLAR_TERMS_24, seasonalPackForSkin, seasonalState } from "@/lib/seasonal-skins";
 import { useEffect, useMemo, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import {
@@ -143,7 +143,7 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
 
       <section className="mt-5 border-y border-line py-4" data-seasonal-theme-collection>
         <h3 className="font-display text-xl">{tr(locale, "節氣主題", "节气主题", "Seasonal themes")}</h3>
-        <p className="mt-2 text-sm leading-7">{tr(locale, "24 節氣／72 候依悉尼日期 00:01 輪替。霜降與立冬各有三候畫作，其餘節氣沿用現有主題。", "24 节气／72 候依悉尼日期 00:01 轮替。霜降与立冬各有三候画作，其余节气沿用现有主题。", "The 24 terms and 72 pentads change at 00:01 Sydney time. Frost and Start of Winter each have three paintings; other terms reuse existing complete themes.")}</p>
+        <p className="mt-2 text-sm leading-7">{tr(locale, "24 節氣／72 候依悉尼日期 00:01 輪替。每個節氣均有三候畫作與對應主題。", "24 节气／72 候依悉尼日期 00:01 轮替。每个节气均有三候画作与对应主题。", "The 24 terms and 72 pentads change at 00:01 Sydney time. Each term has three pentad paintings and a matching theme.")}</p>
         <div data-seasonal-current className="mt-3 rounded-lg border border-line bg-paper/60 px-4 py-3">
           <strong className="font-display">{locale === "en" ? currentSolar.term.en : locale === "zh-Hans" ? currentSolar.term.hans : currentSolar.term.zh}</strong>
           <span className="ml-3 text-sm">{currentSolar.hou[locale]}</span>
@@ -169,6 +169,24 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
         <details className="mt-3 border-t border-line pt-2" data-start-winter-pentads><summary className="flex min-h-11 cursor-pointer items-center text-sm">{tr(locale, "查看立冬三候畫作", "查看立冬三候画作", "View Start of Winter paintings")}</summary>
           <div className="grid gap-3 sm:grid-cols-3">{START_WINTER_PHASES.map(phase => <button key={phase.art} type="button" onClick={() => setPreview({ src: phase.art, alt: phase.name[locale] })} className="min-h-11 text-left"><img src={phase.art} alt="" loading="lazy" className="aspect-[9/16] w-full rounded-lg object-cover" /><span className="block py-2 text-sm">{phase.name[locale]}</span></button>)}</div>
         </details>
+        <details className="mt-3 border-t border-line pt-2" data-minor-snow-pentads><summary className="flex min-h-11 cursor-pointer items-center text-sm">{tr(locale, "查看小雪三候畫作", "查看小雪三候画作", "View Minor Snow paintings")}</summary>
+          <div className="grid gap-3 sm:grid-cols-3">{MINOR_SNOW_PHASES.map(phase => <button key={phase.art} type="button" onClick={() => setPreview({ src: phase.art, alt: phase.name[locale] })} className="min-h-11 text-left"><img src={phase.art} alt="" loading="lazy" className="aspect-[9/16] w-full rounded-lg object-cover" /><span className="block py-2 text-sm">{phase.name[locale]}</span></button>)}</div>
+        </details>
+        {[
+          {id:'major-snow', label:tr(locale, '查看大雪三候畫作', '查看大雪三候画作', 'View Major Snow paintings'), phases:MAJOR_SNOW_PHASES},
+          {id:'winter-solstice', label:tr(locale, '查看冬至三候畫作', '查看冬至三候画作', 'View Winter Solstice paintings'), phases:WINTER_SOLSTICE_PHASES},
+          {id:'minor-cold', label:tr(locale, '查看小寒三候畫作', '查看小寒三候画作', 'View Minor Cold paintings'), phases:MINOR_COLD_PHASES},
+        ].map(pack => <details key={pack.id} className="mt-3 border-t border-line pt-2" data-seasonal-pentads={pack.id}><summary className="flex min-h-11 cursor-pointer items-center text-sm">{pack.label}</summary>
+          <div className="grid gap-3 sm:grid-cols-3">{pack.phases.map(phase => <button key={phase.art} type="button" onClick={() => setPreview({ src: phase.art, alt: phase.name[locale] })} className="min-h-11 text-left"><img src={phase.art} alt="" loading="lazy" className="aspect-[9/16] w-full rounded-lg object-cover" /><span className="block py-2 text-sm">{phase.name[locale]}</span></button>)}</div>
+        </details>)}
+        {SOLAR_TERMS_24.filter(term => !['霜降','立冬','小雪','大雪','冬至','小寒'].includes(term.zh)).map(term => {
+          const phases = seasonalPackForSkin(term.skinId);
+          if (!phases) return null;
+          const label = locale === 'en' ? `View ${term.en} paintings` : locale === 'zh-Hans' ? `查看${term.hans}三候画作` : `查看${term.zh}三候畫作`;
+          return <details key={term.zh} className="mt-3 border-t border-line pt-2" data-seasonal-pentads={term.zh}><summary className="flex min-h-11 cursor-pointer items-center text-sm">{label}</summary>
+            <div className="grid gap-3 sm:grid-cols-3">{phases.map(phase => <button key={phase.art} type="button" onClick={() => setPreview({ src: phase.art, alt: phase.name[locale] })} className="min-h-11 text-left"><img src={phase.art} alt="" loading="lazy" className="aspect-[9/16] w-full rounded-lg object-cover" /><span className="block py-2 text-sm">{phase.name[locale]}</span></button>)}</div>
+          </details>;
+        })}
       </section>
 
       <nav className="mt-5 flex gap-2 overflow-x-auto pb-1" aria-label={tr(locale, "按色系篩選", "按色系筛选", "Filter by palette")}>
