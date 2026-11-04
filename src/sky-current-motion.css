@@ -29,8 +29,7 @@
 @media(max-width:380px){.sky-current-motion{padding:18px 12px}.sky-motion-dial,.sky-motion-fallback{width:min(100%,230px)}.sky-motion-planet{min-width:27px;height:27px;font-size:1rem}}
 @media(prefers-reduced-motion:reduce){.sky-motion-sweep{animation:none;display:none}}
 
-/* Only the sky dial changes: smoothly interpolate ephemeris-backed positions. */
-.sky-motion-planet{transition:left 475ms linear,top 475ms linear;will-change:left,top}
+/* Only the sky dial changes: browser-native interpolation of sampled ephemeris positions. */
+.sky-motion-planet{animation-duration:45s;animation-timing-function:linear;animation-iteration-count:infinite;animation-fill-mode:both}
 .sky-motion-playback-label{margin:8px auto 0;max-width:310px;text-align:center;font-size:.72rem!important;line-height:1.65!important;font-variant-numeric:tabular-nums;color:#5d766a!important}
-.sky-motion-playback-label time{font-weight:650;color:#315e50}
-@media(prefers-reduced-motion:reduce){.sky-motion-planet{transition:none!important;will-change:auto}}
+@media(prefers-reduced-motion:reduce){.sky-motion-planet{animation:none!important}.sky-motion-playback-label{display:none!important}}
