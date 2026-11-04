@@ -86,9 +86,16 @@ export const SEASONAL_SKINS = SKINS.filter((skin) => skin.id.startsWith("solar-"
 export const ARCHIVED_SKINS = SKINS.filter((skin) => !skin.id.startsWith("solar-") && !CURATED_SKIN_CATALOG.some((entry) => entry.id === skin.id));
 
 let visitorHemisphere: Hemisphere = 'unknown';
+/** Sydney spring uses the owner's requested picture now; summer retains it.
+ * Other seasons keep the existing seasonal themes until approved art is ready. */
+function resolvedSeasonalSkin(term: Parameters<typeof seasonalVisualSkinId>[0], hemisphere: Hemisphere, now = new Date()): string {
+  const month = Number(new Intl.DateTimeFormat('en', { timeZone: 'Australia/Sydney', month: 'numeric' }).format(now));
+  return hemisphere === 'south' && (month >= 9 || month <= 2)
+    ? 'sydney-jacaranda' : seasonalVisualSkinId(term, hemisphere);
+}
 export function skinById(id: string | null | undefined) {
   const auto = id === SEASONAL_AUTO_ID ? seasonalState() : null;
-  const resolved = auto ? (visitorHemisphere === 'south' ? 'sydney-jacaranda' : seasonalVisualSkinId(auto.term, visitorHemisphere)) : id;
+  const resolved = auto ? resolvedSeasonalSkin(auto.term, visitorHemisphere) : id;
   const skin = SKINS.find((s) => s.id === resolved) ?? null;
   if (!skin) return null;
   if (auto) {
@@ -100,10 +107,10 @@ export function skinById(id: string | null | undefined) {
       // remaining 23 terms use existing full-page skins until their own art is verified.
       // The owner's selected summer painting also holds the place of missing
       // southern seasonal art, until another approved painting is available.
-      hero: visitorHemisphere === 'south'
+      hero: skin.id === 'sydney-jacaranda'
         ? '/theme-skins/southern/sydney-jacaranda-summer.webp'
         : skin.id === FROST_SKIN_ID ? FROST_PHASES[auto.houIndex].art : skin.hero,
-      focus: visitorHemisphere === 'south' ? '50% 50%' : skin.focus,
+      focus: skin.id === 'sydney-jacaranda' ? '50% 50%' : skin.focus,
     };
   }
   return skin.id === FROST_SKIN_ID ? { ...skin, hero: frostEdition().art } : skin;
@@ -260,7 +267,7 @@ function refreshAutoSkinIfDue() {
   const root = document.documentElement;
   if (root.getAttribute("data-zws-selection") !== SEASONAL_AUTO_ID) return;
   const state = seasonalState();
-  if (root.getAttribute("data-zws") !== (visitorHemisphere === 'south' ? 'sydney-jacaranda' : seasonalVisualSkinId(state.term, visitorHemisphere)) ||
+  if (root.getAttribute("data-zws") !== resolvedSeasonalSkin(state.term, visitorHemisphere) ||
       root.getAttribute("data-zws-hou") !== String(state.houIndex + 1)) {
     applySkin(SEASONAL_AUTO_ID);
   }
