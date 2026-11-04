@@ -5,7 +5,7 @@ test('dated observation distinguishes current from archived and links to its sou
   await page.goto('/sky-events');
   const observation = page.locator('details#sky-observation-record');
   await expect(observation).not.toHaveAttribute('open', '');
-  await observation.locator('summary').click();
+  await observation.locator('summary').first().click();
   const brief = observation.locator('.sky-observation-brief');
   await expect(brief.locator('time')).toHaveAttribute('datetime', '2026-11-03');
   await expect(brief.getByRole('status')).not.toContainText(/not yet|尚未/i);
@@ -23,7 +23,7 @@ test('summary stays readable at mobile and desktop widths in each language', asy
   await page.clock.setFixedTime(new Date('2026-11-04T01:00:00Z'));
   await page.goto('/sky-events');
   const observation = page.locator('details#sky-observation-record');
-  await observation.locator('summary').click();
+  await observation.locator('summary').first().click();
   const brief = observation.locator('.sky-observation-brief');
   for (const width of [320, 390, 430, 1440]) {
     await page.setViewportSize({ width, height: 844 });
