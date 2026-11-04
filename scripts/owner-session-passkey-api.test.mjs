@@ -164,7 +164,7 @@ test("device and passkey actions refuse anonymous callers and cross-site request
   });
 });
 
-test("Passkey sessions can manage promo codes and upload music; other music actions and articles require the password", async () => {
+test("Passkey sessions can manage promo codes and music; articles still require the password", async () => {
   await withEdge(async (edge) => {
     const { phone, row } = await enrol(edge);
     const { verified } = await signIn(edge, phone);
@@ -195,9 +195,10 @@ test("Passkey sessions can manage promo codes and upload music; other music acti
     const music = await call(musicWrite, { cookie, body: Buffer.from("x"), headers: { "content-type": "application/octet-stream", "x-zhaowu-music-name": "a.invalid" } });
     assert.equal(music.status, 415);
     assert.equal(music.body.error, "UNSUPPORTED_AUDIO");
+    // The device reaches the music writer; external GitHub behavior is tested separately.
     const removal = await call(musicWrite, { cookie, method: "DELETE", body: { id: "test" } });
-    assert.equal(removal.status, 403);
-    assert.equal(removal.body.error, "OWNER_PASSWORD_REQUIRED");
+    assert.notEqual(removal.status, 403);
+    assert.notEqual(removal.body.error, "OWNER_PASSWORD_REQUIRED");
     edge.devices[0].revoked_at = "now";
     clearOwnerDeviceCache();
     assert.equal((await call(ownerData, { cookie, body: { action: "promo.list" } })).status, 401);
