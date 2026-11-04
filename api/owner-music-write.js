@@ -167,8 +167,9 @@ export default async function handler(req, res) {
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
     const owner = await authenticateOwner(req);
     if (!owner) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
-    // Music writes stay on a password session. A passkey session cannot publish audio.
-    if (owner.kind !== "secret") return json(res, 403, { ok: false, error: "OWNER_PASSWORD_REQUIRED" });
+    // Uploads also accept an authenticated, non-revoked trusted device. Other
+    // music mutations retain the existing password-session policy.
+    if (method !== "POST" && owner.kind !== "secret") return json(res, 403, { ok: false, error: "OWNER_PASSWORD_REQUIRED" });
     const secret = owner.secret;
 
     if (method === "POST") {
@@ -182,7 +183,7 @@ export default async function handler(req, res) {
       const chunkIndex = headerValue(req, "x-zhaowu-music-chunk-index").trim();
       const chunkTotal = headerValue(req, "x-zhaowu-music-chunk-total").trim();
       if (uploadId || chunkIndex || chunkTotal) {
-        const saved = await saveOwnerMusicChunk(secret, {
+        const saved = await saveOwnerMusicChunk(owner, {
           name: parsed.name,
           ext: parsed.ext,
           contentType: parsed.contentType,
@@ -195,7 +196,7 @@ export default async function handler(req, res) {
         return json(res, 200, { ...publicPayload(saved), uploaded: true });
       }
       if (buffer.length > MAX_BYTES) return json(res, 413, { ok: false, error: "AUDIO_TOO_LARGE" });
-      const manifest = await saveOwnerMusicTrack(secret, {
+      const manifest = await saveOwnerMusicTrack(owner, {
         name: parsed.name,
         ext: parsed.ext,
         contentType: parsed.contentType,
