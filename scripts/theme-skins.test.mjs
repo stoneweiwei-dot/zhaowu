@@ -47,7 +47,7 @@ test("every skin has tokens, a full-set definition and crisp art on disk", () =>
     assert.ok(existsSync(`public${hero}`), `art file for ${id}: ${hero}`);
     // Prior 24 themes retain archived homepage previews; new themes use the live
     // DOM editorial composition rendered by OwnerThemeSkinsManager.
-    if (!id.startsWith("solar-") && id !== "song-gallery-frostleaf") assert.ok(existsSync(`public/theme-previews/${id}.jpg`), `actual homepage preview for ${id}`);
+    if (ids.find(s => s.id === id).ref <= 24) assert.ok(existsSync(`public/theme-previews/${id}.jpg`), `actual homepage preview for ${id}`);
     assert.ok(full.includes(`html[data-zws="${id}"]`), `full-set rules for ${id}`);
   }
 });
@@ -196,7 +196,7 @@ test('curated themes keep visibly different page palettes instead of one shared 
   const curatedBlock = registry.match(/CURATED_SKIN_CATALOG:[\s\S]*?= \[([\s\S]*?)\] as const;/)?.[1] ?? "";
   const curatedIds = [...curatedBlock.matchAll(/\{ id: "([a-z-]+)", family:/g)].map((match) => match[1]);
   const pages = curatedIds.map((id) => tokensForSkin(ids.find((skin) => skin.id === id))['--zws-page']);
-  assert.equal(curatedIds.length, 10);
+  assert.equal(curatedIds.length, 11);
   assert.equal(new Set(pages).size, curatedIds.length);
   assert.doesNotMatch(full, /html\[data-zws\]:not\(\[data-zws-mode="dark"\]\)\s*\{[^}]*--zws-page/s);
 });
@@ -230,7 +230,7 @@ test("all selectable skins share the Song editorial shell without overwriting th
   const homeCss = readFileSync("src/painted-home.css", "utf8");
   const skinCss = readFileSync("src/theme-skins-full.css", "utf8");
   const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
-  assert.equal(ids.length, 26);
+  assert.equal(ids.length, 27);
   assert.match(home, /return skin \? 'scroll' : 'koi'/);
   assert.match(home, /const art = skin\?\.hero/);
   assert.match(homeCss, /SONG GALLERY EDITION/);
@@ -247,7 +247,7 @@ test("owner theme manager curates ten distinct choices and keeps the other fifte
   const registry = readFileSync("src/lib/theme-skins.ts", "utf8");
   const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
   const curated = registry.match(/CURATED_SKIN_CATALOG:[\s\S]*?= \[([\s\S]*?)\] as const;/)?.[1] ?? "";
-  assert.equal([...curated.matchAll(/\{ id: "[a-z-]+", family: "[a-z]+" \}/g)].length, 10);
+  assert.equal([...curated.matchAll(/\{ id: "[a-z-]+", family: "[a-z]+" \}/g)].length, 11);
   assert.match(manager, /CURATED_SKINS/);
   assert.match(manager, /ARCHIVED_SKINS/);
   assert.match(manager, /data-archived-theme-collection/);

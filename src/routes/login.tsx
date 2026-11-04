@@ -90,7 +90,7 @@ function LoginPage() {
     >
       <img
         className="stone-login-stage-media"
-        src={typeof document !== "undefined" && document.documentElement.dataset.zwsSelection === "solar-auto" && document.documentElement.dataset.zwsHemisphere === "south" ? (skin?.hero || LOGIN_BACKDROP) : LOGIN_BACKDROP}
+        src={skin?.id === "sydney-jacaranda" ? skin.hero : LOGIN_BACKDROP}
         onError={(event) => { if (!event.currentTarget.src.endsWith(LOGIN_BACKDROP)) event.currentTarget.src = LOGIN_BACKDROP; }}
         alt=""
         aria-hidden="true"

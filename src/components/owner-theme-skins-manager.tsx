@@ -125,7 +125,7 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
       <p className="text-xs tracking-[0.28em] text-cinnabar">CURATED THEMES</p>
       <h2 className="mt-1 font-display text-2xl">{tr(locale, "主題管理", "主题管理", "Theme manager")}</h2>
       <p className="mt-2 max-w-3xl text-sm leading-7 text-ink-soft">
-        {tr(locale, "主選區只保留色系與氣質差異清楚的 10 套。相近版本已收進下方的歷史主題，不會刪除。", "主选区只保留色系与气质差异清楚的 10 套。相近版本已收进下方的历史主题，不会删除。", "The main catalog keeps ten clearly distinct themes. Similar versions remain available in Historical themes below.")}
+        {tr(locale, "主選區保留色系與氣質差異清楚的主題；相近版本收進下方歷史主題，不會刪除。", "主选区保留色系与气质差异清楚的主题；相近版本收进下方历史主题，不会删除。", "The main catalog keeps visually distinct themes. Similar versions remain available in Historical themes below.")}
       </p>
 
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line bg-paper/55 p-3">

@@ -364,3 +364,12 @@ html body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree
 /* A full-width mist preserves ink contrast across both seasonal paintings. */
 html body #root .zw-painted-home.zw-v2-home .zw-stage::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom,rgba(250,247,237,.76) 0%,rgba(250,247,237,.65) 35%,rgba(250,247,237,0) 62%); }
 html body #root .zw-painted-home.zw-v2-home .zw-v2-season { color:#fffdf8 !important; -webkit-text-fill-color:#fffdf8 !important; }
+
+/* Sydney jacaranda: harbour-blue and violet with warm gold accents. */
+html[data-zws="sydney-jacaranda"] body #root .zw-painted-home.zw-v2-home .zw-stage::after { background:linear-gradient(90deg,rgba(250,247,242,.78),rgba(250,247,242,.40) 58%,rgba(250,247,242,.03)),linear-gradient(180deg,rgba(19,24,58,.12),transparent 55%); }
+html[data-zws="sydney-jacaranda"] body #root .zw-painted-home.zw-v2-home .zw-v2-primary { background:#243f3b !important; color:#fff9e9 !important; border:2px solid #c7a86a !important; border-radius:999px !important; box-shadow:0 2px 10px #27243f35; }
+html[data-zws="sydney-jacaranda"] body #root .zw-painted-home.zw-v2-home .zw-v2-season { background:rgba(37,31,67,.79); border-left:3px solid #d3b879; }
+html[data-zws="sydney-jacaranda"] body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry { background:rgba(250,248,255,.97) !important; border-color:#b6a7ca !important; color:#322d4a !important; }
+html[data-zws="sydney-jacaranda"] body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry :is(strong,small) { -webkit-text-fill-color:#322d4a !important; }
+html[data-zws="sydney-jacaranda"] body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry { background:#45406f !important; color:#fffaf0 !important; }
+html[data-zws="sydney-jacaranda"] body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry :is(strong,small) { -webkit-text-fill-color:#fffaf0 !important; }
