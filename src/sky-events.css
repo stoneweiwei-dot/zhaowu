@@ -183,3 +183,13 @@
  .sky-event-article .sky-event-title{padding:18px 0}
  .sky-events-page .sky-event-article{padding-top:10px}
 }
+
+/* Reader-first: the specialist symbolic reading follows four plain-language points. */
+.sky-impact-more{border-top:1px solid #d7cbbb;margin:8px 0 0}
+.sky-impact-more>summary{min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:12px;list-style:none;cursor:pointer;color:#315e50;font-size:.9rem;font-weight:700}
+.sky-impact-more>summary::-webkit-details-marker{display:none}
+.sky-impact-more>summary:after{content:"＋";font-size:1.1rem}
+.sky-impact-more[open]>summary:after{content:"−"}
+.sky-impact-more>summary:focus-visible{outline:3px solid #a77a31;outline-offset:3px}
+.sky-impact-more ul{margin:0;padding:0 0 8px 17px;font-size:.9rem;line-height:1.85;color:#536a5c}
+.sky-impact-more li{padding:7px 0}
