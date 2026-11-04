@@ -103,13 +103,25 @@ function Branch({ branch, onOpen }: { branch: TreeBranch; onOpen: (s: HomeSectio
   </li>;
 }
 
+/** A coordinated set of small wayfinding marks for the jacaranda edition. */
+function JacarandaMark({ section }: { section: HomeSection }) {
+  return <svg className="ph-jacaranda-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+    <circle cx="20" cy="20" r="18" stroke="currentColor" strokeOpacity=".45" />
+    {section === 'form' && <><circle cx="20" cy="20" r="9" stroke="currentColor"/><path d="M20 8v24M8 20h24M14 14l12 12M26 14 14 26" stroke="currentColor" strokeLinecap="round"/></>}
+    {section === 'today' && <><circle cx="20" cy="20" r="6" stroke="currentColor"/><path d="M20 9v3M20 28v3M9 20h3M28 20h3M12 12l2 2M26 26l2 2M28 12l-2 2M14 26l-2 2" stroke="currentColor" strokeLinecap="round"/></>}
+    {section === 'quiz' && <><path d="M20 10c1 6 4 9 10 10-6 1-9 4-10 10-1-6-4-9-10-10 6-1 9-4 10-10Z" stroke="currentColor"/><circle cx="29" cy="11" r="1.5" fill="currentColor"/></>}
+    {section === 'notes' && <><path d="M10 12c4-1 7 0 10 2 3-2 6-3 10-2v15c-4-1-7 0-10 2-3-2-6-3-10-2V12ZM20 14v15" stroke="currentColor" strokeLinejoin="round"/><path d="M13 17h4M23 17h4" stroke="currentColor" strokeLinecap="round"/></>}
+    <path d="M20 2.5c-2 2-2 3.5 0 4.5 2-1 2-2.5 0-4.5Z" fill="currentColor" />
+  </svg>;
+}
+
 /** Four always-visible entrances; secondary quiz categories stay grouped. */
 export function HomeTree({ t, onOpen }: { t: T; onOpen: (s: HomeSection) => void }) {
   return <nav id="home-guide" className="ph-tree" data-home-tree aria-label={t('網站導覽', '网站导览', 'Site guide')}>
     <header className="ph-tree-intro"><h2>{t('從哪裡開始？', '从哪里开始？', 'Where would you like to start?')}</h2></header>
     {homeTree(t).map(node => <section key={node.id} className="ph-tree-node" data-open="true" data-home-card={node.id}>
       <button type="button" className="ph-tree-primary zw-entry" onClick={() => onOpen(node.id)}>
-        <span><strong>{node.title}</strong><small>{node.hint}</small></span><i aria-hidden>→</i>
+        <JacarandaMark section={node.id} /><span><strong>{node.title}</strong><small>{node.hint}</small></span><i aria-hidden>→</i>
       </button>
       <div className="ph-tree-body"><ul>{node.items.map(item => item.kind === 'branch'
         ? <Branch key={item.id} branch={item} onOpen={onOpen} />
