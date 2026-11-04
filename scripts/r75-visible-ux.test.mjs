@@ -63,5 +63,5 @@ test("installed iPhone app actively refreshes the current production shell witho
   assert.match(sw, /clients\.claim\(\)/);
   assert.match(sw, /cache:\s*"no-store"/);
   assert.match(vercel, /"source": "\/sw\.js"[\s\S]*"Cache-Control"[\s\S]*"no-store, no-cache, must-revalidate, max-age=0"/);
-  assert.match(vercel, /"source": "\/"[\s\S]*"Cache-Control"[\s\S]*"no-store, max-age=0"/);
+  assert.match(vercel, /"source": "\/"[\s\S]*"Cache-Control"[\s\S]*"public, max-age=0, s-maxage=60, stale-while-revalidate=300"/);
 });
