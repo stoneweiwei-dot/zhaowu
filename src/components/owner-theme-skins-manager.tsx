@@ -1,4 +1,4 @@
-import { FROST_SKIN_ID, SEASONAL_AUTO_ID, FROST_PHASES, SOLAR_TERMS_24, seasonalState } from "@/lib/seasonal-skins";
+import { FROST_SKIN_ID, SEASONAL_AUTO_ID, FROST_PHASES, START_WINTER_PHASES, SOLAR_TERMS_24, seasonalState } from "@/lib/seasonal-skins";
 import { useEffect, useMemo, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import {
@@ -143,7 +143,7 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
 
       <section className="mt-5 border-y border-line py-4" data-seasonal-theme-collection>
         <h3 className="font-display text-xl">{tr(locale, "節氣主題", "节气主题", "Seasonal themes")}</h3>
-        <p className="mt-2 text-sm leading-7">{tr(locale, "完整 24 節氣／72 候按悉尼日期 00:01 自動切換，使用天文交節所在的悉尼日曆日，而非精確交節秒數。霜降三候使用專屬原畫，其餘節氣採用現有完整主題畫作，不冒稱已製作 72 幅新畫。", "完整 24 节气／72 候按悉尼日期 00:01 自动切换，依据天文交节所在日期，并非精确交节秒数。霜降三候有专属原画，其余沿用已上架主题。", "All 24 terms and 72 pentads switch at 00:01 on each Sydney calendar date derived from the astronomical solar term. This is a visual schedule, not exact astronomical transition time. Frost has bespoke art; other terms reuse existing complete themes.")}</p>
+        <p className="mt-2 text-sm leading-7">{tr(locale, "24 節氣／72 候依悉尼日期 00:01 輪替。霜降與立冬各有三候畫作，其餘節氣沿用現有主題。", "24 节气／72 候依悉尼日期 00:01 轮替。霜降与立冬各有三候画作，其余节气沿用现有主题。", "The 24 terms and 72 pentads change at 00:01 Sydney time. Frost and Start of Winter each have three paintings; other terms reuse existing complete themes.")}</p>
         <div data-seasonal-current className="mt-3 rounded-lg border border-line bg-paper/60 px-4 py-3">
           <strong className="font-display">{locale === "en" ? currentSolar.term.en : locale === "zh-Hans" ? currentSolar.term.hans : currentSolar.term.zh}</strong>
           <span className="ml-3 text-sm">{currentSolar.hou[locale]}</span>
@@ -165,6 +165,9 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
         <div className="grid gap-4 sm:grid-cols-2">{SEASONAL_SKINS.map(skin => <ThemeCard key={skin.id} locale={locale} skin={skin} active={id === skin.id} saving={saving} onChoose={(next) => void choose(next)} onPreview={setPreview} />)}</div>
         <details className="mt-3 border-t border-line pt-2"><summary className="flex min-h-11 cursor-pointer items-center text-sm">{tr(locale, "查看三候畫作", "查看三候画作", "View the three seasonal scenes")}</summary>
           <div className="grid gap-3 sm:grid-cols-3">{FROST_PHASES.map(phase => <button key={phase.start} type="button" onClick={() => setPreview({ src: phase.art, alt: phase.name[locale] })} className="min-h-11 text-left"><img src={phase.art} alt="" loading="lazy" className="aspect-[9/16] w-full rounded-lg object-cover" /><span className="block py-2 text-sm">{phase.name[locale]}</span></button>)}</div>
+        </details>
+        <details className="mt-3 border-t border-line pt-2" data-start-winter-pentads><summary className="flex min-h-11 cursor-pointer items-center text-sm">{tr(locale, "查看立冬三候畫作", "查看立冬三候画作", "View Start of Winter paintings")}</summary>
+          <div className="grid gap-3 sm:grid-cols-3">{START_WINTER_PHASES.map(phase => <button key={phase.art} type="button" onClick={() => setPreview({ src: phase.art, alt: phase.name[locale] })} className="min-h-11 text-left"><img src={phase.art} alt="" loading="lazy" className="aspect-[9/16] w-full rounded-lg object-cover" /><span className="block py-2 text-sm">{phase.name[locale]}</span></button>)}</div>
         </details>
       </section>
 

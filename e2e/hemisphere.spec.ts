@@ -81,3 +81,26 @@ for (const width of [320, 390]) {
     await page.screenshot({path:`test-results/south-winter-${width}.png`});
   });
 }
+
+for (const [instant, phase, image] of [
+  ['2026-11-06T13:01:00Z', '水始冰', 'water-begins-freezing.webp'],
+  ['2026-11-11T13:01:00Z', '地始凍', 'earth-begins-freezing.webp'],
+  ['2026-11-16T13:01:00Z', '雉入大水為蜃', 'pheasant-and-sea.webp'],
+] as const) {
+  test(`northern Start of Winter displays ${phase} at 390px`, async ({page}) => {
+    await page.setViewportSize({width:390,height:844});
+    await page.clock.install({time:new Date(instant)});
+    await page.addInitScript(() => localStorage.setItem('zhaowu.locale', 'zh-Hant'));
+    await page.route('**/api/owner-data?view=site-skin', r => r.fulfill({json:{skin:'solar-auto',configured:true}}));
+    await page.route('**/api/zhaowu-capabilities?mode=visitor-hemisphere', r => r.fulfill({json:{hemisphere:'north'}}));
+    await page.goto('/?zw_entry=home',{waitUntil:'networkidle'});
+    await expect(page.locator('html')).toHaveAttribute('data-zws','solar-start-winter');
+    await expect(page.locator('.zw-v2-season')).toContainText(phase);
+    await expect(page.locator('.zw-stage')).toHaveCSS('background-image', new RegExp(image));
+    await expect(page.locator('.zw-winter-quote')).toBeVisible();
+    await expect(page.locator('[data-home-birth-entry]')).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+    expect((await page.request.get('/theme-skins/solar-start-winter/' + image)).status()).toBe(200);
+    await page.screenshot({path:`test-results/start-winter-${image}.png`});
+  });
+}

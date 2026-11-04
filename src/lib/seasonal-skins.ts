@@ -4,6 +4,7 @@
  */
 export const SEASONAL_AUTO_ID = 'solar-auto';
 export const FROST_SKIN_ID = 'solar-frost-descent';
+export const WINTER_SKIN_ID = 'solar-start-winter';
 type L3 = { 'zh-Hant': string; 'zh-Hans': string; en: string };
 const l3 = (hant: string, hans: string, en: string): L3 => ({ 'zh-Hant': hant, 'zh-Hans': hans, en });
 const base = '/theme-skins/solar-frost-descent/';
@@ -14,6 +15,12 @@ export const FROST_PHASES = [
 ] as const;
 export const FROST_END = '2026-11-07T00:01:00+11:00';
 export const FROST_SECTIONS = ['today-guide', 'deep-reading', 'report-cover', 'login-wash', 'account-wash', 'spirit-slip', 'loading-state', 'empty-state'] as const;
+const winterBase = '/theme-skins/solar-start-winter/';
+export const START_WINTER_PHASES = [
+  { art: `${winterBase}water-begins-freezing.webp`, name: l3('水始冰', '水始冰', 'Water begins to freeze'), quote: l3('靜下來，才能看見水底的方向。', '静下来，才能看见水底的方向。', 'In stillness, the direction beneath the water becomes clear.') },
+  { art: `${winterBase}earth-begins-freezing.webp`, name: l3('地始凍', '地始冻', 'The earth begins to freeze'), quote: l3('把根安穩，等待下一次生長。', '把根安稳，等待下一次生长。', 'Let the roots rest firm until it is time to grow again.') },
+  { art: `${winterBase}pheasant-and-sea.webp`, name: l3('雉入大水為蜃', '雉入大水为蜃', 'The pheasant and the sea'), quote: l3('世界有未解之處，也有轉化的可能。', '世界有未解之处，也有转化的可能。', 'The unknown leaves room for transformation.') },
+] as const;
 
 /**
  * Traditional North-hemisphere 24 solar terms and 72 pentads.
@@ -24,8 +31,8 @@ export const FROST_SECTIONS = ['today-guide', 'deep-reading', 'report-cover', 'l
  * astronomical event, intentionally NOT the exact astronomical instant.
  *
  * Previously accepted Frost's Descent art is kept unmodified.
- * All other terms reuse EXISTING licensed/site local paintings: never
- * advertise them as 72 purpose-made paintings.
+ * Frost and Start of Winter have individual pentad artwork; other terms
+ * reuse existing site paintings and must not be advertised as 72 new works.
  */
 export const SOLAR_TERMS_24 = [
   {month:1,day:5,longitude:285,zh:"小寒",hans:"小寒",en:"Minor Cold",skinId:"pine-ink",hou:[{"zh-Hant":"雁北鄉","zh-Hans":"雁北乡","en":"Wild geese turn north"},{"zh-Hant":"鵲始巢","zh-Hans":"鹊始巢","en":"Magpies begin nesting"},{"zh-Hant":"雉雊","zh-Hans":"雉雊","en":"Pheasants call"}]},
@@ -48,7 +55,7 @@ export const SOLAR_TERMS_24 = [
   {month:9,day:23,longitude:180,zh:"秋分",hans:"秋分",en:"Autumn Equinox",skinId:"song-gallery-frostleaf",hou:[{"zh-Hant":"雷始收聲","zh-Hans":"雷始收声","en":"Thunder becomes quiet"},{"zh-Hant":"蟄蟲坏戶","zh-Hans":"蛰虫坏户","en":"Insects seal their burrows"},{"zh-Hant":"水始涸","zh-Hans":"水始涸","en":"Waters begin to recede"}]},
   {month:10,day:8,longitude:195,zh:"寒露",hans:"寒露",en:"Cold Dew",skinId:"pine-ink",hou:[{"zh-Hant":"鴻雁來賓","zh-Hans":"鸿雁来宾","en":"Migrating geese visit"},{"zh-Hant":"雀入大水為蛤","zh-Hans":"雀入大水为蛤","en":"Sparrows become clams (traditional lore)"},{"zh-Hant":"菊有黃華","zh-Hans":"菊有黄华","en":"Yellow chrysanthemums bloom"}]},
   {month:10,day:23,longitude:210,zh:"霜降",hans:"霜降",en:"Frost’s Descent",skinId:"solar-frost-descent",hou:[{"zh-Hant":"豺乃祭獸","zh-Hans":"豺乃祭兽","en":"Jackals display their prey"},{"zh-Hant":"草木黃落","zh-Hans":"草木黄落","en":"Leaves turn yellow and fall"},{"zh-Hant":"蟄蟲咸俯","zh-Hans":"蛰虫咸俯","en":"Insects settle for winter"}]},
-  {month:11,day:7,longitude:225,zh:"立冬",hans:"立冬",en:"Start of Winter",skinId:"song-clear-dragon",hou:[{"zh-Hant":"水始冰","zh-Hans":"水始冰","en":"Waters begin to freeze"},{"zh-Hant":"地始凍","zh-Hans":"地始冻","en":"Earth begins to freeze"},{"zh-Hant":"雉入大水為蜃","zh-Hans":"雉入大水为蜃","en":"Pheasants become clams (traditional lore)"}]},
+  {month:11,day:7,longitude:225,zh:"立冬",hans:"立冬",en:"Start of Winter",skinId:"solar-start-winter",hou:[{"zh-Hant":"水始冰","zh-Hans":"水始冰","en":"Waters begin to freeze"},{"zh-Hant":"地始凍","zh-Hans":"地始冻","en":"Earth begins to freeze"},{"zh-Hant":"雉入大水為蜃","zh-Hans":"雉入大水为蜃","en":"Pheasants become clams (traditional lore)"}]},
   {month:11,day:22,longitude:240,zh:"小雪",hans:"小雪",en:"Minor Snow",skinId:"song-rain-bank",hou:[{"zh-Hant":"虹藏不見","zh-Hans":"虹藏不见","en":"Rainbows disappear"},{"zh-Hant":"天氣上升地氣下降","zh-Hans":"天气上升地气下降","en":"Sky rises and earth descends"},{"zh-Hant":"閉塞而成冬","zh-Hans":"闭塞而成冬","en":"Winter closes in"}]},
   {month:12,day:7,longitude:255,zh:"大雪",hans:"大雪",en:"Major Snow",skinId:"ink-dragon",hou:[{"zh-Hant":"鶡鴠不鳴","zh-Hans":"鹖鴠不鸣","en":"Cold-weather birds fall silent"},{"zh-Hant":"虎始交","zh-Hans":"虎始交","en":"Tigers begin mating"},{"zh-Hant":"荔挺出","zh-Hans":"荔挺出","en":"Iris shoots emerge"}]},
   {month:12,day:22,longitude:270,zh:"冬至",hans:"冬至",en:"Winter Solstice",skinId:"day-flute",hou:[{"zh-Hant":"蚯蚓結","zh-Hans":"蚯蚓结","en":"Earthworms curl together"},{"zh-Hant":"麋角解","zh-Hans":"麋角解","en":"Elk shed their antlers"},{"zh-Hant":"水泉動","zh-Hans":"水泉动","en":"Spring water begins to flow"}]}
@@ -123,7 +130,7 @@ export function seasonalState(now=new Date()) {
   const houIndex=Math.min(2,Math.max(0,Math.floor(daysInto/5)));
   const phase=current.spec.hou[houIndex];
   return {term:current.spec,hou:phase,houIndex,daysInto,termDate:current.date,nextTermDate:next.date,
-    localDate, artworkKind:current.spec.skinId===FROST_SKIN_ID?"dedicated":"existing-artwork" as "dedicated"|"existing-artwork"};
+    localDate, artworkKind:current.spec.skinId===FROST_SKIN_ID || current.spec.skinId===WINTER_SKIN_ID?"dedicated":"existing-artwork" as "dedicated"|"existing-artwork"};
 }
 /** Resolve one of the 24 entire pre-existing themed painting systems. */
 

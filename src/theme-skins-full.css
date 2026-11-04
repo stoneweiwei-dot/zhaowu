@@ -1450,3 +1450,15 @@ html[data-zws="solar-frost-descent"] body .history-empty { background-image: lin
 
 html[data-zws="solar-frost-descent"] body .zhaowu-today-guide__spirit-paper { background-image: linear-gradient(rgba(246,241,230,.92),rgba(246,241,230,.92)), url(/theme-skins/solar-frost-descent/spirit-slip.webp) !important; background-size:cover !important; }
 html[data-zws="solar-frost-descent"] body .zw-home-inline-loading { background: linear-gradient(90deg,rgba(246,241,230,.96),rgba(246,241,230,.90)), url(/theme-skins/solar-frost-descent/loading-state.webp) center/cover; }
+
+/* Start of Winter: three original scenes and a cool-silk palette across the site. */
+html[data-zws="solar-start-winter"] {
+ --zws-art: url(/theme-skins/solar-start-winter/water-begins-freezing.webp); --zws-focus: 50% 50%; --zws-frame: #405d5a; --zws-veil: 84%;
+ --zws-font-d: "Songti TC", "Noto Serif TC", "Songti SC", serif; --zws-font-en: "Iowan Old Style", Baskerville, Georgia, serif;
+ --zws-card-orn: none; --zws-card-frame: none; --zws-card-blur: none; --zws-hw: 500; --zws-shadow: none;
+ --zws-btn-bg: #405d5a; --zws-btn-radius: 7px; --zws-pill-radius: 7px; --zws-rule: #ab8d68; --zws-rule-h: 1px; --zws-rule-w: 36px;
+ --zws-hero-radius: 8px; --zws-hero-frame: none; --zws-card-border: 1px solid var(--zws-line);
+}
+html[data-zws="solar-start-winter"] body .zw-ink-board[data-variant="jade"] .zw-ink-hero__art { background: linear-gradient(90deg,rgba(245,238,226,.94),rgba(245,238,226,.30)), url(/theme-skins/solar-start-winter/water-begins-freezing.webp) center/cover !important; }
+html[data-zws="solar-start-winter"] body .stone-login-screen { --login-art: url(/theme-skins/solar-start-winter/earth-begins-freezing.webp); }
+html[data-zws="solar-start-winter"] body :is(.zhaowu-specialist-hero,.zhaowu-report-header,.zhaowu-visual-book-head,.history-hero,.history-empty,.zhaowu-today-guide__spirit-paper,.zw-home-inline-loading) { background-image: linear-gradient(90deg,rgba(245,238,226,.96),rgba(245,238,226,.88)), url(/theme-skins/solar-start-winter/earth-begins-freezing.webp) !important; background-size: cover; }

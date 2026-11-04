@@ -7,6 +7,7 @@ test("shared skin catalog covers all registered choices and classic", () => {
   const src = readFileSync("src/lib/theme-skins.ts", "utf8");
   const ids = [...src.matchAll(/\{ id: "([a-z-]+)", ref: (\d+), mode: "(light|dark)"/g)].map((match) => match[1]);
   assert.ok(ids.includes('sydney-jacaranda'));
+  assert.ok(ids.includes('solar-start-winter'));
   assert.equal(SITE_SKIN_IDS.size, ids.length + 2); // none + solar-auto
   for (const id of ids) assert.equal(validSiteSkin(id), id);
   assert.equal(validSiteSkin("none"), "none");
@@ -64,7 +65,7 @@ function skinClient(fetcher) {
   const context = vm.createContext({
     fetch: fetcher, Event,
     // Browser-only imports are stubbed for VM execution; production imports remain unchanged.
-    FROST_SKIN_ID: "solar-frost-descent", SEASONAL_AUTO_ID: "solar-auto",
+    FROST_SKIN_ID: "solar-frost-descent", WINTER_SKIN_ID: "solar-start-winter", SEASONAL_AUTO_ID: "solar-auto",
     seasonalSkinId: () => "solar-frost-descent", frostEdition: () => ({ art: "/test-frost.webp" }),
     useEffect: () => {}, useState: (initial) => [initial, () => {}],
     document: { documentElement: {
