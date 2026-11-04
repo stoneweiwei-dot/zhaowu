@@ -47,7 +47,8 @@ test('interpretive-first reading and real ecliptic sky dial work without exposin
   await page.goto('/sky-events');
   const impact = page.locator('.sky-event-impact');
   await expect(impact).toBeVisible();
-  await expect(impact.locator('li')).toHaveCount(4);
+  await expect(impact.locator('.sky-impact-points > li')).toHaveCount(4);
+  await expect(page.locator('details.sky-impact-more')).not.toHaveAttribute('open', '');
   await expect(page.locator('details.sky-event-details')).not.toHaveAttribute('open', '');
   await expect(page.locator('details.sky-science-details')).not.toHaveAttribute('open', '');
   await expect(page.locator('details#sky-observation-record')).not.toHaveAttribute('open', '');
