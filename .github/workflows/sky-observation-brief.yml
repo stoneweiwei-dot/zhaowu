@@ -1,0 +1,25 @@
+name: Sky observation brief
+on:
+  pull_request:
+    paths:
+      - 'src/components/sky-observation-brief.tsx'
+      - 'src/components/daily-sky-observation.tsx'
+      - 'src/sky-observation-brief.css'
+      - 'src/routes/sky-events.tsx'
+      - 'e2e/sky-observation-brief.spec.ts'
+      - '.github/workflows/sky-observation-brief.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  webkit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps webkit
+      - run: npx playwright test e2e/sky-observation-brief.spec.ts --project=iphone-safari

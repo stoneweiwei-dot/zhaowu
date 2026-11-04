@@ -1,0 +1,12 @@
+.sky-observation-brief{margin:0 0 24px;padding:18px 20px;background:#fcf8ee;border-block:1px solid #c9b99b;color:#263e36}
+.sky-observation-brief-heading{display:flex;align-items:baseline;justify-content:space-between;gap:8px 16px;flex-wrap:wrap}
+.sky-observation-brief h2{margin:0;font-size:1.12rem;line-height:1.5}
+.sky-observation-brief-heading span{font-size:.875rem;font-weight:700;color:#765124}
+.sky-observation-brief-date{margin:8px 0 0;font-size:.875rem;font-weight:600}
+.sky-observation-brief-moon{margin:8px 0 0;line-height:1.7}
+.sky-observation-brief-note{margin:8px 0 0;font-size:.875rem;line-height:1.6}
+.sky-observation-brief a{display:inline-flex;align-items:center;min-height:44px;color:#175447;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.sky-observation-brief a:focus-visible{outline:3px solid #9a642d;outline-offset:3px}
+html[data-zw-theme="night"] .sky-observation-brief{background:#1d332d;border-color:#829788;color:#f5f0e5}
+html[data-zw-theme="night"] .sky-observation-brief-heading span{color:#f5d79d}
+html[data-zw-theme="night"] .sky-observation-brief a{color:#c4eadd}

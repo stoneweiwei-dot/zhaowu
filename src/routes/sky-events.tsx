@@ -3,6 +3,7 @@ import { useI18n } from "@/lib/i18n";
 import { SKY_EVENT_CATEGORIES, getArchivedSkyEvents, getFeaturedSkyEvent, getTodaySkyUpdatedDate } from "@/lib/sky-events";
 import { TodaySkyCards } from "@/components/today-sky-cards";
 import { DailySkyObservation } from "@/components/daily-sky-observation";
+import { SkyObservationBrief } from "@/components/sky-observation-brief";
 import { isSkyReportArchived } from "@/lib/sky-week-presentation";
 import "@/sky-events.css";
 import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
@@ -145,6 +146,8 @@ function SkyEventsPage() {
         <div className="sky-events-truth-note">{ui.note}</div>
       </header>
 
+      <SkyObservationBrief />
+
       <nav className="sky-events-shortcuts" aria-label={labels.navigation}>
         <a href="#sky-featured">{labels.feature}</a>
         {showCurrentWeek ? <a href="#sky-week">{labels.week}</a> : null}
@@ -210,7 +213,7 @@ function SkyEventsPage() {
       </article>
 
 
-      <DailySkyObservation />
+      <div id="sky-observation-record"><DailySkyObservation /></div>
 
       <details className="sky-section-disclosure sky-watch-disclosure">
         <summary><strong>{ui.watch}</strong><span>{SKY_EVENT_CATEGORIES.length}</span></summary>
