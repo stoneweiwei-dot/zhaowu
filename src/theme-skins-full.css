@@ -1431,6 +1431,7 @@ html[data-zws="song-gallery-frostleaf"] {
 }
 
 /* Verified 2026 seasonal pack, using the existing full-site skin engine. */
+html[data-zws="sydney-jacaranda"] { --zws-art: url(/theme-skins/southern/sydney-jacaranda-summer.webp); --zws-focus: 50% 50%; --zws-frame: #45406f; --zws-veil: 80%; }
 html[data-zws="solar-frost-descent"] {
  --zws-art: url(/theme-skins/solar-frost-descent/hero-frost-descent.webp); --zws-focus: 50% 55%; --zws-frame: #375f5b; --zws-veil: 84%;
  --zws-font-d: "Songti TC", "Noto Serif TC", "Songti SC", serif;

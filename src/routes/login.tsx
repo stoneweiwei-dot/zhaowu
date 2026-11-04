@@ -90,7 +90,8 @@ function LoginPage() {
     >
       <img
         className="stone-login-stage-media"
-        src={LOGIN_BACKDROP}
+        src={skin?.id === "sydney-jacaranda" ? skin.hero : LOGIN_BACKDROP}
+        onError={(event) => { if (!event.currentTarget.src.endsWith(LOGIN_BACKDROP)) event.currentTarget.src = LOGIN_BACKDROP; }}
         alt=""
         aria-hidden="true"
         width={1248}
