@@ -103,13 +103,23 @@ function Branch({ branch, onOpen }: { branch: TreeBranch; onOpen: (s: HomeSectio
   </li>;
 }
 
+/** Small seasonal navigation marks, drawn as UI icons rather than artwork. */
+function SeasonalMark({ section }: { section: HomeSection }) {
+  return <svg className="zw-season-mark" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+    {section === 'form' && <><path d="M8 6h13a3 3 0 0 1 3 3v17H11a3 3 0 0 1-3-3zM8 8a2 2 0 0 0-2 2v13a3 3 0 0 0 3 3"/><path d="M12 12h8m-8 4h8m-8 4h5"/></>}
+    {section === 'today' && <><circle cx="18" cy="11" r="4"/><path d="M18 3v2m0 12v2M10 11H8m20 0h-2M9 23h15a4 4 0 0 0-4-5 6 6 0 0 0-10 1 3 3 0 0 0-1 4z"/></>}
+    {section === 'quiz' && <><path d="M16 5l2.3 7.2L25 15l-6.7 2.7L16 25l-2.4-7.3L7 15l6.6-2.8z"/><path d="M7 5v4m-2-2h4m16 14v4m-2-2h4"/></>}
+    {section === 'notes' && <><path d="M5 8c5-2 8-1 11 2v16c-3-3-6-4-11-2zm22 0c-5-2-8-1-11 2v16c3-3 6-4 11-2z"/><path d="M9 13h3m-3 4h3m8-4h3m-3 4h3"/></>}
+  </svg>;
+}
+
 /** Four always-visible entrances; secondary quiz categories stay grouped. */
 export function HomeTree({ t, onOpen }: { t: T; onOpen: (s: HomeSection) => void }) {
   return <nav id="home-guide" className="ph-tree" data-home-tree aria-label={t('網站導覽', '网站导览', 'Site guide')}>
     <header className="ph-tree-intro"><h2>{t('從哪裡開始？', '从哪里开始？', 'Where would you like to start?')}</h2></header>
     {homeTree(t).map(node => <section key={node.id} className="ph-tree-node" data-open="true" data-home-card={node.id}>
       <button type="button" className="ph-tree-primary zw-entry" onClick={() => onOpen(node.id)}>
-        <span><strong>{node.title}</strong><small>{node.hint}</small></span><i aria-hidden>→</i>
+        <SeasonalMark section={node.id} /><span><strong>{node.title}</strong><small>{node.hint}</small></span><i aria-hidden>→</i>
       </button>
       <div className="ph-tree-body"><ul>{node.items.map(item => item.kind === 'branch'
         ? <Branch key={item.id} branch={item} onOpen={onOpen} />

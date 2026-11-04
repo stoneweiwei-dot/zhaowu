@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { FROST_SKIN_ID, WINTER_SKIN_ID, START_WINTER_PHASES, SEASONAL_AUTO_ID, SOLAR_TERMS_24, seasonalState, frostEdition } from '@/lib/seasonal-skins';
+import { FROST_SKIN_ID, seasonalPackForSkin, SEASONAL_AUTO_ID, SOLAR_TERMS_24, seasonalState, frostEdition } from '@/lib/seasonal-skins';
 import { useEffect, type CSSProperties } from 'react';
 import { useSkin, type SkinDef } from '@/lib/theme-skins';
 import { useI18n } from '@/lib/i18n';
@@ -12,7 +12,7 @@ import '@/home-mobile-v2.css';
 type Section = 'form' | 'today' | 'quiz' | 'notes';
 /** Skins whose painting is clean enough to show at full strength behind the home title. */
 const FULL_PAINTING_HOMES = new Set([
-  'solar-frost-descent', 'solar-start-winter', 'sydney-jacaranda', 'pastel-koi', 'dragon-lotus', 'lotus-boat', 'night-flute', 'day-flute', 'cloud-jade',
+  'solar-frost-descent', 'solar-start-winter', 'solar-minor-snow', 'solar-major-snow', 'solar-winter-solstice', 'solar-minor-cold', 'sydney-jacaranda', 'pastel-koi', 'dragon-lotus', 'lotus-boat', 'night-flute', 'day-flute', 'cloud-jade',
   'dawn-dragon', 'moon-lotus-boat', 'bamboo-falls', 'petal-immortal', 'pink-lotus-stream', 'butterfly-lotus',
 ]);
 export function homeComposition(skin: SkinDef | null): 'scroll' | 'comic' | 'koi' {
@@ -29,8 +29,10 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
   const layout = homeComposition(skin);
   const seasonalAuto = id === SEASONAL_AUTO_ID ? seasonalState() : null;
   const frostOnly = !seasonalAuto && skin?.id === FROST_SKIN_ID ? frostEdition() : null;
-  const manualWinterState = !seasonalAuto && skin?.id === WINTER_SKIN_ID ? seasonalState() : null;
-  const winterOnly = manualWinterState ? START_WINTER_PHASES[manualWinterState.term.zh === '立冬' ? manualWinterState.houIndex : 0] : null;
+  const selectedPack = seasonalPackForSkin(seasonalAuto?.term.skinId ?? skin?.id ?? '');
+  const manualState = !seasonalAuto && selectedPack ? seasonalState() : null;
+  const selectedPhase = selectedPack ? selectedPack[seasonalAuto?.houIndex ?? (manualState && manualState.term.skinId === skin?.id ? manualState.houIndex : 0)] : null;
+  const selectedTerm = !seasonalAuto && selectedPack ? SOLAR_TERMS_24.find(term => term.skinId === skin?.id) : null;
   const houNumber = seasonalAuto ? SOLAR_TERMS_24.indexOf(seasonalAuto.term) * 3 + seasonalAuto.houIndex + 1 : null;
   const dark = skin?.mode === 'dark';
   // Every skin shows ITS OWN painting; the koi painting is only the no-skin / pastel-koi default.
@@ -57,7 +59,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
     '--ph-highlight': skin?.swatch[2] || '#c7a468',
     '--ph-on-accent': dark ? '#142b32' : '#fff9e9',
   } as CSSProperties;
-  return <section className="zw-painted-home zw-v2-home" data-home-v2 data-composition={layout} data-reference-art={!skin || FULL_PAINTING_HOMES.has(skin.id)} data-tone={dark ? 'dark' : 'light'} style={style}>
+  return <section className="zw-painted-home zw-v2-home" data-home-v2 data-composition={layout} data-reference-art={!skin || FULL_PAINTING_HOMES.has(skin.id) || !!seasonalPackForSkin(skin.id)} data-tone={dark ? 'dark' : 'light'} style={style}>
     <div className="zw-stage" aria-hidden="true" /><div className="zw-veil" aria-hidden="true" />
     <section className="zw-v2-hero" aria-labelledby="zw-v2-title">
       <header className="zw-v2-masthead">
@@ -85,8 +87,8 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
           <Link className="zw-v2-sample" to="/sample-report">{t('先看公開命書示例', '先看公开命书示例', 'View a sample report')} <span aria-hidden="true">›</span></Link>
         </div>
       </div>
-      {(seasonalAuto || frostOnly || winterOnly) && <p className="zw-v2-season">{seasonalAuto ? `${locale === 'en' ? seasonalAuto.term.en : locale === 'zh-Hans' ? seasonalAuto.term.hans : seasonalAuto.term.zh} · ${seasonalAuto.hou[locale]}` : winterOnly ? `${t('立冬', '立冬', 'Start of Winter')} · ${winterOnly.name[locale]}` : `${t('霜降', '霜降', 'Frost’s Descent')} · ${frostOnly!.name[locale]}`}</p>}
-      {(seasonalAuto?.term.zh === '立冬' || winterOnly) && <p className="zw-winter-quote">{seasonalAuto ? START_WINTER_PHASES[seasonalAuto.houIndex].quote[locale] : winterOnly!.quote[locale]} <span>STONE 原創</span></p>}
+      {(seasonalAuto || frostOnly || selectedPhase) && <p className="zw-v2-season">{seasonalAuto ? `${locale === 'en' ? seasonalAuto.term.en : locale === 'zh-Hans' ? seasonalAuto.term.hans : seasonalAuto.term.zh} · ${seasonalAuto.hou[locale]}` : selectedPhase && selectedTerm ? `${locale === 'en' ? selectedTerm.en : locale === 'zh-Hans' ? selectedTerm.hans : selectedTerm.zh} · ${selectedPhase.name[locale]}` : `${t('霜降', '霜降', 'Frost’s Descent')} · ${frostOnly!.name[locale]}`}</p>}
+      {selectedPhase && <p className="zw-winter-quote">{selectedPhase.quote[locale]} <span>STONE 原創</span></p>}
       <a className="zw-v2-discover" href="#home-guide">{t('往下探索昭梧', '继续探索昭梧', 'Discover more of ZHAOWU')} <span aria-hidden="true">↓</span></a>
     </section>
     <HomeTree t={t} onOpen={onOpen} />

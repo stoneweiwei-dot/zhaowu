@@ -364,3 +364,43 @@ html[data-zws="song-gallery-frostleaf"] { --zws-page: #ead9c5; --zws-card: #fbf1
 
 html[data-zws="solar-frost-descent"] { --zws-page: #f6f1e6; --zws-card: #f2ece0; --zws-ink: #253d38; --zws-soft: #526963; --zws-accent: #375f5b; --zws-line: #c8b79c; --zws-gold: #b59a70; --zws-wash: none; --zws-on-accent: #fffaf0; }
 html[data-zws="solar-start-winter"] { --zws-page: #f5eee2; --zws-card: #f1e9db; --zws-ink: #253d3a; --zws-soft: #506360; --zws-accent: #405d5a; --zws-line: #c5b69d; --zws-gold: #ab8d68; --zws-wash: none; --zws-on-accent: #fffaf0; }
+html[data-zws="solar-minor-snow"] { --zws-page: #edf2ef; --zws-card: #e8eeea; --zws-ink: #253e3a; --zws-soft: #536c65; --zws-accent: #355b58; --zws-line: #adc1b7; --zws-gold: #859c89; --zws-wash: none; --zws-on-accent: #fffaf0; }
+html[data-zws="solar-major-snow"] { --zws-page: #eef3e9; --zws-card: #e8efe2; --zws-ink: #233d31; --zws-soft: #516b59; --zws-accent: #315a48; --zws-line: #b1c2ab; --zws-gold: #8ba182; --zws-wash: none; --zws-on-accent: #fffaf0; }
+html[data-zws="solar-winter-solstice"] { --zws-page: #f3f1e5; --zws-card: #edf0e3; --zws-ink: #273f35; --zws-soft: #556a59; --zws-accent: #356257; --zws-line: #b8c2a9; --zws-gold: #ae9c6d; --zws-wash: none; --zws-on-accent: #fffaf0; }
+html[data-zws="solar-minor-cold"] { --zws-page: #eff3ec; --zws-card: #e8efe7; --zws-ink: #263f35; --zws-soft: #526b5d; --zws-accent: #365b50; --zws-line: #b3c3b1; --zws-gold: #a0a88a; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-major-cold"] { --zws-page: #eff2ed; --zws-card: #eff2ed; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #34584b; --zws-line: #b4c4b1; --zws-gold: #a8b6a0; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-start-spring"] { --zws-page: #eff4e9; --zws-card: #eff4e9; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #376148; --zws-line: #b4c4b1; --zws-gold: #a4b88a; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-rain-water"] { --zws-page: #ebf2ef; --zws-card: #ebf2ef; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #335c57; --zws-line: #b4c4b1; --zws-gold: #91afa4; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-awakening"] { --zws-page: #f3f3e7; --zws-card: #f3f3e7; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #386044; --zws-line: #b4c4b1; --zws-gold: #a6b986; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-spring-equinox"] { --zws-page: #edf4e9; --zws-card: #edf4e9; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #355d4b; --zws-line: #b4c4b1; --zws-gold: #9fbb99; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-pure-brightness"] { --zws-page: #edf3ed; --zws-card: #edf3ed; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #355b50; --zws-line: #b4c4b1; --zws-gold: #a1b7a2; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-grain-rain"] { --zws-page: #eef3e7; --zws-card: #eef3e7; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #365b49; --zws-line: #b4c4b1; --zws-gold: #a5b98c; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-start-summer"] { --zws-page: #edf3e8; --zws-card: #edf3e8; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #315f47; --zws-line: #b4c4b1; --zws-gold: #9cba92; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-grain-buds"] { --zws-page: #f3f2e5; --zws-card: #f3f2e5; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #4b5d3d; --zws-line: #b4c4b1; --zws-gold: #b7b38b; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-grain-in-ear"] { --zws-page: #f2f2e3; --zws-card: #f2f2e3; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #47603d; --zws-line: #b4c4b1; --zws-gold: #b1b787; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-summer-solstice"] { --zws-page: #f2f2e8; --zws-card: #f2f2e8; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #315d4e; --zws-line: #b4c4b1; --zws-gold: #aaba92; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-minor-heat"] { --zws-page: #edf3e9; --zws-card: #edf3e9; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #345d4b; --zws-line: #b4c4b1; --zws-gold: #a7b994; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-major-heat"] { --zws-page: #edf2e6; --zws-card: #edf2e6; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #315d4c; --zws-line: #b4c4b1; --zws-gold: #9fb58b; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-start-autumn"] { --zws-page: #f3f1e7; --zws-card: #f3f1e7; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #4c5d42; --zws-line: #b4c4b1; --zws-gold: #b6ad86; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-end-heat"] { --zws-page: #f2f0e4; --zws-card: #f2f0e4; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #4f5d3f; --zws-line: #b4c4b1; --zws-gold: #b8ad82; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-white-dew"] { --zws-page: #eff2eb; --zws-card: #eff2eb; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #3d5b4c; --zws-line: #b4c4b1; --zws-gold: #a9b7a1; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-autumn-equinox"] { --zws-page: #f3efe6; --zws-card: #f3efe6; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #515a42; --zws-line: #b4c4b1; --zws-gold: #baaa8b; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="solar-cold-dew"] { --zws-page: #f1f0e6; --zws-card: #f1f0e6; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #465b45; --zws-line: #b4c4b1; --zws-gold: #aeaf8c; --zws-wash: none; --zws-on-accent: #fffaf0; }

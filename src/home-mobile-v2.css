@@ -375,4 +375,12 @@ html[data-zws="sydney-jacaranda"] body #root .zw-painted-home.zw-v2-home .ph-tre
 html[data-zws="sydney-jacaranda"] body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry :is(strong,small) { -webkit-text-fill-color:#fffaf0 !important; }
 .zw-winter-quote { width: fit-content; max-width: 100%; padding: 4px 7px; background: rgba(250,247,237,.9); color: #29433f; font-family: "Songti TC", "Songti SC", serif; font-size: .85rem; line-height: 1.6; margin: .4rem 0; }
 .zw-winter-quote span { margin-inline-start: .8em; font-size: .72rem; white-space: nowrap; }
-html[data-zws="solar-start-winter"] .zw-v2-free-note { width: fit-content; padding: 2px 6px; background: rgba(250,247,237,.9); color: #344a43 !important; -webkit-text-fill-color: #344a43 !important; }
+html:is([data-zws="solar-start-winter"],[data-zws="solar-minor-snow"],[data-zws="solar-major-snow"],[data-zws="solar-winter-solstice"],[data-zws="solar-minor-cold"]) .zw-v2-free-note { width: fit-content; padding: 2px 6px; background: rgba(250,247,237,.9); color: #344a43 !important; -webkit-text-fill-color: #344a43 !important; }
+.zw-season-mark { display: none; }
+html[data-zws^="solar-"] .zw-season-mark { display: block; flex: none; width: 32px; height: 32px; margin-inline-end: 12px; }
+html[data-zws^="solar-"] .zw-entry > span { flex: 1; }
+html[data-zws^="solar-"] .zw-v2-free-note { width: fit-content; padding: 2px 6px; background: rgba(250,247,237,.9); color: #344a43 !important; -webkit-text-fill-color: #344a43 !important; }
+html:is([data-zws="solar-start-winter"],[data-zws="solar-minor-snow"],[data-zws="solar-major-snow"],[data-zws="solar-winter-solstice"],[data-zws="solar-minor-cold"]) .zw-season-mark { display: block; flex: none; width: 32px; height: 32px; margin-inline-end: 12px; }
+html:is([data-zws="solar-start-winter"],[data-zws="solar-minor-snow"],[data-zws="solar-major-snow"],[data-zws="solar-winter-solstice"],[data-zws="solar-minor-cold"]) .zw-entry > span { flex: 1; }
+html[data-zws="solar-minor-snow"] body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry { background: rgba(237,244,239,.97) !important; border-color: #a9bdb3 !important; }
+html[data-zws="solar-minor-snow"] body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry { background: #355b58 !important; }

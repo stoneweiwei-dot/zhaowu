@@ -1,3 +1,4 @@
+import { EXTRA_SEASONAL_QUOTES } from './seasonal-extra-quotes';
 /** Display schedule only. Never used by the calendar or chart engine.
  * Dates follow the owner-approved 2026 pack; 00:01 Sydney is NOT the astronomical term instant.
  * Add a future term only after its real artwork and theme have passed acceptance.
@@ -5,6 +6,10 @@
 export const SEASONAL_AUTO_ID = 'solar-auto';
 export const FROST_SKIN_ID = 'solar-frost-descent';
 export const WINTER_SKIN_ID = 'solar-start-winter';
+export const MINOR_SNOW_SKIN_ID = 'solar-minor-snow';
+export const MAJOR_SNOW_SKIN_ID = 'solar-major-snow';
+export const WINTER_SOLSTICE_SKIN_ID = 'solar-winter-solstice';
+export const MINOR_COLD_SKIN_ID = 'solar-minor-cold';
 type L3 = { 'zh-Hant': string; 'zh-Hans': string; en: string };
 const l3 = (hant: string, hans: string, en: string): L3 => ({ 'zh-Hant': hant, 'zh-Hans': hans, en });
 const base = '/theme-skins/solar-frost-descent/';
@@ -21,6 +26,45 @@ export const START_WINTER_PHASES = [
   { art: `${winterBase}earth-begins-freezing.webp`, name: l3('地始凍', '地始冻', 'The earth begins to freeze'), quote: l3('把根安穩，等待下一次生長。', '把根安稳，等待下一次生长。', 'Let the roots rest firm until it is time to grow again.') },
   { art: `${winterBase}pheasant-and-sea.webp`, name: l3('雉入大水為蜃', '雉入大水为蜃', 'The pheasant and the sea'), quote: l3('世界有未解之處，也有轉化的可能。', '世界有未解之处，也有转化的可能。', 'The unknown leaves room for transformation.') },
 ] as const;
+const snowBase = '/theme-skins/solar-minor-snow/';
+export const MINOR_SNOW_PHASES = [
+  { art: `${snowBase}rainbow-hidden.webp`, name: l3('虹藏不見', '虹藏不见', 'Rainbows withdraw'), quote: l3('光暫時隱去，不代表色彩消失。', '光暂时隐去，不代表色彩消失。', 'When the light withdraws, colour has not disappeared.') },
+  { art: `${snowBase}sky-earth.webp`, name: l3('天氣上升地氣下降', '天气上升地气下降', 'Sky rises, earth settles'), quote: l3('各安其位，才聽得見內心的秩序。', '各安其位，才听得见内心的秩序。', 'In their proper places, quiet things reveal their order.') },
+  { art: `${snowBase}winter-closes-in.webp`, name: l3('閉塞而成冬', '闭塞而成冬', 'Winter closes in'), quote: l3('收起鋒芒，是為了守住心中的暖。', '收起锋芒，是为了守住心中的暖。', 'A season of shelter can preserve the warmth within.') },
+] as const;
+const majorSnowBase = '/theme-skins/solar-major-snow/';
+export const MAJOR_SNOW_PHASES = [
+  { art: `${majorSnowBase}winter-bird.webp`, name: l3('鶡鴠不鳴', '鹖鴠不鸣', 'The winter bird falls silent'), quote: l3('不必每一刻都發聲，靜默也是一種力量。', '不必每一刻都发声，静默也是一种力量。', 'Silence can hold its own kind of strength.') },
+  { art: `${majorSnowBase}crossing-tracks.webp`, name: l3('虎始交', '虎始交', 'Tracks meet in the snow'), quote: l3('緣分不必喧嘩，也能留下交會的痕跡。', '缘分不必喧哗，也能留下交会的痕迹。', 'Even quiet encounters leave their traces.') },
+  { art: `${majorSnowBase}green-shoots.webp`, name: l3('荔挺出', '荔挺出', 'Green shoots emerge'), quote: l3('寒意之下，仍有生長正在發生。', '寒意之下，仍有生长正在发生。', 'Beneath the cold, new growth is already beginning.') },
+] as const;
+const solsticeBase = '/theme-skins/solar-winter-solstice/';
+export const WINTER_SOLSTICE_PHASES = [
+  { art: `${solsticeBase}earthworms.webp`, name: l3('蚯蚓結', '蚯蚓结', 'Earthworms curl together'), quote: l3('把力量藏好，等待光重新回來。', '把力量藏好，等待光重新回来。', 'Keep your strength close until the light returns.') },
+  { art: `${solsticeBase}shed-antler.webp`, name: l3('麋角解', '麋角解', 'Antlers fall away'), quote: l3('願意放下，才能為新生留出位置。', '愿意放下，才能为新生留出位置。', 'Letting go makes space for what comes next.') },
+  { art: `${solsticeBase}spring-water.webp`, name: l3('水泉動', '水泉动', 'Spring water begins to move'), quote: l3('最深的寒處，也藏著流動的生機。', '最深的寒处，也藏着流动的生机。', 'Even in deep winter, life finds a way to flow.') },
+] as const;
+const coldBase = '/theme-skins/solar-minor-cold/';
+export const MINOR_COLD_PHASES = [
+  { art: `${coldBase}geese-return.webp`, name: l3('雁北鄉', '雁北乡', 'Geese turn north'), quote: l3('辨清方向，再慢慢啟程。', '辨清方向，再慢慢启程。', 'Find your direction, then begin at your own pace.') },
+  { art: `${coldBase}magpie-nesting.webp`, name: l3('鵲始巢', '鹊始巢', 'Magpies begin nesting'), quote: l3('一枝一葉，也能築成安穩的家。', '一枝一叶，也能筑成安稳的家。', 'A steady home is built one twig at a time.') },
+  { art: `${coldBase}pheasant-calling.webp`, name: l3('雉雊', '雉雊', 'Pheasants call'), quote: l3('寒中一聲，提醒自己仍有生機。', '寒中一声，提醒自己仍有生机。', 'One clear call reminds us that life continues.') },
+] as const;
+export function seasonalPackForSkin(id: string) {
+  if (id === WINTER_SKIN_ID) return START_WINTER_PHASES;
+  if (id === MINOR_SNOW_SKIN_ID) return MINOR_SNOW_PHASES;
+  if (id === MAJOR_SNOW_SKIN_ID) return MAJOR_SNOW_PHASES;
+  if (id === WINTER_SOLSTICE_SKIN_ID) return WINTER_SOLSTICE_PHASES;
+  if (id === MINOR_COLD_SKIN_ID) return MINOR_COLD_PHASES;
+  const extraQuotes = EXTRA_SEASONAL_QUOTES[id];
+  const term = extraQuotes ? SOLAR_TERMS_24.find(candidate => candidate.skinId === id) : null;
+  if (term && extraQuotes) return term.hou.map((name, index) => ({
+    art: `/theme-skins/${id}/${index + 1}.webp`,
+    name,
+    quote: extraQuotes[index],
+  }));
+  return null;
+}
 
 /**
  * Traditional North-hemisphere 24 solar terms and 72 pentads.
@@ -31,34 +75,34 @@ export const START_WINTER_PHASES = [
  * astronomical event, intentionally NOT the exact astronomical instant.
  *
  * Previously accepted Frost's Descent art is kept unmodified.
- * Frost and Start of Winter have individual pentad artwork; other terms
- * reuse existing site paintings and must not be advertised as 72 new works.
+ * All terms have individual pentad artwork; the accepted Frost’s Descent
+ * paintings remain in place alongside the newer seasonal packs.
  */
 export const SOLAR_TERMS_24 = [
-  {month:1,day:5,longitude:285,zh:"小寒",hans:"小寒",en:"Minor Cold",skinId:"pine-ink",hou:[{"zh-Hant":"雁北鄉","zh-Hans":"雁北乡","en":"Wild geese turn north"},{"zh-Hant":"鵲始巢","zh-Hans":"鹊始巢","en":"Magpies begin nesting"},{"zh-Hant":"雉雊","zh-Hans":"雉雊","en":"Pheasants call"}]},
-  {month:1,day:20,longitude:300,zh:"大寒",hans:"大寒",en:"Major Cold",skinId:"song-clear-dragon",hou:[{"zh-Hant":"雞乳","zh-Hans":"鸡乳","en":"Hens begin brooding"},{"zh-Hant":"征鳥厲疾","zh-Hans":"征鸟厉疾","en":"Birds of prey hunt fiercely"},{"zh-Hant":"水澤腹堅","zh-Hans":"水泽腹坚","en":"Ponds freeze deeply"}]},
-  {month:2,day:4,longitude:315,zh:"立春",hans:"立春",en:"Start of Spring",skinId:"verdant-dragon",hou:[{"zh-Hant":"東風解凍","zh-Hans":"东风解冻","en":"East winds thaw the ice"},{"zh-Hant":"蟄蟲始振","zh-Hans":"蛰虫始振","en":"Dormant insects begin to stir"},{"zh-Hant":"魚陟負冰","zh-Hans":"鱼陟负冰","en":"Fish rise beneath the ice"}]},
-  {month:2,day:19,longitude:330,zh:"雨水",hans:"雨水",en:"Rain Water",skinId:"verdant-mist",hou:[{"zh-Hant":"獺祭魚","zh-Hans":"獭祭鱼","en":"Otters display their catch"},{"zh-Hant":"候雁北","zh-Hans":"候雁北","en":"Migratory geese fly north"},{"zh-Hant":"草木萌動","zh-Hans":"草木萌动","en":"Plants begin to sprout"}]},
-  {month:3,day:5,longitude:345,zh:"驚蟄",hans:"惊蛰",en:"Awakening of Insects",skinId:"verdant-pavilion",hou:[{"zh-Hant":"桃始華","zh-Hans":"桃始华","en":"Peach blossoms open"},{"zh-Hant":"倉庚鳴","zh-Hans":"仓庚鸣","en":"Orioles begin singing"},{"zh-Hant":"鷹化為鳩","zh-Hans":"鹰化为鸠","en":"Hawks become doves (traditional lore)"}]},
-  {month:3,day:20,longitude:0,zh:"春分",hans:"春分",en:"Spring Equinox",skinId:"bamboo-falls",hou:[{"zh-Hant":"玄鳥至","zh-Hans":"玄鸟至","en":"Swallows arrive"},{"zh-Hant":"雷乃發聲","zh-Hans":"雷乃发声","en":"Thunder begins"},{"zh-Hant":"始電","zh-Hans":"始电","en":"Lightning first appears"}]},
-  {month:4,day:5,longitude:15,zh:"清明",hans:"清明",en:"Pure Brightness",skinId:"song-rain-bank",hou:[{"zh-Hant":"桐始華","zh-Hans":"桐始华","en":"Paulownia blossoms"},{"zh-Hant":"田鼠化為鴽","zh-Hans":"田鼠化为鴽","en":"Field mice become quails (traditional lore)"},{"zh-Hant":"虹始見","zh-Hans":"虹始见","en":"Rainbows first appear"}]},
-  {month:4,day:20,longitude:30,zh:"穀雨",hans:"谷雨",en:"Grain Rain",skinId:"lotus-boat",hou:[{"zh-Hant":"萍始生","zh-Hans":"萍始生","en":"Duckweed appears"},{"zh-Hant":"鳴鳩拂其羽","zh-Hans":"鸣鸠拂其羽","en":"Doves preen their wings"},{"zh-Hant":"戴勝降于桑","zh-Hans":"戴胜降于桑","en":"Hoopoes perch in mulberry trees"}]},
-  {month:5,day:5,longitude:45,zh:"立夏",hans:"立夏",en:"Start of Summer",skinId:"dawn-dragon",hou:[{"zh-Hant":"螻蟈鳴","zh-Hans":"蝼蝈鸣","en":"Mole crickets sing"},{"zh-Hant":"蚯蚓出","zh-Hans":"蚯蚓出","en":"Earthworms surface"},{"zh-Hant":"王瓜生","zh-Hans":"王瓜生","en":"Wild cucumber grows"}]},
-  {month:5,day:21,longitude:60,zh:"小滿",hans:"小满",en:"Grain Buds",skinId:"cloud-jade",hou:[{"zh-Hant":"苦菜秀","zh-Hans":"苦菜秀","en":"Bitter herbs flourish"},{"zh-Hant":"靡草死","zh-Hans":"靡草死","en":"Tender grasses wither"},{"zh-Hant":"麥秋至","zh-Hans":"麦秋至","en":"Wheat nears ripening"}]},
-  {month:6,day:6,longitude:75,zh:"芒種",hans:"芒種",en:"Grain in Ear",skinId:"golden-phoenix",hou:[{"zh-Hant":"螳螂生","zh-Hans":"螳螂生","en":"Praying mantises hatch"},{"zh-Hant":"鵙始鳴","zh-Hans":"鵙始鸣","en":"Shrikes begin calling"},{"zh-Hant":"反舌無聲","zh-Hans":"反舌无声","en":"Mockingbird falls silent"}]},
-  {month:6,day:21,longitude:90,zh:"夏至",hans:"夏至",en:"Summer Solstice",skinId:"petal-immortal",hou:[{"zh-Hant":"鹿角解","zh-Hans":"鹿角解","en":"Deer shed antlers"},{"zh-Hant":"蜩始鳴","zh-Hans":"蜩始鸣","en":"Cicadas begin singing"},{"zh-Hant":"半夏生","zh-Hans":"半夏生","en":"Pinellia sprouts"}]},
-  {month:7,day:7,longitude:105,zh:"小暑",hans:"小暑",en:"Minor Heat",skinId:"golden-phoenix",hou:[{"zh-Hant":"溫風至","zh-Hans":"温风至","en":"Warm winds arrive"},{"zh-Hant":"蟋蟀居壁","zh-Hans":"蟋蟀居壁","en":"Crickets shelter near walls"},{"zh-Hant":"鷹始擊","zh-Hans":"鹰始击","en":"Young eagles learn to hunt"}]},
-  {month:7,day:23,longitude:120,zh:"大暑",hans:"大暑",en:"Major Heat",skinId:"pink-lotus-stream",hou:[{"zh-Hant":"腐草為螢","zh-Hans":"腐草为萤","en":"Rotting grass becomes fireflies (lore)"},{"zh-Hant":"土潤溽暑","zh-Hans":"土润溽暑","en":"Humid earth steams"},{"zh-Hant":"大雨時行","zh-Hans":"大雨时行","en":"Heavy rains arrive"}]},
-  {month:8,day:7,longitude:135,zh:"立秋",hans:"立秋",en:"Start of Autumn",skinId:"song-osmanthus",hou:[{"zh-Hant":"涼風至","zh-Hans":"凉风至","en":"Cool winds arrive"},{"zh-Hant":"白露降","zh-Hans":"白露降","en":"White dew descends"},{"zh-Hant":"寒蟬鳴","zh-Hans":"寒蝉鸣","en":"Autumn cicadas call"}]},
-  {month:8,day:23,longitude:150,zh:"處暑",hans:"处暑",en:"End of Heat",skinId:"song-lotus-still",hou:[{"zh-Hant":"鷹乃祭鳥","zh-Hans":"鹰乃祭鸟","en":"Eagles display prey"},{"zh-Hant":"天地始肅","zh-Hans":"天地始肃","en":"Earth and sky grow solemn"},{"zh-Hant":"禾乃登","zh-Hans":"禾乃登","en":"Grains are harvested"}]},
-  {month:9,day:7,longitude:165,zh:"白露",hans:"白露",en:"White Dew",skinId:"moon-lotus-boat",hou:[{"zh-Hant":"鴻雁來","zh-Hans":"鸿雁来","en":"Wild geese arrive"},{"zh-Hant":"玄鳥歸","zh-Hans":"玄鸟归","en":"Swallows depart"},{"zh-Hant":"群鳥養羞","zh-Hans":"群鸟养羞","en":"Birds store food"}]},
-  {month:9,day:23,longitude:180,zh:"秋分",hans:"秋分",en:"Autumn Equinox",skinId:"song-gallery-frostleaf",hou:[{"zh-Hant":"雷始收聲","zh-Hans":"雷始收声","en":"Thunder becomes quiet"},{"zh-Hant":"蟄蟲坏戶","zh-Hans":"蛰虫坏户","en":"Insects seal their burrows"},{"zh-Hant":"水始涸","zh-Hans":"水始涸","en":"Waters begin to recede"}]},
-  {month:10,day:8,longitude:195,zh:"寒露",hans:"寒露",en:"Cold Dew",skinId:"pine-ink",hou:[{"zh-Hant":"鴻雁來賓","zh-Hans":"鸿雁来宾","en":"Migrating geese visit"},{"zh-Hant":"雀入大水為蛤","zh-Hans":"雀入大水为蛤","en":"Sparrows become clams (traditional lore)"},{"zh-Hant":"菊有黃華","zh-Hans":"菊有黄华","en":"Yellow chrysanthemums bloom"}]},
+  {month:1,day:5,longitude:285,zh:"小寒",hans:"小寒",en:"Minor Cold",skinId:"solar-minor-cold",hou:[{"zh-Hant":"雁北鄉","zh-Hans":"雁北乡","en":"Wild geese turn north"},{"zh-Hant":"鵲始巢","zh-Hans":"鹊始巢","en":"Magpies begin nesting"},{"zh-Hant":"雉雊","zh-Hans":"雉雊","en":"Pheasants call"}]},
+  {month:1,day:20,longitude:300,zh:"大寒",hans:"大寒",en:"Major Cold",skinId:"solar-major-cold",hou:[{"zh-Hant":"雞乳","zh-Hans":"鸡乳","en":"Hens begin brooding"},{"zh-Hant":"征鳥厲疾","zh-Hans":"征鸟厉疾","en":"Birds of prey hunt fiercely"},{"zh-Hant":"水澤腹堅","zh-Hans":"水泽腹坚","en":"Ponds freeze deeply"}]},
+  {month:2,day:4,longitude:315,zh:"立春",hans:"立春",en:"Start of Spring",skinId:"solar-start-spring",hou:[{"zh-Hant":"東風解凍","zh-Hans":"东风解冻","en":"East winds thaw the ice"},{"zh-Hant":"蟄蟲始振","zh-Hans":"蛰虫始振","en":"Dormant insects begin to stir"},{"zh-Hant":"魚陟負冰","zh-Hans":"鱼陟负冰","en":"Fish rise beneath the ice"}]},
+  {month:2,day:19,longitude:330,zh:"雨水",hans:"雨水",en:"Rain Water",skinId:"solar-rain-water",hou:[{"zh-Hant":"獺祭魚","zh-Hans":"獭祭鱼","en":"Otters display their catch"},{"zh-Hant":"候雁北","zh-Hans":"候雁北","en":"Migratory geese fly north"},{"zh-Hant":"草木萌動","zh-Hans":"草木萌动","en":"Plants begin to sprout"}]},
+  {month:3,day:5,longitude:345,zh:"驚蟄",hans:"惊蛰",en:"Awakening of Insects",skinId:"solar-awakening",hou:[{"zh-Hant":"桃始華","zh-Hans":"桃始华","en":"Peach blossoms open"},{"zh-Hant":"倉庚鳴","zh-Hans":"仓庚鸣","en":"Orioles begin singing"},{"zh-Hant":"鷹化為鳩","zh-Hans":"鹰化为鸠","en":"Hawks become doves (traditional lore)"}]},
+  {month:3,day:20,longitude:0,zh:"春分",hans:"春分",en:"Spring Equinox",skinId:"solar-spring-equinox",hou:[{"zh-Hant":"玄鳥至","zh-Hans":"玄鸟至","en":"Swallows arrive"},{"zh-Hant":"雷乃發聲","zh-Hans":"雷乃发声","en":"Thunder begins"},{"zh-Hant":"始電","zh-Hans":"始电","en":"Lightning first appears"}]},
+  {month:4,day:5,longitude:15,zh:"清明",hans:"清明",en:"Pure Brightness",skinId:"solar-pure-brightness",hou:[{"zh-Hant":"桐始華","zh-Hans":"桐始华","en":"Paulownia blossoms"},{"zh-Hant":"田鼠化為鴽","zh-Hans":"田鼠化为鴽","en":"Field mice become quails (traditional lore)"},{"zh-Hant":"虹始見","zh-Hans":"虹始见","en":"Rainbows first appear"}]},
+  {month:4,day:20,longitude:30,zh:"穀雨",hans:"谷雨",en:"Grain Rain",skinId:"solar-grain-rain",hou:[{"zh-Hant":"萍始生","zh-Hans":"萍始生","en":"Duckweed appears"},{"zh-Hant":"鳴鳩拂其羽","zh-Hans":"鸣鸠拂其羽","en":"Doves preen their wings"},{"zh-Hant":"戴勝降于桑","zh-Hans":"戴胜降于桑","en":"Hoopoes perch in mulberry trees"}]},
+  {month:5,day:5,longitude:45,zh:"立夏",hans:"立夏",en:"Start of Summer",skinId:"solar-start-summer",hou:[{"zh-Hant":"螻蟈鳴","zh-Hans":"蝼蝈鸣","en":"Mole crickets sing"},{"zh-Hant":"蚯蚓出","zh-Hans":"蚯蚓出","en":"Earthworms surface"},{"zh-Hant":"王瓜生","zh-Hans":"王瓜生","en":"Wild cucumber grows"}]},
+  {month:5,day:21,longitude:60,zh:"小滿",hans:"小满",en:"Grain Buds",skinId:"solar-grain-buds",hou:[{"zh-Hant":"苦菜秀","zh-Hans":"苦菜秀","en":"Bitter herbs flourish"},{"zh-Hant":"靡草死","zh-Hans":"靡草死","en":"Tender grasses wither"},{"zh-Hant":"麥秋至","zh-Hans":"麦秋至","en":"Wheat nears ripening"}]},
+  {month:6,day:6,longitude:75,zh:"芒種",hans:"芒種",en:"Grain in Ear",skinId:"solar-grain-in-ear",hou:[{"zh-Hant":"螳螂生","zh-Hans":"螳螂生","en":"Praying mantises hatch"},{"zh-Hant":"鵙始鳴","zh-Hans":"鵙始鸣","en":"Shrikes begin calling"},{"zh-Hant":"反舌無聲","zh-Hans":"反舌无声","en":"Mockingbird falls silent"}]},
+  {month:6,day:21,longitude:90,zh:"夏至",hans:"夏至",en:"Summer Solstice",skinId:"solar-summer-solstice",hou:[{"zh-Hant":"鹿角解","zh-Hans":"鹿角解","en":"Deer shed antlers"},{"zh-Hant":"蜩始鳴","zh-Hans":"蜩始鸣","en":"Cicadas begin singing"},{"zh-Hant":"半夏生","zh-Hans":"半夏生","en":"Pinellia sprouts"}]},
+  {month:7,day:7,longitude:105,zh:"小暑",hans:"小暑",en:"Minor Heat",skinId:"solar-minor-heat",hou:[{"zh-Hant":"溫風至","zh-Hans":"温风至","en":"Warm winds arrive"},{"zh-Hant":"蟋蟀居壁","zh-Hans":"蟋蟀居壁","en":"Crickets shelter near walls"},{"zh-Hant":"鷹始擊","zh-Hans":"鹰始击","en":"Young eagles learn to hunt"}]},
+  {month:7,day:23,longitude:120,zh:"大暑",hans:"大暑",en:"Major Heat",skinId:"solar-major-heat",hou:[{"zh-Hant":"腐草為螢","zh-Hans":"腐草为萤","en":"Rotting grass becomes fireflies (lore)"},{"zh-Hant":"土潤溽暑","zh-Hans":"土润溽暑","en":"Humid earth steams"},{"zh-Hant":"大雨時行","zh-Hans":"大雨时行","en":"Heavy rains arrive"}]},
+  {month:8,day:7,longitude:135,zh:"立秋",hans:"立秋",en:"Start of Autumn",skinId:"solar-start-autumn",hou:[{"zh-Hant":"涼風至","zh-Hans":"凉风至","en":"Cool winds arrive"},{"zh-Hant":"白露降","zh-Hans":"白露降","en":"White dew descends"},{"zh-Hant":"寒蟬鳴","zh-Hans":"寒蝉鸣","en":"Autumn cicadas call"}]},
+  {month:8,day:23,longitude:150,zh:"處暑",hans:"处暑",en:"End of Heat",skinId:"solar-end-heat",hou:[{"zh-Hant":"鷹乃祭鳥","zh-Hans":"鹰乃祭鸟","en":"Eagles display prey"},{"zh-Hant":"天地始肅","zh-Hans":"天地始肃","en":"Earth and sky grow solemn"},{"zh-Hant":"禾乃登","zh-Hans":"禾乃登","en":"Grains are harvested"}]},
+  {month:9,day:7,longitude:165,zh:"白露",hans:"白露",en:"White Dew",skinId:"solar-white-dew",hou:[{"zh-Hant":"鴻雁來","zh-Hans":"鸿雁来","en":"Wild geese arrive"},{"zh-Hant":"玄鳥歸","zh-Hans":"玄鸟归","en":"Swallows depart"},{"zh-Hant":"群鳥養羞","zh-Hans":"群鸟养羞","en":"Birds store food"}]},
+  {month:9,day:23,longitude:180,zh:"秋分",hans:"秋分",en:"Autumn Equinox",skinId:"solar-autumn-equinox",hou:[{"zh-Hant":"雷始收聲","zh-Hans":"雷始收声","en":"Thunder becomes quiet"},{"zh-Hant":"蟄蟲坏戶","zh-Hans":"蛰虫坏户","en":"Insects seal their burrows"},{"zh-Hant":"水始涸","zh-Hans":"水始涸","en":"Waters begin to recede"}]},
+  {month:10,day:8,longitude:195,zh:"寒露",hans:"寒露",en:"Cold Dew",skinId:"solar-cold-dew",hou:[{"zh-Hant":"鴻雁來賓","zh-Hans":"鸿雁来宾","en":"Migrating geese visit"},{"zh-Hant":"雀入大水為蛤","zh-Hans":"雀入大水为蛤","en":"Sparrows become clams (traditional lore)"},{"zh-Hant":"菊有黃華","zh-Hans":"菊有黄华","en":"Yellow chrysanthemums bloom"}]},
   {month:10,day:23,longitude:210,zh:"霜降",hans:"霜降",en:"Frost’s Descent",skinId:"solar-frost-descent",hou:[{"zh-Hant":"豺乃祭獸","zh-Hans":"豺乃祭兽","en":"Jackals display their prey"},{"zh-Hant":"草木黃落","zh-Hans":"草木黄落","en":"Leaves turn yellow and fall"},{"zh-Hant":"蟄蟲咸俯","zh-Hans":"蛰虫咸俯","en":"Insects settle for winter"}]},
   {month:11,day:7,longitude:225,zh:"立冬",hans:"立冬",en:"Start of Winter",skinId:"solar-start-winter",hou:[{"zh-Hant":"水始冰","zh-Hans":"水始冰","en":"Waters begin to freeze"},{"zh-Hant":"地始凍","zh-Hans":"地始冻","en":"Earth begins to freeze"},{"zh-Hant":"雉入大水為蜃","zh-Hans":"雉入大水为蜃","en":"Pheasants become clams (traditional lore)"}]},
-  {month:11,day:22,longitude:240,zh:"小雪",hans:"小雪",en:"Minor Snow",skinId:"song-rain-bank",hou:[{"zh-Hant":"虹藏不見","zh-Hans":"虹藏不见","en":"Rainbows disappear"},{"zh-Hant":"天氣上升地氣下降","zh-Hans":"天气上升地气下降","en":"Sky rises and earth descends"},{"zh-Hant":"閉塞而成冬","zh-Hans":"闭塞而成冬","en":"Winter closes in"}]},
-  {month:12,day:7,longitude:255,zh:"大雪",hans:"大雪",en:"Major Snow",skinId:"ink-dragon",hou:[{"zh-Hant":"鶡鴠不鳴","zh-Hans":"鹖鴠不鸣","en":"Cold-weather birds fall silent"},{"zh-Hant":"虎始交","zh-Hans":"虎始交","en":"Tigers begin mating"},{"zh-Hant":"荔挺出","zh-Hans":"荔挺出","en":"Iris shoots emerge"}]},
-  {month:12,day:22,longitude:270,zh:"冬至",hans:"冬至",en:"Winter Solstice",skinId:"day-flute",hou:[{"zh-Hant":"蚯蚓結","zh-Hans":"蚯蚓结","en":"Earthworms curl together"},{"zh-Hant":"麋角解","zh-Hans":"麋角解","en":"Elk shed their antlers"},{"zh-Hant":"水泉動","zh-Hans":"水泉动","en":"Spring water begins to flow"}]}
+  {month:11,day:22,longitude:240,zh:"小雪",hans:"小雪",en:"Minor Snow",skinId:"solar-minor-snow",hou:[{"zh-Hant":"虹藏不見","zh-Hans":"虹藏不见","en":"Rainbows disappear"},{"zh-Hant":"天氣上升地氣下降","zh-Hans":"天气上升地气下降","en":"Sky rises and earth descends"},{"zh-Hant":"閉塞而成冬","zh-Hans":"闭塞而成冬","en":"Winter closes in"}]},
+  {month:12,day:7,longitude:255,zh:"大雪",hans:"大雪",en:"Major Snow",skinId:"solar-major-snow",hou:[{"zh-Hant":"鶡鴠不鳴","zh-Hans":"鹖鴠不鸣","en":"Cold-weather birds fall silent"},{"zh-Hant":"虎始交","zh-Hans":"虎始交","en":"Tigers begin mating"},{"zh-Hant":"荔挺出","zh-Hans":"荔挺出","en":"Iris shoots emerge"}]},
+  {month:12,day:22,longitude:270,zh:"冬至",hans:"冬至",en:"Winter Solstice",skinId:"solar-winter-solstice",hou:[{"zh-Hant":"蚯蚓結","zh-Hans":"蚯蚓结","en":"Earthworms curl together"},{"zh-Hant":"麋角解","zh-Hans":"麋角解","en":"Elk shed their antlers"},{"zh-Hant":"水泉動","zh-Hans":"水泉动","en":"Spring water begins to flow"}]}
 ] as const;
 export type SolarTermSpec = (typeof SOLAR_TERMS_24)[number];
 export type Hemisphere = 'north' | 'south' | 'unknown';
@@ -130,7 +174,7 @@ export function seasonalState(now=new Date()) {
   const houIndex=Math.min(2,Math.max(0,Math.floor(daysInto/5)));
   const phase=current.spec.hou[houIndex];
   return {term:current.spec,hou:phase,houIndex,daysInto,termDate:current.date,nextTermDate:next.date,
-    localDate, artworkKind:current.spec.skinId===FROST_SKIN_ID || current.spec.skinId===WINTER_SKIN_ID?"dedicated":"existing-artwork" as "dedicated"|"existing-artwork"};
+    localDate, artworkKind:current.spec.skinId===FROST_SKIN_ID || seasonalPackForSkin(current.spec.skinId)?"dedicated":"existing-artwork" as "dedicated"|"existing-artwork"};
 }
 /** Resolve one of the 24 entire pre-existing themed painting systems. */
 

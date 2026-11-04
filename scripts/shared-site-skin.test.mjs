@@ -66,6 +66,7 @@ function skinClient(fetcher) {
     fetch: fetcher, Event,
     // Browser-only imports are stubbed for VM execution; production imports remain unchanged.
     FROST_SKIN_ID: "solar-frost-descent", WINTER_SKIN_ID: "solar-start-winter", SEASONAL_AUTO_ID: "solar-auto",
+    seasonalPackForSkin: () => null,
     seasonalSkinId: () => "solar-frost-descent", frostEdition: () => ({ art: "/test-frost.webp" }),
     useEffect: () => {}, useState: (initial) => [initial, () => {}],
     document: { documentElement: {

@@ -1,4 +1,4 @@
-import { FROST_SKIN_ID, FROST_PHASES, WINTER_SKIN_ID, START_WINTER_PHASES, SEASONAL_AUTO_ID, seasonalState, seasonalVisualSkinId, frostEdition, type Hemisphere } from './seasonal-skins';
+import { FROST_SKIN_ID, FROST_PHASES, WINTER_SKIN_ID, MINOR_SNOW_SKIN_ID, seasonalPackForSkin, SEASONAL_AUTO_ID, seasonalState, seasonalVisualSkinId, frostEdition, type Hemisphere } from './seasonal-skins';
 import { useEffect, useState } from "react";
 
 /**
@@ -64,6 +64,28 @@ export const SKINS: SkinDef[] = [
   { id: "solar-frost-descent", ref: 26, mode: "light", zh: "霜降・霜林歸靜", hans: "霜降・霜林归静", en: "Frost’s Descent · Quiet Autumn", noteZh: "霜青・秋赭・淡金，三候輪替", noteHans: "霜青・秋赭・淡金，三候轮替", noteEn: "Frost teal, autumn ochre and pale gold; three seasonal scenes", hero: "/theme-skins/solar-frost-descent/hero-frost-descent.webp", focus: "50% 55%", swatch: ["#f6f1e6", "#375f5b", "#b87345"] },
   { id: "sydney-jacaranda", ref: 27, mode: "light", zh: "悉尼・藍花楹", hans: "悉尼・蓝花楹", en: "Sydney Jacaranda", noteZh: "紫花・海藍・雲白，悉尼畫境", noteHans: "紫花・海蓝・云白，悉尼画境", noteEn: "Jacaranda violet, harbour blue and cloud white", hero: "/theme-skins/southern/sydney-jacaranda-summer.webp", focus: "50% 50%", swatch: ["#f4f2f9", "#45406f", "#9986be"] },
   { id: "solar-start-winter", ref: 28, mode: "light", zh: "立冬・藏息三候", hans: "立冬・藏息三候", en: "Start of Winter · Three Pentads", noteZh: "霜白・山青・暖絹，三候各有畫境", noteHans: "霜白・山青・暖绢，三候各有画境", noteEn: "Frost white, mountain blue and warm silk; three seasonal scenes", hero: "/theme-skins/solar-start-winter/water-begins-freezing.webp", focus: "50% 50%", swatch: ["#f5eee2", "#405d5a", "#b59b79"] },
+  { id: "solar-minor-snow", ref: 29, mode: "light", zh: "小雪・雲山藏光", hans: "小雪・云山藏光", en: "Minor Snow · Hidden Light", noteZh: "雨青・霧白・松綠，三候各有畫境", noteHans: "雨青・雾白・松绿，三候各有画境", noteEn: "Rain blue, mist white and pine green; three seasonal scenes", hero: "/theme-skins/solar-minor-snow/rainbow-hidden.webp", focus: "50% 50%", swatch: ["#edf2ef", "#355b58", "#9da88f"] },
+  { id: "solar-major-snow", ref: 30, mode: "light", zh: "大雪・松雪生機", hans: "大雪・松雪生机", en: "Major Snow · Living Pines", noteZh: "雪白・松綠・霧青，三候各有畫境", noteHans: "雪白・松绿・雾青，三候各有画境", noteEn: "Snow white, pine and mist; three seasonal scenes", hero: "/theme-skins/solar-major-snow/winter-bird.webp", focus: "50% 50%", swatch: ["#eef3e9", "#315a48", "#a7b69a"] },
+  { id: "solar-winter-solstice", ref: 31, mode: "light", zh: "冬至・一陽初生", hans: "冬至・一阳初生", en: "Winter Solstice · Returning Light", noteZh: "泉青・苔綠・暖金，三候各有畫境", noteHans: "泉青・苔绿・暖金，三候各有画境", noteEn: "Springwater teal, moss and dawn gold; three seasonal scenes", hero: "/theme-skins/solar-winter-solstice/earthworms.webp", focus: "50% 50%", swatch: ["#f3f1e5", "#356257", "#b5a579"] },
+  { id: "solar-minor-cold", ref: 32, mode: "light", zh: "小寒・雁來鵲築", hans: "小寒・雁来鹊筑", en: "Minor Cold · Birds Return", noteZh: "松青・雪白・晨金，三候各有畫境", noteHans: "松青・雪白・晨金，三候各有画境", noteEn: "Pine green, snow and morning gold; three seasonal scenes", hero: "/theme-skins/solar-minor-cold/geese-return.webp", focus: "50% 50%", swatch: ["#eff3ec", "#365b50", "#a9af91"] },
+  { id: "solar-major-cold", ref: 33, mode: "light", zh: "大寒・物候畫境", hans: "大寒・物候画境", en: "Major Cold · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-major-cold/1.webp", focus: "50% 50%", swatch: ["#eff2ed", "#34584b", "#a8b6a0"] },
+  { id: "solar-start-spring", ref: 34, mode: "light", zh: "立春・物候畫境", hans: "立春・物候画境", en: "Start of Spring · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-start-spring/1.webp", focus: "50% 50%", swatch: ["#eff4e9", "#376148", "#a4b88a"] },
+  { id: "solar-rain-water", ref: 35, mode: "light", zh: "雨水・物候畫境", hans: "雨水・物候画境", en: "Rain Water · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-rain-water/1.webp", focus: "50% 50%", swatch: ["#ebf2ef", "#335c57", "#91afa4"] },
+  { id: "solar-awakening", ref: 36, mode: "light", zh: "驚蟄・物候畫境", hans: "惊蛰・物候画境", en: "Awakening of Insects · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-awakening/1.webp", focus: "50% 50%", swatch: ["#f3f3e7", "#386044", "#a6b986"] },
+  { id: "solar-spring-equinox", ref: 37, mode: "light", zh: "春分・物候畫境", hans: "春分・物候画境", en: "Spring Equinox · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-spring-equinox/1.webp", focus: "50% 50%", swatch: ["#edf4e9", "#355d4b", "#9fbb99"] },
+  { id: "solar-pure-brightness", ref: 38, mode: "light", zh: "清明・物候畫境", hans: "清明・物候画境", en: "Pure Brightness · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-pure-brightness/1.webp", focus: "50% 50%", swatch: ["#edf3ed", "#355b50", "#a1b7a2"] },
+  { id: "solar-grain-rain", ref: 39, mode: "light", zh: "穀雨・物候畫境", hans: "谷雨・物候画境", en: "Grain Rain · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-grain-rain/1.webp", focus: "50% 50%", swatch: ["#eef3e7", "#365b49", "#a5b98c"] },
+  { id: "solar-start-summer", ref: 40, mode: "light", zh: "立夏・物候畫境", hans: "立夏・物候画境", en: "Start of Summer · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-start-summer/1.webp", focus: "50% 50%", swatch: ["#edf3e8", "#315f47", "#9cba92"] },
+  { id: "solar-grain-buds", ref: 41, mode: "light", zh: "小滿・物候畫境", hans: "小满・物候画境", en: "Grain Buds · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-grain-buds/1.webp", focus: "50% 50%", swatch: ["#f3f2e5", "#4b5d3d", "#b7b38b"] },
+  { id: "solar-grain-in-ear", ref: 42, mode: "light", zh: "芒種・物候畫境", hans: "芒种・物候画境", en: "Grain in Ear · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-grain-in-ear/1.webp", focus: "50% 50%", swatch: ["#f2f2e3", "#47603d", "#b1b787"] },
+  { id: "solar-summer-solstice", ref: 43, mode: "light", zh: "夏至・物候畫境", hans: "夏至・物候画境", en: "Summer Solstice · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-summer-solstice/1.webp", focus: "50% 50%", swatch: ["#f2f2e8", "#315d4e", "#aaba92"] },
+  { id: "solar-minor-heat", ref: 44, mode: "light", zh: "小暑・物候畫境", hans: "小暑・物候画境", en: "Minor Heat · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-minor-heat/1.webp", focus: "50% 50%", swatch: ["#edf3e9", "#345d4b", "#a7b994"] },
+  { id: "solar-major-heat", ref: 45, mode: "light", zh: "大暑・物候畫境", hans: "大暑・物候画境", en: "Major Heat · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-major-heat/1.webp", focus: "50% 50%", swatch: ["#edf2e6", "#315d4c", "#9fb58b"] },
+  { id: "solar-start-autumn", ref: 46, mode: "light", zh: "立秋・物候畫境", hans: "立秋・物候画境", en: "Start of Autumn · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-start-autumn/1.webp", focus: "50% 50%", swatch: ["#f3f1e7", "#4c5d42", "#b6ad86"] },
+  { id: "solar-end-heat", ref: 47, mode: "light", zh: "處暑・物候畫境", hans: "处暑・物候画境", en: "End of Heat · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-end-heat/1.webp", focus: "50% 50%", swatch: ["#f2f0e4", "#4f5d3f", "#b8ad82"] },
+  { id: "solar-white-dew", ref: 48, mode: "light", zh: "白露・物候畫境", hans: "白露・物候画境", en: "White Dew · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-white-dew/1.webp", focus: "50% 50%", swatch: ["#eff2eb", "#3d5b4c", "#a9b7a1"] },
+  { id: "solar-autumn-equinox", ref: 49, mode: "light", zh: "秋分・物候畫境", hans: "秋分・物候画境", en: "Autumn Equinox · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-autumn-equinox/1.webp", focus: "50% 50%", swatch: ["#f3efe6", "#515a42", "#baaa8b"] },
+  { id: "solar-cold-dew", ref: 50, mode: "light", zh: "寒露・物候畫境", hans: "寒露・物候画境", en: "Cold Dew · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-cold-dew/1.webp", focus: "50% 50%", swatch: ["#f1f0e6", "#465b45", "#aeaf8c"] },
 ];
 
 export type SkinFamily = "soft" | "water" | "warm" | "green" | "night";
@@ -108,14 +130,15 @@ export function skinById(id: string | null | undefined) {
       hero: skin.id === 'sydney-jacaranda'
         ? '/theme-skins/southern/sydney-jacaranda-summer.webp'
         : skin.id === FROST_SKIN_ID ? FROST_PHASES[auto.houIndex].art
-        : skin.id === WINTER_SKIN_ID ? START_WINTER_PHASES[auto.houIndex].art : skin.hero,
+        : seasonalPackForSkin(skin.id)?.[auto.houIndex].art ?? skin.hero,
       focus: skin.id === 'sydney-jacaranda' ? '50% 50%' : skin.focus,
     };
   }
   if (skin.id === FROST_SKIN_ID) return { ...skin, hero: frostEdition().art };
-  if (skin.id === WINTER_SKIN_ID) {
+  const pack = seasonalPackForSkin(skin.id);
+  if (pack) {
     const current = seasonalState();
-    return { ...skin, hero: START_WINTER_PHASES[current.term.zh === '立冬' ? current.houIndex : 0].art };
+    return { ...skin, hero: pack[current.term.skinId === skin.id ? current.houIndex : 0].art };
   }
   return skin;
 }
@@ -147,7 +170,7 @@ export function applySkin(id: string, persist = false) {
   }
   if (skin) {
     root.setAttribute("data-zws", skin.id);
-    if (id === SEASONAL_AUTO_ID || skin.id === FROST_SKIN_ID || skin.id === WINTER_SKIN_ID) root.style.setProperty('--zws-art', `url("${skin.hero}")`);
+    if (id === SEASONAL_AUTO_ID || skin.id === FROST_SKIN_ID || seasonalPackForSkin(skin.id)) root.style.setProperty('--zws-art', `url("${skin.hero}")`);
     else root.style.removeProperty('--zws-art');
     root.setAttribute("data-zws-mode", skin.mode);
     if (skin.mode === "dark") root.setAttribute("data-zw-theme", "night");
