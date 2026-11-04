@@ -138,10 +138,52 @@ function SkyEventsPage() {
       : { navigation: "本頁導覽", feature: "本期焦點", week: "本週速覽", archive: "過往天象", expand: "展開內容", eventDetails: "天文事實與占星解讀", longRead: "閱讀完整解讀", sourceDetails: "資料來源與核驗", featureKinds: ["天文事實", "占星象徵"] };
 
   const guide = lang === "en"
-    ? { impactTitle: "What this period could feel like", impactIntro: "The traditional astrological reading, first. These themes describe possibilities, not events guaranteed to happen to everyone.", timeline: "Explore the dated sky-event timeline", observation: "View Sydney observations and records", method: "Open astronomical facts and calculations", context: "Interpretive tradition · Not a personal forecast" }
+    ? {
+        impactTitle: "What could happen in daily life",
+        impactIntro: "The themes most worth noticing in the coming weeks, interpreted through traditional astrology — not guaranteed events.",
+        headlines: [
+          "Late October–13 November: Messages, arrangements and money terms may need repeated checks. Revisit what was agreed before making a new commitment.",
+          "14–29 November: Paused conversations and negotiations may move again. Confirm what has actually changed rather than assuming all delays have cleared.",
+          "Late November–early December: Work and group dynamics may move more quickly. Keep room in plans for unexpected changes.",
+          "December–early January: Longer-term responsibilities, budgets and priorities may need reordering. Check the practical details of year-end decisions."
+        ],
+        more: "Read the full astrological interpretation",
+        timeline: "Explore the dated sky-event timeline",
+        observation: "View Sydney observations and records",
+        method: "Open astronomical facts and calculations",
+        context: "Interpretive tradition · Not a personal forecast"
+      }
     : lang === "zh-Hans"
-      ? { impactTitle: "这段时间可能出现什么情况", impactIntro: "先看生活层面的象征性解读，再按需查看日期与天文依据；不代表每个人都会经历相同事件。", timeline: "展开天象日期与重要事件", observation: "展开悉尼观测记录", method: "查看天文数据与计算依据", context: "传统占星象征｜非个人预测" }
-      : { impactTitle: "這段時間可能出現什麼情況", impactIntro: "先看生活層面的象徵性解讀，再按需查看日期與天文依據；不代表每個人都會經歷相同事件。", timeline: "展開天象日期與重要事件", observation: "展開悉尼觀測紀錄", method: "查看天文數據與計算依據", context: "傳統占星象徵｜非個人預測" };
+      ? {
+          impactTitle: "这段时间，生活中最值得注意什么",
+          impactIntro: "先看生活层面的重点；以下属于传统占星象征，并非必然发生的事件。",
+          headlines: [
+            "10月下旬至11月13日：消息、安排、付款与合作条件可能反复修改。重要约定先核对，避免凭印象做决定。",
+            "11月14日至29日：停滞的沟通与协商可能重新推进。重谈条件时，先确认变化，再决定是否执行。",
+            "11月底至12月初：工作与人际节奏可能加快。行程和项目预留调整空间，不把临时变化直接当成危机。",
+            "12月至明年1月初：长期责任、预算与优先顺序可能需要重排。年末文件、承诺和支出尤其值得复核。"
+          ],
+          more: "展开完整占星解读",
+          timeline: "展开天象日期与重要事件",
+          observation: "展开悉尼观测记录",
+          method: "查看天文数据与计算依据",
+          context: "传统占星象征｜非个人预测"
+        }
+      : {
+          impactTitle: "這段時間，生活中最值得注意什麼",
+          impactIntro: "先看生活層面的重點；以下屬於傳統占星象徵，並非必然發生的事件。",
+          headlines: [
+            "10月下旬至11月13日：消息、安排、付款與合作條件可能反覆修改。重要約定先核對，避免憑印象做決定。",
+            "11月14日至29日：停滯的溝通與協商可能重新推進。重談條件時，先確認變化，再決定是否執行。",
+            "11月底至12月初：工作與人際節奏可能加快。行程和專案預留調整空間，不把臨時變化直接當成危機。",
+            "12月至明年1月初：長期責任、預算與優先順序可能需要重排。年末文件、承諾和支出尤其值得複核。"
+          ],
+          more: "展開完整占星解讀",
+          timeline: "展開天象日期與重要事件",
+          observation: "展開悉尼觀測紀錄",
+          method: "查看天文數據與計算依據",
+          context: "傳統占星象徵｜非個人預測"
+        };
   return (
     <main className="sky-events-page">
       <nav className="sky-events-nav"><Link to="/">← {ui.back}</Link><span>昭梧 · SKY DESK</span></nav>
@@ -159,12 +201,18 @@ function SkyEventsPage() {
 
       <article className="sky-event-article">
         <section className="sky-event-impact" id="sky-featured" aria-labelledby="sky-impact-heading">
-          <span className="sky-layer-tag">INTERPRETIVE</span>
+          <span className="sky-layer-tag">INTERPRETIVE · {ui.symbolic}</span>
           <h2 id="sky-impact-heading">{guide.impactTitle}</h2>
           <p className="sky-impact-intro">{guide.impactIntro}</p>
-          <ol className="sky-impact-points">{event.interpretation[lang].map((text, index) => (
+          <ol className="sky-impact-points">{(event.id === "zhaowu-sky-quarter-2026-10-04-2027-01-04" ? guide.headlines : event.interpretation[lang]).map((text, index) => (
             <li key={index}>{text}</li>
           ))}</ol>
+          {event.id === "zhaowu-sky-quarter-2026-10-04-2027-01-04" ? (
+            <details className="sky-impact-more">
+              <summary>{guide.more}</summary>
+              <ul>{event.interpretation[lang].map((text, index) => <li key={index}>{text}</li>)}</ul>
+            </details>
+          ) : null}
           <p className="sky-impact-context">{guide.context}</p>
         </section>
 
