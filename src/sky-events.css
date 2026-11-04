@@ -150,3 +150,46 @@
 .sky-events-page .sky-events-category-grid span{border:0;border-radius:0;background:transparent;padding:4px 14px 4px 0}
 .sky-events-page .daily-sky{border:0;border-top:1px solid #cfc2ab;border-radius:0;background:transparent;padding:28px 0;margin:10px auto}
 @media(max-width:520px){.sky-events-page{padding:18px}.sky-events-page .sky-event-title{display:block}.sky-events-page .sky-event-art{width:min(100%,300px);margin:0 0 22px}.sky-events-page .sky-event-timeline>div{grid-template-columns:minmax(0,1fr);gap:3px}.sky-events-page .sky-event-article{padding:22px 0}}
+
+/* 2026-11-04 interpretive-first sky desk */
+.sky-events-page .sky-events-hero{padding:18px 0 6px}
+.sky-events-page .sky-events-hero h1{margin-bottom:9px}
+.sky-events-page .sky-events-hero>p{margin:0 0 18px;font-size:.92rem}
+.sky-events-page .sky-events-shortcuts{margin-bottom:9px}
+.sky-events-page .sky-event-article{padding-top:8px}
+.sky-event-impact{border-top:3px solid #315e50;background:#f5efe1;padding:clamp(20px,3.5vw,34px) clamp(18px,3.5vw,34px);margin:0 0 12px;scroll-margin-top:16px}
+.sky-event-impact .sky-layer-tag{display:block;color:#8c6539;letter-spacing:.17em;font-size:.75rem;font-weight:750}
+.sky-event-impact h2{font-size:clamp(1.65rem,4vw,2.45rem);margin:8px 0 7px;font-weight:600;color:#24483e;line-height:1.4}
+.sky-event-impact .sky-impact-intro{font-size:.92rem;color:#4b6357;margin:0 0 19px;line-height:1.8}
+.sky-impact-points{list-style:none;counter-reset:impact;display:grid;gap:0;padding:0;margin:0}
+.sky-impact-points li{counter-increment:impact;display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;padding:14px 0;border-top:1px solid #d5cbbb;color:#2b3932;font-size:clamp(.96rem,1.55vw,1.04rem);line-height:1.85;overflow-wrap:anywhere}
+.sky-impact-points li:before{content:counter(impact,decimal-leading-zero);font-size:.78rem;color:#9b4438;font-weight:750;line-height:2.4;font-variant-numeric:tabular-nums}
+.sky-impact-context{font-size:.79rem;color:#758478;margin:20px 0 0;border-top:1px solid #d5cbbb;padding-top:12px}
+.sky-event-article .sky-event-title{margin-top:18px;border-top:1px solid #d9cdb8;padding:24px 0}
+.sky-event-article .sky-event-title h2{font-size:clamp(1.4rem,3vw,2rem);line-height:1.5}
+.sky-event-article .sky-event-kind-tags{display:none}
+.sky-events-page .sky-event-layer.science{border-top:0;padding-top:14px}
+.sky-events-page .sky-science-disclaimer{font-size:.84rem;color:#637166;line-height:1.8;margin:14px 0}
+.sky-events-page .sky-observation-disclosure{margin-top:24px;scroll-margin-top:24px}
+.sky-events-page .sky-observation-disclosure-body{padding:10px 0 22px}
+.sky-events-page .sky-observation-disclosure .sky-observation-brief{margin:10px 0 20px}
+.sky-events-page .sky-observation-disclosure .daily-sky{margin:10px 0 0}
+.sky-events-page .sky-section-disclosure>summary{min-height:52px;padding:11px 3px}
+.sky-events-page .sky-section-disclosure>summary strong{font-family:"Songti TC","Songti SC",STSong,SimSun,"Noto Serif CJK TC",Georgia,serif;font-size:clamp(.94rem,2vw,1.06rem);font-weight:600}
+@media(max-width:520px){
+ .sky-events-page .sky-event-impact{padding:18px 15px;margin-inline:-4px}
+ .sky-event-impact h2{font-size:1.55rem}
+ .sky-impact-points li{grid-template-columns:23px minmax(0,1fr);gap:9px;font-size:.96rem;line-height:1.8}
+ .sky-event-article .sky-event-title{padding:18px 0}
+ .sky-events-page .sky-event-article{padding-top:10px}
+}
+
+/* Reader-first: the specialist symbolic reading follows four plain-language points. */
+.sky-impact-more{border-top:1px solid #d7cbbb;margin:8px 0 0}
+.sky-impact-more>summary{min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:12px;list-style:none;cursor:pointer;color:#315e50;font-size:.9rem;font-weight:700}
+.sky-impact-more>summary::-webkit-details-marker{display:none}
+.sky-impact-more>summary:after{content:"＋";font-size:1.1rem}
+.sky-impact-more[open]>summary:after{content:"−"}
+.sky-impact-more>summary:focus-visible{outline:3px solid #a77a31;outline-offset:3px}
+.sky-impact-more ul{margin:0;padding:0 0 8px 17px;font-size:.9rem;line-height:1.85;color:#536a5c}
+.sky-impact-more li{padding:7px 0}
