@@ -384,3 +384,9 @@ html:is([data-zws="solar-start-winter"],[data-zws="solar-minor-snow"],[data-zws=
 html:is([data-zws="solar-start-winter"],[data-zws="solar-minor-snow"],[data-zws="solar-major-snow"],[data-zws="solar-winter-solstice"],[data-zws="solar-minor-cold"]) .zw-entry > span { flex: 1; }
 html[data-zws="solar-minor-snow"] body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry { background: rgba(237,244,239,.97) !important; border-color: #a9bdb3 !important; }
 html[data-zws="solar-minor-snow"] body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry { background: #355b58 !important; }
+
+html:is([data-zws^="southern-"],[data-zws="sydney-jacaranda"]) .zw-season-mark { display: block; flex: none; width: 32px; height: 32px; margin-inline-end: 12px; }
+html[data-zws^="southern-"] .zw-entry > span { flex: 1; }
+
+.zw-season-mark :is(.zw-south-spring,.zw-south-summer,.zw-south-autumn,.zw-south-winter) { display: none; }
+html[data-zws="sydney-jacaranda"] .zw-south-spring, html[data-zws="southern-summer"] .zw-south-summer, html[data-zws="southern-autumn"] .zw-south-autumn, html[data-zws="southern-winter"] .zw-south-winter { display: inline; }

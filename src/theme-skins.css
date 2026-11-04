@@ -404,3 +404,9 @@ html[data-zws="solar-white-dew"] { --zws-page: #eff2eb; --zws-card: #eff2eb; --z
 html[data-zws="solar-autumn-equinox"] { --zws-page: #f3efe6; --zws-card: #f3efe6; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #515a42; --zws-line: #b4c4b1; --zws-gold: #baaa8b; --zws-wash: none; --zws-on-accent: #fffaf0; }
 
 html[data-zws="solar-cold-dew"] { --zws-page: #f1f0e6; --zws-card: #f1f0e6; --zws-ink: #243b32; --zws-soft: #526a59; --zws-accent: #465b45; --zws-line: #b4c4b1; --zws-gold: #aeaf8c; --zws-wash: none; --zws-on-accent: #fffaf0; }
+
+html[data-zws="southern-summer"] { --zws-page: #f5eee1; --zws-card: #f5eee1; --zws-ink: #253b31; --zws-soft: #4b5b50; --zws-accent: #52613e; --zws-line: rgba(83,104,80,.35); --zws-gold: #b18b54; --zws-radius: 14px; --zws-wash: radial-gradient(circle at 80% 8%, rgba(150,170,140,.16), transparent 45%); }
+
+html[data-zws="southern-autumn"] { --zws-page: #f3f0e4; --zws-card: #f3f0e4; --zws-ink: #253b31; --zws-soft: #4b5b50; --zws-accent: #4a6044; --zws-line: rgba(83,104,80,.35); --zws-gold: #b1985f; --zws-radius: 14px; --zws-wash: radial-gradient(circle at 80% 8%, rgba(150,170,140,.16), transparent 45%); }
+
+html[data-zws="southern-winter"] { --zws-page: #edf2eb; --zws-card: #edf2eb; --zws-ink: #253b31; --zws-soft: #4b5b50; --zws-accent: #315a50; --zws-line: rgba(83,104,80,.35); --zws-gold: #8cae9c; --zws-radius: 14px; --zws-wash: radial-gradient(circle at 80% 8%, rgba(150,170,140,.16), transparent 45%); }
