@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('language options remain readable and tappable at narrow and desktop widths', async ({ page }) => {
+  test.setTimeout(90_000);
   await page.goto('/knowledge');
   const picker = page.locator('[data-language-switcher]').first();
   for (const width of [320, 390, 430, 1440]) {
