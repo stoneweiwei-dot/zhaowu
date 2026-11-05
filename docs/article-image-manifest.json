@@ -2,6 +2,14 @@
   "_doc": "文章圖像資產清單：每張文章圖的出處與狀態。由 scripts/article-image-manifest.test.mjs 於 prebuild 驗證。kind: painting|infographic|diagram；source: stone-original|existing-reused|coded-diagram|unverified；status: approved|interim|needs-review。placeholder 一律不得上線。",
   "entries": [
     {
+      "src": "/articles/practice-discomfort-karma.webp",
+      "article": "practice-discomfort-karma",
+      "kind": "infographic",
+      "source": "stone-original",
+      "status": "needs-review",
+      "note": "2026-11-05 為本文生成的原創宋式山水科普圖，941×1672，WebP SHA-256 7ac6c0e756e23b5d6596f78fb83fbbc349aa9a151749f156ee2d6856463d23a1；待站主審美驗收。"
+    },
+    {
       "src": "/articles/impermanence-life-20261030-stone-original.webp",
       "article": "impermanence-life-20261030",
       "kind": "infographic",
