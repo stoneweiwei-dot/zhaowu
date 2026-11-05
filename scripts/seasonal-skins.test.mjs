@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import { FROST_PHASES, FROST_END, FROST_SECTIONS, START_WINTER_PHASES, SOLAR_TERMS_24, seasonalPackForSkin, seasonalState, solarTermsForYear, solarTermInstant, frostEdition, seasonalSkinId } from '../src/lib/seasonal-skins.ts';
 import { SITE_SKIN_IDS } from '../lib/owner-site-skin-public.js';
+import { southernAutoArt } from '../src/lib/theme-skins.ts';
 
 test('auto spans all seasons, and Sydney civil 00:01 switch is timezone independent', () => {
   assert.equal(seasonalSkinId(new Date('2026-10-22T13:00:59.999Z')), 'solar-cold-dew');
@@ -141,4 +142,41 @@ test('all 72 pentads have distinct real artwork and trilingual copy', () => {
   }
   assert.equal(paths.length, 72);
   assert.equal(new Set(paths).size, 72);
+});
+
+test('solar-auto uses the accepted southern Start of Winter original during the 2026 term only', () => {
+  const art = '/theme-skins/southern/start-winter-2026.webp';
+  const southArtBytes = readFileSync(`public${art}`);
+  assert.equal(southArtBytes.toString('ascii', 0, 4), 'RIFF');
+  assert.equal(southArtBytes.toString('ascii', 8, 12), 'WEBP');
+  assert.equal(southArtBytes.readUInt32LE(4) + 8, southArtBytes.length);
+
+  for (const [i, instant] of [
+    '2026-11-06T13:01:00Z',
+    '2026-11-11T13:01:00Z',
+    '2026-11-16T13:01:00Z',
+  ].entries()) {
+    const now = new Date(instant);
+    const state = seasonalState(now);
+    assert.equal(state.term.skinId, 'solar-start-winter');
+    assert.equal(state.houIndex, i);
+    assert.equal(southernAutoArt(state.term, 'south', now), art);
+    assert.equal(southernAutoArt(state.term, 'north', now), null);
+    assert.equal(southernAutoArt(state.term, 'unknown', now), null);
+  }
+
+  const before = new Date('2026-11-06T13:00:59Z');
+  assert.notEqual(seasonalState(before).term.skinId, 'solar-start-winter');
+  assert.equal(southernAutoArt(seasonalState(before).term, 'south', before), null);
+
+  const nextTerm = new Date('2026-11-21T13:01:00Z');
+  assert.notEqual(seasonalState(nextTerm).term.skinId, 'solar-start-winter');
+  assert.equal(southernAutoArt(seasonalState(nextTerm).term, 'south', nextTerm), null);
+
+  const nextYear = new Date('2027-11-07T13:01:00Z');
+  assert.equal(seasonalState(nextYear).term.skinId, 'solar-start-winter');
+  assert.equal(southernAutoArt(seasonalState(nextYear).term, 'south', nextYear), null);
+
+  const themeSource = readFileSync('src/lib/theme-skins.ts', 'utf8');
+  assert.match(themeSource, /southernAutoArt\(auto\.term, visitorHemisphere, new Date\(\)\)/);
 });
