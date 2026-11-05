@@ -120,6 +120,17 @@ export function southernSkinForDate(now: Date): string {
   if (month <= 5) return 'southern-autumn';
   return 'southern-winter';
 }
+/** Return the accepted southern Start of Winter painting only for its 2026 term. */
+export function southernAutoArt(term: Parameters<typeof seasonalVisualSkinId>[0], hemisphere: Hemisphere, now = new Date()): string | null {
+  const sydneyYear = Number(new Intl.DateTimeFormat('en', {
+    timeZone: 'Australia/Sydney',
+    year: 'numeric',
+  }).format(now));
+  if (hemisphere === 'south' && sydneyYear === 2026 && term.skinId === WINTER_SKIN_ID) {
+    return '/theme-skins/southern/start-winter-2026.webp';
+  }
+  return null;
+}
 function resolvedSeasonalSkin(term: Parameters<typeof seasonalVisualSkinId>[0], hemisphere: Hemisphere, now = new Date()): string {
   return hemisphere === 'south' ? southernSkinForDate(now) : seasonalVisualSkinId(term, hemisphere);
 }
@@ -135,7 +146,7 @@ export function skinById(id: string | null | undefined) {
       noteZh: auto.hou['zh-Hant'], noteHans: auto.hou['zh-Hans'], noteEn: auto.hou.en,
       // Keep the existing southern selection and resolve the northern pentad art.
       hero: skin.id === 'sydney-jacaranda'
-        ? '/theme-skins/southern/sydney-jacaranda-summer.webp'
+        ? southernAutoArt(auto.term, visitorHemisphere, new Date()) ?? '/theme-skins/southern/sydney-jacaranda-summer.webp'
         : skin.id === FROST_SKIN_ID ? FROST_PHASES[auto.houIndex].art
         : seasonalPackForSkin(skin.id)?.[auto.houIndex].art ?? skin.hero,
       focus: skin.id === 'sydney-jacaranda' ? '50% 50%' : skin.focus,
