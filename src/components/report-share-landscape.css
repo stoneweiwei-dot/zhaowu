@@ -1,0 +1,5 @@
+/* 橫版預覽保留原始比例，避免裁切文字。 */
+.zhaowu-share-preview[data-format="landscape"] {
+  width: min(100%, 480px);
+  aspect-ratio: 1200 / 630;
+}

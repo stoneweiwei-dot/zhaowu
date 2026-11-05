@@ -1,9 +1,10 @@
+import "./report-share-landscape.css";
 import { useEffect, useMemo, useState } from "react";
 import type { AnalysisResult } from "@/lib/bazi/types";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { ImageViewer, viewerCopy } from "@/components/image-viewer";
 import { BrandIcon } from "@/components/brand-icon";
-import { buildShareCardModel, renderShareCardPng } from "@/lib/report/share-card";
+import { buildShareCardModel, renderShareCardPng, renderLandscapeShareCardPng } from "@/lib/report/share-card";
 
 const COPY: Record<Locale, {
   kicker: string;
@@ -20,7 +21,7 @@ const COPY: Record<Locale, {
   "zh-Hant": {
     kicker: "ZHAOWU · SHARE CARD",
     title: "分享我的命象",
-    lead: "網站把已算出的內容排成 9:16 圖卡；不是讓圖片 AI 重畫文字。",
+    lead: "以命盤內容製作分享圖，選擇直版或橫版。",
     make: "製作分享圖",
     making: "正在製作…",
     share: "分享／儲存",
@@ -32,7 +33,7 @@ const COPY: Record<Locale, {
   "zh-Hans": {
     kicker: "ZHAOWU · SHARE CARD",
     title: "分享我的命象",
-    lead: "网站把已算出的内容排成 9:16 图卡；不是让图片 AI 重画文字。",
+    lead: "以命盘内容制作分享图，选择直版或横版。",
     make: "制作分享图",
     making: "正在制作…",
     share: "分享／保存",
@@ -44,7 +45,7 @@ const COPY: Record<Locale, {
   en: {
     kicker: "ZHAOWU · SHARE CARD",
     title: "Share my snapshot",
-    lead: "The site composes a 9:16 image from calculated fields. AI does not redraw the report text.",
+    lead: "Create a portrait or landscape image from your chart.",
     make: "Create share image",
     making: "Creating…",
     share: "Share / save",
@@ -66,6 +67,7 @@ export function ReportShareCard({ result }: { result: AnalysisResult }) {
   const [blob, setBlob] = useState<Blob | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [cardFormat, setCardFormat] = useState<"portrait" | "landscape">("portrait");
   const [error, setError] = useState(false);
   const [openPreview, setOpenPreview] = useState(false);
 
@@ -82,13 +84,16 @@ export function ReportShareCard({ result }: { result: AnalysisResult }) {
     if (previewUrl) URL.revokeObjectURL(previewUrl);
   }, [previewUrl]);
 
-  async function createCard() {
+  async function createCard(format: "portrait" | "landscape" = "portrait") {
     if (busy) return;
     setBusy(true);
     setError(false);
     try {
-      const nextBlob = await renderShareCardPng(model);
+      // 橫版只放訪客可見的日柱與既有關鍵詞，不上傳生辰或報告。
+      const dayPillar = result.chart.pillars.find((pillar) => pillar.key === "day")?.ganZhi ?? "";
+      const nextBlob = format === "landscape" ? await renderLandscapeShareCardPng(model, dayPillar, locale) : await renderShareCardPng(model);
       const nextUrl = URL.createObjectURL(nextBlob);
+      setCardFormat(format);
       setBlob(nextBlob);
       setPreviewUrl((old) => {
         if (old) URL.revokeObjectURL(old);
@@ -133,7 +138,7 @@ export function ReportShareCard({ result }: { result: AnalysisResult }) {
       </header>
 
       {previewUrl ? (
-        <div className="zhaowu-share-preview">
+        <div className="zhaowu-share-preview" data-format={cardFormat}>
           <button type="button" className="zhaowu-sprite-open" aria-label={`${copy.previewAlt} · ${viewerCopy(locale).hint}`} onClick={() => setOpenPreview(true)}>
             <img src={previewUrl} alt={copy.previewAlt} />
             <span className="zhaowu-image-viewer-hint">{viewerCopy(locale).hint}</span>
@@ -150,11 +155,12 @@ export function ReportShareCard({ result }: { result: AnalysisResult }) {
       )}
 
       <div className="zhaowu-share-actions">
-        <button type="button" className="zhaowu-share-primary" onClick={previewUrl ? shareCard : createCard} disabled={busy}>
+        <button type="button" className="zhaowu-share-primary" onClick={previewUrl ? shareCard : () => createCard()} disabled={busy}>
           {previewUrl ? <BrandIcon name="share" /> : <BrandIcon name="insight" />}
           {busy ? copy.making : previewUrl ? copy.share : copy.make}
         </button>
-        {previewUrl ? <button type="button" className="zhaowu-share-secondary" onClick={createCard} disabled={busy}>{copy.remake}</button> : null}
+        {previewUrl ? <button type="button" className="zhaowu-share-secondary" onClick={() => createCard()} disabled={busy}>{copy.remake}</button> : null}
+        <button type="button" className="zhaowu-share-secondary" onClick={() => createCard("landscape")} disabled={busy}>{locale === "en" ? "Create landscape card" : locale === "zh-Hans" ? "制作横版分享图" : "製作橫版分享圖"}</button>
       </div>
 
       <p className="zhaowu-share-fallback">{error ? copy.failed : copy.fallback}</p>
