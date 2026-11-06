@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useI18n, type Locale } from "@/lib/i18n";
 
 type Copy = [string, string, string];
@@ -64,7 +64,7 @@ const endings: Array<{ id: "rollback" | "upgrade" | "maintain"; title: Copy; cod
   { id:"maintain", code:"MAINTAIN", title:["結局 C · 維持","结局 C · 维持","Ending C · Maintain"], body:["沒有大結局，也沒有大崩潰；生活繼續往前。這是故事，不是預測。","没有大结局，也没有大崩溃；生活继续往前。这是故事，不是预测。","No grand finale, no collapse; ordinary life continues. A story ending, not a forecast."] },
 ];
 
-function Frame({ label, children }: { label: Copy; children: React.ReactNode }) {
+function Frame({ label, children }: { label: Copy; children: ReactNode }) {
   const { locale } = useI18n();
   return <div className="rounded-xl border border-emerald-900/15 bg-[#f7f4e9] p-4 sm:p-5"><p className="mb-2 font-mono text-[10px] tracking-[0.16em] text-emerald-800">{copy(locale,label)}</p><div className="text-sm leading-7 text-[#33453b]">{children}</div></div>;
 }
@@ -73,7 +73,7 @@ export function RealityPatchSection() {
   const { locale } = useI18n();
   const [filter, setFilter] = useState<Filter>("all");
   const [openYears, setOpenYears] = useState<string[]>(["2012"]);
-  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [answers, setAnswers] = useState<Record<number, { score: number; choice: number }>>({});
   const [ending, setEnding] = useState<"rollback" | "upgrade" | "maintain">("maintain");
   const [remaining, setRemaining] = useState<number | null>(null);
 
@@ -86,7 +86,7 @@ export function RealityPatchSection() {
   }, []);
 
   const filtered = useMemo(() => timeline.filter((item) => filter === "all" || item.kind === filter), [filter]);
-  const score = Object.values(answers).reduce((sum, value) => sum + value, 0);
+  const score = Object.values(answers).reduce((sum, answer) => sum + answer.score, 0);
   const answered = Object.keys(answers).length;
   const days = remaining === null ? 0 : Math.floor(remaining / 86_400_000);
   const hours = remaining === null ? 0 : Math.floor(remaining % 86_400_000 / 3_600_000);
@@ -161,7 +161,7 @@ export function RealityPatchSection() {
           <h3 id="awake-test-title" className="mt-2 font-display text-2xl sm:text-3xl">{copy(locale,["覺醒自測 · 你是不是「記得的人」？","觉醒自测 · 你是不是“记得的人”？","Awake test · Are you one who remembers?"])}</h3>
           <p className="mt-2 text-sm leading-7 text-[#536357]">{copy(locale,["五題即時計分，只是整理感受的趣味互動，不是心理測驗、診斷或超能力判定。作答只保留在當前頁面。","五题即时计分，只是整理感受的趣味互动，不是心理测试、诊断或超能力判定。作答只保留在当前页面。","Five quick prompts for reflection—not a psychological test, diagnosis or ability detector. Answers stay in this page only."])}</p>
           <div className="mt-4 grid gap-3 lg:grid-cols-[1fr_220px]">
-            <div className="space-y-3">{questions.map((item,index)=><fieldset key={item.code} className="rounded-lg border border-emerald-900/15 bg-[#faf8f1] p-4"><legend className="font-mono text-[10px] tracking-[0.12em] text-emerald-800">Q {index+1} · {item.code}</legend><p className="mb-3 mt-2 text-sm font-medium">{copy(locale,item.question)}</p><div className="flex flex-wrap gap-2">{[[0,["沒有印象","没有印象","Not really"]],[1,["偶爾有過","偶尔有过","Sometimes"]],[1,["經常這樣","经常这样","Often"]]].map(([value,label],optionIndex)=><label key={optionIndex} className="flex min-h-10 cursor-pointer items-center gap-2 rounded-md border border-emerald-900/15 px-3 text-xs has-[:checked]:border-emerald-700 has-[:checked]:bg-emerald-50 has-[:checked]:text-emerald-900"><input type="radio" name={`patch-q-${index}`} value={String(value)} checked={answers[index]===value && (optionIndex===0?answers[index]===0:answers[index]===1 && (answers[`choice-${index}`] as unknown as number)===optionIndex)} onChange={() => setAnswers((current)=>({...current,[index]:Number(value),[`choice-${index}`]:optionIndex} as Record<number,number>))} className="accent-emerald-700"/>{copy(locale,label as Copy)} +{value}</label>)}</div></fieldset>)}</div>
+            <div className="space-y-3">{questions.map((item,index)=><fieldset key={item.code} className="rounded-lg border border-emerald-900/15 bg-[#faf8f1] p-4"><legend className="font-mono text-[10px] tracking-[0.12em] text-emerald-800">Q {index+1} · {item.code}</legend><p className="mb-3 mt-2 text-sm font-medium">{copy(locale,item.question)}</p><div className="flex flex-wrap gap-2">{[[0,["沒有印象","没有印象","Not really"]],[1,["偶爾有過","偶尔有过","Sometimes"]],[1,["經常這樣","经常这样","Often"]]].map(([value,label],optionIndex)=><label key={optionIndex} className="flex min-h-10 cursor-pointer items-center gap-2 rounded-md border border-emerald-900/15 px-3 text-xs has-[:checked]:border-emerald-700 has-[:checked]:bg-emerald-50 has-[:checked]:text-emerald-900"><input type="radio" name={`patch-q-${index}`} value={String(value)} checked={answers[index]?.choice===optionIndex} onChange={() => setAnswers((current)=>({...current,[index]:{score:Number(value),choice:optionIndex}}))} className="accent-emerald-700"/>{copy(locale,label as Copy)} +{value}</label>)}</div></fieldset>)}</div>
             <aside className="rounded-lg bg-[#08251a] p-5 text-center text-white lg:sticky lg:top-24 lg:self-start" aria-live="polite"><p className="font-mono text-[10px] tracking-[0.16em] text-emerald-200">{copy(locale,["即時得分","即时得分","LIVE SCORE"])}</p><p className="my-2 font-mono text-5xl text-emerald-300">{score}<span className="text-lg text-emerald-100/60"> / 5</span></p><div className="h-1 overflow-hidden bg-white/15"><div className="h-full bg-emerald-300 transition-all" style={{width:`${score*20}%`}}/></div><p className="mt-3 text-xs leading-6 text-emerald-50/80">{copy(locale,["已答","已答","Answered"])} {answered}/5<br/>{answered<5?copy(locale,["答完即可看結果；選擇不會儲存。","答完即可看结果；选择不会保存。","Finish to see a reflection; answers are not saved."]):score>=4?copy(locale,["故事訊號很強。記得分開感受與事實。","故事信号很强。记得分开感受与事实。","Strong story signal. Keep feelings and evidence separate."]):score>=2?copy(locale,["有些體驗與你共鳴；保持好奇，也保持核對。","有些体验与你共鸣；保持好奇，也保持核对。","Some prompts resonate. Stay curious and keep checking."]):copy(locale,["訊號平穩；每個人的時間感受都不同。","信号平稳；每个人的时间感受都不同。","Steady signal. Everyone experiences time differently."])}</p></aside>
           </div>
         </section>
