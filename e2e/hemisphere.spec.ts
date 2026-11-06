@@ -28,12 +28,12 @@ test('Sydney jacaranda can be selected as a complete theme', async ({page}) => {
   await page.route('**/api/owner-data?view=site-skin', r => r.fulfill({json:{skin:'sydney-jacaranda',configured:true}}));
   await page.goto('/?zw_entry=home', {waitUntil:'networkidle'});
   await expect(page.locator('html')).toHaveAttribute('data-zws','sydney-jacaranda');
-  await expect(page.locator('.zw-stage')).toHaveCSS('background-image', /sydney-jacaranda-summer/);
+  await expect(page.locator('.zw-stage')).toHaveCSS('background-image', /sydney-jacaranda-spring/);
   await expect(page.locator('[data-home-birth-entry]')).toBeVisible();
   expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--zws-accent').trim())).toBe('#45406f');
   await page.screenshot({path:'test-results/jacaranda-theme-390.png', fullPage:true});
   await page.goto('/login', {waitUntil:'networkidle'});
-  await expect(page.locator('.stone-login-stage-media')).toHaveAttribute('src', /sydney-jacaranda-summer/);
+  await expect(page.locator('.stone-login-stage-media')).toHaveAttribute('src', /sydney-jacaranda-spring/);
 });
 
 for (const [when, expected] of [['2026-12-15T01:00:00Z','southern-summer'], ['2027-05-15T01:00:00Z','southern-autumn']] as const) {
@@ -55,7 +55,7 @@ for (const width of [320, 390]) for (const locale of ['zh-Hant', 'zh-Hans', 'en'
     await page.setViewportSize({width,height:844});
     await page.goto('/login', {waitUntil:'networkidle'});
     const media = page.locator('.stone-login-stage-media');
-    await expect(media).toHaveAttribute('src', hemisphere === 'south' ? /sydney-jacaranda-summer/ : /dragon-scholar/);
+    await expect(media).toHaveAttribute('src', hemisphere === 'south' ? /sydney-jacaranda-spring/ : /dragon-scholar/);
     await expect(page.locator('#login-title')).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
     if (hemisphere === 'south') await page.screenshot({path:`test-results/login-south-${width}-${locale}.png`});
@@ -128,10 +128,10 @@ for (const [instant, skin, phase, image] of [
 }
 
 for (const [when, skin, artwork] of [
-  ['2026-11-03T01:00:00Z','sydney-jacaranda','sydney-jacaranda-summer.webp'],
-  ['2026-12-15T01:00:00Z','southern-summer','option-falling-leaves.webp'],
-  ['2027-04-15T01:00:00Z','southern-autumn','autumn-blue-mountains.webp'],
-  ['2027-07-15T01:00:00Z','southern-winter','winter-eucalyptus.webp'],
+  ['2026-11-03T01:00:00Z','sydney-jacaranda','sydney-jacaranda-spring.webp'],
+  ['2026-12-15T01:00:00Z','southern-summer','sydney-bondi-summer.webp'],
+  ['2027-04-15T01:00:00Z','southern-autumn','blue-mountains-autumn.webp'],
+  ['2027-07-15T01:00:00Z','southern-winter','snowy-mountains-winter.webp'],
 ] as const) for (const width of [320,390]) {
   test(`southern ${skin} homepage and login ${width}px`, async ({page}) => {
     await page.setViewportSize({width,height:844});
