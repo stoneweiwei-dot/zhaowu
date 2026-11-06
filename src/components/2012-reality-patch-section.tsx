@@ -176,7 +176,7 @@ export function RealityPatchSection() {
             ["Lv.3","時間滑移","时间滑移","Time slip","TIME_SLIP","短途時間對不上","短途时间对不上","A short trip seems to lose time"],
             ["Lv.4","既視感頻繁","既视感频繁","Déjà-vu loop","DEJA_VU_LOOP","高頻既視感或提前猜中","高频既视感或提前猜中","Frequent déjà vu or guessing ahead"],
             ["Lv.5","完全覺醒","完全觉醒","Fully awake","FULLY_AWAKE","主動記錄、核對、慢下來","主动记录、核对、慢下来","Record, verify, and slow down"],
-          ].map(([level,hant,hans,en,code,exampleHant,exampleHans,exampleEn])=><article key={level} className="rounded-lg border border-emerald-900/15 bg-[#faf8f1] p-4"><p className="font-mono text-xs text-emerald-800">{level} ◍</p><h4 className="mt-2 font-semibold">{copy(locale,[hant,hans,en])}</h4><p className="font-mono text-[9px] text-[#758276]">{code}</p><p className="mt-3 text-xs leading-6 text-[#536357]">{copy(locale,[exampleHant,exampleHans,exampleEn])}</p></article>)}</div>
+          ].map(([level,hant,hans,en,code,exampleHant,exampleHans,exampleEn])=><article key={level} className="rounded-lg border border-emerald-900/15 bg-[#faf8f1] p-4"><p className="font-mono text-xs text-emerald-800">{level} ◍</p><h4 className="mt-2 font-semibold">{copy(locale,[hant,hans,en] as Copy)}</h4><p className="font-mono text-[9px] text-[#758276]">{code}</p><p className="mt-3 text-xs leading-6 text-[#536357]">{copy(locale,[exampleHant,exampleHans,exampleEn] as Copy)}</p></article>)}</div>
         </section>
 
         <section aria-labelledby="glitch-files-title">
