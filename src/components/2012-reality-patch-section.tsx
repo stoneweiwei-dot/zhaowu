@@ -127,7 +127,7 @@ export function RealityPatchSection() {
               { code:"03 // GLITCHES", title:["所謂證據 · GLITCHES","所谓证据 · GLITCHES","Supposed evidence · Glitches"], text:["曼德拉效應、既視感與網路迷因被串在一起，像補丁日誌中的 [REWRITE]。","曼德拉效应、既视感与网络迷因被串在一起，像补丁日志中的 [REWRITE]。","Mandela effects, déjà vu and memes are woven into a fictional [REWRITE] log."] },
               { code:"04 // ROLLBACK", title:["結局 · ROLLBACK","结局 · ROLLBACK","Ending · Rollback"], text:["傳說中的補丁崩潰會回檔到 2012.12.20。這是劇情設定，不是時間線預測。","传说中的补丁崩溃会回档到 2012.12.20。这是剧情设定，不是时间线预测。","A fictional rollback to 20 Dec 2012—not a forecast."] },
               { code:"05 // RATIONAL", title:["理性視角 · DEBUNK","理性视角 · DEBUNK","Rational view · Debunk"], text:["長曆換輪只是計數週期完成。把零散事件連成補丁故事，並不能證明現實遭到改寫。","长历换轮只是计数周期完成。把零散事件连成补丁故事，并不能证明现实遭到改写。","A calendar cycle ending does not prove reality was rewritten."] },
-            ].map((item) => <article key={item.code} className="rounded-lg border border-emerald-900/15 bg-[#f8f6ee] p-4 sm:p-5"><p className="font-mono text-[10px] tracking-[0.15em] text-emerald-800">{item.code}</p><h4 className="mt-2 font-semibold">{copy(locale,item.title)}</h4><p className="mt-2 text-sm leading-7 text-[#536357]">{copy(locale,item.text)}</p></article>)}
+            ].map((item) => <article key={item.code} className="rounded-lg border border-emerald-900/15 bg-[#f8f6ee] p-4 sm:p-5"><p className="font-mono text-[10px] tracking-[0.15em] text-emerald-800">{item.code}</p><h4 className="mt-2 font-semibold">{copy(locale,item.title as Copy)}</h4><p className="mt-2 text-sm leading-7 text-[#536357]">{copy(locale,item.text as Copy)}</p></article>)}
           </div>
         </section>
 
