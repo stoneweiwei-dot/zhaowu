@@ -1,0 +1,56 @@
+name: ZHAOWU Buffer Sydney Publisher (gated)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 8 * * *'
+      timezone: 'Australia/Sydney'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zhaowu-buffer-sydney
+  cancel-in-progress: false
+
+jobs:
+  preflight-and-optional-queue:
+    # Disabled by default. This integration is inert unless the owner has
+    # completed account + cross-scheduler verification and set this variable.
+    if: ${{ vars.ZHAOWU_BUFFER_AUTOMATION_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Verify bridge offline
+        run: |
+          node --test ops/promo/buffer/buffer-bridge.test.mjs ops/promo/buffer/daily-content.test.mjs
+      - name: Inspect verified Buffer targets and only optionally enqueue
+        env:
+          BUFFER_API_KEY: ${{ secrets.ZHAOWU_BUFFER_API_KEY }}
+          CONFIG_JSON: ${{ secrets.ZHAOWU_BUFFER_CONFIG_JSON }}
+          WRITE_ENABLED: ${{ vars.ZHAOWU_BUFFER_QUEUE_WRITES_ENABLED }}
+          EXTERNAL_SCHEDULES_CLEAR: ${{ vars.ZHAOWU_EXTERNAL_SCHEDULES_CLEARED }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${BUFFER_API_KEY}" || -z "${CONFIG_JSON}" ]]; then
+            echo "::error::Buffer credential or verified config missing. No queue writes."
+            exit 1
+          fi
+          umask 077
+          config="${RUNNER_TEMP}/zhaowu-buffer-targets.json"
+          post="${RUNNER_TEMP}/zhaowu-buffer-post.json"
+          trap 'rm -f "${config}" "${post}"' EXIT
+          printf '%s' "${CONFIG_JSON}" > "${config}"
+          node ops/promo/buffer/daily-content.mjs > "${post}"
+          node ops/promo/buffer/buffer-bridge.mjs --dry-run --config="${config}" --post="${post}"
+          node ops/promo/buffer/buffer-bridge.mjs --check --config="${config}" --post="${post}"
+          if [[ "${WRITE_ENABLED}" == "true" && "${EXTERNAL_SCHEDULES_CLEAR}" == "true" ]]; then
+            ENABLE_BUFFER_QUEUE=YES_I_APPROVED node ops/promo/buffer/buffer-bridge.mjs --enqueue --config="${config}" --post="${post}"
+          else
+            echo "Read-only preflight passed; Queue writes remain OFF until independently verified."
+          fi
