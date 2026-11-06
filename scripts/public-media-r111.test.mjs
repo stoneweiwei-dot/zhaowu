@@ -52,10 +52,11 @@ test("customer media paths stay on same-origin assets and music keeps idle prelo
   assert.ok(music.includes('if (!enabled || requested) return;'));
 });
 
-test("dynamic application shell remains no-store", () => {
-  assert.match(cacheValue("/"), /no-store/);
+test("homepage is briefly edge-cached while explicit update endpoints stay no-store", () => {
+  assert.match(cacheValue("/"), /public, max-age=0, s-maxage=60, stale-while-revalidate=300/);
   assert.match(cacheValue("/index.html"), /no-store/);
   assert.match(cacheValue("/manifest.webmanifest"), /no-store/);
+  assert.match(cacheValue("/release.json"), /no-store/);
 });
 
 

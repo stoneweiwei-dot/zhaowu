@@ -25,6 +25,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync, realpathSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { DEFAULT_LOCALE, HREFLANG_PATHS, LOCALES, hreflangTags, ogLocale, withLocale } from "../src/lib/hreflang.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const META_PATH = join(ROOT, "src/lib/route-meta.json");
@@ -52,8 +53,9 @@ function replaceMetaTag(html, pattern, value) {
  * Removes the homepage-only JSON-LD block so structured data is not
  * duplicated across every public URL.
  */
-export function injectRouteMeta(html, entry, routePath, origin) {
-  const url = `${origin}${routePath === "/" ? "/" : routePath}`;
+export function injectRouteMeta(html, entry, routePath, origin, locale = "zh-Hant") {
+  const localizedPath = withLocale(routePath, locale);
+  const url = `${origin}${localizedPath === "/" ? "/" : localizedPath}`;
   let out = html;
 
   out = out.replace(/<title>[\s\S]*?<\/title>/, () => `<title>${escapeHtmlAttribute(entry.title)}</title>`);
@@ -61,9 +63,12 @@ export function injectRouteMeta(html, entry, routePath, origin) {
   out = replaceMetaTag(out, /(<meta property="og:title" content=")[^"]*(")/, entry.title);
   out = replaceMetaTag(out, /(<meta property="og:description" content=")[^"]*(")/, entry.description);
   out = replaceMetaTag(out, /(<meta property="og:url" content=")[^"]*(")/, url);
+  out = replaceMetaTag(out, /(<meta property="og:locale" content=")[^"]*(")/, ogLocale(locale));
   out = replaceMetaTag(out, /(<meta name="twitter:title" content=")[^"]*(")/, entry.title);
   out = replaceMetaTag(out, /(<meta name="twitter:description" content=")[^"]*(")/, entry.description);
   out = out.replace(/(<link rel="canonical" href=")[^"]*(")/, (_match, before, after) => before + escapeHtmlAttribute(url) + after);
+  out = out.replace(/<html lang="[^"]*"/, `<html lang="${locale}"`);
+  if (HREFLANG_PATHS.has(routePath)) out = out.replace("</head>", `${hreflangTags(routePath, origin)}</head>`);
   out = out.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>\s*/, "");
   return out;
 }
@@ -83,19 +88,19 @@ function utcLabel(offset) {
 }
 
 /** Static zh-Hant body + JSON-LD for /knowledge/true-solar-time, from the shared content JSON. */
-export function renderTrueSolarStatic(origin) {
+export function renderTrueSolarStatic(origin, locale = "zh-Hant") {
   const c = JSON.parse(readFileSync(TRUE_SOLAR_CONTENT_PATH, "utf8"));
-  const t = c.locales["zh-Hant"];
+  const t = c.locales[locale];
   const pairs = (items) => `<ul>${items.map(([n, x]) => `<li><strong>${esc(n)}</strong>\uff1a${esc(x)}</li>`).join("")}</ul>`;
   const rows = c.examples
     .map(
       (r) =>
-        `<tr><th scope="row">${esc(r.place["zh-Hant"])}</th><td>${esc(r.civilStamp)}</td><td>${utcLabel(r.utcOffset)}</td><td>${signed(r.longitudeMinutes)}</td><td>${signed(r.eotMinutes)}</td><td>${signed(r.shiftMinutes)}</td><td>${esc(r.trueSolarStamp)}</td></tr>`,
+        `<tr><th scope="row">${esc(r.place[locale])}</th><td>${esc(r.civilStamp)}</td><td>${utcLabel(r.utcOffset)}</td><td>${signed(r.longitudeMinutes)}</td><td>${signed(r.eotMinutes)}</td><td>${signed(r.shiftMinutes)}</td><td>${esc(r.trueSolarStamp)}</td></tr>`,
     )
     .join("");
   const main = [
-    '<main class="zw-static-shell" lang="zh-Hant">',
-    '<nav aria-label="breadcrumb"><a href="/">\u662d\u68a7</a> \u203a <a href="/knowledge">\u77e5\u8b58\u5eab</a></nav>',
+    `<main class="zw-static-shell" lang="${locale}">`,
+    `<nav aria-label="breadcrumb"><a href="${withLocale("/", locale)}">${esc(locale === "en" ? "ZHAOWU" : "昭梧")}</a> \u203a <a href="${withLocale("/knowledge", locale)}">${esc(locale === "en" ? "Knowledge" : locale === "zh-Hans" ? "知识库" : "知識庫")}</a></nav>`,
     `<h1>${esc(t.h1)}</h1>`,
     `<p>${esc(t.lead)}</p>`,
     `<p>${esc(t.basis)}</p>`,
@@ -118,12 +123,12 @@ export function renderTrueSolarStatic(origin) {
     pairs(t.limits.items),
     `<h2>${esc(t.faq.h)}</h2>`,
     ...t.faq.items.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`),
-    `<p><a href="/#birth-form">${esc(t.cta.label)}</a> \u00b7 <a href="/knowledge">${esc(t.cta.back)}</a></p>`,
-    '<nav aria-label="相關知識"><h2>相關知識</h2><ul><li><a href="/knowledge/five-elements-tone-qi">五行五色、五音與五氣</a></li><li><a href="/knowledge/shushu-boundary">術數的邊界</a></li><li><a href="/knowledge/system-map">昭梧命理系統能力地圖</a></li></ul></nav>',
+    `<p><a href="${withLocale("/", locale)}#birth-form">${esc(t.cta.label)}</a> \u00b7 <a href="${withLocale("/knowledge", locale)}">${esc(t.cta.back)}</a></p>`,
+    `<nav aria-label="${locale === "en" ? "Related knowledge" : locale === "zh-Hans" ? "相关知识" : "相關知識"}"><h2>${locale === "en" ? "Related knowledge" : locale === "zh-Hans" ? "相关知识" : "相關知識"}</h2><ul><li><a href="${withLocale("/knowledge/five-elements-tone-qi", locale)}">${locale === "en" ? "Five Elements, colours, tones and qi" : locale === "zh-Hans" ? "五行五色、五音与五气" : "五行五色、五音與五氣"}</a></li><li><a href="${withLocale("/knowledge/shushu-boundary", locale)}">${locale === "en" ? "The boundary of the divination arts" : locale === "zh-Hans" ? "术数的边界" : "術數的邊界"}</a></li><li><a href="${withLocale("/knowledge/system-map", locale)}">${locale === "en" ? "Zhaowu system capability map" : locale === "zh-Hans" ? "昭梧命理系统能力地图" : "昭梧命理系統能力地圖"}</a></li></ul></nav>`,
     "</main>",
   ].join("\n");
 
-  const url = `${origin}${c.path}`;
+  const url = `${origin}${withLocale(c.path, locale)}`;
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -131,7 +136,7 @@ export function renderTrueSolarStatic(origin) {
         "@type": "Article",
         headline: t.h1,
         description: t.lead,
-        inLanguage: "zh-Hant",
+        inLanguage: locale,
         datePublished: c.datePublished,
         dateModified: c.dateModified,
         mainEntityOfPage: url,
@@ -161,9 +166,9 @@ export const STATIC_PAGES = {
 };
 
 /** Replaces the homepage static shell with the route's own body and appends its JSON-LD to <head>. */
-export function injectStaticPage(html, routePath, origin) {
+export function injectStaticPage(html, routePath, origin, locale = "zh-Hant") {
   const render = STATIC_PAGES[routePath];
-  const { main, jsonLd } = render ? render(origin) : renderRouteSummary(routePath);
+  const { main, jsonLd } = render ? render(origin, locale) : renderRouteSummary(routePath, locale);
   const shellPattern = /<main class="zw-static-shell"[\s\S]*?<\/main>/;
   if (!shellPattern.test(html)) throw new Error(`static shell not found in built index.html for ${routePath}`);
   const ld = jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, "\\u003c")}</script>\n  ` : "";
@@ -171,15 +176,20 @@ export function injectStaticPage(html, routePath, origin) {
 }
 
 /** Honest route-specific fallback, using the existing public metadata as a summary. */
-export function renderRouteSummary(routePath) {
+export function renderRouteSummary(routePath, locale = "zh-Hant") {
   const routes = readRouteMeta().routes;
-  const entry = routes[routePath]?.["zh-Hant"];
+  const entry = routes[routePath]?.[locale];
   if (!entry) throw new Error(`missing route metadata for ${routePath}`);
   const knowledgePaths = ["/knowledge/true-solar-time", "/knowledge/five-elements-tone-qi", "/knowledge/shushu-boundary", "/knowledge/system-map"];
+  const knowledgeLabel = locale === "en" ? "Knowledge pages" : locale === "zh-Hans" ? "知识页面" : "知識頁面";
+  const homeLabel = locale === "en" ? "ZHAOWU home" : locale === "zh-Hans" ? "昭梧首页" : "昭梧首頁";
+  const leadText = locale === "en" ? "Full interactive content is available after the page loads." : locale === "zh-Hans" ? "页面加载后可阅读完整互动内容。" : "頁面載入後可閱讀完整互動內容。";
   const links = (routePath === "/knowledge" || knowledgePaths.includes(routePath))
-    ? `<nav aria-label="知識頁面"><h2>知識頁面</h2><ul>${knowledgePaths.filter(p => p !== routePath).map(p => `<li><a href="${esc(p)}">${esc(routes[p]["zh-Hant"].title)}</a></li>`).join("")}</ul></nav>`
+    ? `<nav aria-label="${knowledgeLabel}"><h2>${knowledgeLabel}</h2><ul>${knowledgePaths.filter(p => p !== routePath).map(p => `<li><a href="${esc(withLocale(p, locale))}">${esc(routes[p][locale].title)}</a></li>`).join("")}</ul></nav>`
     : "";
-  return { main: `<main class="zw-static-shell" lang="zh-Hant"><nav aria-label="導覽"><a href="/">昭梧首頁</a> · <a href="/knowledge">知識庫</a></nav><h1>${esc(entry.title)}</h1><p>${esc(entry.description)}</p>${links}<p>完整內容與互動功能需要 JavaScript；若頁面未正常載入，請重試或使用 Safari／Chrome。</p><p><a href="/?zw_entry=chart#birth-form">免費八字排盤</a></p></main>`, jsonLd: null };
+  const knowledgeIndex = locale === "en" ? "Knowledge" : locale === "zh-Hans" ? "知识库" : "知識庫";
+  const chartLabel = locale === "en" ? "Create a free BaZi chart" : locale === "zh-Hans" ? "免费八字排盘" : "免費八字排盤";
+  return { main: `<main class="zw-static-shell" lang="${locale}"><nav aria-label="${locale === "en" ? "Navigation" : locale === "zh-Hans" ? "导航" : "導覽"}"><a href="${withLocale("/", locale)}">${homeLabel}</a> · <a href="${withLocale("/knowledge", locale)}">${knowledgeIndex}</a></nav><h1>${esc(entry.title)}</h1><p>${esc(entry.description)}</p>${links}<p>${leadText}</p><p><a href="${withLocale("/", locale)}?zw_entry=chart#birth-form">${chartLabel}</a></p></main>`, jsonLd: null };
 }
 
 export function buildRouteHtml(distDir = join(ROOT, "dist")) {
@@ -191,13 +201,18 @@ export function buildRouteHtml(distDir = join(ROOT, "dist")) {
   const shell = readFileSync(indexPath, "utf8");
   const written = [];
   for (const route of Object.keys(routes)) {
-    if (route === "/") continue; // homepage shell already carries its own meta
-    const entry = routes[route]["zh-Hant"];
-    const html = injectStaticPage(injectRouteMeta(shell, entry, route, origin), route, origin);
-    const target = join(distDir, route, "index.html");
-    mkdirSync(dirname(target), { recursive: true });
-    writeFileSync(target, html);
-    written.push(route);
+    const localized = route === "/" || HREFLANG_PATHS.has(route);
+    const buildLocales = localized ? LOCALES : [DEFAULT_LOCALE];
+    for (const locale of buildLocales) {
+      if (route === "/" && locale === DEFAULT_LOCALE) continue; // homepage shell already carries the default locale
+      const entry = routes[route][locale];
+      const localizedRoute = withLocale(route, locale);
+      const html = injectStaticPage(injectRouteMeta(shell, entry, route, origin, locale), route, origin, locale);
+      const target = join(distDir, localizedRoute, "index.html");
+      mkdirSync(dirname(target), { recursive: true });
+      writeFileSync(target, html);
+      written.push(localizedRoute);
+    }
   }
   return written;
 }

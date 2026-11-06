@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { applyManifestLocale } from "@/lib/manifest-locale";
+import { hasLocalizedPath, splitLocale } from "@/lib/hreflang.js";
 import { detectDefaultLocale, useI18n, type CopyKey, type Locale } from "@/lib/i18n";
 
 export type DisplayLanguage = Locale | "ja" | "ko" | "hi";
@@ -581,6 +582,11 @@ export function intlTagFor(language: DisplayLanguage) {
 function readDisplayLanguage(): DisplayLanguage {
   if (typeof window === "undefined") return "en";
   try {
+    const { locale: routeLocale, path: routePath } = splitLocale(window.location.pathname);
+    if (routeLocale !== "zh-Hant" || (routePath !== "/" && hasLocalizedPath(routePath))) {
+      window.localStorage.setItem("zhaowu.display-language", routeLocale);
+      return routeLocale;
+    }
     const value = window.localStorage.getItem("zhaowu.display-language");
     if (value === "zh-Hant" || value === "zh-Hans" || value === "en") return value;
     if (value === "ko" || value === "hi" || value === "ja") {

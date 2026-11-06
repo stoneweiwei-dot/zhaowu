@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { KoHiLocalizationBridge } from './components/ko-hi-localization-bridge';
 import { routeTree } from './routeTree.gen';
+import { LOCALE_PREFIX, splitLocale } from './lib/hreflang.js';
 import './styles.css';
 import './zhaowu-layered-styles.css';
 // Canonical visual authority must load last. Do not add visual hotfix layers after this import.
@@ -19,7 +20,8 @@ import './painted-home.css';
 import './language-switcher.css';
 
 
-const router = createRouter({ routeTree, scrollRestoration: true, defaultPreload: "viewport" });
+const initialRouteLocale = splitLocale(window.location.pathname).locale;
+const router = createRouter({ routeTree, basepath: LOCALE_PREFIX[initialRouteLocale], scrollRestoration: true, defaultPreload: "viewport" });
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }
 declare const __ZHAOWU_RELEASE_ID__: string;
 const root = document.getElementById('root');

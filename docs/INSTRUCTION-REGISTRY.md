@@ -47,6 +47,13 @@
 - ACTIVE 依賴邊界：ffmpeg core 自家託管為第一順位，jsDelivr 只作站主專用音樂／影片優化器的 core/wasm 備援；在 `@ffmpeg/ffmpeg` wrapper、worker 與 core 全部同源且站主流程通過前，不得只刪 CSP 白名單造成後台失效。公開訪客流程不依賴 jsDelivr。
 - PROTECTED：不改命盤 calculation truth、付款、登入、Supabase schema、站主媒體資料或單一 Vercel Production。
 
+## 2026-11-05｜About／Knowledge 真實語言 URL × hreflang
+
+- ACTIVE（站主最新指令，僅 supersedes 2026-10-27 SEO 決策部分）：`/about` 與 `/knowledge` 及其知識文章建立可直接載入的 `/zh-Hans/`、`/en/` 路徑；繁體維持無前綴 URL。這些路由輸出自指 canonical、正確 `html lang`、Open Graph locale，以及 zh-Hant／zh-Hans／en／x-default 互指 `hreflang`。
+- ACTIVE：sitemap 只為上述 About／Knowledge 範圍輸出語言 alternate；其餘頁面繼續既有單一路徑語言切換，不因本次變更擴大 SEO URL 範圍。
+- ACTIVE：進入帶語言前綴的 URL 時，URL 語言優先於瀏覽器或已保存偏好；語言切換保留當前路由並更新前綴。
+- PROTECTED：不改命盤、付款、登入、Supabase、其他公開路由語言 URL 或 Production 發布狀態。
+
 ## 2026-10-26｜站主後台影片與優惠碼去雜訊
 
 - ACTIVE（站主最新指令）：後台「影片素材」只列出 Supabase 中真正可管理的自訂影片；不再把兩個程式內置的登入／開場備援影片顯示成不能刪除、不能真正管理的卡片。內置影片檔與首頁／登入的 runtime fallback 保留，不刪影音二進位、不改訪客播放契約。
