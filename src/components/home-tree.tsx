@@ -61,6 +61,9 @@ export function homeTree(t: T): TreeNode[] {
           { kind: 'link', href: '/quiz/five-element-overdrive', title: t('五行優勢內耗測驗', '五行优势内耗测验', 'Strength overuse quiz'), hint: t('10 個情境，看哪種優勢被你用成內耗', '10 个情境，看哪种优势被你用成内耗', '10 scenes — which strength you overuse') },
           { kind: 'link', href: '/fun-tests?test=element', title: t('五行功能測驗', '五行功能测验', 'Five-element function quiz'), hint: t('看現在最想加強哪一種功能', '看现在最想加强哪一种功能', 'Which function you most want to build') },
         ] },
+        { kind: 'branch', id: 'brand', title: t('品牌原型', '品牌原型', 'Brand archetypes'), hint: t('讓品牌有鮮明的性格', '让品牌有鲜明的性格', 'Find a clear brand voice'), children: [
+          { kind: 'link', href: '/brand-archetypes.html', title: t('品牌十二原型 · 定位測評', '品牌十二原型 · 定位测评', 'Twelve Brand Archetypes'), hint: t('序、尋、證、聯；十二題找出品牌主副原型', '序、寻、证、联；十二题找出品牌主副原型', 'Twelve brand scenarios, primary and supporting archetypes') },
+        ] },
         { kind: 'branch', id: 'life', title: t('生活小測', '生活小测', 'Everyday'), hint: t('香氣與茶，輕鬆玩', '香气与茶，轻松玩', 'Scent and tea, just for fun'), children: [
           { kind: 'action', section: 'quiz', title: t('五行香氣譜', '五行香气谱', 'Scent map'), hint: t('看嗅覺偏好與五行的文化象意', '看嗅觉偏好与五行的文化象意', 'Scent preferences and their cultural meaning') },
           { kind: 'link', href: '/tea-guardian', title: t('七題找到適合的茶', '七题找到适合的茶', 'Find your tea'), hint: t('七個問題，配一款適合你的茶', '七个问题，配一款适合你的茶', 'Seven questions, one tea') },
