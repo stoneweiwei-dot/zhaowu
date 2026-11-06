@@ -7,6 +7,7 @@ import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
 import { sacredDayRoster } from "@/lib/almanac/sacred-days";
 import "@/components/daily-almanac-accessory-art.css";
 import "@/components/almanac-sacred-roster.css";
+import "@/today-reference.css";
 
 /**
  * 今日黃曆 · ink board (owner 2026-10-08 reference: dark ink-teal almanac sheet).
@@ -277,6 +278,16 @@ export function AlmanacInkBoard(props: AlmanacInkBoardProps) {
         <button type="button" aria-pressed={variant === "day"} onClick={() => chooseVariant("day")}>{T(locale, "晴・宣紙", "Day")}</button>
         <button type="button" aria-pressed={variant === "night"} onClick={() => chooseVariant("night")}>{T(locale, "夜・墨色", "Night")}</button>
       </div>
+      <div className="zw-reference-grid" aria-label={T(locale, "今日黃曆摘要", "Today's almanac overview")}>
+        <section className="zw-reference-cell zw-reference-date"><small>{T(locale, "日期", "Date")}</small><strong>{now.getFullYear()} / {mmdd}</strong><span>{props.weekday}</span><span>{props.lunar}</span></section>
+        <section className="zw-reference-cell"><small>{T(locale, "今日天氣", "Weather")}</small><strong>{props.locationName}</strong><span>{props.weather}</span>{props.locationControl}</section>
+        <section className="zw-reference-cell"><small>{T(locale, "今日聖日", "Observance")}</small><Icon name="lotus" /><strong>{props.sacred}</strong></section>
+        <section className="zw-reference-cell"><small>{T(locale, "核心氣機", "Core dynamic")}</small><p>{isEnglish(locale) ? data.coreEn : T(locale, data.core, "")}</p></section>
+        <section className="zw-reference-cell"><small>{T(locale, "今日宜忌", "Today: do and avoid")}</small><p><b className="is-yi">{T(locale, "宜", "Do")}</b> {data.yi.map(([, zh, en]) => isEnglish(locale) ? en : T(locale, zh, "")).join(" · ")}</p><p><b className="is-ji">{T(locale, "忌", "Avoid")}</b> {data.ji.map(([, zh, en]) => isEnglish(locale) ? en : T(locale, zh, "")).join(" · ")}</p></section>
+        <section className="zw-reference-cell"><small>{T(locale, "吉時慎時", "Hour guidance")}</small><p><b className="is-yi">{T(locale, "吉時", "Supportive")}</b> {windows.good.map(branchName).join(" · ")}</p><p><b className="is-ji">{T(locale, "慎時", "Careful")}</b> {windows.caution.map(branchName).join(" · ")}</p></section>
+      </div>
+      <details className="zw-reference-more"><summary>{T(locale, "查看完整黃曆與時辰", "Full almanac and hours")}</summary>
+      <div className="zw-ink-board zw-reference-expanded" data-variant={variant} data-lang={locale}>
       <header className="zw-ink-hero">
         <i className="zw-ink-hero__art" aria-hidden />
         <div className="zw-ink-datecard">
@@ -397,6 +408,7 @@ export function AlmanacInkBoard(props: AlmanacInkBoardProps) {
       </section>
 
       <p className="zw-ink-closing">{isEnglish(locale) ? data.closing[1] : T(locale, data.closing[0], "")}</p>
+      </div></details>
     </div>
   );
 }
