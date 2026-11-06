@@ -8127,12 +8127,11 @@ body > .zhaowu-spirit-slip .zhaowu-spirit-slip-layout {
   pointer-events: none;
 }
 
+/* Volume used to be portaled into this dock and stayed on screen with the Music button.
+   The mount point is gone; keep the rule so a leftover empty dock cannot pin a control pile. */
 .zhaowu-music-volume-dock {
-  width: min(280px, calc(100vw - 24px));
-  pointer-events: auto;
+  display: none !important;
 }
-
-.zhaowu-music-volume-dock:empty { display: none; }
 
 .zhaowu-music-volume {
   display: grid;
@@ -8180,6 +8179,13 @@ body > .zhaowu-spirit-slip .zhaowu-spirit-slip-layout {
   margin: 0;
   accent-color: #345e50;
   cursor: pointer;
+}
+
+.zhaowu-site-utility-panel .zhaowu-music-volume {
+  position: static;
+  width: 100%;
+  margin: 10px 0 4px;
+  box-shadow: none;
 }
 
 .zhaowu-site-utility-buttons {

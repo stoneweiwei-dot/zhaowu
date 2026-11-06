@@ -181,7 +181,6 @@ export function SiteUtilityDock() {
         </details>
       </section>
 
-      <div className="zhaowu-music-volume-dock" data-music-volume-dock />
       <div className="zhaowu-site-utility-buttons">
         <button
           type="button"
