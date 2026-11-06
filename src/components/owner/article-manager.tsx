@@ -4,6 +4,7 @@ import type { ArticleOverride } from "@/lib/article-overrides";
 import { ownerData } from "@/lib/owner-data-client";
 import type { Locale } from "@/lib/i18n";
 import type { LifeViewArticle } from "@/lib/life-view";
+import { WechatDraftPanel } from "@/components/owner/wechat-draft-panel";
 
 type Fields = Pick<LifeViewArticle, "title" | "summary" | "body">;
 type ListReply = { ok: boolean; articles: ArticleOverride[] };
@@ -167,6 +168,7 @@ export function OwnerArticleManager({ locale }: { locale: Locale }) {
           <label className="mt-4 block text-sm text-ink">{t(locale,"文章內文（以空行分段）","文章正文（空行分段）","Body (blank lines separate paragraphs)")}
             <textarea className={inputClass + " mt-2"} rows={12} maxLength={80000} value={form.body[editorLanguage]} onChange={(e) => update("body",e.target.value)} />
           </label>
+          <WechatDraftPanel locale={locale} sourceId={selected.base.id} fields={{ title: form.title[editorLanguage], summary: form.summary[editorLanguage], body: form.body[editorLanguage] }} />
           <div className="mt-5 flex flex-wrap gap-2">
             <button type="button" disabled={busyId !== null} onClick={() => void save()} className="min-h-11 rounded-full bg-wood px-5 text-sm text-cream disabled:opacity-50">{t(locale,"保存全部語言","保存全部语言","Save all languages")}</button>
             <button type="button" disabled={busyId !== null} onClick={() => void reset()} className="min-h-11 rounded-full border border-line px-4 text-sm text-ink disabled:opacity-50">{t(locale,"還原原文","恢复原文","Reset original")}</button>
