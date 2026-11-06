@@ -7,6 +7,57 @@ html body #root:has(.zw-painted-home) main.zw-hero-home::before { display:none !
 html body #root:has(.zw-painted-home) .zhaowu-home-app-frame { max-width:860px !important; padding:0 !important; }
 html body #root:has(.zw-painted-home) .zw-hero-home { padding:0 !important; margin:0 !important; width:100%; max-width:none !important; gap:0; overflow:visible; }
 html body #root:has(.zw-painted-home) .zw-journey-nav { display:none; }
+@media (min-width:900px) {
+  html body #root:has(.zw-painted-home) .zhaowu-site-header {
+    top: 14px !important;
+    left: 50% !important;
+    right: auto !important;
+    width: min(720px, calc(100% - 48px)) !important;
+    max-width: none !important;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: flex-end;
+    background: linear-gradient(90deg, transparent, rgba(247, 241, 228, .42)) !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+  html body #root:has(.zw-painted-home) .zw-journey-nav {
+    display: flex !important;
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    z-index: 31;
+    width: min(720px, calc(100% - 48px));
+    max-width: none;
+    margin: 0;
+    padding: 0 148px 0 8px !important;
+    transform: translateX(-50%);
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    pointer-events: none;
+  }
+  html body #root:has(.zw-painted-home) .zw-journey-nav :is(a, button) {
+    pointer-events: auto;
+    min-height: 44px;
+    padding: 8px 10px 8px 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #24362f !important;
+    font-weight: 500;
+  }
+  html body #root:has(.zw-painted-home) .zw-journey-nav :is(a, button) + :is(a, button)::before {
+    content: "/";
+    margin-right: 10px;
+    color: rgba(36, 54, 47, .45);
+    font-weight: 400;
+  }
+}
 html body #root:has(.zw-painted-home) .zhaowu-site-header { position:absolute !important; top:8px; right:max(12px, calc((100vw - 820px)/2)); width:auto; max-width:58%; background:none !important; border:0 !important; box-shadow:none !important; backdrop-filter:none !important; z-index:30; }
 html body #root:has(.zw-painted-home) .zhaowu-header-shell { padding:0 !important; }
 html body #root:has(.zw-painted-home) [data-site-status-strip] { display:none !important; }

@@ -385,8 +385,114 @@ html:is([data-zws="solar-start-winter"],[data-zws="solar-minor-snow"],[data-zws=
 html[data-zws="solar-minor-snow"] body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry { background: rgba(237,244,239,.97) !important; border-color: #a9bdb3 !important; }
 html[data-zws="solar-minor-snow"] body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry { background: #355b58 !important; }
 
+/* Scroll keeps the seasonal painting under a rice-paper veil. Blocks stay paper, not pasted colour chips. */
+html:has(.zw-painted-home.zw-v2-home) {
+  background-color: #f3ead7;
+  background-image:
+    radial-gradient(rgba(92, 68, 36, .045) 0.6px, transparent 0.7px),
+    linear-gradient(180deg, rgba(247, 241, 228, .18), rgba(236, 224, 200, .48)),
+    var(--zw-scene);
+  background-size: 3px 3px, cover, cover;
+  background-position: 0 0, center, var(--zw-focus, 50% 30%);
+  background-repeat: repeat, no-repeat, no-repeat;
+  background-attachment: fixed, fixed, fixed;
+}
+html:has(.zw-painted-home.zw-v2-home) body,
+html:has(.zw-painted-home.zw-v2-home) #root,
+html:has(.zw-painted-home.zw-v2-home) .zhaowu-home-sheet-shell,
+html:has(.zw-painted-home.zw-v2-home) .zhaowu-site-footer {
+  background: transparent !important;
+  background-image: none !important;
+}
+html body #root .zw-painted-home.zw-v2-home .zw-stage {
+  background:
+    linear-gradient(180deg, rgba(247, 241, 228, .2), rgba(236, 224, 200, .28)),
+    #f3ead7 var(--zw-scene) var(--zw-focus, 50% 35%) / cover no-repeat;
+}
+html body #root .zw-painted-home.zw-v2-home .zw-veil {
+  background:
+    radial-gradient(rgba(92, 68, 36, .05) 0.6px, transparent 0.7px),
+    linear-gradient(180deg, rgba(247, 241, 228, .2), rgba(236, 224, 200, .72));
+  background-size: 3px 3px, cover;
+}
+html body #root .zw-painted-home.zw-v2-home .zw-stage::after {
+  background: linear-gradient(to bottom, rgba(247, 241, 228, .55) 0%, rgba(247, 241, 228, .28) 28%, rgba(247, 241, 228, 0) 58%);
+}
+html body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry,
+html body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry {
+  position: relative;
+  overflow: hidden;
+  background: rgba(247, 241, 228, .58) !important;
+  color: #24362f !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(70, 58, 40, .2) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry :is(strong, small),
+html body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry :is(strong, small) {
+  position: relative;
+  color: #24362f !important;
+  -webkit-text-fill-color: #24362f !important;
+}
+html body #root .zw-painted-home.zw-v2-home .ph-tree-wash {
+  position: absolute;
+  z-index: 0;
+  inset: 0 0 0 42%;
+  background-position: center;
+  background-size: cover;
+  opacity: .42;
+  pointer-events: none;
+  mask-image: linear-gradient(90deg, transparent, #000 70%);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 70%);
+}
+html body #root .zw-painted-home.zw-v2-home .ph-tree-primary.zw-entry > :not(.ph-tree-wash) {
+  position: relative;
+  z-index: 1;
+}
+html body #root .zw-painted-home.zw-v2-home :is(.ph-tree-leaf, .ph-tree-branch-head) {
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(70, 58, 40, .14) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html body #root .zw-painted-home.zw-v2-home .ph-bottom-nav {
+  background: transparent !important;
+  box-shadow: none !important;
+}
 html:is([data-zws^="southern-"],[data-zws="sydney-jacaranda"]) .zw-season-mark { display: block; flex: none; width: 32px; height: 32px; margin-inline-end: 12px; }
 html[data-zws^="southern-"] .zw-entry > span { flex: 1; }
 
 .zw-season-mark :is(.zw-south-spring,.zw-south-summer,.zw-south-autumn,.zw-south-winter) { display: none; }
 html[data-zws="sydney-jacaranda"] .zw-south-spring, html[data-zws="southern-summer"] .zw-south-summer, html[data-zws="southern-autumn"] .zw-south-autumn, html[data-zws="southern-winter"] .zw-south-winter { display: inline; }
+html body #root .zw-painted-home.zw-v2-home .ph-bottom-nav { display: none !important; }
+@media (min-width:900px) {
+  html body #root .zw-painted-home.zw-v2-home .zw-v2-hero { padding-top: 84px; }
+  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header {
+    top: 16px !important;
+    left: 50% !important;
+    right: auto !important;
+    width: min(720px, calc(100% - 48px)) !important;
+    max-width: none !important;
+    transform: translateX(-50%);
+    background: transparent !important;
+  }
+  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-header-nav {
+    margin-left: auto !important;
+  }
+  html body #root:has(.zw-painted-home.zw-v2-home) .zw-journey-nav {
+    top: 12px;
+    min-height: 44px;
+    align-items: center;
+  }
+  /* Beat the shared :is(#birth-form ...) rule that paints a divider under every journey link. */
+  html[data-zws][data-zws][data-zws][data-zws][data-zws] body #root:has(.zw-painted-home) .zw-journey-nav,
+  html[data-zws][data-zws][data-zws][data-zws][data-zws] body #root:has(.zw-painted-home) .zw-journey-nav :is(a, button) {
+    border: 0 !important;
+    border-bottom: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+}

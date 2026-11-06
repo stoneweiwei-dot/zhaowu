@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { loadOwnerMusic, type OwnerMusicTrack } from "@/lib/owner-music-client";
 import { useI18n } from "@/lib/i18n";
 import { MusicIcon } from "@/components/music-icons";
 import { musicDisplayName } from "@/lib/music-display-name";
+import { prepareQuietAudio, setQuietAudioVolume } from "@/lib/quiet-audio";
 
 const STORAGE_KEY = "zhaowu.backgroundMusic.v3";
 const LEGACY_STORAGE_KEY = "zhaowu.backgroundMusic.v1";
@@ -11,24 +13,46 @@ const SHUFFLE_STORAGE_KEY = `${STORAGE_KEY}.shuffle`;
 const TRACK_STORAGE_KEY = `${STORAGE_KEY}.track`;
 const DEFAULT_VOLUME = 0.16;
 const VOLUME_FADE_IN_MS = 900;
+const VOLUME_STORAGE_KEY = `${STORAGE_KEY}.volume`;
+const MUTE_STORAGE_KEY = `${STORAGE_KEY}.muted`;
 const MUSIC_STREAM_URL = "/api/owner-music?stream=1";
 
 // Ramp volume up smoothly instead of jumping straight to DEFAULT_VOLUME the
 // instant playback starts — a hard jump to full volume is what makes the
 // first note feel like a jump-scare. Stops early if playback is paused
 // (e.g. the visitor paused mid-fade), so it never fights the user.
+function applyLevel(audio: HTMLAudioElement, target: number) {
+  const level = Math.max(0, Math.min(1, target));
+  if (!setQuietAudioVolume(audio, level)) {
+    try { audio.volume = level; } catch {}
+  }
+}
+
+function readStoredVolume() {
+  if (typeof window === "undefined") return DEFAULT_VOLUME;
+  try {
+    const raw = window.localStorage.getItem(VOLUME_STORAGE_KEY);
+    const value = raw == null ? DEFAULT_VOLUME : Number(raw);
+    if (!Number.isFinite(value)) return DEFAULT_VOLUME;
+    return Math.max(0, Math.min(1, value));
+  } catch {
+    return DEFAULT_VOLUME;
+  }
+}
+
 function fadeVolumeTo(audio: HTMLAudioElement, target: number, durationMs = VOLUME_FADE_IN_MS) {
-  const start = audio.volume;
+  prepareQuietAudio(audio, 0);
+  const start = 0;
   const delta = target - start;
   if (Math.abs(delta) < 0.001) {
-    try { audio.volume = target; } catch {}
+    applyLevel(audio, target);
     return;
   }
   const startTime = performance.now();
   const step = (now: number) => {
     if (audio.paused) return;
     const progress = Math.min(1, (now - startTime) / durationMs);
-    try { audio.volume = start + delta * progress; } catch {}
+    applyLevel(audio, start + delta * progress);
     if (progress < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
@@ -88,6 +112,11 @@ export function BackgroundMusic({ visible = false }: { visible?: boolean } = {})
   const [playOrder, setPlayOrder] = useState<string[]>([]);
   const [loopEnabled, setLoopEnabled] = useState(() => readBooleanPreference(LOOP_STORAGE_KEY, true));
   const [shuffleEnabled, setShuffleEnabled] = useState(() => readBooleanPreference(SHUFFLE_STORAGE_KEY, false));
+  const [level, setLevel] = useState(readStoredVolume);
+  const [muted, setMuted] = useState(() => readBooleanPreference(MUTE_STORAGE_KEY, false));
+  const [volumeSlot, setVolumeSlot] = useState<HTMLElement | null>(null);
+  const levelRef = useRef(level);
+  const mutedRef = useRef(muted);
 
   const currentTrack = tracks.find((item) => item.id === currentId) ?? null;
   const primarySrc = currentTrack?.url || MUSIC_STREAM_URL;
@@ -122,10 +151,25 @@ export function BackgroundMusic({ visible = false }: { visible?: boolean } = {})
   // Wraps every audio.play() call so the volume always ramps up from silence
   // instead of jumping straight to DEFAULT_VOLUME — avoids startling whoever
   // is nearby when playback kicks in from a first tap/keystroke.
+  useLayoutEffect(() => {
+    setVolumeSlot(document.querySelector<HTMLElement>("[data-music-volume-dock]"));
+  }, []);
+
+  useEffect(() => { levelRef.current = level; }, [level]);
+  useEffect(() => { mutedRef.current = muted; }, [muted]);
+  useEffect(() => {
+    try { window.localStorage.setItem(VOLUME_STORAGE_KEY, String(level)); } catch {}
+  }, [level]);
+  useEffect(() => {
+    try { window.localStorage.setItem(MUTE_STORAGE_KEY, muted ? "on" : "off"); } catch {}
+  }, [muted]);
+
+  const audibleLevel = () => (mutedRef.current ? 0 : levelRef.current);
+
   const playAudio = useCallback((audio: HTMLAudioElement) => {
-    try { audio.volume = 0; } catch {}
+    try { prepareQuietAudio(audio, 0); } catch {}
     return audio.play().then(() => {
-      fadeVolumeTo(audio, DEFAULT_VOLUME);
+      fadeVolumeTo(audio, audibleLevel());
     });
   }, []);
 
@@ -374,6 +418,18 @@ export function BackgroundMusic({ visible = false }: { visible?: boolean } = {})
 
   const toggleLoop = () => setLoopEnabled((value) => !value);
 
+  const setAudibleLevel = (next: number, nextMuted = false) => {
+    const value = Math.max(0, Math.min(1, next));
+    setLevel(value);
+    setMuted(nextMuted);
+    levelRef.current = value;
+    mutedRef.current = nextMuted;
+    const audio = audioRef.current;
+    if (audio && !audio.paused) applyLevel(audio, nextMuted ? 0 : value);
+  };
+
+  const toggleMute = () => setAudibleLevel(levelRef.current || DEFAULT_VOLUME, !mutedRef.current);
+
   const toggleShuffle = () => {
     const next = !shuffleEnabled;
     shuffleRef.current = next;
@@ -437,6 +493,9 @@ export function BackgroundMusic({ visible = false }: { visible?: boolean } = {})
         loop: "Loop playlist",
         shuffle: "Shuffle",
         controls: "Music controls",
+        volume: "Volume",
+        mute: "Mute",
+        unmute: "Unmute",
         close: "Close music controls",
         playlist: "Choose a track",
         empty: "No tracks available yet.",
@@ -454,6 +513,9 @@ export function BackgroundMusic({ visible = false }: { visible?: boolean } = {})
           loop: "循环播放",
           shuffle: "随机播放",
           controls: "音乐控制",
+          volume: "音量",
+          mute: "静音",
+          unmute: "取消静音",
           close: "收起音乐控制",
           playlist: "点选歌曲",
           empty: "目前没有可播放的曲目。",
@@ -470,6 +532,9 @@ export function BackgroundMusic({ visible = false }: { visible?: boolean } = {})
           loop: "循環播放",
           shuffle: "隨機播放",
           controls: "音樂控制",
+          volume: "音量",
+          mute: "靜音",
+          unmute: "取消靜音",
           close: "收起音樂控制",
           playlist: "選擇曲目",
           empty: "目前沒有可播放的曲目。",
@@ -484,8 +549,37 @@ export function BackgroundMusic({ visible = false }: { visible?: boolean } = {})
       ? `${shuffleEnabled ? "随机" : "顺序"} · ${loopEnabled ? "循环已开" : "播完停止"}`
       : `${shuffleEnabled ? "隨機" : "順序"} · ${loopEnabled ? "循環已開" : "播完停止"}`;
 
+  const volumeControl = (
+    <div className="zhaowu-music-volume" data-music-volume data-background-music-control>
+      <button type="button" data-background-music-control aria-pressed={muted} onClick={toggleMute}>
+        {muted ? copy.unmute : copy.mute}
+      </button>
+      <label>
+        <span>{copy.volume}</span>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          step={1}
+          value={Math.round((muted ? 0 : level) * 100)}
+          aria-label={copy.volume}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round((muted ? 0 : level) * 100)}
+          aria-valuetext={`${Math.round((muted ? 0 : level) * 100)}%`}
+          data-background-music-control
+          onChange={(event) => {
+            const next = Number(event.target.value) / 100;
+            setAudibleLevel(next, next === 0);
+          }}
+        />
+      </label>
+    </div>
+  );
+
   return (
     <section className="zhaowu-dragon-music" data-background-music-player data-dragon-music-controls aria-label={copy.controls}>
+      {volumeSlot ? createPortal(volumeControl, volumeSlot) : volumeControl}
       <audio
         ref={audioRef}
         playsInline
