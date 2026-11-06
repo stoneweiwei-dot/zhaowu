@@ -4,6 +4,7 @@ import { SKY_EVENT_CATEGORIES, getArchivedSkyEvents, getFeaturedSkyEvent, getTod
 import { TodaySkyCards } from "@/components/today-sky-cards";
 import { DailySkyObservation } from "@/components/daily-sky-observation";
 import { SkyCurrentMotion } from "@/components/sky-current-motion";
+import { SkyUniverse } from "@/components/sky-universe";
 import { SkyObservationBrief } from "@/components/sky-observation-brief";
 import { isSkyReportArchived } from "@/lib/sky-week-presentation";
 import "@/sky-events.css";
@@ -192,6 +193,8 @@ function SkyEventsPage() {
         <h1>{ui.title}</h1>
         <p>{ui.lead}</p>
       </header>
+
+      <SkyUniverse lang={lang} />
 
       <nav className="sky-events-shortcuts" aria-label={labels.navigation}>
         <a href="#sky-featured">{labels.feature}</a>
