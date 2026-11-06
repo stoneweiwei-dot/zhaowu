@@ -2,9 +2,9 @@ import { create } from "zustand";
 import { applyManifestLocale } from "@/lib/manifest-locale";
 import { detectDefaultLocale, useI18n, type CopyKey, type Locale } from "@/lib/i18n";
 
-export type DisplayLanguage = Locale | "ja" | "ko" | "hi";
+export type DisplayLanguage = Locale | "ja" | "ko" | "hi" | "th" | "id" | "vi";
 
-type UiDictionary = Partial<Record<CopyKey, string>>;
+export type UiDictionary = Partial<Record<CopyKey, string>>;
 
 const JA: UiDictionary = {
   brand: "昭梧",
@@ -37,8 +37,8 @@ const JA: UiDictionary = {
   yi: "吉",
   ji: "避けたいこと",
   jieqi: "節気",
-  chong: "冲",
-  sha: "煞方",
+  chong: "沖",
+  sha: "煞の方位",
   lunar: "旧暦",
   formTitle: "四柱推命（八字）",
   formLead: "出生証明に記載された日付・時刻・都市を入力してください。残りはシステムが計算します。",
@@ -259,7 +259,7 @@ const KO: UiDictionary = {
   errAnalyze: "분석을 완료하지 못했습니다. 입력 정보를 확인한 뒤 다시 시도해 주세요.",
   faq: "자주 묻는 질문",
   faq1q: "분석은 무엇을 기준으로 하나요?",
-  faq1a: "昭梧는 전통 자평 사주를 유일한 주판으로 사용합니다. 전생／육도 질문은 달마일장경(達摩一掌經)의 확정식 계산만 사용하며 추가 AI 추측은 하지 않습니다.",
+  faq1a: "昭梧는 전통 자평 사주를 유일한 핵심 판단으로 사용합니다. 전생／육도 질문은 달마일장경(達摩一掌經)의 확정식 계산만 사용하며 추가 AI 추측은 하지 않습니다.",
   faq2q: "분석 결과는 반드시 맞나요?",
   faq2a: "어떤 사건의 발생도 보장하지 않습니다. 사주는 구조, 시기, 가능성이 높은 과제를 정리하는 도구이며 현실의 자원, 선택, 행동에 따라 결과는 달라집니다.",
   faq3q: "내 정보는 저장되나요?",
@@ -274,12 +274,12 @@ const KO: UiDictionary = {
   hide: "지장간",
   dishi: "십이운성",
   xunkong: "공망（旬空）",
-  wuxing: "신강·신약 기초",
+  wuxing: "왕쇠의 기초",
   favorEl: "흐름을 돕는 임시 후보",
   drainEl: "지금은 키우지 않을 요소",
   useful: "흐름을 돕는 임시 후보(재검토 필요)",
   drain: "지금은 키우지 않을 요소(재검토 필요)",
-  strength: "신강·신약 기초",
+  strength: "왕쇠의 기초",
   dayun: "대운 흐름",
   rhythm: "전체 인생 리듬",
   life: "생활 적용",
@@ -339,7 +339,7 @@ const KO: UiDictionary = {
   methodKicker: "방법은 투명하게 · 경계는 명확하게",
   methodTitle: "무엇을 계산할 수 있고 무엇을 계산할 수 없는지 먼저 밝힙니다",
   methodLead: "昭梧는 연결된 방법, 아직 연결되지 않은 자료, 판단의 경계를 공개합니다. 그럴듯한 문구를 결론처럼 쓰지 않습니다.",
-  proofPrimaryTitle: "자평을 주판으로",
+  proofPrimaryTitle: "자평을 핵심 판단으로",
   proofPrimaryBody: "자평 사주를 유일한 핵심 판단으로 삼아 먼저 질문에 답하고 그 뒤 명식과 근거를 보여 줍니다.",
   proofPastTitle: "전생은 독립 계산",
   proofPastBody: "육도／전생 질문은 달마일장경(達摩一掌經)의 확정식 계산만 사용하고 추가 AI 추측은 하지 않습니다.",
@@ -398,7 +398,7 @@ const HI: UiDictionary = {
   ji: "बचें",
   jieqi: "सौर अवधि",
   chong: "टकराव",
-  sha: "दिशा",
+  sha: "अशुभ दिशा",
   lunar: "चंद्र तिथि",
   formTitle: "चार स्तंभ (BaZi)",
   formLead: "जन्म प्रमाण में दर्ज तारीख, समय और शहर भरें। बाकी गणना सिस्टम करेगा।",
@@ -427,7 +427,7 @@ const HI: UiDictionary = {
   hourPh: "घंटा 0–23",
   minutePh: "मिनट 0–59",
   solar: "सच्चे सौर समय का सुधार लागू करें",
-  zi: "Zi-hour तिथि नियम",
+  zi: "मध्यरात्रि के दो घंटे (ज़ि काल) में तिथि बदलने का नियम",
   ziLate: "23:00 से अगले दिन की गणना",
   ziMid: "तारीख आधी रात 00:00 पर बदलें",
   analyze: "विश्लेषण करें",
@@ -439,7 +439,7 @@ const HI: UiDictionary = {
   errAnalyze: "विश्लेषण पूरा नहीं हो सका। जानकारी जाँचकर फिर प्रयास करें।",
   faq: "सामान्य प्रश्न",
   faq1q: "यह विश्लेषण किस पर आधारित है?",
-  faq1a: "Zhaowu में पारंपरिक Zi Ping BaZi मुख्य निर्णय-पद्धति है। अन्य प्रतीकात्मक मॉड्यूल अपनी स्वतंत्र गणना-सीमा के भीतर ही उपयोग होते हैं।",
+  faq1a: "昭梧 में पारंपरिक ज़िपिंग आठ-अक्षर पद्धति ही मुख्य निर्णय का आधार है। पूर्वजन्म और छह लोकों के प्रश्नों के लिए बोधिधर्म की एक-हथेली सूत्र पद्धति (達摩一掌經) से निश्चित नियमों पर आधारित जन्म-चक्र बनाया जाता है; AI की अटकलें नहीं जोड़ी जातीं।",
   faq2q: "क्या परिणाम निश्चित रूप से सही होंगे?",
   faq2a: "किसी घटना की गारंटी नहीं है। चार्ट संरचना, समय और अधिक संभावित पैटर्न समझने में मदद करता है; वास्तविक संसाधन, चुनाव और कार्रवाई परिणाम बदल सकते हैं।",
   faq3q: "क्या मेरा डेटा सहेजा जाता है?",
@@ -447,13 +447,13 @@ const HI: UiDictionary = {
   resultQ: "आपका विश्लेषण",
   resultA: "सीधा उत्तर",
   chart: "आपका BaZi चार्ट",
-  dayMaster: "Day Master",
+  dayMaster: "जन्म-दिन का स्वामी (दिन का आकाशीय तना)",
   monthLing: "मासिक प्रभाव",
-  nayin: "Na Yin",
-  shishen: "Ten Gods",
+  nayin: "ध्वनि से संबद्ध पंचतत्व (ना यिन)",
+  shishen: "दस संबंध-प्रतीक (दस देवता)",
   hide: "छिपे हुए तने",
   dishi: "12 जीवन अवस्थाएँ",
-  xunkong: "रिक्तता (Void)",
+  xunkong: "दस-दिवसीय चक्र की रिक्त शाखाएँ (शुन कोंग)",
   wuxing: "तत्व-संतुलन का आधार",
   favorEl: "प्रवाह के अस्थायी सहायक तत्व",
   drainEl: "अभी अधिक न बढ़ाएँ",
@@ -532,7 +532,7 @@ const HI: UiDictionary = {
   palmToolScope: "उपयोग · चार प्रतीकात्मक पूर्व-जीवन महल, बारह तारे, छह लोक और वर्तमान जीवन की धुरी देखें",
   palmToolButton: "मुफ़्त गणना खोलें",
   proofBoundaryTitle: "अजुड़ी पद्धतियों का अनुमान नहीं",
-  proofBoundaryBody: "Zi Wei, Western astrology, Liu Yao और अन्य प्रणालियाँ अपनी स्वतंत्र गणना जुड़ने तक ‘not connected’ रहेंगी।",
+  proofBoundaryBody: "ज़िवेई, पाश्चात्य ज्योतिष, छह रेखाओं की दिव्य-प्रश्न पद्धति और अन्य प्रणालियाँ अपनी स्वतंत्र गणना जुड़ने तक ‘अभी जुड़ी नहीं’ के रूप में दिखाई जाएँगी।",
   myTitle: "My Zhaowu",
   mySignedOutLead: "जन्म प्रोफ़ाइल और हाल की तीन रिपोर्ट देखने के लिए साइन इन करें।",
   followTitle: "इसी चार्ट से अगला प्रश्न पूछें",
@@ -564,7 +564,7 @@ export function displayText(
   if (language === "ja") return ja;
   if (language === "ko") return ko;
   if (language === "hi") return hi;
-  if (language === "en") return en;
+  if (language === "en" || language === "th" || language === "id" || language === "vi") return en;
   return language === "zh-Hans" ? hans : hant;
 }
 
@@ -572,6 +572,9 @@ export function intlTagFor(language: DisplayLanguage) {
   if (language === "ja") return "ja-JP";
   if (language === "ko") return "ko-KR";
   if (language === "hi") return "hi-IN";
+  if (language === "th") return "th-TH";
+  if (language === "id") return "id-ID";
+  if (language === "vi") return "vi-VN";
   if (language === "en") return "en-AU";
   return language === "zh-Hans" ? "zh-CN" : "zh-TW";
 }
@@ -582,12 +585,7 @@ function readDisplayLanguage(): DisplayLanguage {
   if (typeof window === "undefined") return "en";
   try {
     const value = window.localStorage.getItem("zhaowu.display-language");
-    if (value === "zh-Hant" || value === "zh-Hans" || value === "en") return value;
-    if (value === "ko" || value === "hi" || value === "ja") {
-      const fallback = detectDefaultLocale();
-      window.localStorage.setItem("zhaowu.display-language", fallback);
-      return fallback;
-    }
+    if (value === "zh-Hant" || value === "zh-Hans" || value === "en" || value === "ja" || value === "ko" || value === "hi" || value === "th" || value === "id" || value === "vi") return value;
     const legacy = window.localStorage.getItem("zhaowu.locale");
     if (legacy === "zh-Hant" || legacy === "zh-Hans" || legacy === "en") return legacy;
   } catch {
@@ -596,7 +594,22 @@ function readDisplayLanguage(): DisplayLanguage {
   return detectDefaultLocale();
 }
 
+type LazyLanguage = "th" | "id" | "vi";
+const dictionaryLoaders = {
+  th: () => import("@/lib/display-dictionaries/th"),
+  id: () => import("@/lib/display-dictionaries/id"),
+  vi: () => import("@/lib/display-dictionaries/vi"),
+};
+const dictionaryCache: Partial<Record<LazyLanguage, UiDictionary>> = {};
+const dictionaryRequests: Partial<Record<LazyLanguage, Promise<UiDictionary>>> = {};
+let activeLanguage: DisplayLanguage;
+
+function isLazyLanguage(language: DisplayLanguage): language is LazyLanguage {
+  return language === "th" || language === "id" || language === "vi";
+}
+
 function applyLanguage(language: DisplayLanguage) {
+  activeLanguage = language;
   const baseLocale = engineLocaleFor(language);
   useI18n.getState().setLocale(baseLocale);
   if (language === "ja") {
@@ -607,6 +620,24 @@ function applyLanguage(language: DisplayLanguage) {
     useI18n.setState({ t: (key) => HI[key] ?? BASE_TRANSLATOR(key) });
   } else {
     useI18n.setState({ t: BASE_TRANSLATOR });
+  }
+  if (isLazyLanguage(language)) {
+    const install = (dictionary: UiDictionary) => {
+      // A slower previous choice must never overwrite the visitor's latest selection.
+      if (activeLanguage === language) {
+        useI18n.setState({ t: (key) => dictionary[key] ?? BASE_TRANSLATOR(key) });
+      }
+    };
+    const cached = dictionaryCache[language];
+    if (cached) install(cached);
+    else {
+      const request = dictionaryRequests[language] ??= dictionaryLoaders[language]()
+        .then(({ default: dictionary }) => (dictionaryCache[language] = dictionary));
+      void request.then(install).catch(() => {
+        // Keep the English fallback; allow retry on the next explicit selection.
+        delete dictionaryRequests[language];
+      });
+    }
   }
   if (typeof document !== "undefined") {
     document.documentElement.lang = language;

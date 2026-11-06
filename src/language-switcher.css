@@ -42,13 +42,13 @@ html body #root .zw-langpick .zw-langpick__label svg {
 }
 
 html body #root .zw-langpick .zw-langpick__track {
-  display: inline-grid;
-  grid-auto-flow: column;
-  grid-auto-columns: auto;
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 2px;
   padding: 3px;
   border: 1px solid color-mix(in srgb, var(--color-line, #d8c7a4) 70%, #b8934d);
-  border-radius: 999px;
+  border-radius: 24px;
   background: color-mix(in srgb, var(--color-cream, #fffdf7) 94%, transparent);
   box-shadow: 0 1px 0 rgba(184, 147, 77, .28), 0 8px 20px -12px rgba(71, 61, 47, .45);
 }
@@ -93,8 +93,8 @@ html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt:focus-v
 @media (max-width: 520px) {
   html body #root .zw-langpick { width: 100%; justify-content: center; gap: 8px; }
   html body #root .zw-langpick .zw-langpick__label span { font-size: 12px; }
-  html body #root .zw-langpick .zw-langpick__track { flex: 1 1 auto; grid-auto-columns: minmax(0, 1fr); max-width: 340px; }
-  html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt { min-width: 0 !important; padding: 0 10px !important; }
+  html body #root .zw-langpick .zw-langpick__track { flex: 1 1 auto; max-width: 340px; }
+  html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt { min-width: 56px !important; padding: 0 10px !important; }
 }
 
 /*
@@ -103,7 +103,7 @@ html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt:focus-v
  */
 html body #root .zhaowu-site-header.is-home-compact .zw-langpick { width: auto; margin-left: auto; gap: 6px; }
 html body #root .zhaowu-site-header.is-home-compact .zw-langpick .zw-langpick__label span { display: none; }
-html body #root .zhaowu-site-header.is-home-compact .zw-langpick .zw-langpick__track { flex: 0 0 auto; grid-auto-columns: auto; max-width: none; }
+html body #root .zhaowu-site-header.is-home-compact .zw-langpick .zw-langpick__track { flex: 0 1 auto; max-width: 100%; }
 html body #root .zhaowu-site-header.is-home-compact .zw-langpick .zw-langpick__track button.zw-langpick__opt {
   min-width: 48px !important;
   padding: 0 11px !important;
@@ -117,4 +117,30 @@ html[data-zw-theme="night"] body #root .zw-langpick .zw-langpick__track button.z
 
 @media (prefers-reduced-motion: reduce) {
   html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt { transition: none; }
+}
+
+/* Nine native-script names stay readable on phones, including the compact home header. */
+@media (max-width: 520px) {
+  html body #root .zw-langpick { align-items: flex-start; }
+  html body #root .zw-langpick .zw-langpick__label { margin-top: 14px; }
+  html body #root .zw-langpick .zw-langpick__track,
+  html body #root .zhaowu-site-header.is-home-compact .zw-langpick .zw-langpick__track {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: 290px;
+    min-width: 0;
+  }
+}
+
+/* The longer Indonesian name gets two columns rather than a smaller touch target. */
+@media (max-width: 520px) {
+  html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt {
+    padding-inline: 6px !important;
+  }
+  html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt:nth-child(8) {
+    grid-column: span 2;
+  }
+  html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt:nth-child(9) {
+    grid-column: 1 / -1;
+  }
 }
