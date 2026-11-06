@@ -1,8 +1,6 @@
-// These are public browser credentials, never a service-role key. One shared
-// production fallback keeps every browser client on the same Supabase project
-// when Vercel does not inject VITE_* values during a build.
-const DEFAULT_SUPABASE_URL = "https://plgpxusmemnmzckbwtiv.supabase.co";
-const DEFAULT_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7prU26nA0AX7dny0PW_ReA_GKwI588H";
+// Browser configuration reads VITE_* environment values first; no key is bundled as a fallback.
+const DEFAULT_SUPABASE_URL = "https://gyisxbkjzvdretbqzeuw.supabase.co";
+const DEFAULT_SUPABASE_PUBLISHABLE_KEY = "";
 const VITE_ENV = import.meta.env ?? {};
 
 /** Real Supabase origin. Server code, owner uploads and OAuth redirects always use this. */
