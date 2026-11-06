@@ -32,13 +32,15 @@ test("background music resolves the active owner track through /api/owner-music 
   assert.match(music, /DEFAULT_VOLUME = 0\.16/);
   assert.match(music, /data-music-volume/);
   assert.match(music, /type="range"/);
+  assert.doesNotMatch(music, /data-music-volume-dock/);
+  assert.doesNotMatch(music, /createPortal/);
   assert.match(music, /MUTE_STORAGE_KEY/);
   assert.match(music, /toggleMute/);
   assert.match(music, /audio\/mpeg/);
   assert.match(music, /loop/);
   assert.match(music, /playsInline/);
   assert.match(music, /preload="none"/);
-  assert.match(music, /if \(!requested\) return;[\s\S]*void refreshAsset\(\)/);
+  assert.match(music, /if \(!visible && !requested\) return;[\s\S]*void refreshAsset\(\)/);
   assert.match(api, /STATIC_FALLBACK_TRACK/);
   assert.match(api, /\/audio\/zhaowu-background\.mp3/);
   assert.doesNotMatch(api, /SUPABASE_AUDIO_BUCKET/);
