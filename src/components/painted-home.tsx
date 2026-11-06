@@ -6,7 +6,6 @@ import { useI18n } from '@/lib/i18n';
 import { BrandIcon } from '@/components/brand-icon';
 import { HomeTree } from '@/components/home-tree';
 import { CuratedVideoShelf } from '@/components/curated-video-shelf';
-import '@/guaili-collection-entry.css';
 import '@/home-mobile-v2.css';
 
 type Section = 'form' | 'today' | 'quiz' | 'notes';
@@ -44,14 +43,16 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
     const shell = document.querySelector<HTMLElement>('#root > .zhaowu-home-sheet-shell:not(.zhaowu-login-shell)');
     const update = () => {
       const y = Math.max(shell?.scrollTop || 0, window.scrollY, document.documentElement.scrollTop, document.body.scrollTop);
-      document.documentElement.style.setProperty('--zw-veil', String(Math.min(.88, y / (window.innerHeight * .8) * .88)));
+      document.documentElement.style.setProperty('--zw-veil', String(Math.min(.46, y / (window.innerHeight * 1.2) * .46)));
     };
     update(); window.addEventListener('scroll', update, { passive: true });
     shell?.addEventListener('scroll', update, { passive: true });
     document.addEventListener('scroll', update, { passive: true, capture: true });
     window.addEventListener('resize', update);
-    return () => { window.removeEventListener('scroll', update); shell?.removeEventListener('scroll', update); document.removeEventListener('scroll', update, true); window.removeEventListener('resize', update); document.documentElement.style.removeProperty('--zw-veil'); };
-  }, []);
+    document.documentElement.style.setProperty('--zw-scene', `url("${editorialArt}")`);
+    document.documentElement.style.setProperty('--zw-focus', skin?.focus || '50% 35%');
+    return () => { window.removeEventListener('scroll', update); shell?.removeEventListener('scroll', update); document.removeEventListener('scroll', update, true); window.removeEventListener('resize', update); document.documentElement.style.removeProperty('--zw-veil'); document.documentElement.style.removeProperty('--zw-scene'); document.documentElement.style.removeProperty('--zw-focus'); };
+  }, [editorialArt, skin?.focus]);
   const style = {
     '--zw-scene': `url("${editorialArt}")`, '--zw-focus': skin?.focus || '50% 35%',
     '--ph-art': `url("${art}")`, '--ph-paper': skin?.swatch[0] || '#f7efdf',
@@ -94,21 +95,6 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
     </section>
     <HomeTree t={t} onOpen={onOpen} />
     {(seasonalAuto || frostOnly) && <p className="zw-season-context" data-seasonal-note data-solar-hou={seasonalAuto ? seasonalAuto.houIndex + 1 : undefined}>{t('節氣為中國傳統名稱；畫作依粗略半球位置調整，位置不明沿用原畫，並非當地天氣預報。', '节气为中国传统名称；画作依粗略半球位置调整，位置不明沿用原画，并非当地天气预报。', 'Traditional Chinese seasonal names; existing artwork follows approximate hemisphere when available, not local weather.')}{seasonalAuto && (locale === 'en' ? ` Pentad ${houNumber} / 72 · Sydney calendar schedule.` : ` 第 ${houNumber} / 72 候 · 悉尼節氣日程。`)}</p>}
-    <Link className="ph-mythic-entry" to="/mythic-atlas" data-home-mythic-atlas-entry>
-      <img src="/mythic-atlas/originals/01-skeleton-puppet.webp" alt="" loading="lazy" width="941" height="1672" />
-      <span>
-        <small>{t('昭梧原創圖錄', '昭梧原创图录', 'ZHAOWU ORIGINAL ATLAS')}</small>
-        <strong>{t('幽明萬象錄 · 原創設定集', '幽明万象录 · 原创设定集', 'Chronicle of Hidden and Manifest Worlds')}</strong>
-        <em>{t('十二幅原創圖 · 八大支系 · 三十五位人物', '十二幅原创图 · 八大支系 · 三十五位人物', 'Twelve original plates · eight lineages · thirty-five figures')}</em>
-      </span>
-      <i aria-hidden>›</i>
-    </Link>
-    <Link className="ph-guaili-bookcase" to="/guaili-luanshen" data-home-guaili-collection>
-      <span><small>{t('幽明萬象錄・獨立系列書目', '幽明万象录・独立系列书目', 'HIDDEN & MANIFEST · SERIES INDEX')}</small>
-        <strong>{t('三界異聞錄｜七卷全書', '三界异闻录｜七卷全书', 'Tales of the Three Realms · The Seven Volumes')}</strong>
-        <em>{t('十二地支四態・十二流煞・八災十年編年', '十二地支四态・十二流煞・八灾十年编年', 'Twelve branches · Twelve currents · The final chronicle')}</em></span>
-      <i aria-hidden="true">↗</i>
-    </Link>
     <CuratedVideoShelf placement="home" />
     <nav className="ph-bottom-nav" aria-label={t('頁面導覽','页面导航','Page navigation')}><Link to="/" aria-current="page"><BrandIcon name="home"/><span>{t('首頁','首页','Home')}</span></Link><button onClick={() => onOpen('form')}><BrandIcon name="reports"/><span>{t('命盤','命盘','Chart')}</span></button><button onClick={() => onOpen('today')}><BrandIcon name="calendar"/><span>{t('指引','指引','Today')}</span></button><Link to="/history"><BrandIcon name="account"/><span>{t('我的','我的','Account')}</span></Link></nav>
   </section>;

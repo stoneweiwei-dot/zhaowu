@@ -8127,6 +8127,61 @@ body > .zhaowu-spirit-slip .zhaowu-spirit-slip-layout {
   pointer-events: none;
 }
 
+.zhaowu-music-volume-dock {
+  width: min(280px, calc(100vw - 24px));
+  pointer-events: auto;
+}
+
+.zhaowu-music-volume-dock:empty { display: none; }
+
+.zhaowu-music-volume {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+  border: 1px solid rgba(146, 112, 64, .28);
+  border-radius: 16px;
+  padding: 6px 10px 6px 6px;
+  background: rgba(247, 241, 228, .94);
+  box-shadow: 0 8px 24px rgba(59, 48, 35, .12);
+}
+
+.zhaowu-music-volume > button {
+  min-width: 72px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 12px;
+  padding: 0 10px;
+  color: #24362f;
+  background: rgba(52, 94, 80, .12);
+  font: 650 14px/1 var(--font-body, inherit);
+  cursor: pointer;
+}
+
+.zhaowu-music-volume > button[aria-pressed="true"] {
+  color: #fffdf8;
+  background: #345e50;
+}
+
+.zhaowu-music-volume label {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  color: #4a4338;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.zhaowu-music-volume input[type="range"] {
+  width: 100%;
+  height: 44px;
+  margin: 0;
+  accent-color: #345e50;
+  cursor: pointer;
+}
+
 .zhaowu-site-utility-buttons {
   display: inline-flex;
   align-items: stretch;

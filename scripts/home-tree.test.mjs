@@ -5,13 +5,18 @@ import { test } from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("home shows four always-visible entrances in three languages", async () => {
+test("home shows four collapsed blocks in three languages", async () => {
   const tree = await source("src/components/home-tree.tsx");
   for (const name of ["我的命盤", "今日指引", "趣味測驗", "文章與知識", "我的命盘", "趣味测验", "文章与知识", "My chart", "Today’s guide", "Quizzes", "Articles & knowledge"]) assert.ok(tree.includes(name), name);
+  for (const child of ["開始免費排盤", "看範例報告", "我的報告", "人生十章對照", "看看你是誰", "看看你的狀態", "生活小測", "命理小知識", "幽明萬象錄", "三界異聞錄", "最新更新", "關於昭梧"]) assert.ok(tree.includes(child), child);
   assert.match(tree, /data-home-card=\{node.id\}/);
-  assert.match(tree, /onClick=\{\(\) => onOpen\(node.id\)\}/);
+  assert.match(tree, /useState<HomeSection \| null>\(null\)/);
+  assert.match(tree, /aria-expanded=\{isOpen\}/);
+  assert.match(tree, /hidden=\{!isOpen\}/);
+  assert.doesNotMatch(tree, /data-open="true"/);
   assert.doesNotMatch(tree, /ph-tree-next|openId/);
-  for (const path of ["/mythic-atlas", "/guaili-luanshen", "/knowledge", "/sample-report"]) assert.ok(tree.includes(path));
+  assert.doesNotMatch(tree, /從哪裡開始/);
+  for (const path of ["/mythic-atlas", "/guaili-luanshen", "/knowledge", "/sample-report", "/updates", "/about"]) assert.ok(tree.includes(path));
 });
 
 test("tree lists only public pages, never gated professional routes", async () => {

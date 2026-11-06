@@ -30,6 +30,10 @@ test("background music resolves the active owner track through /api/owner-music 
   assert.match(music, /MUSIC_STREAM_URL = "\/api\/owner-music\?stream=1"/);
   assert.match(music, /loadOwnerMusic/);
   assert.match(music, /DEFAULT_VOLUME = 0\.16/);
+  assert.match(music, /data-music-volume/);
+  assert.match(music, /type="range"/);
+  assert.match(music, /MUTE_STORAGE_KEY/);
+  assert.match(music, /toggleMute/);
   assert.match(music, /audio\/mpeg/);
   assert.match(music, /loop/);
   assert.match(music, /playsInline/);
