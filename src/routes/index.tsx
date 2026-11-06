@@ -47,6 +47,7 @@ function useCopy(locale: string) {
       cards: [
         { href: "/quiz/divine-affinity",       title: "Divine Affinity Scan",           hint: "16 questions across Soul Pattern, Celestial Mandate" },
         { href: "/quiz/cultivation-destiny",   title: "Cultivation Destiny Dossier",    hint: "spirit root, sect, paths + personal 9:16 dossier image" },
+        { href: "/brand-archetypes.html", title: "Twelve Brand Archetypes", hint: "12 brand scenarios reveal your primary and supporting archetypes" },
         { href: "/fun-tests/earth-online",     title: "Earth Online · Classics Guide",  hint: "8 questions to match your stuck point with a Chinese classic" },
         { href: "/fun-tests?test=animal",      title: "Inner Animal × Guardian Beast",  hint: "current personality strategy and instinctive response" },
         { href: "/fun-tests?test=element",     title: "Five-Element Function Test",     hint: "which function you currently want to strengthen" },
@@ -78,6 +79,7 @@ function useCopy(locale: string) {
       cards: [
         { href: "/quiz/divine-affinity",       title: "仙佛渊源本缘测试",   hint: "16 题从魂格、象征脉象、天命六层交叉判读" },
         { href: "/quiz/cultivation-destiny",   title: "修仙命格灵测",       hint: "推演灵根宗门道途并生成个人九比十六命测图" },
+        { href: "/brand-archetypes.html", title: "品牌十二原型 · 定位测评", hint: "序、寻、证、联四组动机，12 题探索品牌主副原型" },
         { href: "/fun-tests/earth-online",     title: "地球 Online · 古籍攻略", hint: "8 道题看你现在卡在哪一关，推荐古籍" },
         { href: "/fun-tests?test=animal",      title: "内在动物 × 命局瑞兽", hint: "看现在常用的人格策略与本能反应" },
         { href: "/fun-tests?test=element",     title: "五行功能测验",        hint: "看现在主观上最想加强哪一种功能" },
@@ -109,6 +111,7 @@ function useCopy(locale: string) {
     cards: [
       { href: "/quiz/divine-affinity",       title: "仙佛淵源本緣測試",   hint: "16 題從魂格、象徵脈象、天命六層交叉判讀" },
       { href: "/quiz/cultivation-destiny",   title: "修仙命格靈測",       hint: "推演靈根宗門道途並生成個人九比十六命測圖" },
+      { href: "/brand-archetypes.html", title: "品牌十二原型 · 定位測評", hint: "序、尋、證、聯四組動機，12 題探索你的品牌主副原型" },
       { href: "/fun-tests/earth-online",     title: "地球 Online · 古籍攻略", hint: "8 道題看你現在卡在哪一關，推薦古籍" },
       { href: "/fun-tests?test=animal",      title: "內在動物 × 命局瑞獸", hint: "看現在常用的人格策略與本能反應" },
       { href: "/fun-tests?test=element",     title: "五行功能測驗",        hint: "看現在主觀上最想加強哪一種功能" },
