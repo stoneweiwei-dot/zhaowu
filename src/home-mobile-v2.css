@@ -181,31 +181,16 @@ html body #root .zw-painted-home.zw-v2-home :is(.zw-v2-primary,.zw-v2-sample,.zw
 }
 /* Reuse the real SiteShell language state, avoiding a second independent switcher. */
 html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header {
-  position: absolute !important;
-  top: 16px !important;
-  right: max(15px, calc((100vw - 680px) / 2 + 24px)) !important;
+  position: fixed !important;
+  top: max(12px, env(safe-area-inset-top)) !important;
+  right: max(12px, env(safe-area-inset-right)) !important;
+  left: auto !important;
+  transform: none !important;
   width: auto !important;
-  max-width: 52vw !important;
+  max-width: calc(100vw - max(12px, env(safe-area-inset-left)) - max(12px, env(safe-area-inset-right))) !important;
+  z-index: 100 !important;
   box-shadow: none !important;
   background: transparent !important;
-}
-html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header .zw-langpick__label {
-  display: none !important;
-}
-html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header .zw-langpick__track {
-  display: flex !important;
-  align-items: center;
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-}
-html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header .zw-langpick__opt {
-  min-width: 44px !important;
-  min-height: 44px !important;
-  padding: 8px 4px !important;
-  font-size: 11px !important;
-  border: 0 !important;
-  box-shadow: none !important;
 }
 /* The book index: a sequence of editorial chapter titles, never a dashboard card wall. */
 html body #root .zw-painted-home.zw-v2-home .ph-tree {
@@ -314,8 +299,6 @@ html body #root .zw-painted-home.zw-v2-home .ph-bottom-nav {
   html body #root .zw-painted-home.zw-v2-home .zw-v2-wordmark img { width:36px; }
   html body #root .zw-painted-home.zw-v2-home .ph-tree { padding-inline:20px; }
   html body #root .zw-painted-home.zw-v2-home .ph-tree-body { padding-left:30px; }
-  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header { top:13px !important; right:12px !important; }
-  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header .zw-langpick__opt { min-width:42px !important; padding:7px 1px !important; }
 }
 @media(min-width:761px) {
   html body #root .zw-painted-home.zw-v2-home .zw-v2-hero { padding-top:24px; }
@@ -469,15 +452,6 @@ html[data-zws="sydney-jacaranda"] .zw-south-spring, html[data-zws="southern-summ
 html body #root .zw-painted-home.zw-v2-home .ph-bottom-nav { display: none !important; }
 @media (min-width:900px) {
   html body #root .zw-painted-home.zw-v2-home .zw-v2-hero { padding-top: 84px; }
-  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header {
-    top: 16px !important;
-    left: 50% !important;
-    right: auto !important;
-    width: min(720px, calc(100% - 48px)) !important;
-    max-width: none !important;
-    transform: translateX(-50%);
-    background: transparent !important;
-  }
   html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-header-nav {
     margin-left: auto !important;
   }
@@ -495,4 +469,12 @@ html body #root .zw-painted-home.zw-v2-home .ph-bottom-nav { display: none !impo
     box-shadow: none !important;
     border-radius: 0 !important;
   }
+}
+
+/* Reserve room above the wordmark; nine phone options occupy four 44px rows. */
+@media (max-width: 899px) {
+  html body #root .zw-painted-home.zw-v2-home .zw-v2-hero { padding-top: 128px; }
+}
+@media (max-width: 520px) {
+  html body #root .zw-painted-home.zw-v2-home .zw-v2-hero { padding-top: 224px; }
 }

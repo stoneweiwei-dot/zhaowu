@@ -175,12 +175,17 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const releaseDate = formatReleaseDate(stats.publishedAt, language);
   const releaseSummary = SORTED_PUBLIC_CHANGELOG[0] ? publicChangeText(SORTED_PUBLIC_CHANGELOG[0], language).summary : releaseSummaryForLanguage(stats.latestSummary, stats.version, language);
   const numberLocale = intlTagFor(language);
-  // Korean and Hindi remain implemented in the codebase but are intentionally
-  // hidden from the public language selector until they are reactivated.
+  // Expose all implemented display dictionaries; article editing keeps its own three-language scope.
   const languageOptions = [
     { value: "zh-Hant" as const, label: "繁體", aria: "繁體中文" },
     { value: "zh-Hans" as const, label: "简体", aria: "简体中文" },
     { value: "en" as const, label: "English", aria: "English" },
+    { value: "ja" as const, label: "日本語", aria: "日本語" },
+    { value: "ko" as const, label: "한국어", aria: "한국어" },
+    { value: "hi" as const, label: "हिन्दी", aria: "हिन्दी" },
+    { value: "th" as const, label: "ไทย", aria: "ไทย" },
+    { value: "id" as const, label: "Bahasa Indonesia", aria: "Bahasa Indonesia" },
+    { value: "vi" as const, label: "Tiếng Việt", aria: "Tiếng Việt" },
   ];
 
   const updateLabel = displayText(language, "正式版本序號", "正式版本序号", "Release number", "正式版番号", "정식 버전 번호", "रिलीज़ संख्या");
@@ -196,12 +201,12 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const openGalleryLabel = displayText(language, "打開內容與素材管理", "打开内容与素材管理", "Open content and media management", "コンテンツ管理を開く", "콘텐츠 관리를 열기", "कंटेंट प्रबंधन खोलें");
   const dayModeLabel = displayText(language, "切換日間模式", "切换日间模式", "Switch to day mode", "昼モードに切り替える", "주간 모드로 전환", "दिन मोड पर जाएँ");
   const nightModeLabel = displayText(language, "切換夜間模式", "切换夜间模式", "Switch to night mode", "夜モードに切り替える", "야간 모드로 전환", "रात मोड पर जाएँ");
-  const languageVisualLabel = displayText(language, "語言", "语言", "Language", "言語", "언어", "भाषा");
+  const languageVisualLabel = t("language");
   const skipLabel = displayText(language, "跳到主要內容", "跳到主要内容", "Skip to main content", "本文へ移動", "본문으로 이동", "मुख्य सामग्री पर जाएँ");
 
   useEffect(() => {
     // Per-route metadata from src/lib/route-meta.json for the three public
-    // languages (zh-Hant/zh-Hans/en). Hidden languages (ja/ko/hi) and unknown
+    // article languages (zh-Hant/zh-Hans/en). Other display languages and unknown
     // routes keep the previous inline site-wide defaults below.
     const routeMeta = routeMetaFor(pathname);
     const routeEntry = routeMeta && (language === "zh-Hant" || language === "zh-Hans" || language === "en")
