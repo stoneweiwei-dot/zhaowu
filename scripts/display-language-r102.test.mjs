@@ -23,6 +23,14 @@ test("global language selector exposes all nine native language options", async 
   assert.match(switcher, /BrandIcon name="language"/);
   assert.match(switcher, /role="radiogroup"/);
   assert.match(switcher, /role="radio"/);
+  assert.match(switcher, /useState\(false\)/);
+  assert.match(switcher, /aria-expanded=\{open\}/);
+  assert.match(switcher, /setOpen\(false\)/);
+  assert.match(switcher, /pointerdown/);
+  const css = await source("src/language-switcher.css");
+  assert.match(css, /\.zw-langpick__track\[hidden\]/);
+  assert.match(css, /data-lang="id"/);
+  assert.match(css, /min-height: 44px/);
 });
 
 test("fresh public sessions default to English unless the browser reports Chinese (2026-10-15), all saved display languages survive hydration", async () => {

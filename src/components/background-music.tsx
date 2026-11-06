@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { loadOwnerMusic, type OwnerMusicTrack } from "@/lib/owner-music-client";
 import { useI18n } from "@/lib/i18n";
 import { MusicIcon } from "@/components/music-icons";
@@ -114,7 +113,6 @@ export function BackgroundMusic({ visible = false }: { visible?: boolean } = {})
   const [shuffleEnabled, setShuffleEnabled] = useState(() => readBooleanPreference(SHUFFLE_STORAGE_KEY, false));
   const [level, setLevel] = useState(readStoredVolume);
   const [muted, setMuted] = useState(() => readBooleanPreference(MUTE_STORAGE_KEY, false));
-  const [volumeSlot, setVolumeSlot] = useState<HTMLElement | null>(null);
   const levelRef = useRef(level);
   const mutedRef = useRef(muted);
 
@@ -146,13 +144,6 @@ export function BackgroundMusic({ visible = false }: { visible?: boolean } = {})
     // Start silent; playAudio() below fades it up once playback actually begins,
     // so switching or selecting a track never leaves it sitting at full volume.
     audio.volume = 0;
-  }, []);
-
-  // Wraps every audio.play() call so the volume always ramps up from silence
-  // instead of jumping straight to DEFAULT_VOLUME — avoids startling whoever
-  // is nearby when playback kicks in from a first tap/keystroke.
-  useLayoutEffect(() => {
-    setVolumeSlot(document.querySelector<HTMLElement>("[data-music-volume-dock]"));
   }, []);
 
   useEffect(() => { levelRef.current = level; }, [level]);
@@ -579,7 +570,6 @@ export function BackgroundMusic({ visible = false }: { visible?: boolean } = {})
 
   return (
     <section className="zhaowu-dragon-music" data-background-music-player data-dragon-music-controls aria-label={copy.controls}>
-      {volumeSlot ? createPortal(volumeControl, volumeSlot) : volumeControl}
       <audio
         ref={audioRef}
         playsInline
@@ -625,6 +615,7 @@ export function BackgroundMusic({ visible = false }: { visible?: boolean } = {})
           <MusicIcon name="shuffle" />
         </button>
       </div>
+      {volumeControl}
       <p data-music-mode-status className="mt-1 text-center text-[11px] font-semibold tracking-wide text-ink-mute">{modeStatus}</p>
       <div className="mt-3 border-t border-line/70 pt-3" data-public-music-playlist>
         <h3 className="font-display text-base text-ink">{copy.playlist} <span className="text-xs font-normal text-ink-mute">· {tracks.length}</span></h3>

@@ -192,6 +192,26 @@ html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header {
   box-shadow: none !important;
   background: transparent !important;
 }
+/* Volume no longer lives in a permanent dock. Keep the compact Music/Guide
+   control fixed, and let the panel open above it instead of covering the buttons. */
+html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-utility-dock {
+  position: fixed !important;
+  inset: auto max(12px, env(safe-area-inset-right)) max(14px, calc(env(safe-area-inset-bottom) + 8px)) auto !important;
+  width: max-content !important;
+  max-width: calc(100vw - 24px) !important;
+  margin: 0 !important;
+  z-index: 46 !important;
+}
+html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-utility-buttons {
+  display: inline-flex !important;
+  pointer-events: auto;
+}
+html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-utility-panel {
+  position: static !important;
+  right: auto !important;
+  bottom: auto !important;
+  max-height: min(62dvh, 520px);
+}
 /* The book index: a sequence of editorial chapter titles, never a dashboard card wall. */
 html body #root .zw-painted-home.zw-v2-home .ph-tree {
   width: 100%;
