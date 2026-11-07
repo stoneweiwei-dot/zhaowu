@@ -6,6 +6,7 @@ import ownerData from "../api/owner-data.js";
 import ownerSession from "../api/owner-session.js";
 import { clearOwnerDeviceCache } from "../lib/owner-auth.js";
 import { passkeyRegistrationOptions, verifyPasskeyRegistration } from "../lib/owner-passkey.js";
+import { OWNER_PRODUCTION_SUPABASE_URL } from "../lib/owner-supabase-origin.js";
 
 const HOST = "zhaowu.test";
 const BRIDGE = "bridge-secret-for-tests-0123456789abcdef";
@@ -203,4 +204,26 @@ test("Passkey sessions can manage promo codes and music; articles still require 
     clearOwnerDeviceCache();
     assert.equal((await call(ownerData, { cookie, body: { action: "promo.list" } })).status, 401);
   });
+});
+
+test("production Face ID reaches zhaowu-core when SUPABASE_URL still names the deleted project", async () => {
+  const previous = { VERCEL_ENV: process.env.VERCEL_ENV, SUPABASE_URL: process.env.SUPABASE_URL };
+  process.env.VERCEL_ENV = "production";
+  process.env.SUPABASE_URL = "https://plgpxusmemnmzckbwtiv.supabase.co";
+  try {
+    await withEdge(async (edge) => {
+      const { phone } = await enrol(edge);
+      const { verified } = await signIn(edge, phone);
+      assert.equal(verified.status, 200, JSON.stringify(verified.body));
+      assert.ok(edge.calls.length > 0);
+      for (const call of edge.calls) {
+        assert.equal(call.url, `${OWNER_PRODUCTION_SUPABASE_URL}/functions/v1/zhaowu-owner-data`);
+      }
+    });
+  } finally {
+    if (previous.VERCEL_ENV === undefined) delete process.env.VERCEL_ENV;
+    else process.env.VERCEL_ENV = previous.VERCEL_ENV;
+    if (previous.SUPABASE_URL === undefined) delete process.env.SUPABASE_URL;
+    else process.env.SUPABASE_URL = previous.SUPABASE_URL;
+  }
 });
