@@ -62,7 +62,7 @@ export const SKINS: SkinDef[] = [
   { id: "butterfly-lotus", ref: 24, mode: "light", zh: "蝶戀荷塘", hans: "蝶恋荷塘", en: "Butterfly & Lotus", noteZh: "白蝶荷花・霧青湖光・素雅灰綠", noteHans: "白蝶荷花・雾青湖光・素雅灰绿", noteEn: "White butterfly, lotus, misty lake grey-green", hero: "/theme-skins/butterfly-lotus-art.webp", focus: "50% 30%", swatch: ["#efece4", "#4a6a62", "#c9a3ad"] },
   { id: "song-gallery-frostleaf", ref: 25, mode: "light", zh: "霜葉照溪・宋式畫冊", hans: "霜叶照溪・宋式画册", en: "Frostleaf Brook · Song Gallery", noteZh: "秋葉赭・苔綠・溪石褐", noteHans: "秋叶赭・苔绿・溪石褐", noteEn: "Autumn rust, moss green and river-stone brown", hero: "/theme-skins/song-gallery-frostleaf-art.webp", focus: "50% 48%", swatch: ["#ead9c5", "#8a4d38", "#607f69"] },
   { id: "solar-frost-descent", ref: 26, mode: "light", zh: "霜降・霜林歸靜", hans: "霜降・霜林归静", en: "Frost’s Descent · Quiet Autumn", noteZh: "霜青・秋赭・淡金，三候輪替", noteHans: "霜青・秋赭・淡金，三候轮替", noteEn: "Frost teal, autumn ochre and pale gold; three seasonal scenes", hero: "/theme-skins/solar-frost-descent/hero-frost-descent.webp", focus: "50% 55%", swatch: ["#f6f1e6", "#375f5b", "#b87345"] },
-  { id: "sydney-jacaranda", ref: 27, mode: "light", zh: "悉尼・藍花楹", hans: "悉尼・蓝花楹", en: "Sydney Jacaranda", noteZh: "紫花・海藍・雲白，悉尼畫境", noteHans: "紫花・海蓝・云白，悉尼画境", noteEn: "Jacaranda violet, harbour blue and cloud white", hero: "/theme-skins/southern/sydney-jacaranda-summer.webp", focus: "50% 50%", swatch: ["#f4f2f9", "#45406f", "#9986be"] },
+  { id: "sydney-jacaranda", ref: 27, mode: "light", zh: "悉尼春・藍花楹", hans: "悉尼春・蓝花楹", en: "Sydney Spring · Jacaranda", noteZh: "藍花楹街道、砂岩金與港灣藍", noteHans: "蓝花楹街道、砂岩金与港湾蓝", noteEn: "Jacaranda streets, sandstone gold and harbour blue", hero: "/theme-skins/southern/sydney-jacaranda-spring.webp", focus: "50% 42%", swatch: ["#f4f2f9", "#45406f", "#c4a15a"] },
   { id: "solar-start-winter", ref: 28, mode: "light", zh: "立冬・藏息三候", hans: "立冬・藏息三候", en: "Start of Winter · Three Pentads", noteZh: "霜白・山青・暖絹，三候各有畫境", noteHans: "霜白・山青・暖绢，三候各有画境", noteEn: "Frost white, mountain blue and warm silk; three seasonal scenes", hero: "/theme-skins/solar-start-winter/water-begins-freezing.webp", focus: "50% 50%", swatch: ["#f5eee2", "#405d5a", "#b59b79"] },
   { id: "solar-minor-snow", ref: 29, mode: "light", zh: "小雪・雲山藏光", hans: "小雪・云山藏光", en: "Minor Snow · Hidden Light", noteZh: "雨青・霧白・松綠，三候各有畫境", noteHans: "雨青・雾白・松绿，三候各有画境", noteEn: "Rain blue, mist white and pine green; three seasonal scenes", hero: "/theme-skins/solar-minor-snow/rainbow-hidden.webp", focus: "50% 50%", swatch: ["#edf2ef", "#355b58", "#9da88f"] },
   { id: "solar-major-snow", ref: 30, mode: "light", zh: "大雪・松雪生機", hans: "大雪・松雪生机", en: "Major Snow · Living Pines", noteZh: "雪白・松綠・霧青，三候各有畫境", noteHans: "雪白・松绿・雾青，三候各有画境", noteEn: "Snow white, pine and mist; three seasonal scenes", hero: "/theme-skins/solar-major-snow/winter-bird.webp", focus: "50% 50%", swatch: ["#eef3e9", "#315a48", "#a7b69a"] },
@@ -86,9 +86,9 @@ export const SKINS: SkinDef[] = [
   { id: "solar-white-dew", ref: 48, mode: "light", zh: "白露・物候畫境", hans: "白露・物候画境", en: "White Dew · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-white-dew/1.webp", focus: "50% 50%", swatch: ["#eff2eb", "#3d5b4c", "#a9b7a1"] },
   { id: "solar-autumn-equinox", ref: 49, mode: "light", zh: "秋分・物候畫境", hans: "秋分・物候画境", en: "Autumn Equinox · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-autumn-equinox/1.webp", focus: "50% 50%", swatch: ["#f3efe6", "#515a42", "#baaa8b"] },
   { id: "solar-cold-dew", ref: 50, mode: "light", zh: "寒露・物候畫境", hans: "寒露・物候画境", en: "Cold Dew · Seasonal Scenes", noteZh: "三候原畫・節氣色彩・全站細節", noteHans: "三候原画・节气色彩・全站细节", noteEn: "Three original pentad scenes and a complete seasonal palette", hero: "/theme-skins/solar-cold-dew/1.webp", focus: "50% 50%", swatch: ["#f1f0e6", "#465b45", "#aeaf8c"] },
-  { id: "southern-summer", ref: 51, mode: "light", zh: "南境・夏日流光", hans: "南境・夏日流光", en: "Southern Summer", noteZh: "暖紙・溪光・草木黃落", noteHans: "暖纸・溪光・草木黄落", noteEn: "Warm paper, water and falling leaves", hero: "/theme-skins/solar-frost-descent/option-falling-leaves.webp", focus: "50% 50%", swatch: ["#f5eee1", "#52613e", "#b18b54"] },
-  { id: "southern-autumn", ref: 52, mode: "light", zh: "南境・秋山澄湖", hans: "南境・秋山澄湖", en: "Southern Autumn", noteZh: "桉林・暖金・山湖青", noteHans: "桉林・暖金・山湖青", noteEn: "Eucalyptus, warm gold and mountain lake", hero: "/theme-skins/southern/autumn-blue-mountains.webp", focus: "50% 50%", swatch: ["#f3f0e4", "#4a6044", "#b1985f"] },
-  { id: "southern-winter", ref: 53, mode: "light", zh: "南境・冬嵐青林", hans: "南境・冬岚青林", en: "Southern Winter", noteZh: "青林・湖霧・石青", noteHans: "青林・湖雾・石青", noteEn: "Green forest, lake mist and stone blue", hero: "/theme-skins/southern/winter-eucalyptus.webp", focus: "50% 50%", swatch: ["#edf2eb", "#315a50", "#8cae9c"] },
+  { id: "southern-summer", ref: 51, mode: "light", zh: "悉尼夏・東岸海灘", hans: "悉尼夏・东岸海滩", en: "Sydney Summer · Eastern Beaches", noteZh: "邦代沙金、太平洋藍、砂岩岸", noteHans: "邦代沙金、太平洋蓝、砂岩岸", noteEn: "Bondi sand, Pacific blue and sandstone coast", hero: "/theme-skins/southern/sydney-bondi-summer.webp", focus: "50% 46%", swatch: ["#e4f4f7", "#0c5870", "#d7a441"] },
+  { id: "southern-autumn", ref: 52, mode: "light", zh: "悉尼秋・藍山", hans: "悉尼秋・蓝山", en: "Sydney Autumn · Blue Mountains", noteZh: "桉樹藍霧、峭壁與秋光", noteHans: "桉树蓝雾、峭壁与秋光", noteEn: "Eucalyptus haze, escarpment and autumn light", hero: "/theme-skins/southern/blue-mountains-autumn.webp", focus: "50% 40%", swatch: ["#f6e7d2", "#2c4d66", "#c46a32"] },
+  { id: "southern-winter", ref: 53, mode: "light", zh: "悉尼冬・雪山", hans: "悉尼冬・雪山", en: "Sydney Winter · Snowy Mountains", noteZh: "科修斯科雪膠樹與高山雪", noteHans: "科修斯科雪胶树与高山雪", noteEn: "Kosciuszko snow gums and high-country snow", hero: "/theme-skins/southern/snowy-mountains-winter.webp", focus: "50% 38%", swatch: ["#e7eef3", "#1e4654", "#c4a27a"] },
 ];
 
 export type SkinFamily = "soft" | "water" | "warm" | "green" | "night";
@@ -103,22 +103,47 @@ export const CURATED_SKIN_CATALOG: ReadonlyArray<{ id: string; family: SkinFamil
   { id: "verdant-pavilion", family: "green" },
   { id: "verdant-rain", family: "night" },
   { id: "night-flute", family: "night" },
-  { id: "sydney-jacaranda", family: "water" },
 ] as const;
 
 export const CURATED_SKINS = CURATED_SKIN_CATALOG
   .map(({ id, family }) => ({ skin: SKINS.find((candidate) => candidate.id === id)!, family }));
+/** Sydney meteorological seasons. 藍花楹 is the spring place, not one of the 72 pentads. */
+export const SYDNEY_SEASON_IDS = ["sydney-jacaranda", "southern-summer", "southern-autumn", "southern-winter"] as const;
+export const SYDNEY_SEASON_SKINS = SYDNEY_SEASON_IDS.map((id) => SKINS.find((skin) => skin.id === id)!);
 export const SEASONAL_SKINS = SKINS.filter((skin) => skin.id.startsWith("solar-"));
-export const ARCHIVED_SKINS = SKINS.filter((skin) => !skin.id.startsWith("solar-") && !CURATED_SKIN_CATALOG.some((entry) => entry.id === skin.id));
+export const ARCHIVED_SKINS = SKINS.filter((skin) => !skin.id.startsWith("solar-") && !CURATED_SKIN_CATALOG.some((entry) => entry.id === skin.id) && !SYDNEY_SEASON_IDS.includes(skin.id as (typeof SYDNEY_SEASON_IDS)[number]));
 
 let visitorHemisphere: Hemisphere = 'unknown';
-/** Southern meteorological seasons follow the Sydney civil calendar. */
+/** Southern meteorological seasons follow the Sydney civil calendar. Spring is 藍花楹. */
 export function southernSkinForDate(now: Date): string {
   const month = Number(new Intl.DateTimeFormat('en', { timeZone: 'Australia/Sydney', month: 'numeric' }).format(now));
   if (month >= 9 && month <= 11) return 'sydney-jacaranda';
   if (month === 12 || month <= 2) return 'southern-summer';
   if (month <= 5) return 'southern-autumn';
   return 'southern-winter';
+}
+
+/** Sydney civil clock, including Australian Eastern daylight saving (GMT+11) versus standard time (GMT+10). */
+export function sydneyClock(now = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Australia/Sydney',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+    timeZoneName: 'shortOffset',
+  }).formatToParts(now);
+  const pick = (type: Intl.DateTimeFormatPartTypes) => parts.find((part) => part.type === type)?.value ?? '';
+  const offset = pick('timeZoneName');
+  const dst = /\+11\b/.test(offset);
+  return {
+    date: `${pick('year')}-${pick('month')}-${pick('day')}`,
+    time: `${pick('hour')}:${pick('minute')}`,
+    offset,
+    dst,
+  };
 }
 /** Return the accepted southern Start of Winter painting only for its 2026 term. */
 export function southernAutoArt(term: Parameters<typeof seasonalVisualSkinId>[0], hemisphere: Hemisphere, now = new Date()): string | null {
@@ -146,7 +171,7 @@ export function skinById(id: string | null | undefined) {
       noteZh: auto.hou['zh-Hant'], noteHans: auto.hou['zh-Hans'], noteEn: auto.hou.en,
       // Keep the existing southern selection and resolve the northern pentad art.
       hero: skin.id === 'sydney-jacaranda'
-        ? southernAutoArt(auto.term, visitorHemisphere, new Date()) ?? '/theme-skins/southern/sydney-jacaranda-summer.webp'
+        ? southernAutoArt(auto.term, visitorHemisphere, new Date()) ?? skin.hero
         : skin.id === FROST_SKIN_ID ? FROST_PHASES[auto.houIndex].art
         : seasonalPackForSkin(skin.id)?.[auto.houIndex].art ?? skin.hero,
       focus: skin.id === 'sydney-jacaranda' ? '50% 50%' : skin.focus,

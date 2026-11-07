@@ -117,8 +117,13 @@ test('homepage and theme manager display the individual pentad artworks',()=>{
   const resolver=readFileSync('src/lib/theme-skins.ts','utf8');
   assert.match(home,/data-solar-hou/);
   assert.match(home,/seasonalAuto\.hou\[locale\]/);
-  assert.match(themes,/data-seasonal-72-list/);
-  assert.match(themes,/三候畫作/);
+  assert.match(themes,/data-phenology-auto/);
+  assert.match(themes,/data-phenology-rule/);
+  assert.match(themes,/data-sydney-seasons/);
+  assert.match(themes,/藍花楹/);
+  assert.doesNotMatch(themes,/data-seasonal-72-list/);
+  assert.doesNotMatch(themes,/SEASONAL_SKINS/);
+  assert.doesNotMatch(themes,/藍花榆/);
   assert.match(resolver,/window\.setInterval\(refreshAutoSkinIfDue, 30_000\)/);
   assert.match(resolver,/visibilitychange/);
 });

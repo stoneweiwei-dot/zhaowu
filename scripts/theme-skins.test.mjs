@@ -185,10 +185,20 @@ test('every actual skin palette keeps body, muted copy and primary actions reada
       const ratio = contrast(colour(vars[fg],vars),colour(vars[bg],vars));
       assert.ok(ratio >= 4.5, `${skin.id}: ${fg} / ${bg} contrast ${ratio.toFixed(2)}`);
     }
-    assert.equal(vars['--zws-card-orn'], 'none');
-    assert.equal(vars['--zws-card-frame'], 'none');
-    assert.equal(vars['--zws-card-blur'], 'none');
+    const sydneySeason = ['sydney-jacaranda', 'southern-summer', 'southern-autumn', 'southern-winter'].includes(skin.id);
+    if (sydneySeason) {
+      assert.notEqual(vars['--zws-card-orn'], 'none', `${skin.id} keeps a season ornament`);
+      assert.notEqual(vars['--zws-card-frame'], 'none', `${skin.id} keeps a season frame`);
+    } else {
+      assert.equal(vars['--zws-card-orn'], 'none');
+      assert.equal(vars['--zws-card-frame'], 'none');
+      assert.equal(vars['--zws-card-blur'], 'none');
+    }
   }
+  const seasons = ['sydney-jacaranda', 'southern-summer', 'southern-autumn', 'southern-winter'].map((id) => tokensForSkin(ids.find((skin) => skin.id === id)));
+  assert.equal(new Set(seasons.map((vars) => vars['--zws-page'])).size, 4);
+  assert.equal(new Set(seasons.map((vars) => vars['--zws-card-frame'])).size, 4);
+  assert.equal(new Set(seasons.map((vars) => vars['--zws-art'])).size, 4);
 });
 
 test('curated themes keep visibly different page palettes instead of one shared paper colour', () => {
@@ -196,7 +206,7 @@ test('curated themes keep visibly different page palettes instead of one shared 
   const curatedBlock = registry.match(/CURATED_SKIN_CATALOG:[\s\S]*?= \[([\s\S]*?)\] as const;/)?.[1] ?? "";
   const curatedIds = [...curatedBlock.matchAll(/\{ id: "([a-z-]+)", family:/g)].map((match) => match[1]);
   const pages = curatedIds.map((id) => tokensForSkin(ids.find((skin) => skin.id === id))['--zws-page']);
-  assert.equal(curatedIds.length, 11);
+  assert.equal(curatedIds.length, 10);
   assert.equal(new Set(pages).size, curatedIds.length);
   assert.doesNotMatch(full, /html\[data-zws\]:not\(\[data-zws-mode="dark"\]\)\s*\{[^}]*--zws-page/s);
 });
@@ -247,7 +257,7 @@ test("owner theme manager curates ten distinct choices and keeps the other fifte
   const registry = readFileSync("src/lib/theme-skins.ts", "utf8");
   const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
   const curated = registry.match(/CURATED_SKIN_CATALOG:[\s\S]*?= \[([\s\S]*?)\] as const;/)?.[1] ?? "";
-  assert.equal([...curated.matchAll(/\{ id: "[a-z-]+", family: "[a-z]+" \}/g)].length, 11);
+  assert.equal([...curated.matchAll(/\{ id: "[a-z-]+", family: "[a-z]+" \}/g)].length, 10);
   assert.match(manager, /CURATED_SKINS/);
   assert.match(manager, /ARCHIVED_SKINS/);
   assert.match(manager, /data-archived-theme-collection/);
