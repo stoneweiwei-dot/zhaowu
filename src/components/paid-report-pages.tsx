@@ -1,3 +1,4 @@
+import { MobileScrollContainer } from "@/components/mobile-scroll-container";
 import { useI18n, type Locale } from "@/lib/i18n";
 import type { AnalysisResult, Element, Pillar } from "@/lib/bazi/types";
 import type { ReportSection } from "@/lib/report/focused-report";
@@ -210,7 +211,8 @@ function ChartSnapshot({ result, locale }: { result: AnalysisResult; locale: Loc
         {copy.chartLead ? <span>{copy.chartLead}</span> : null}
       </div>
 
-      <div className="zhaowu-pillar-grid">
+      <MobileScrollContainer hint="chart" ariaLabel={copy.chart}>
+        <div className="zhaowu-pillar-grid">
         {chart.pillars.map((pillar) => {
           const ready = pillar.ready !== false && pillar.ganZhi !== "未定";
           return (
@@ -232,7 +234,8 @@ function ChartSnapshot({ result, locale }: { result: AnalysisResult; locale: Loc
             </article>
           );
         })}
-      </div>
+        </div>
+      </MobileScrollContainer>
 
       <div className="zhaowu-chart-meta">
         <span>{chart.lunarDate}</span>

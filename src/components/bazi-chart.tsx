@@ -1,3 +1,4 @@
+import { MobileScrollContainer } from "@/components/mobile-scroll-container";
 import type { Chart, Pillar } from '@/lib/bazi/types';
 import { useI18n, type Locale } from '@/lib/i18n';
 import { chartTerm, emptyBranches, ganzhiLabel, pillarName, UNKNOWN_TIME_COPY } from '@/lib/bazi/presentation';
@@ -84,7 +85,8 @@ export function BaziChartContent({ chart, locale, showHeader = true, expandDetai
           <small>{c.verifyNote}</small>
         </aside>
       ) : null}
-      <div className="zhaowu-pillar-grid">
+      <MobileScrollContainer hint="chart" ariaLabel={c.title}>
+        <div className="zhaowu-pillar-grid">
         {chart.pillars.map((p) => (
           <section key={p.key} data-pillar={p.key} aria-label={pillarName(p.key, locale)}>
             <h3>{pillarName(p.key, locale)}</h3>
@@ -98,10 +100,12 @@ export function BaziChartContent({ chart, locale, showHeader = true, expandDetai
             )}
           </section>
         ))}
-      </div>
+        </div>
+      </MobileScrollContainer>
       <details className="zhaowu-chart-details" open={expandDetails || undefined}>
         <summary>{c.more}</summary>
-        <div className="zhaowu-pillar-detail-grid">
+        <MobileScrollContainer hint="chart" ariaLabel={c.more}>
+          <div className="zhaowu-pillar-detail-grid">
           {chart.pillars.map((p) => (
             <section key={p.key}>
               <h3>{pillarName(p.key, locale)}</h3>
@@ -126,21 +130,24 @@ export function BaziChartContent({ chart, locale, showHeader = true, expandDetai
               </dl>
             </section>
           ))}
-        </div>
+          </div>
+        </MobileScrollContainer>
         <p>
           {c.life}：{chart.timeUnknown ? '—' : ganzhiLabel(chart.minggong, locale)}
         </p>
         <p className="text-sm">{c.note}</p>
         <h3>{c.cycles}</h3>
         {!chart.timeUnknown && chart.dayun.length ? (
-          <ol className="zhaowu-cycle-list">
+          <MobileScrollContainer hint="cycles" ariaLabel={c.cycles}>
+            <ol className="zhaowu-cycle-list">
             {chart.dayun.map((period) => (
               <li key={period.startYear}>
                 <strong>{ganzhiLabel(period.ganZhi, locale)}</strong>
                 <span>{period.startYear}–{period.endYear}</span>
               </li>
             ))}
-          </ol>
+            </ol>
+          </MobileScrollContainer>
         ) : (
           <p>{c.noCycles}</p>
         )}
