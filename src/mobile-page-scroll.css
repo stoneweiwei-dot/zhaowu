@@ -2,7 +2,7 @@
    otherwise grows with its content, which can leave touch scrolling dependent on how
    each browser handles overflow-x:hidden on #root and the shell. */
 #root {
-  overflow-x: clip !important;
+  overflow-x: hidden;
   overflow-y: visible !important;
 }
 
@@ -21,10 +21,10 @@
   #root > .zhaowu-home-sheet-shell:not(.zhaowu-login-shell) {
     height: 100dvh;
     min-height: 100dvh;
-    overflow-x: clip !important;
+    overflow-x: hidden;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
-    touch-action: pan-y pinch-zoom;
+    touch-action: pan-x pan-y pinch-zoom;
   }
 }
