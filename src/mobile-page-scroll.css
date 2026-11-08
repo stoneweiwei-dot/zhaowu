@@ -2,7 +2,7 @@
    otherwise grows with its content, which can leave touch scrolling dependent on how
    each browser handles overflow-x:hidden on #root and the shell. */
 #root {
-  overflow-x: clip !important;
+  overflow-x: hidden;
   overflow-y: visible !important;
 }
 
@@ -21,10 +21,161 @@
   #root > .zhaowu-home-sheet-shell:not(.zhaowu-login-shell) {
     height: 100dvh;
     min-height: 100dvh;
-    overflow-x: clip !important;
+    overflow-x: hidden;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
-    touch-action: pan-y pinch-zoom;
+    touch-action: pan-x pan-y pinch-zoom;
+  }
+}
+
+/* =========================================================================
+   Phase 2: Mobile Data Scroll Container & Swipe Hints
+   ========================================================================= */
+
+.mobile-scroll-container {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin: 0.5rem 0;
+  clear: both;
+}
+
+.mobile-scroll-hint-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.35rem;
+  transition: opacity 0.3s ease;
+}
+
+.mobile-scroll-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: #7a6e5d;
+  background: rgba(115, 93, 67, 0.08);
+  border: 1px solid rgba(115, 93, 67, 0.16);
+  border-radius: 9999px;
+  padding: 2px 10px;
+  user-select: none;
+  animation: zw-hint-breathe 2.4s ease-in-out infinite;
+  transition: opacity 0.3s ease;
+}
+
+@keyframes zw-hint-breathe {
+  0%, 100% { opacity: 0.85; transform: translateX(0); }
+  50% { opacity: 1; transform: translateX(2px); }
+}
+
+.mobile-scroll-hint-bar.is-scrolled {
+  opacity: 0.35;
+}
+
+.mobile-scroll-hint-bar.is-scrolled:hover {
+  opacity: 0.9;
+}
+
+.mobile-scroll-track {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y pinch-zoom;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(115, 93, 67, 0.35) transparent;
+}
+
+.mobile-scroll-track::-webkit-scrollbar {
+  height: 4px;
+}
+
+.mobile-scroll-track::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mobile-scroll-track::-webkit-scrollbar-thumb {
+  background: rgba(115, 93, 67, 0.28);
+  border-radius: 4px;
+}
+
+.mobile-scroll-track:focus-visible {
+  outline: 2px solid #a89478;
+  outline-offset: 2px;
+}
+
+/* Subtle edge fades indicating horizontal overflow */
+.mobile-scroll-container.has-edge-fades::before,
+.mobile-scroll-container.has-edge-fades::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.mobile-scroll-container.has-edge-fades::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(255, 250, 241, 0.95), transparent);
+}
+
+.mobile-scroll-container.has-edge-fades::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(255, 250, 241, 0.95), transparent);
+}
+
+.mobile-scroll-container.has-edge-fades[data-scroll-left="true"]::before {
+  opacity: 1;
+}
+
+.mobile-scroll-container.has-edge-fades[data-scroll-right="true"]::after {
+  opacity: 1;
+}
+
+/* Dark mode / Night theme skin support */
+html[data-zw-theme="night"] .mobile-scroll-hint,
+html[data-zws-mode="dark"] .mobile-scroll-hint {
+  color: #c9bfaf;
+  background: rgba(220, 205, 180, 0.1);
+  border-color: rgba(220, 205, 180, 0.2);
+}
+
+html[data-zw-theme="night"] .mobile-scroll-container.has-edge-fades::before,
+html[data-zws-mode="dark"] .mobile-scroll-container.has-edge-fades::before {
+  background: linear-gradient(to right, rgba(24, 28, 25, 0.96), transparent);
+}
+
+html[data-zw-theme="night"] .mobile-scroll-container.has-edge-fades::after,
+html[data-zws-mode="dark"] .mobile-scroll-container.has-edge-fades::after {
+  background: linear-gradient(to left, rgba(24, 28, 25, 0.96), transparent);
+}
+
+/* Small mobile layout protection */
+@media (max-width: 520px) {
+  .mobile-scroll-container .zhaowu-pillar-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(78px, 1fr)) !important;
+    min-width: 328px !important;
+  }
+
+  .mobile-scroll-container .zhaowu-cycle-list {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    min-width: max-content !important;
+    padding-bottom: 4px !important;
+  }
+
+  .mobile-scroll-container .zhaowu-cycle-list > li {
+    flex: 0 0 88px !important;
+    min-width: 88px !important;
   }
 }

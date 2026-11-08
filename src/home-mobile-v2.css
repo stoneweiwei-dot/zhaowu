@@ -498,3 +498,90 @@ html body #root .zw-painted-home.zw-v2-home .ph-bottom-nav { display: none !impo
 @media (max-width: 520px) {
   html body #root .zw-painted-home.zw-v2-home .zw-v2-hero { padding-top: 224px; }
 }
+
+/* Sydney seasons: each place keeps its own veil, button and card frame. 春＝藍花楹. */
+html[data-zws="sydney-jacaranda"] body #root .zw-painted-home.zw-v2-home .zw-stage {
+  box-shadow: inset 0 0 0 3px #c4a15a, inset 0 0 0 8px rgba(69, 64, 111, .55);
+  border-radius: 0 0 36px 36px;
+}
+html[data-zws="sydney-jacaranda"] body #root .zw-painted-home.zw-v2-home .zw-stage::after {
+  background: linear-gradient(180deg, rgba(244, 242, 249, .72) 0%, rgba(244, 242, 249, .28) 34%, transparent 62%);
+}
+html[data-zws="sydney-jacaranda"] body #root .zw-painted-home.zw-v2-home .zw-v2-primary {
+  background: #45406f !important; color: #fffaf0 !important; border: 2px solid #c4a15a !important; border-radius: 999px !important;
+}
+html[data-zws="sydney-jacaranda"] body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry {
+  background: rgba(251, 250, 255, .94) !important; color: #322d4a !important;
+  border: 2px solid #9a7ec4 !important; border-radius: 28px !important;
+  box-shadow: 0 0 0 4px rgba(196, 161, 90, .45) !important;
+}
+html[data-zws="sydney-jacaranda"] body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry {
+  background: #45406f !important; color: #fffaf0 !important; border-color: #c4a15a !important;
+}
+html[data-zws="sydney-jacaranda"] body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry :is(strong, small) { color: #322d4a !important; -webkit-text-fill-color: #322d4a !important; }
+html[data-zws="sydney-jacaranda"] body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry :is(strong, small) { color: #fffaf0 !important; -webkit-text-fill-color: #fffaf0 !important; }
+
+html[data-zws="southern-summer"] body #root .zw-painted-home.zw-v2-home .zw-stage {
+  box-shadow: inset 0 -12px 0 #d7a441, inset 0 0 0 3px #0c5870;
+}
+html[data-zws="southern-summer"] body #root .zw-painted-home.zw-v2-home .zw-stage::after {
+  background: linear-gradient(180deg, rgba(228, 244, 247, .7) 0%, rgba(228, 244, 247, .22) 36%, transparent 64%);
+}
+html[data-zws="southern-summer"] body #root .zw-painted-home.zw-v2-home .zw-v2-primary {
+  background: #0c5870 !important; color: #fffaf0 !important; border: 0 !important; border-bottom: 6px solid #d7a441 !important; border-radius: 18px !important;
+}
+html[data-zws="southern-summer"] body #root .zw-painted-home.zw-v2-home .zw-v2-season { background: rgba(12, 88, 112, .86); border-bottom: 4px solid #d7a441; }
+html[data-zws="southern-summer"] body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry {
+  background: rgba(247, 253, 254, .95) !important; color: #12343f !important;
+  border: 2px solid #0c5870 !important; border-bottom: 7px solid #d7a441 !important; border-radius: 18px !important;
+  box-shadow: none !important;
+}
+html[data-zws="southern-summer"] body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry {
+  background: #0c5870 !important; color: #fffaf0 !important;
+}
+html[data-zws="southern-summer"] body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry :is(strong, small) { color: #12343f !important; -webkit-text-fill-color: #12343f !important; }
+html[data-zws="southern-summer"] body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry :is(strong, small) { color: #fffaf0 !important; -webkit-text-fill-color: #fffaf0 !important; }
+
+html[data-zws="southern-autumn"] body #root .zw-painted-home.zw-v2-home .zw-stage {
+  box-shadow: inset 14px 0 0 #2c4d66, inset 0 0 0 1px #c46a32;
+  border-radius: 0;
+}
+html[data-zws="southern-autumn"] body #root .zw-painted-home.zw-v2-home .zw-stage::after {
+  background: linear-gradient(180deg, rgba(246, 231, 210, .74) 0%, rgba(246, 231, 210, .24) 38%, transparent 66%);
+}
+html[data-zws="southern-autumn"] body #root .zw-painted-home.zw-v2-home .zw-v2-primary {
+  background: #2c4d66 !important; color: #fffaf0 !important; border: 0 !important; border-left: 8px solid #c46a32 !important; border-radius: 2px !important;
+}
+html[data-zws="southern-autumn"] body #root .zw-painted-home.zw-v2-home .zw-v2-season { background: rgba(44, 77, 102, .88); border-left: 6px solid #c46a32; }
+html[data-zws="southern-autumn"] body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry {
+  background: rgba(255, 246, 234, .95) !important; color: #2c3330 !important;
+  border: 1px solid #c46a32 !important; border-left: 10px solid #2c4d66 !important; border-radius: 2px !important;
+  box-shadow: none !important;
+}
+html[data-zws="southern-autumn"] body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry {
+  background: #2c4d66 !important; color: #fffaf0 !important; border-left-color: #c46a32 !important;
+}
+html[data-zws="southern-autumn"] body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry :is(strong, small) { color: #2c3330 !important; -webkit-text-fill-color: #2c3330 !important; }
+html[data-zws="southern-autumn"] body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry :is(strong, small) { color: #fffaf0 !important; -webkit-text-fill-color: #fffaf0 !important; }
+
+html[data-zws="southern-winter"] body #root .zw-painted-home.zw-v2-home .zw-stage {
+  box-shadow: inset 0 0 0 2px #f7fbfd, inset 0 0 0 7px #1e4654;
+  border-radius: 0;
+}
+html[data-zws="southern-winter"] body #root .zw-painted-home.zw-v2-home .zw-stage::after {
+  background: linear-gradient(180deg, rgba(231, 238, 243, .78) 0%, rgba(231, 238, 243, .3) 32%, transparent 60%);
+}
+html[data-zws="southern-winter"] body #root .zw-painted-home.zw-v2-home .zw-v2-primary {
+  background: #1e4654 !important; color: #fffaf0 !important; border: 1px solid #c4a27a !important; border-radius: 0 !important;
+}
+html[data-zws="southern-winter"] body #root .zw-painted-home.zw-v2-home .zw-v2-season { background: rgba(30, 70, 84, .9); border: 1px solid #c4a27a; }
+html[data-zws="southern-winter"] body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry {
+  background: rgba(247, 251, 253, .96) !important; color: #1c333c !important;
+  border: 1px solid #1e4654 !important; border-radius: 0 !important;
+  box-shadow: inset 0 0 0 1px #c4a27a, 0 0 0 3px #1e4654 !important;
+}
+html[data-zws="southern-winter"] body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry {
+  background: #1e4654 !important; color: #fffaf0 !important;
+}
+html[data-zws="southern-winter"] body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry :is(strong, small) { color: #1c333c !important; -webkit-text-fill-color: #1c333c !important; }
+html[data-zws="southern-winter"] body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry :is(strong, small) { color: #fffaf0 !important; -webkit-text-fill-color: #fffaf0 !important; }

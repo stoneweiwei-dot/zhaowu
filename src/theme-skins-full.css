@@ -1431,7 +1431,19 @@ html[data-zws="song-gallery-frostleaf"] {
 }
 
 /* Verified 2026 seasonal pack, using the existing full-site skin engine. */
-html[data-zws="sydney-jacaranda"] { --zws-art: url(/theme-skins/southern/sydney-jacaranda-summer.webp); --zws-focus: 50% 50%; --zws-frame: #45406f; --zws-veil: 80%; }
+/* 悉尼春・藍花楹: petal crown, sandstone gold, harbour violet. Not a generic purple wash. */
+html[data-zws="sydney-jacaranda"] {
+  --zws-art: url(/theme-skins/southern/sydney-jacaranda-spring.webp); --zws-focus: 50% 42%; --zws-frame: #45406f; --zws-veil: 58%;
+  --zws-card-r: 28px; --zws-card-radius: 28px; --zws-radius: 28px; --zws-hero-radius: 28px;
+  --zws-btn-radius: 999px; --zws-pill-radius: 999px; --zws-btn-bg: #45406f;
+  --zws-card-orn: radial-gradient(circle, #c4a15a 0 2px, transparent 2.5px) top 8px left 10px / 14px 14px no-repeat, radial-gradient(circle, #9a7ec4 0 2px, transparent 2.5px) top 8px right 10px / 14px 14px no-repeat, linear-gradient(90deg, transparent, #9a7ec4, transparent) top 0 left 12% / 76% 3px no-repeat;
+  --zws-card-frame: 0 0 0 1px #9a7ec4, 0 0 0 5px rgba(196, 161, 90, .38), 0 12px 26px rgba(69, 64, 111, .16);
+  --zws-card-blur: blur(0px);
+  --zws-hero-frame: 0 0 0 2px #c4a15a, 0 0 0 7px rgba(69, 64, 111, .28);
+  --zws-rule: #c4a15a; --zws-rule-h: 3px; --zws-rule-w: 72px;
+  --zws-pattern: radial-gradient(circle, rgba(138, 98, 184, .34) 0 1.2px, transparent 1.7px);
+  --zws-pattern-size: 18px 22px; --zws-pattern-opacity: .55;
+}
 html[data-zws="solar-frost-descent"] {
  --zws-art: url(/theme-skins/solar-frost-descent/hero-frost-descent.webp); --zws-focus: 50% 55%; --zws-frame: #375f5b; --zws-veil: 84%;
  --zws-font-d: "Songti TC", "Noto Serif TC", "Songti SC", serif;
@@ -1584,17 +1596,85 @@ html[data-zws="solar-cold-dew"] body .stone-login-screen { --login-art: url(/the
 html[data-zws="solar-cold-dew"] body .zw-ink-board[data-variant="jade"] .zw-ink-hero__art { background: linear-gradient(90deg,rgba(245,248,240,.96),rgba(245,248,240,.36)), url(/theme-skins/solar-cold-dew/2.webp) center/cover !important; }
 html[data-zws="solar-cold-dew"] body :is(.zhaowu-specialist-hero,.zhaowu-report-header,.zhaowu-visual-book-head,.history-hero,.history-empty,.zhaowu-today-guide__spirit-paper,.zw-home-inline-loading) { background-image: linear-gradient(90deg,rgba(245,248,240,.96),rgba(245,248,240,.9)), url(/theme-skins/solar-cold-dew/3.webp) !important; background-size: cover; }
 
-html[data-zws="southern-summer"] { --zws-art: url(/theme-skins/solar-frost-descent/option-falling-leaves.webp); --zws-focus: 50% 50%; --zws-frame: #52613e; --zws-veil: 84%; --zws-font-d: "Songti TC", "Noto Serif TC", "Songti SC", serif; --zws-font-en: "Iowan Old Style", Baskerville, Georgia, serif; --zws-card-orn: none; --zws-card-frame: none; --zws-card-blur: none; --zws-hw: 500; --zws-shadow: none; --zws-btn-bg: #52613e; --zws-btn-radius: 7px; --zws-pill-radius: 7px; --zws-rule: #b18b54; --zws-rule-h: 1px; --zws-rule-w: 36px; --zws-hero-radius: 8px; --zws-hero-frame: none; --zws-card-border: 1px solid var(--zws-line); }
-html[data-zws="southern-summer"] body .stone-login-screen { --login-art: url(/theme-skins/solar-frost-descent/option-falling-leaves.webp); }
-html[data-zws="southern-summer"] body .zw-ink-board[data-variant="jade"] .zw-ink-hero__art { background: linear-gradient(90deg,rgba(245,248,240,.96),rgba(245,248,240,.36)), url(/theme-skins/solar-frost-descent/option-falling-leaves.webp) center/cover !important; }
-html[data-zws="southern-summer"] body :is(.zhaowu-specialist-hero,.zhaowu-report-header,.zhaowu-visual-book-head,.history-hero,.history-empty,.zhaowu-today-guide__spirit-paper,.zw-home-inline-loading) { background-image: linear-gradient(90deg,rgba(245,248,240,.96),rgba(245,248,240,.87)), url(/theme-skins/solar-frost-descent/option-falling-leaves.webp) !important; background-size: cover; }
+/* 悉尼夏・東岸海灘: open sea rail, sand plinth. Bondi, not a generic tropical beach. */
+html[data-zws="southern-summer"] {
+  --zws-art: url(/theme-skins/southern/sydney-bondi-summer.webp); --zws-focus: 50% 46%; --zws-frame: #0c5870; --zws-veil: 52%;
+  --zws-font-d: "Songti TC", "Noto Serif TC", "Songti SC", serif; --zws-font-en: "Iowan Old Style", Baskerville, Georgia, serif;
+  --zws-card-r: 18px; --zws-card-radius: 18px; --zws-radius: 18px; --zws-hero-radius: 22px;
+  --zws-btn-radius: 18px; --zws-pill-radius: 18px; --zws-btn-bg: #0c5870; --zws-hw: 500;
+  --zws-card-orn: linear-gradient(#0c5870, #0c5870) top 0 left 0 / 100% 4px no-repeat, linear-gradient(#d7a441, #d7a441) bottom 0 left 0 / 100% 7px no-repeat;
+  --zws-card-frame: 0 7px 0 #d7a441, 0 0 0 2px #0c5870, 0 16px 28px rgba(12, 88, 112, .16);
+  --zws-card-blur: blur(0px);
+  --zws-hero-frame: inset 0 -10px 0 #d7a441, 0 0 0 3px #0c5870;
+  --zws-rule: #0c5870; --zws-rule-h: 4px; --zws-rule-w: 84px;
+  --zws-pattern: repeating-radial-gradient(circle at 0 100%, transparent 0 8px, rgba(12, 88, 112, .16) 9px 10px, transparent 11px 18px);
+  --zws-pattern-size: 36px 16px; --zws-pattern-opacity: .7;
+  --zws-card-border: 2px solid #0c5870;
+}
+html[data-zws="southern-summer"] body .stone-login-screen { --login-art: url(/theme-skins/southern/sydney-bondi-summer.webp); }
+html[data-zws="southern-summer"] body .zw-ink-board[data-variant="jade"] .zw-ink-hero__art { background: linear-gradient(90deg,rgba(228,244,247,.96),rgba(228,244,247,.36)), url(/theme-skins/southern/sydney-bondi-summer.webp) center/cover !important; }
+html[data-zws="southern-summer"] body :is(.zhaowu-specialist-hero,.zhaowu-report-header,.zhaowu-visual-book-head,.history-hero,.history-empty,.zhaowu-today-guide__spirit-paper,.zw-home-inline-loading) { background-image: linear-gradient(90deg,rgba(228,244,247,.96),rgba(228,244,247,.87)), url(/theme-skins/southern/sydney-bondi-summer.webp) !important; background-size: cover; }
 
-html[data-zws="southern-autumn"] { --zws-art: url(/theme-skins/southern/autumn-blue-mountains.webp); --zws-focus: 50% 50%; --zws-frame: #4a6044; --zws-veil: 84%; --zws-font-d: "Songti TC", "Noto Serif TC", "Songti SC", serif; --zws-font-en: "Iowan Old Style", Baskerville, Georgia, serif; --zws-card-orn: none; --zws-card-frame: none; --zws-card-blur: none; --zws-hw: 500; --zws-shadow: none; --zws-btn-bg: #4a6044; --zws-btn-radius: 7px; --zws-pill-radius: 7px; --zws-rule: #b1985f; --zws-rule-h: 1px; --zws-rule-w: 36px; --zws-hero-radius: 8px; --zws-hero-frame: none; --zws-card-border: 1px solid var(--zws-line); }
-html[data-zws="southern-autumn"] body .stone-login-screen { --login-art: url(/theme-skins/southern/autumn-blue-mountains.webp); }
-html[data-zws="southern-autumn"] body .zw-ink-board[data-variant="jade"] .zw-ink-hero__art { background: linear-gradient(90deg,rgba(245,248,240,.96),rgba(245,248,240,.36)), url(/theme-skins/southern/autumn-blue-mountains.webp) center/cover !important; }
-html[data-zws="southern-autumn"] body :is(.zhaowu-specialist-hero,.zhaowu-report-header,.zhaowu-visual-book-head,.history-hero,.history-empty,.zhaowu-today-guide__spirit-paper,.zw-home-inline-loading) { background-image: linear-gradient(90deg,rgba(245,248,240,.96),rgba(245,248,240,.87)), url(/theme-skins/southern/autumn-blue-mountains.webp) !important; background-size: cover; }
+/* 悉尼秋・藍山: escarpment bar and eucalyptus rust. */
+html[data-zws="southern-autumn"] {
+  --zws-art: url(/theme-skins/southern/blue-mountains-autumn.webp); --zws-focus: 50% 40%; --zws-frame: #2c4d66; --zws-veil: 54%;
+  --zws-font-d: "Songti TC", "Noto Serif TC", "Songti SC", serif; --zws-font-en: "Iowan Old Style", Baskerville, Georgia, serif;
+  --zws-card-r: 4px; --zws-card-radius: 4px; --zws-radius: 4px; --zws-hero-radius: 2px;
+  --zws-btn-radius: 2px; --zws-pill-radius: 2px; --zws-btn-bg: #2c4d66; --zws-hw: 600;
+  --zws-card-orn: linear-gradient(#2c4d66, #6d88a0 42%, #c46a32) left 0 top 0 / 9px 100% no-repeat;
+  --zws-card-frame: inset 9px 0 0 #2c4d66, 0 0 0 1px #c46a32, 0 10px 22px rgba(44, 77, 102, .14);
+  --zws-card-blur: blur(0px);
+  --zws-hero-frame: inset 12px 0 0 #2c4d66, 0 0 0 1px #c46a32;
+  --zws-rule: #c46a32; --zws-rule-h: 2px; --zws-rule-w: 96px;
+  --zws-pattern: repeating-linear-gradient(180deg, transparent 0 18px, rgba(44, 77, 102, .12) 18px 19px, transparent 19px 28px);
+  --zws-pattern-size: 100% 28px; --zws-pattern-opacity: .8;
+  --zws-card-border: 1px solid #c46a32;
+}
+html[data-zws="southern-autumn"] body .stone-login-screen { --login-art: url(/theme-skins/southern/blue-mountains-autumn.webp); }
+html[data-zws="southern-autumn"] body .zw-ink-board[data-variant="jade"] .zw-ink-hero__art { background: linear-gradient(90deg,rgba(246,231,210,.96),rgba(246,231,210,.36)), url(/theme-skins/southern/blue-mountains-autumn.webp) center/cover !important; }
+html[data-zws="southern-autumn"] body :is(.zhaowu-specialist-hero,.zhaowu-report-header,.zhaowu-visual-book-head,.history-hero,.history-empty,.zhaowu-today-guide__spirit-paper,.zw-home-inline-loading) { background-image: linear-gradient(90deg,rgba(246,231,210,.96),rgba(246,231,210,.87)), url(/theme-skins/southern/blue-mountains-autumn.webp) !important; background-size: cover; }
 
-html[data-zws="southern-winter"] { --zws-art: url(/theme-skins/southern/winter-eucalyptus.webp); --zws-focus: 50% 50%; --zws-frame: #315a50; --zws-veil: 84%; --zws-font-d: "Songti TC", "Noto Serif TC", "Songti SC", serif; --zws-font-en: "Iowan Old Style", Baskerville, Georgia, serif; --zws-card-orn: none; --zws-card-frame: none; --zws-card-blur: none; --zws-hw: 500; --zws-shadow: none; --zws-btn-bg: #315a50; --zws-btn-radius: 7px; --zws-pill-radius: 7px; --zws-rule: #8cae9c; --zws-rule-h: 1px; --zws-rule-w: 36px; --zws-hero-radius: 8px; --zws-hero-frame: none; --zws-card-border: 1px solid var(--zws-line); }
-html[data-zws="southern-winter"] body .stone-login-screen { --login-art: url(/theme-skins/southern/winter-eucalyptus.webp); }
-html[data-zws="southern-winter"] body .zw-ink-board[data-variant="jade"] .zw-ink-hero__art { background: linear-gradient(90deg,rgba(245,248,240,.96),rgba(245,248,240,.36)), url(/theme-skins/southern/winter-eucalyptus.webp) center/cover !important; }
-html[data-zws="southern-winter"] body :is(.zhaowu-specialist-hero,.zhaowu-report-header,.zhaowu-visual-book-head,.history-hero,.history-empty,.zhaowu-today-guide__spirit-paper,.zw-home-inline-loading) { background-image: linear-gradient(90deg,rgba(245,248,240,.96),rgba(245,248,240,.87)), url(/theme-skins/southern/winter-eucalyptus.webp) !important; background-size: cover; }
+/* 悉尼冬・雪山: sharp alpine edge, snow-gum bark, high-country snow. */
+html[data-zws="southern-winter"] {
+  --zws-art: url(/theme-skins/southern/snowy-mountains-winter.webp); --zws-focus: 50% 38%; --zws-frame: #1e4654; --zws-veil: 50%;
+  --zws-font-d: "Songti TC", "Noto Serif TC", "Songti SC", serif; --zws-font-en: "Iowan Old Style", Baskerville, Georgia, serif;
+  --zws-card-r: 0px; --zws-card-radius: 0px; --zws-radius: 0px; --zws-hero-radius: 0px;
+  --zws-btn-radius: 0px; --zws-pill-radius: 0px; --zws-btn-bg: #1e4654; --zws-hw: 600;
+  --zws-card-orn: linear-gradient(#f7fbfd, #f7fbfd) top 4px left 4px / calc(100% - 8px) 1px no-repeat, linear-gradient(#c4a27a, #c4a27a) top 7px left 4px / calc(100% - 8px) 2px no-repeat, linear-gradient(#f7fbfd, #f7fbfd) bottom 4px left 4px / calc(100% - 8px) 1px no-repeat;
+  --zws-card-frame: 0 0 0 1px #f7fbfd, 0 0 0 4px #1e4654, inset 0 0 0 1px #c4a27a;
+  --zws-card-blur: blur(0px);
+  --zws-hero-frame: 0 0 0 1px #f7fbfd, 0 0 0 5px #1e4654;
+  --zws-rule: #1e4654; --zws-rule-h: 1px; --zws-rule-w: 48px;
+  --zws-pattern: linear-gradient(rgba(255,255,255,.55) 1px, transparent 1px), linear-gradient(90deg, rgba(30, 70, 84, .08) 1px, transparent 1px);
+  --zws-pattern-size: 100% 7px, 11px 100%; --zws-pattern-opacity: .45;
+  --zws-card-border: 1px solid #1e4654;
+}
+html[data-zws="southern-winter"] body .stone-login-screen { --login-art: url(/theme-skins/southern/snowy-mountains-winter.webp); }
+html[data-zws="southern-winter"] body .zw-ink-board[data-variant="jade"] .zw-ink-hero__art { background: linear-gradient(90deg,rgba(231,238,243,.96),rgba(231,238,243,.36)), url(/theme-skins/southern/snowy-mountains-winter.webp) center/cover !important; }
+html[data-zws="southern-winter"] body :is(.zhaowu-specialist-hero,.zhaowu-report-header,.zhaowu-visual-book-head,.history-hero,.history-empty,.zhaowu-today-guide__spirit-paper,.zw-home-inline-loading) { background-image: linear-gradient(90deg,rgba(231,238,243,.96),rgba(231,238,243,.87)), url(/theme-skins/southern/snowy-mountains-winter.webp) !important; background-size: cover; }
+
+/* Outrank the shared two-attribute editorial reset so the four Sydney seasons keep distinct frames. */
+html[data-zws="sydney-jacaranda"][data-zws] {
+  --zws-card-orn: radial-gradient(circle, #c4a15a 0 2px, transparent 2.5px) top 8px left 10px / 14px 14px no-repeat, linear-gradient(90deg, transparent, #9a7ec4, transparent) top 0 left 12% / 76% 3px no-repeat;
+  --zws-card-frame: 0 0 0 1px #9a7ec4, 0 0 0 5px rgba(196, 161, 90, .38);
+  --zws-card-blur: blur(0px);
+  --zws-hero-radius: 28px; --zws-btn-radius: 999px;
+}
+html[data-zws="southern-summer"][data-zws] {
+  --zws-card-orn: linear-gradient(#0c5870, #0c5870) top 0 left 0 / 100% 4px no-repeat, linear-gradient(#d7a441, #d7a441) bottom 0 left 0 / 100% 7px no-repeat;
+  --zws-card-frame: 0 7px 0 #d7a441, 0 0 0 2px #0c5870;
+  --zws-card-blur: blur(0px);
+  --zws-hero-radius: 22px; --zws-btn-radius: 18px;
+}
+html[data-zws="southern-autumn"][data-zws] {
+  --zws-card-orn: linear-gradient(#2c4d66, #6d88a0 42%, #c46a32) left 0 top 0 / 9px 100% no-repeat;
+  --zws-card-frame: inset 9px 0 0 #2c4d66, 0 0 0 1px #c46a32;
+  --zws-card-blur: blur(0px);
+  --zws-hero-radius: 2px; --zws-btn-radius: 2px;
+}
+html[data-zws="southern-winter"][data-zws] {
+  --zws-card-orn: linear-gradient(#c4a27a, #c4a27a) top 7px left 4px / calc(100% - 8px) 2px no-repeat;
+  --zws-card-frame: 0 0 0 1px #f7fbfd, 0 0 0 4px #1e4654;
+  --zws-card-blur: blur(0px);
+  --zws-hero-radius: 0px; --zws-btn-radius: 0px;
+}

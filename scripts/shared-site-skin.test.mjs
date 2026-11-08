@@ -1,7 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { validSiteSkin, SITE_SKIN_IDS, readPublishedSiteSkin } from "../lib/owner-site-skin-public.js";
+// The public settings reader is imported after setting an isolated, non-secret CI fixture.
+// ESM static imports run before top-level assignments, so use a dynamic import here.
+process.env.SUPABASE_ANON_KEY ||= "ci-test-only-public-key";
+const { validSiteSkin, SITE_SKIN_IDS, readPublishedSiteSkin } = await import("../lib/owner-site-skin-public.js");
 
 test("shared skin catalog covers all registered choices and classic", () => {
   const src = readFileSync("src/lib/theme-skins.ts", "utf8");
