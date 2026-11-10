@@ -46,6 +46,11 @@
       "zh-Hans": { "title": "真太阳时怎么算？经度差、均时差与夏令时（含南半球／澳洲实例）｜昭梧", "description": "八字真太阳时的计算公式与实例：经度差每度 4 分钟、均时差约 −14 至 +16 分、夏令时以实际 UTC 偏移代入；含悉尼、台北、北京数值范例，并说明误差与限制。" },
       "en": { "title": "True Solar Time for BaZi: Formula, Equation of Time & DST (Sydney Examples) | ZHAOWU", "description": "How true solar time is calculated for a BaZi chart: 4 minutes per degree of longitude, the equation of time (about −14 to +16 min) and daylight saving via the actual UTC offset, with Sydney, Taipei and Beijing worked examples, plus error and limits." }
     },
+    "/knowledge/southern-hemisphere-bazi": {
+      "zh-Hant": { "title": "南半球八字怎麼排？澳洲／紐西蘭節氣、真太陽時與季節環境校正｜昭梧", "description": "說明南半球（悉尼、墨爾本、奧克蘭等）排八字為何不反轉四柱與月令，如何計算跨年夏令時真太陽時，並將當地四季氣候與採光列為環境校正層。" },
+      "zh-Hans": { "title": "南半球八字怎么排？澳洲／新西兰节气、真太阳时与季节环境校正｜昭梧", "description": "说明南半球（悉尼、墨尔本、奥克兰等）排八字为何不反转四柱与月令，如何计算跨年夏令时真太阳时，并将当地四季气候与采光列为环境校正层。" },
+      "en": { "title": "Southern Hemisphere BaZi: Solar Terms, True Solar Time & Seasonal Calibration | ZHAOWU", "description": "Why Southern Hemisphere BaZi charts (Sydney, Melbourne, Auckland) keep the Four Pillars and solar-term month branch invariant, how cross-year DST affects true solar time, and how local seasons inform environmental calibration." }
+    },
     "/mythic-atlas": {
       "zh-Hant": { "title": "幽明萬象錄・三界異聞錄七卷｜十二地支四態・大裂隙災異編年｜昭梧", "description": "昭梧原創《三界異聞錄》全書七卷：神籍官僚制、黃泉與輪迴、十二地支四態、十二流煞及十年災異終局。區分古籍、民俗與架空改寫。" },
       "zh-Hans": { "title": "幽明万象录・三界异闻录七卷｜十二地支四态・大裂隙灾异编年｜昭梧", "description": "昭梧原创《三界异闻录》全书七卷：神籍官僚制、黄泉与轮回、十二地支四态、十二流煞及十年灾异终局。区分古籍、民俗与架空改写。" },

@@ -150,7 +150,7 @@ function SkyEventsPage() {
         ],
         more: "Read the full astrological interpretation",
         timeline: "Explore the dated sky-event timeline",
-        observation: "View Sydney observations and records",
+        observation: "View Sydney observations and historical records",
         method: "Open astronomical facts and calculations",
         context: "Interpretive tradition · Not a personal forecast"
       }
@@ -166,7 +166,7 @@ function SkyEventsPage() {
           ],
           more: "展开完整占星解读",
           timeline: "展开天象日期与重要事件",
-          observation: "展开悉尼观测记录",
+          observation: "展开悉尼观测与历史记录",
           method: "查看天文数据与计算依据",
           context: "传统占星象征｜非个人预测"
         }
@@ -181,7 +181,7 @@ function SkyEventsPage() {
           ],
           more: "展開完整占星解讀",
           timeline: "展開天象日期與重要事件",
-          observation: "展開悉尼觀測紀錄",
+          observation: "展開悉尼觀測與歷史紀錄",
           method: "查看天文數據與計算依據",
           context: "傳統占星象徵｜非個人預測"
         };
