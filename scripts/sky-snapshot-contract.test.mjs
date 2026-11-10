@@ -33,9 +33,15 @@ test("Sydney 3 November snapshot includes three languages, rise/set and sourced 
 
 test("Sydney 11 November 2026 snapshot preserves prior records, matches trilingual verified numbers, and marks unverified S/A events as data unavailable", () => {
   const src = read("src/components/daily-sky-observation.tsx");
-  for (const historicalDate of ["2026-10-31", "2026-11-01", "2026-11-02", "2026-11-03", "2026-11-11"]) {
+  const allDates = [
+    "2026-10-31", "2026-11-01", "2026-11-02", "2026-11-03", "2026-11-04",
+    "2026-11-05", "2026-11-06", "2026-11-07", "2026-11-08", "2026-11-09", "2026-11-10", "2026-11-11"
+  ];
+  for (const historicalDate of allDates) {
     assert.ok(src.includes(`date: "${historicalDate}"`), `missing snapshot ${historicalDate}`);
   }
+  const foundDates = [...src.matchAll(/date:\s*"([^"]+)"/g)].map((m) => m[1]);
+  assert.deepEqual(foundDates, allDates, "Snapshots must maintain continuous ascending chronological order without gaps");
   for (const datum of ["06:29", "21:36", "14:01", "3.4%", "02:00", "02:02", "04:23", "04:11", "16–26°C", "50%"]) {
     assert.ok(src.includes(datum), `missing 2026-11-11 datum ${datum}`);
   }
@@ -44,6 +50,16 @@ test("Sydney 11 November 2026 snapshot preserves prior records, matches trilingu
   }
   assert.doesNotMatch(src, /今日無重大行星事件|今日无重大行星事件/);
   assert.match(src, /https:\/\/www\.bom\.gov\.au\/places\/nsw\/north-sydney\/forecast/);
+});
+
+test("backfilled Sydney observations 2026-11-04 through 2026-11-10 contain physically consistent ephemeris values", () => {
+  const src = read("src/components/daily-sky-observation.tsx");
+  for (const token of ["28.3%", "18.9%", "11.2%", "5.5%", "1.8%", "0.2%", "0.8%"]) {
+    assert.ok(src.includes(token), `missing backfill illumination token ${token}`);
+  }
+  for (const time of ["08:37", "09:22", "10:06", "10:50", "11:35", "12:21", "13:10"]) {
+    assert.ok(src.includes(time), `missing backfill transit time ${time}`);
+  }
 });
 
 test("daily sky observation generator computes matching Sydney ephemeris values and is idempotent", () => {
