@@ -26,6 +26,7 @@ test('homepage entrances and scene at mobile and desktop sizes', async ({ page }
     await page.locator('[data-home-card] .zw-entry').nth(1).scrollIntoViewIfNeeded();
     console.log('scroll state', await page.locator('[data-home-card] .zw-entry').nth(1).evaluate(el => { const out=[]; for(let n: Element | null=el;n;n=n.parentElement){const e=n as HTMLElement;out.push([e.tagName,e.className,e.scrollTop,e.scrollHeight,e.clientHeight,getComputedStyle(e).overflowY]);} return out; }));
     await expect.poll(() => page.evaluate(() => Number(getComputedStyle(document.documentElement).getPropertyValue('--zw-veil')))).toBeGreaterThan(0.15);
+    await expect.poll(() => page.evaluate(() => Number(getComputedStyle(document.documentElement).getPropertyValue('--zw-veil')))).toBeLessThanOrEqual(0.46);
     await page.screenshot({path:`test-results/guide-${width}.png`});
     await page.getByRole('button', { name: /開始免費排盤|开始免费排盘|Start my free chart/ }).first().click();
     await expect(page.locator('[data-home-card]')).toHaveCount(0);
