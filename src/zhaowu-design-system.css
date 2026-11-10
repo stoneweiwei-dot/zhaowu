@@ -6222,23 +6222,76 @@ html body .zhaowu-intro-skip {
   white-space: nowrap;
 }
 
-/* r226 — visible view counts in the footer (owner 2026-10-01). Quiet, single line, wraps safely on phones. */
+/* r226 / r228 — substantial small visit-count block in the footer: large Song-serif jade numeral beside a compact label on a rice-paper bordered badge. */
 html body .zhaowu-site-footer .zhaowu-site-views {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
   justify-content: center;
-  gap: 4px 12px;
-  margin: 0 0 8px;
-  color: var(--zw-muted, #6b6558);
+  gap: 10px;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 4px auto 12px;
+  padding: 6px 14px 7px;
+  border: 1px solid var(--zw-line, rgba(50, 76, 66, .19));
+  border-radius: var(--zw-card-radius, 7px);
+  background: var(--zw-paper-soft, rgba(250, 247, 239, .91));
+  color: var(--zw-muted, #69736b);
   font-size: 12px;
-  line-height: 1.4;
+  line-height: 1.25;
   letter-spacing: .06em;
+  white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
-html body .zhaowu-site-footer .zhaowu-site-views b { font-weight: 650; color: inherit; margin-left: 4px; }
-html body .zhaowu-site-footer .zhaowu-site-views i { width: 1px; height: 11px; background: currentColor; opacity: .35; }
-html[data-zw-theme="night"] body .zhaowu-site-footer .zhaowu-site-views { color: #cfc6b4; }
+html body .zhaowu-site-footer .zhaowu-site-views__total,
+html body .zhaowu-site-footer .zhaowu-site-views__today {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  white-space: nowrap;
+}
+html body .zhaowu-site-footer .zhaowu-site-views__number {
+  font-family: var(--zw-font-heading, "Songti TC", "Noto Serif TC", serif);
+  font-size: clamp(17px, 4.4vw, 20px);
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: .03em;
+  color: var(--zw-jade, #305b50);
+}
+html body .zhaowu-site-footer .zhaowu-site-views__label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--zw-ink-soft, #4a5953);
+  letter-spacing: .08em;
+}
+html body .zhaowu-site-footer .zhaowu-site-views b {
+  font-family: var(--zw-font-heading, "Songti TC", "Noto Serif TC", serif);
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--zw-jade, #305b50);
+  margin-left: 2px;
+}
+html body .zhaowu-site-footer .zhaowu-site-views i {
+  align-self: center;
+  width: 1px;
+  height: 13px;
+  background: var(--zw-line, rgba(50, 76, 66, .19));
+}
+html[data-zw-theme="night"] body .zhaowu-site-footer .zhaowu-site-views {
+  background: rgba(24, 33, 30, .72);
+  border-color: rgba(207, 198, 180, .24);
+  color: #cfc6b4;
+}
+html[data-zw-theme="night"] body .zhaowu-site-footer .zhaowu-site-views__number,
+html[data-zw-theme="night"] body .zhaowu-site-footer .zhaowu-site-views b {
+  color: var(--zw-gold, #d8be86);
+}
+html[data-zw-theme="night"] body .zhaowu-site-footer .zhaowu-site-views__label {
+  color: #cfc6b4;
+}
+html[data-zw-theme="night"] body .zhaowu-site-footer .zhaowu-site-views i {
+  background: rgba(207, 198, 180, .28);
+}
 
 /* r227 — night music player blends into the paper panel (owner 2026-10-01: "狗皮膏藥感覺很重").
  * At night the dragon panel is light paper, but the shared night rule painted .zhaowu-dragon-music as a

@@ -27,7 +27,7 @@ export function getDisplayedTotalVisits(newDbCount: number | null | undefined = 
   return LEGACY_VISITS_BASE + safeNewCount;
 }
 
-export function formatCumulativeVisits(total: number, language: string): string {
+export function formatCumulativeVisitsNumber(total: number, language: string): string {
   const safeTotal = Number.isFinite(total) && total >= 0 ? Math.floor(total) : LEGACY_VISITS_BASE;
   const formatWan = (value: number) => {
     const rounded = Math.round((value / 10_000) * 10) / 10;
@@ -35,34 +35,57 @@ export function formatCumulativeVisits(total: number, language: string): string 
   };
 
   if (language === "zh-Hans") {
-    if (safeTotal >= 10_000) {
-      return `累计 ${formatWan(safeTotal)} 万人次`;
-    }
-    return `累计 ${safeTotal.toLocaleString("zh-CN")} 人次`;
+    return safeTotal >= 10_000
+      ? `${formatWan(safeTotal)} 万`
+      : safeTotal.toLocaleString("zh-CN");
   }
 
   if (language === "zh-Hant") {
-    if (safeTotal >= 10_000) {
-      return `累計 ${formatWan(safeTotal)} 萬人次`;
-    }
-    return `累計 ${safeTotal.toLocaleString("zh-TW")} 人次`;
+    return safeTotal >= 10_000
+      ? `${formatWan(safeTotal)} 萬`
+      : safeTotal.toLocaleString("zh-TW");
   }
 
   if (language === "ja") {
-    if (safeTotal >= 10_000) {
-      return `累計 ${formatWan(safeTotal)} 万回訪問`;
-    }
-    return `累計 ${safeTotal.toLocaleString("ja-JP")} 回訪問`;
+    return safeTotal >= 10_000
+      ? `${formatWan(safeTotal)} 万`
+      : safeTotal.toLocaleString("ja-JP");
   }
 
   if (language === "ko") {
-    if (safeTotal >= 10_000) {
-      return `누적 ${formatWan(safeTotal)}만 회 방문`;
-    }
-    return `누적 ${safeTotal.toLocaleString("ko-KR")}회 방문`;
+    return safeTotal >= 10_000
+      ? `${formatWan(safeTotal)}만`
+      : safeTotal.toLocaleString("ko-KR");
   }
 
-  return `${safeTotal.toLocaleString("en-US")}+ visits`;
+  return `${safeTotal.toLocaleString("en-US")}+`;
+}
+
+export function formatCumulativeVisitsLabel(language: string): string {
+  if (language === "zh-Hans") return "累计访客";
+  if (language === "zh-Hant") return "累計訪客";
+  if (language === "ja") return "累計訪問";
+  if (language === "ko") return "누적 방문객";
+  if (language === "hi") return "कुल आगंतुक";
+  return "Total visits";
+}
+
+export function formatCumulativeVisits(total: number, language: string): string {
+  const safeTotal = Number.isFinite(total) && total >= 0 ? Math.floor(total) : LEGACY_VISITS_BASE;
+  const numberPart = formatCumulativeVisitsNumber(safeTotal, language);
+  if (language === "zh-Hans") {
+    return safeTotal >= 10_000 ? `累计 ${numberPart}人次` : `累计 ${numberPart} 人次`;
+  }
+  if (language === "zh-Hant") {
+    return safeTotal >= 10_000 ? `累計 ${numberPart}人次` : `累計 ${numberPart} 人次`;
+  }
+  if (language === "ja") {
+    return safeTotal >= 10_000 ? `累計 ${numberPart}回訪問` : `累計 ${numberPart} 回訪問`;
+  }
+  if (language === "ko") {
+    return safeTotal >= 10_000 ? `누적 ${numberPart} 회 방문` : `누적 ${numberPart}회 방문`;
+  }
+  return `${numberPart} visits`;
 }
 
 export const SITE_RELEASE_FALLBACK = {

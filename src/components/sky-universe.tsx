@@ -23,28 +23,6 @@ function loadAstronomy(): Promise<void> {
   return loader;
 }
 
-let universeModuleLoader: Promise<{ mountUniverse: (element: HTMLDivElement, locale: Lang) => (() => void) | undefined }> | null = null;
-function loadUniverseModule() {
-  if (universeModuleLoader) return universeModuleLoader;
-  universeModuleLoader = (async () => {
-    const res = await fetch("/sky-universe/universe.js");
-    if (!res.ok) throw new Error("Universe module unavailable");
-    const code = await res.text();
-    const blobUrl = URL.createObjectURL(new Blob([code], { type: "text/javascript" }));
-    try {
-      return (await import(/* @vite-ignore */ blobUrl)) as {
-        mountUniverse: (element: HTMLDivElement, locale: Lang) => (() => void) | undefined;
-      };
-    } finally {
-      URL.revokeObjectURL(blobUrl);
-    }
-  })().catch((error) => {
-    universeModuleLoader = null;
-    throw error;
-  });
-  return universeModuleLoader;
-}
-
 export function SkyUniverse({ lang }: { lang: Lang }) {
   const root = useRef<HTMLDivElement>(null);
   const [failed, setFailed] = useState(false);
@@ -55,7 +33,8 @@ export function SkyUniverse({ lang }: { lang: Lang }) {
     setFailed(false);
     async function start() {
       await loadAstronomy();
-      const module = await loadUniverseModule();
+      const source = "/sky-universe/universe.js";
+      const module = await import(/* @vite-ignore */ source) as { mountUniverse: (element: HTMLDivElement, locale: Lang) => (() => void) | undefined };
       if (!cancelled && root.current) dispose = module.mountUniverse(root.current, lang);
     }
     start().catch(() => { if (!cancelled) setFailed(true); });

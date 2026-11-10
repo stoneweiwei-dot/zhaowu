@@ -16,6 +16,8 @@ import {
 import { SORTED_PUBLIC_CHANGELOG, publicChangeText } from "@/lib/public-changelog";
 import {
   formatCumulativeVisits,
+  formatCumulativeVisitsLabel,
+  formatCumulativeVisitsNumber,
   getPublicSiteStats,
   LEGACY_VISITS_BASE,
   recordVisit,
@@ -200,6 +202,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
   // Owner 2026-10-01 / 2026-11-11: view counts must always be visible in the footer as legacy base + new DB count.
   const viewsTodayLabel = displayText(language, "今日瀏覽", "今日浏览", "Views today", "本日の閲覧", "오늘 조회", "आज के दृश्य");
   const displayedTotal = LEGACY_VISITS_BASE + (stats.totalVisits > 0 ? stats.totalVisits : 0);
+  const cumulativeVisitsNumber = formatCumulativeVisitsNumber(displayedTotal, language);
+  const cumulativeVisitsLabel = formatCumulativeVisitsLabel(language);
   const cumulativeVisitsText = formatCumulativeVisits(displayedTotal, language);
   const latestLabel = displayText(language, "最新更新", "最新更新", "Latest update", "最新更新", "최신 업데이트", "नवीनतम अपडेट");
   const siteControlsLabel = displayText(language, "網站控制", "网站控制", "Site controls", "サイト操作", "사이트 메뉴", "साइट नियंत्रण");
@@ -348,17 +352,23 @@ export function SiteShell({ children }: { children: ReactNode }) {
           data-site-views
           aria-label={
             stats.todayVisits > 0
-              ? `${viewsTodayLabel} ${stats.todayVisits.toLocaleString(numberLocale)}，${cumulativeVisitsText}`
-              : cumulativeVisitsText
+              ? `${cumulativeVisitsLabel} ${cumulativeVisitsNumber}，${viewsTodayLabel} ${stats.todayVisits.toLocaleString(numberLocale)}`
+              : `${cumulativeVisitsLabel} ${cumulativeVisitsNumber}`
           }
         >
+          <span className="zhaowu-site-views__total">
+            <strong className="zhaowu-site-views__number" data-site-views-number>{cumulativeVisitsNumber}</strong>
+            <span className="zhaowu-site-views__label" data-site-views-label>{cumulativeVisitsLabel}</span>
+          </span>
           {stats.todayVisits > 0 ? (
             <>
-              <span>{viewsTodayLabel} <b>{stats.todayVisits.toLocaleString(numberLocale)}</b></span>
               <i aria-hidden="true" />
+              <span className="zhaowu-site-views__today" data-site-views-today>
+                <span className="zhaowu-site-views__label">{viewsTodayLabel}</span>
+                <b>{stats.todayVisits.toLocaleString(numberLocale)}</b>
+              </span>
             </>
           ) : null}
-          <span>{cumulativeVisitsText}</span>
         </p>
         {isHome ? (
           <details className="zhaowu-why" data-why-zhaowu>
