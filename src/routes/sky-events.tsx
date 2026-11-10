@@ -3,7 +3,6 @@ import { useI18n } from "@/lib/i18n";
 import { SKY_EVENT_CATEGORIES, getArchivedSkyEvents, getFeaturedSkyEvent, getTodaySkyUpdatedDate } from "@/lib/sky-events";
 import { TodaySkyCards } from "@/components/today-sky-cards";
 import { DailySkyObservation } from "@/components/daily-sky-observation";
-import { SkyCurrentMotion } from "@/components/sky-current-motion";
 import { SkyUniverse } from "@/components/sky-universe";
 import { SkyObservationBrief } from "@/components/sky-observation-brief";
 import { isSkyReportArchived } from "@/lib/sky-week-presentation";
@@ -219,7 +218,6 @@ function SkyEventsPage() {
           <p className="sky-impact-context">{guide.context}</p>
         </section>
 
-        <SkyCurrentMotion lang={lang} />
         <div className="sky-event-kind-tags" aria-label={labels.featureKinds.join(" / ")}>
           {labels.featureKinds.map((label, index) => <span key={label} className={index === 0 ? "is-fact" : "is-symbol"}>{label}</span>)}
         </div>
