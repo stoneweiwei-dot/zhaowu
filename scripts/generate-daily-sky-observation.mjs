@@ -146,6 +146,22 @@ export function upsertObservationSource(sourceText, snapshot, { force = false } 
   }
   const serialized = `  {\n    date: ${JSON.stringify(snapshot.date)},\n    moon: {\n      "zh-Hant": ${JSON.stringify(snapshot.moon["zh-Hant"])},\n      "zh-Hans": ${JSON.stringify(snapshot.moon["zh-Hans"])},\n      en: ${JSON.stringify(snapshot.moon.en)}\n    },\n    planets: {\n      "zh-Hant": ${JSON.stringify(snapshot.planets["zh-Hant"])},\n      "zh-Hans": ${JSON.stringify(snapshot.planets["zh-Hans"])},\n      en: ${JSON.stringify(snapshot.planets.en)}\n    },\n    events: {\n      "zh-Hant": ${JSON.stringify(snapshot.events["zh-Hant"])},\n      "zh-Hans": ${JSON.stringify(snapshot.events["zh-Hans"])},\n      en: ${JSON.stringify(snapshot.events.en)}\n    },\n    weather: {\n      "zh-Hant": ${JSON.stringify(snapshot.weather["zh-Hant"])},\n      "zh-Hans": ${JSON.stringify(snapshot.weather["zh-Hans"])},\n      en: ${JSON.stringify(snapshot.weather.en)}\n    },\n    sources: [\n${snapshot.sources.map((s) => `      { title: ${JSON.stringify(s.title)}, url: ${JSON.stringify(s.url)} }`).join(",\n")}\n    ]\n  }`;
 
+  // Find first record with a later date to maintain ascending chronological order
+  const dateRegex = /\{\s*date:\s*"(\d{4}-\d{2}-\d{2})"/g;
+  let match;
+  let insertIndex = -1;
+  while ((match = dateRegex.exec(sourceText)) !== null) {
+    if (match[1] > snapshot.date) {
+      insertIndex = match.index;
+      break;
+    }
+  }
+
+  if (insertIndex !== -1) {
+    const nextContent = `${sourceText.slice(0, insertIndex)}${serialized},\n${sourceText.slice(insertIndex)}`;
+    return { updated: true, content: nextContent, reason: `Inserted snapshot for ${snapshot.date} in chronological order` };
+  }
+
   const marker = "\n];\n\nconst UI:";
   const idx = sourceText.indexOf(marker);
   if (idx === -1) {
@@ -158,14 +174,35 @@ export function upsertObservationSource(sourceText, snapshot, { force = false } 
 const isCli = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (isCli) {
   const dateArg = process.argv.find((a) => a.startsWith("--date="))?.slice(7);
+  const rangeArg = process.argv.find((a) => a.startsWith("--range="))?.slice(8);
   const dryRun = process.argv.includes("--dry-run");
   const force = process.argv.includes("--force");
-  const targetDate = dateArg || sydneyDateString(new Date());
-  const snapshot = buildDailySkySnapshot(targetDate);
-  const current = readFileSync(COMPONENT_PATH, "utf8");
-  const result = upsertObservationSource(current, snapshot, { force });
-  if (result.updated && !dryRun) {
-    writeFileSync(COMPONENT_PATH, result.content, "utf8");
+
+  let targetDates = [];
+  if (rangeArg && rangeArg.includes("..")) {
+    const [startStr, endStr] = rangeArg.split("..");
+    const cur = new Date(`${startStr}T00:00:00Z`);
+    const end = new Date(`${endStr}T00:00:00Z`);
+    while (cur <= end) {
+      targetDates.push(cur.toISOString().slice(0, 10));
+      cur.setUTCDate(cur.getUTCDate() + 1);
+    }
+  } else if (dateArg) {
+    targetDates = [dateArg];
+  } else {
+    targetDates = [sydneyDateString(new Date())];
   }
-  console.log(`[generate-daily-sky-observation] ${targetDate}: ${result.reason}${dryRun ? " (dry-run)" : ""}`);
+
+  let content = readFileSync(COMPONENT_PATH, "utf8");
+  for (const date of targetDates) {
+    const snapshot = buildDailySkySnapshot(date);
+    const result = upsertObservationSource(content, snapshot, { force });
+    if (result.updated) {
+      content = result.content;
+    }
+    console.log(`[generate-daily-sky-observation] ${date}: ${result.reason}${dryRun ? " (dry-run)" : ""}`);
+  }
+  if (!dryRun) {
+    writeFileSync(COMPONENT_PATH, content, "utf8");
+  }
 }
