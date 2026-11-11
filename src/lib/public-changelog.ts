@@ -19,15 +19,15 @@ export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
     date: "2026-11-11",
     zhHant: {
       title: "此時天象頁面精簡、頁尾累計到訪與更新紀錄補齊",
-      summary: "此時天象保留上方太陽系互動示意圖並移除下方重複天象轉盤；頁尾固定顯示包含既有歷史基數的累計到訪人次；更新頁補齊近期首頁、多語言、節氣七十二候、手機閱讀與天象頁等正式改動。",
+      summary: "此時天象保留上方太陽系互動示意圖並移除下方重複天象轉盤；頁尾僅保留累計到訪人次徽章（含既有基數 2,444）並隱藏其他公開閱讀計數；更新頁補齊近期首頁、多語言、節氣七十二候、手機閱讀與天象頁等正式改動。",
     },
     zhHans: {
       title: "此时天象页面精简、页尾累计到访与更新记录补齐",
-      summary: "此时天象保留上方太阳系互动示意图并移除下方重复天象转盘；页尾固定显示包含既有历史基数的累计到访人次；更新页补齐近期首页、多语言、节气七十二候、手机阅读与天象页等正式改动。",
+      summary: "此时天象保留上方太阳系互动示意图并移除下方重复天象转盘；页尾仅保留累计到访人次徽章（含既有基数 2,444）并隐藏其他公开阅读计数；更新页补齐近期首页、多语言、节气七十二候、手机阅读与天象页等正式改动。",
     },
     en: {
-      title: "Sky page trim, always-visible cumulative visits, and updated release notes",
-      summary: "The Sky Now keeps the upper interactive solar system illustration while removing the lower duplicate motion dial; the footer now always shows cumulative visits including the historical baseline; and the updates page adds the recent homepage, language, seasonal, mobile and sky improvements.",
+      title: "Sky page trim, cumulative-only footer visits, and updated release notes",
+      summary: "The Sky Now keeps the upper interactive solar system illustration while removing the lower duplicate motion dial; the footer keeps only the cumulative visit badge (including the 2,444 historical base) while hiding other public view counts; and the updates page adds the recent homepage, language, seasonal, mobile and sky improvements.",
     },
   },
   {

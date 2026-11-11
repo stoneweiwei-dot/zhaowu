@@ -55,7 +55,7 @@ test("acceptance: Comic Destiny Book uses six scene compositions rather than one
   assert.match(css, /data-comic-scene="6"/);
 });
 
-test("acceptance: Notes views call the real RPC once per article per tab session", async () => {
+test("acceptance: Notes views call the real RPC once per article per tab session while hiding the public view count badge", async () => {
   const section = await source("src/components/life-view-home-section.tsx");
   const views = await source("src/lib/life-view-views.ts");
   assert.match(views, /rpc\/increment_life_view_article_view/);
@@ -64,5 +64,7 @@ test("acceptance: Notes views call the real RPC once per article per tab session
   assert.match(section, /window\.sessionStorage\.getItem\(key\)/);
   assert.match(section, /window\.sessionStorage\.setItem\(key, "1"\)/);
   assert.match(section, /if \(isOpen \|\| !shouldCountArticleOpen\(articleId\)\) return/);
-  assert.match(section, /data-life-view-count=\{article\.id\}/);
+  assert.match(section, /incrementLifeViewCount\(articleId\)/);
+  assert.doesNotMatch(section, /data-life-view-count/);
+  assert.doesNotMatch(section, /viewsLabel\(article\.id\)/);
 });

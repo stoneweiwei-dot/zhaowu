@@ -247,7 +247,6 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                   </span>
                   <span className="mt-1 flex items-start justify-between gap-3">
                     <strong className="min-w-0 font-display text-[1.05rem] font-semibold leading-6 text-ink sm:text-lg">{article.title[locale]}</strong>
-                    <span className="shrink-0 pt-0.5 text-[10px] font-medium tracking-[0.04em] text-ink-mute" data-life-view-count={article.id}>{viewsLabel(article.id)}</span>
                   </span>
                   {!isOpen ? (
                     <span className="mt-2 line-clamp-2 block text-sm leading-6 text-ink-soft">{article.summary?.[locale] || (index === 0 ? latestParagraph : paragraphs[0])}</span>
@@ -264,7 +263,7 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
               ) : null}
               {isOpen ? (
                 <div className="mt-4 border-l border-cinnabar/20 pl-4 text-[15px] leading-8 text-ink">
-                  <div className="mb-3 flex items-center justify-between gap-3 text-xs text-ink-mute"><time dateTime={article.publishedAt}>{article.publishedAt}</time><span>{viewsLabel(article.id)}</span></div>
+                  <div className="mb-3 flex items-center justify-between gap-3 text-xs text-ink-mute"><time dateTime={article.publishedAt}>{article.publishedAt}</time></div>
                   {article.id === "stellar-life-cycle-interactive" ? <StellarLifeCycleInteractive /> : null}
                   {paragraphs.map((paragraph, paragraphIndex) => {
                     const illustration = article.illustrations?.find((item) => item.afterParagraph === paragraphIndex + 1);

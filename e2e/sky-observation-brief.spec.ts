@@ -1,18 +1,18 @@
 import { test, expect } from '@playwright/test';
 
 test('dated observation distinguishes current from archived and links to its source', async ({ page }) => {
-  await page.clock.setFixedTime(new Date('2026-11-03T01:00:00Z'));
+  await page.clock.setFixedTime(new Date('2026-11-11T01:00:00Z'));
   await page.goto('/sky-events');
   const observation = page.locator('details#sky-observation-record');
   await expect(observation).not.toHaveAttribute('open', '');
   await observation.locator('summary').first().click();
   const brief = observation.locator('.sky-observation-brief');
-  await expect(brief.locator('time')).toHaveAttribute('datetime', '2026-11-03');
+  await expect(brief.locator('time')).toHaveAttribute('datetime', '2026-11-11');
   await expect(brief.getByRole('status')).not.toContainText(/not yet|尚未/i);
-  await page.clock.setFixedTime(new Date('2026-11-04T01:00:00Z'));
+  await page.clock.setFixedTime(new Date('2026-11-12T01:00:00Z'));
   await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
   await expect(brief.getByRole('status')).toContainText(/not yet|尚未/i);
-  await expect(brief.locator('time')).toHaveAttribute('datetime', '2026-11-03');
+  await expect(brief.locator('time')).toHaveAttribute('datetime', '2026-11-11');
   await brief.getByRole('link').click();
   await expect(page).toHaveURL(/#sky-observation-record$/);
   await expect(page.locator('#sky-observation-record .daily-sky')).toBeVisible();
@@ -20,7 +20,7 @@ test('dated observation distinguishes current from archived and links to its sou
 
 test('summary stays readable at mobile and desktop widths in each language', async ({ page }) => {
   test.setTimeout(90_000);
-  await page.clock.setFixedTime(new Date('2026-11-04T01:00:00Z'));
+  await page.clock.setFixedTime(new Date('2026-11-12T01:00:00Z'));
   await page.goto('/sky-events');
   const observation = page.locator('details#sky-observation-record');
   await observation.locator('summary').first().click();
@@ -32,7 +32,7 @@ test('summary stays readable at mobile and desktop widths in each language', asy
       for (const option of await page.locator('[data-language-switcher]').first().getByRole('radio').all()) {
         await option.click();
         await expect(brief.getByRole('status')).toBeVisible();
-        await expect(brief.locator('time')).toHaveText('2026-11-03');
+        await expect(brief.locator('time')).toHaveText('2026-11-11');
         expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
         const box = await brief.getByRole('link').boundingBox();
         expect(box!.height).toBeGreaterThanOrEqual(44);

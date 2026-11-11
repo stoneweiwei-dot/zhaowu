@@ -15,10 +15,11 @@ export type PublicSiteStats = {
 };
 
 /**
- * PLACEHOLDER legacy cumulative visit count from before the database migration.
- * Not a verified figure — 日曜 will confirm the real legacy total later.
+ * Confirmed legacy cumulative visit count from before the database migration.
+ * The footer counter displays `LEGACY_VISITS_BASE + dbCount`, falling back to `LEGACY_VISITS_BASE`
+ * when the database count is 0 or temporarily unreachable.
  */
-export const LEGACY_VISITS_BASE = 32_000;
+export const LEGACY_VISITS_BASE = 2444;
 
 export function getDisplayedTotalVisits(newDbCount: number | null | undefined = 0): number {
   const safeNewCount = typeof newDbCount === "number" && Number.isFinite(newDbCount) && newDbCount > 0
@@ -92,26 +93,26 @@ export const SITE_RELEASE_FALLBACK = {
   version: "ZW-WEB-2026.11.11-r228",
   updateNumber: 228,
   publishedAt: "2026-11-11T00:00:00.000Z",
-  latestSummary: "精簡此時天象頁面並保留太陽系互動示意圖，頁尾常駐顯示累計到訪人次，並補齊近期網站更新紀錄。",
+  latestSummary: "精簡此時天象頁面並保留太陽系互動示意圖，頁尾僅保留累計到訪人次徽章（含既有基數 2,444）並隱藏其他公開閱讀計數，同時補齊近期網站更新紀錄。",
   summary: {
-    "zh-Hant": "精簡此時天象頁面並保留太陽系互動示意圖，頁尾常駐顯示累計到訪人次，並補齊近期網站更新紀錄。",
-    "zh-Hans": "精简此时天象页面并保留太阳系互动示意图，页尾常驻显示累计到访人次，并补齐近期网站更新记录。",
-    en: "Streamlined The Sky Now around the interactive solar system illustration, kept cumulative visit totals always visible in the footer, and brought the public release log up to date."
+    "zh-Hant": "精簡此時天象頁面並保留太陽系互動示意圖，頁尾僅保留累計到訪人次徽章（含既有基數 2,444）並隱藏其他公開閱讀計數，同時補齊近期網站更新紀錄。",
+    "zh-Hans": "精简此时天象页面并保留太阳系互动示意图，页尾仅保留累计到访人次徽章（含既有基数 2,444）并隐藏其他公开阅读计数，同时补齐近期网站更新记录。",
+    en: "Streamlined The Sky Now around the interactive solar system illustration, kept only the cumulative visit badge in the footer (including the 2,444 historical base) while hiding other public view counts, and brought the public release log up to date."
   },
   details: {
     "zh-Hant": [
       "此時天象保留上方太陽系互動示意圖，移除下方重複的天象運行轉盤，讓星象重點與觀測紀錄更清晰。",
-      "頁尾常駐顯示包含既有歷史基數的累計到訪人次，並依繁中、簡中與英文自然格式化。",
+      "頁尾僅保留累計到訪人次徽章（既有基數 2,444 加最新統計），隱藏頁首今日／累計瀏覽與文章閱讀計數等其他公開計數，並依繁中、簡中與英文自然格式化。",
       "更新紀錄頁補齊首頁四主塊收合、九語切換選單、悉尼自動七十二候、手機縮放滑動提示與站主 Face ID 穩定性等近期正式更新。"
     ],
     "zh-Hans": [
       "此时天象保留上方太阳系互动示意图，移除下方重复的天象运行转盘，让星象重点与观测记录更清晰。",
-      "页尾常驻显示包含既有历史基数的累计到访人次，并依繁中、简中与英文自然格式化。",
+      "页尾仅保留累计到访人次徽章（既有基数 2,444 加最新统计），隐藏页首今日／累计浏览与文章阅读计数等其他公开计数，并依繁中、简中与英文自然格式化。",
       "更新记录页补齐首页四主块收合、九语切换菜单、悉尼自动七十二候、手机缩放滑动提示与站主 Face ID 稳定性等近期正式更新。"
     ],
     en: [
       "Kept the upper interactive solar system illustration on The Sky Now and removed the lower duplicate motion dial for cleaner reading.",
-      "Made cumulative visit totals always visible in the footer by combining the historical baseline with live counts in locale-appropriate formats.",
+      "Kept only the cumulative visit badge in the footer (combining the 2,444 historical base with live counts in locale-appropriate formats) and hid header visit counts and article view counts from public display.",
       "Updated the public change log with the collapsible four-block homepage, nine-language switcher, Sydney auto 72 micro-seasons panel, mobile zoom/swipe cues and owner Face ID sign-in improvements."
     ]
   }
