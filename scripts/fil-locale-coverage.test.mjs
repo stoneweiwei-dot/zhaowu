@@ -23,3 +23,28 @@ test("Filipino choice is persisted and dynamically loaded", () => {
   }
   assert.ok(shell.includes('value: "fil" as const'));
 });
+
+test("All ten language dictionaries cover every shared UI key", () => {
+  const source = read("src/lib/i18n.ts");
+  const body = source.split("const TABLE = {")[1]?.split("} as const satisfies Record<string, Entry>")[0];
+  assert.ok(body);
+  const keys = [...body.matchAll(/^  ([a-z][a-zA-Z0-9]+):\s*/gm)].map((x) => x[1]);
+  const english = source.split("const EN: Record<CopyKey, string> = {")[1]?.split("\n};")[0];
+  assert.ok(english);
+  const enKeys = [...english.matchAll(/^  ([a-z][a-zA-Z0-9]+):\s*/gm)].map((x) => x[1]);
+  assert.deepEqual(enKeys.sort(), [...keys].sort());
+  const display = read("src/lib/display-language.ts");
+  for (const lang of ["JA", "KO", "HI"]) {
+    const part = display.split("const " + lang + ": UiDictionary = {")[1]?.split("\n};")[0];
+    assert.ok(part, lang);
+    const actual = [...part.matchAll(/^  ([a-z][a-zA-Z0-9]+):\s*/gm)].map((x) => x[1]);
+    assert.deepEqual(actual.sort(), [...keys].sort(), lang);
+  }
+  for (const lang of ["th", "id", "vi"]) {
+    const s = read("src/lib/display-dictionaries/" + lang + ".ts");
+    const part = s.split("const dictionary = {")[1]?.split("} satisfies Partial<Record<CopyKey, string>>")[0];
+    assert.ok(part, lang);
+    const actual = [...part.matchAll(/^  ([a-z][a-zA-Z0-9]+):\s*/gm)].map((x) => x[1]);
+    assert.deepEqual(actual.sort(), [...keys].sort(), lang);
+  }
+});

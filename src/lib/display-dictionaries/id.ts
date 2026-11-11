@@ -69,6 +69,7 @@ const dictionary = {
   analyzing: "Menyusun bagan kelahiran…",
   locating: "Menyesuaikan waktu tempat lahir…",
   remembered: "Data kelahiran tersimpan telah dimuat. Anda dapat mengeditnya.",
+  errDate: "Tanggal tersebut tidak ada. Periksa kembali bulan dan harinya.",
   errCity: "Pilih kota dan negara kelahiran dari hasil pencarian.",
   errQuestion: "Tuliskan dahulu pertanyaan yang benar-benar ingin Anda ketahui.",
   errAnalyze: "Analisis belum berhasil. Periksa data lalu coba lagi.",
