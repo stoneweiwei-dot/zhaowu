@@ -69,6 +69,7 @@ const dictionary = {
   analyzing: "Đang lập lá số…",
   locating: "Đang hiệu chỉnh giờ tại nơi sinh…",
   remembered: "Đã tải thông tin sinh từng lưu. Bạn có thể chỉnh sửa.",
+  errDate: "Ngày này không tồn tại. Vui lòng kiểm tra lại tháng và ngày.",
   errCity: "Hãy chọn thành phố và quốc gia nơi sinh từ kết quả tìm kiếm.",
   errQuestion: "Hãy viết câu hỏi bạn thực sự muốn biết trước.",
   errAnalyze: "Chưa thể hoàn tất phân tích. Hãy kiểm tra dữ liệu rồi thử lại.",
