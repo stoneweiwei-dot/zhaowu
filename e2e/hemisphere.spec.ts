@@ -1,4 +1,15 @@
 import { test, expect } from '@playwright/test';
+import { seasonalState } from '../src/lib/seasonal-skins';
+import { SKINS, southernAutoArt, southernSkinForDate } from '../src/lib/theme-skins';
+
+function expectedSouthernLoginArt(now = new Date()): string {
+  const { term } = seasonalState(now);
+  const skinId = southernSkinForDate(now);
+  const skin = SKINS.find((candidate) => candidate.id === skinId)!;
+  return skinId === 'sydney-jacaranda'
+    ? southernAutoArt(term, 'south', now) ?? skin.hero
+    : skin.hero;
+}
 
 test.use({ serviceWorkers: 'block' });
 for (const [hemisphere, expected] of [['north','solar-frost-descent'], ['south','sydney-jacaranda'], ['unknown','solar-frost-descent'], ['offline','solar-frost-descent']] as const) {
@@ -49,13 +60,14 @@ for (const [when, expected] of [['2026-12-15T01:00:00Z','southern-summer'], ['20
 for (const width of [320, 390]) for (const locale of ['zh-Hant', 'zh-Hans', 'en']) {
  test(`login ${width} ${locale}: southern art and safe fallback`, async ({page}) => {
   await page.addInitScript(language => localStorage.setItem('zhaowu.display-language', language), locale);
+  const southArt = expectedSouthernLoginArt();
   for (const hemisphere of ['south', 'north', 'unknown']) {
     await page.route('**/api/owner-data?view=site-skin', r => r.fulfill({json:{skin:'solar-auto',configured:true}}));
     await page.route('**/api/zhaowu-capabilities?mode=visitor-hemisphere', r => r.fulfill({json:{hemisphere}}));
     await page.setViewportSize({width,height:844});
     await page.goto('/login', {waitUntil:'networkidle'});
     const media = page.locator('.stone-login-stage-media');
-    await expect(media).toHaveAttribute('src', hemisphere === 'south' ? /sydney-jacaranda-spring/ : /dragon-scholar/);
+    await expect(media).toHaveAttribute('src', hemisphere === 'south' ? southArt : /dragon-scholar/);
     await expect(page.locator('#login-title')).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
     if (hemisphere === 'south') await page.screenshot({path:`test-results/login-south-${width}-${locale}.png`});
