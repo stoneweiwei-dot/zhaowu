@@ -432,7 +432,7 @@ export const SITE_LOCALIZATION: Record<DisplayLanguage, SiteLocalizedCopy> = {
       ],
       "home": [
         "जन्म विवरण भरें, सारांश पढ़ें और चाहें तो प्रश्न पूछें।",
-        "홈으로"
+        "होम पर लौटें"
       ]
     }
   },
