@@ -457,7 +457,9 @@ export function DailySkyObservation() {
       
       <section><h3>{ui.why}</h3><p>{observation.date === "2026-11-01"
         ? (lang === "en" ? "Late spring in Sydney brings later sunsets, while planetary visibility depends on the actual horizon and weather, not on astrology." : lang === "zh-Hans" ? "悉尼正值春末，日落渐晚；能否看见行星取决于地平线和天气，不代表命运变化。" : "悉尼正值春末，日落漸晚；能否看見行星取決於地平線和天氣，不代表命運變化。")
-        : ui.note}</p></section>
+        : observation.date === "2026-11-12"
+          ? (lang === "en" ? "Sydney is in late spring; take a moment to notice the changing daylight and choose a comfortable pace." : lang === "zh-Hans" ? "悉尼正值春末，留意渐长的日照，按自己的节奏安排一天。" : "悉尼正值春末，留意漸長的日照，按自己的節奏安排一天。")
+          : ui.note}</p></section>
       <section><h3>{ui.events}</h3><p>{observation.events[lang]}</p></section>
       <section><h3>{ui.weather}</h3><p>{observation.weather[lang]}</p></section>
       {observation.date === "2026-11-01" && <section><h3>{ui.actions}</h3><ul>{ui.tips.map((tip) => <li key={tip}>{tip}</li>)}</ul></section>}
