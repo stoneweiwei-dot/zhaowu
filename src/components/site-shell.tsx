@@ -178,7 +178,7 @@ const SHELL_COPY: Record<string, Record<ExtraLanguage, string>> = {
     "fil": "Kaya libre ang paggawa ng chart at maikling pagbasa nang walang sign-up. Naka-encrypt ang mga ulat at nakaimbak sa browser ng device na ito. Isang beses lang babayaran ang buong ulat, walang subscription. Ang tradisyonal na simbolismo ng ZHAOWU ay para sa pagninilay, hindi medikal na diagnosis. Ikaw pa rin ang magpapasya."
   },
   "Four classical sources · Our reading method": {
-    "th": "Ayon saคัมภีร์โบราณสี่เล่ม · วิธีวิเคราะห์ของเรา",
+    "th": "สี่คัมภีร์โบราณ · วิธีวิเคราะห์ของเรา",
     "id": "Empat sumber klasik · Metode penafsiran kami",
     "vi": "Bốn nguồn kinh điển · Phương pháp luận giải",
     "fil": "Apat na klasikong sanggunian · Paraan ng pagsusuri"

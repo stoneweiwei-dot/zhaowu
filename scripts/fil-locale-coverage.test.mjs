@@ -48,3 +48,20 @@ test("All ten language dictionaries cover every shared UI key", () => {
     assert.deepEqual(actual.sort(), [...keys].sort(), lang);
   }
 });
+
+test("Shared navigation and footer copy has offline Thai, Indonesian, Vietnamese and Filipino", () => {
+  const shell = read("src/components/site-shell.tsx");
+  const start = shell.indexOf("const SHELL_COPY: Record<string, Record<ExtraLanguage, string>> = ");
+  assert.ok(start >= 0);
+  const content = shell.slice(start).split(" = ")[1].split(";\n")[0];
+  const phrases = JSON.parse(content);
+  const languageTags = ["th", "id", "vi", "fil"];
+  assert.ok(Object.keys(phrases).length >= 25);
+  for (const [english, translations] of Object.entries(phrases)) {
+    assert.ok(english.length > 0);
+    for (const lang of languageTags) {
+      assert.ok(typeof translations[lang] === "string" && translations[lang].trim(), english + ": " + lang);
+      assert.notEqual(translations[lang], english, english + ": " + lang);
+    }
+  }
+});
