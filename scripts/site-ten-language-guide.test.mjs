@@ -18,3 +18,30 @@ test("Shared navigation, guide and journey use ten-language display state", () =
     assert.ok(code.includes("SITE_LOCALIZATION"), path);
   }
 });
+
+test("Ten-language guidance provides complete static strings without script contamination", () => {
+  const source = read("src/lib/site-localization.ts");
+  const marker = "export const SITE_LOCALIZATION: Record<DisplayLanguage, SiteLocalizedCopy> = ";
+  const content = source.split(marker)[1];
+  assert.ok(content);
+  const table = JSON.parse(content.replace(/;\s*$/, ""));
+  const languages = ["zh-Hant", "zh-Hans", "en", "ja", "ko", "hi", "th", "id", "vi", "fil"];
+  assert.deepEqual(Object.keys(table).sort(), [...languages].sort());
+  for (const language of languages) {
+    const item = table[language];
+    for (const key of ["navigation", "utility", "advanced", "journey", "guide"]) assert.ok(item[key], language + " " + key);
+    for (const section of ["navigation", "utility", "advanced"]) {
+      assert.ok(Object.values(item[section]).length > 0);
+      for (const value of Object.values(item[section])) assert.ok(typeof value === "string" && value.trim(), language + " " + section);
+    }
+    assert.equal(item.journey.steps.length, 3, language);
+    assert.equal(item.journey.hints.length, 3, language);
+    for (const line of [...item.journey.steps, ...item.journey.hints]) assert.ok(line.trim(), language + " journey");
+    for (const category of ["analysis", "history", "account", "login", "home"]) {
+      assert.equal(item.guide[category].length, 2, language + " " + category);
+      for (const phrase of item.guide[category]) assert.ok(phrase.trim(), language + " " + category);
+    }
+  }
+  assert.doesNotMatch(JSON.stringify(table.hi), /[가-힣]/u, "Hindi must not contain Hangul");
+  assert.doesNotMatch(JSON.stringify(table.ko), /[\u0900-\u097F]/u, "Korean must not contain Devanagari");
+});
