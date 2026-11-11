@@ -15,6 +15,118 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-11-11-sky-visits-updates",
+    date: "2026-11-11",
+    zhHant: {
+      title: "此時天象頁面精簡、頁尾累計到訪與更新紀錄補齊",
+      summary: "此時天象保留上方太陽系互動示意圖並移除下方重複天象轉盤；頁尾僅保留累計到訪人次徽章（含既有基數 2,444）並隱藏其他公開閱讀計數；更新頁補齊近期首頁、多語言、節氣七十二候、手機閱讀與天象頁等正式改動。",
+    },
+    zhHans: {
+      title: "此时天象页面精简、页尾累计到访与更新记录补齐",
+      summary: "此时天象保留上方太阳系互动示意图并移除下方重复天象转盘；页尾仅保留累计到访人次徽章（含既有基数 2,444）并隐藏其他公开阅读计数；更新页补齐近期首页、多语言、节气七十二候、手机阅读与天象页等正式改动。",
+    },
+    en: {
+      title: "Sky page trim, cumulative-only footer visits, and updated release notes",
+      summary: "The Sky Now keeps the upper interactive solar system illustration while removing the lower duplicate motion dial; the footer keeps only the cumulative visit badge (including the 2,444 historical base) while hiding other public view counts; and the updates page adds the recent homepage, language, seasonal, mobile and sky improvements.",
+    },
+  },
+  {
+    id: "2026-11-09-sky-solar-system",
+    date: "2026-11-09",
+    zhHant: {
+      title: "此時天象加入太陽系互動示意圖",
+      summary: "此時天象頁面頂部新增可拖曳調整視角、暫停與重設的太陽系運行示意圖，並標明行星與矮行星圖例。",
+    },
+    zhHans: {
+      title: "此时天象加入太阳系互动示意图",
+      summary: "此时天象页面顶部新增可拖动调整视角、暂停与重设的太阳系运行示意图，并标明行星与矮行星图例。",
+    },
+    en: {
+      title: "Interactive solar system illustration on the sky page",
+      summary: "Added an interactive solar system illustration at the top of The Sky Now with view dragging, pause and reset controls, and a clear planetary legend.",
+    },
+  },
+  {
+    id: "2026-11-08-mobile-zoom-and-swipe-cues",
+    date: "2026-11-08",
+    zhHant: {
+      title: "手機雙指縮放與橫向滑動提示",
+      summary: "開放手機頁面雙指縮放與橫向拖曳檢視，並為較寬的圖表與區塊加入橫向滑動容器與滑動提示。",
+    },
+    zhHans: {
+      title: "手机双指缩放与横向滑动提示",
+      summary: "开放手机页面双指缩放与横向拖动查看，并为较宽的图表与区块加入横向滑动容器与滑动提示。",
+    },
+    en: {
+      title: "Mobile pinch-zoom and horizontal swipe cues",
+      summary: "Enabled pinch-zoom and horizontal panning on mobile, with dedicated horizontal scroll containers and swipe hints for wider charts and sections.",
+    },
+  },
+  {
+    id: "2026-11-08-owner-face-id-signin",
+    date: "2026-11-08",
+    zhHant: {
+      title: "站主 Face ID 登入連線穩定性修正",
+      summary: "修正站主使用 Face ID 驗證登入時的服務連線設定，提升裝置通行密鑰登入的穩定度；一般訪客與命盤流程不變。",
+    },
+    zhHans: {
+      title: "站主 Face ID 登录连接稳定性修正",
+      summary: "修正站主使用 Face ID 验证登录时的服务连接配置，提升设备通行密钥登录的稳定度；普通访客与命盘流程不变。",
+    },
+    en: {
+      title: "Owner Face ID sign-in reliability fix",
+      summary: "Updated the owner Face ID sign-in service connection so device passkey verification stays reliable. Visitor and chart flows are unchanged.",
+    },
+  },
+  {
+    id: "2026-11-07-sydney-auto-72-hou",
+    date: "2026-11-07",
+    zhHant: {
+      title: "節氣七十二候整合為悉尼自動面板",
+      summary: "主題面板將二十四節氣與七十二候收合為單一悉尼自動節氣入口，依當地時序自動對應當下物候與畫面氛圍。",
+    },
+    zhHans: {
+      title: "节气七十二候整合为悉尼自动面板",
+      summary: "主题面板将二十四节气与七十二候收合为单一悉尼自动节气入口，依当地时序自动对应当下物候与画面氛围。",
+    },
+    en: {
+      title: "72 micro-seasons unified into a Sydney auto panel",
+      summary: "Consolidated the solar terms and 72 micro-seasons into a single Sydney auto-seasonal panel that follows local seasonal timing automatically.",
+    },
+  },
+  {
+    id: "2026-11-07-language-switcher-and-music-volume",
+    date: "2026-11-07",
+    zhHant: {
+      title: "首頁收合式九語切換選單與音樂音量位置整理",
+      summary: "首頁改為收合式語言切換器並支援九種介面語言顯示，同時將音量控制固定收進音樂面板內，減少頂部操作干擾。",
+    },
+    zhHans: {
+      title: "首页收合式九语切换菜单与音乐音量位置整理",
+      summary: "首页改为收合式语言切换器并支持九种界面语言显示，同时将音量控制固定收进音乐面板内，减少顶部操作干扰。",
+    },
+    en: {
+      title: "Collapsible nine-language switcher and music volume tidy-up",
+      summary: "Replaced the expanded language strip with a collapsible nine-language switcher on the homepage and kept volume controls inside the Music panel.",
+    },
+  },
+  {
+    id: "2026-11-07-home-four-collapsed-blocks",
+    date: "2026-11-07",
+    zhHant: {
+      title: "首頁四主塊收合版面與長卷底紋調整",
+      summary: "首頁四大主入口改為預設收合的分層結構，搭配更柔和的長卷底紋與音樂音量細節，讓首屏閱讀更聚焦。",
+    },
+    zhHans: {
+      title: "首页四主块收合版面与长卷底纹调整",
+      summary: "首页四大主入口改为默认收合的分层结构，搭配更柔和的长卷底纹与音乐音量细节，让首屏阅读更聚焦。",
+    },
+    en: {
+      title: "Four-block collapsible homepage layout and scroll ground",
+      summary: "Refined the homepage into four collapsible primary blocks over a calmer scroll ground with balanced music volume controls.",
+    },
+  },
+  {
     id: "2026-11-03-update-records",
     date: "2026-11-03",
     zhHant: { title: "更新紀錄與開發提交數", summary: "更新頁區分正式版本序號與 Git 開發提交，並在部署時計算可查證的提交數。" },

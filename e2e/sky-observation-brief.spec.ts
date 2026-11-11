@@ -1,18 +1,18 @@
 import { test, expect } from '@playwright/test';
 
 test('dated observation distinguishes current from archived and links to its source', async ({ page }) => {
-  await page.clock.setFixedTime(new Date('2026-11-03T01:00:00Z'));
+  await page.clock.setFixedTime(new Date('2026-11-11T01:00:00Z'));
   await page.goto('/sky-events');
   const observation = page.locator('details#sky-observation-record');
   await expect(observation).not.toHaveAttribute('open', '');
   await observation.locator('summary').first().click();
   const brief = observation.locator('.sky-observation-brief');
-  await expect(brief.locator('time')).toHaveAttribute('datetime', '2026-11-03');
+  await expect(brief.locator('time')).toHaveAttribute('datetime', '2026-11-11');
   await expect(brief.getByRole('status')).not.toContainText(/not yet|尚未/i);
-  await page.clock.setFixedTime(new Date('2026-11-04T01:00:00Z'));
+  await page.clock.setFixedTime(new Date('2026-11-12T01:00:00Z'));
   await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
   await expect(brief.getByRole('status')).toContainText(/not yet|尚未/i);
-  await expect(brief.locator('time')).toHaveAttribute('datetime', '2026-11-03');
+  await expect(brief.locator('time')).toHaveAttribute('datetime', '2026-11-11');
   await brief.getByRole('link').click();
   await expect(page).toHaveURL(/#sky-observation-record$/);
   await expect(page.locator('#sky-observation-record .daily-sky')).toBeVisible();
@@ -20,7 +20,7 @@ test('dated observation distinguishes current from archived and links to its sou
 
 test('summary stays readable at mobile and desktop widths in each language', async ({ page }) => {
   test.setTimeout(90_000);
-  await page.clock.setFixedTime(new Date('2026-11-04T01:00:00Z'));
+  await page.clock.setFixedTime(new Date('2026-11-12T01:00:00Z'));
   await page.goto('/sky-events');
   const observation = page.locator('details#sky-observation-record');
   await observation.locator('summary').first().click();
@@ -32,7 +32,7 @@ test('summary stays readable at mobile and desktop widths in each language', asy
       for (const option of await page.locator('[data-language-switcher]').first().getByRole('radio').all()) {
         await option.click();
         await expect(brief.getByRole('status')).toBeVisible();
-        await expect(brief.locator('time')).toHaveText('2026-11-03');
+        await expect(brief.locator('time')).toHaveText('2026-11-11');
         expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
         const box = await brief.getByRole('link').boundingBox();
         expect(box!.height).toBeGreaterThanOrEqual(44);
@@ -41,10 +41,16 @@ test('summary stays readable at mobile and desktop widths in each language', asy
   }
 });
 
-test('interpretive-first reading and real ecliptic sky dial work without exposing technical details', async ({ page }, testInfo) => {
+test('interpretive-first reading and upper SkyUniverse work while lower SkyCurrentMotion is absent', async ({ page }, testInfo) => {
   await page.clock.setFixedTime(new Date('2026-11-04T01:00:00Z'));
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/sky-events');
+  const universe = page.locator('.sky-universe-section');
+  await expect(universe).toBeVisible();
+  await expect(universe.locator('canvas#universe')).toBeVisible();
+  await expect(universe.locator('.sky-universe-legend > li')).toHaveCount(9);
+  await expect(page.locator('.sky-current-motion')).toHaveCount(0);
+  await expect(page.locator('.sky-motion-dial')).toHaveCount(0);
   const impact = page.locator('.sky-event-impact');
   await expect(impact).toBeVisible();
   await expect(impact.locator('.sky-impact-points > li')).toHaveCount(4);
@@ -52,43 +58,30 @@ test('interpretive-first reading and real ecliptic sky dial work without exposin
   await expect(page.locator('details.sky-event-details')).not.toHaveAttribute('open', '');
   await expect(page.locator('details.sky-science-details')).not.toHaveAttribute('open', '');
   await expect(page.locator('details#sky-observation-record')).not.toHaveAttribute('open', '');
-  const positions = page.locator('.sky-motion-dial');
-  await expect(positions).toBeVisible({ timeout: 20_000 });
-  await expect(positions.locator('.sky-motion-planet')).toHaveCount(5);
-  await expect(page.locator('.sky-motion-clock time')).not.toBeEmpty();
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  const universeTop = (await universe.boundingBox())!.y;
   const impactTop = (await impact.boundingBox())!.y;
   const scienceTop = (await page.locator('details.sky-science-details').boundingBox())!.y;
+  expect(universeTop).toBeLessThan(impactTop);
   expect(impactTop).toBeLessThan(scienceTop);
-  await page.locator('.sky-motion-details > summary').click();
-  await expect(page.locator('.sky-motion-details li')).toHaveCount(5);
   await page.locator('details.sky-science-details > summary').click();
   await expect(page.locator('details.sky-science-details .science')).toBeVisible();
   await page.locator('details.sky-science-details > summary').click();
   await page.screenshot({ path: testInfo.outputPath('interpretive-first-390.png'), fullPage: true });
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await expect(page.locator('.sky-motion-sweep')).toHaveCSS('display', 'none');
 });
 
-test('sky planet glyphs move along computed longitude while the real current sky stays fixed', async ({ page }) => {
+test('upper SkyUniverse controls and legend render cleanly without lower SkyCurrentMotion or horizontal overflow', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/sky-events');
-  const dial = page.locator('.sky-current-motion');
-  await dial.scrollIntoViewIfNeeded();
-  await expect(dial.locator('.sky-motion-dial')).toBeVisible({ timeout: 20_000 });
-  const glyph = dial.locator('.sky-motion-planet').first();
-  const position = () => glyph.evaluate((node) => {
-    const computed = getComputedStyle(node);
-    return computed.left + ',' + computed.top;
-  });
-  const first = await position();
-  await expect(dial.locator('.sky-motion-playback-label')).toContainText(/90日|90 days/);
-  await expect.poll(position, { timeout: 8_000, intervals: [500, 900, 1200] }).not.toBe(first);
-  const realNow = await dial.locator('.sky-motion-details li').first().innerText();
-  await page.waitForTimeout(1000);
-  expect(await dial.locator('.sky-motion-details li').first().innerText()).toBe(realNow);
+  const universe = page.locator('.sky-universe-section');
+  await universe.scrollIntoViewIfNeeded();
+  await expect(universe.locator('canvas#universe')).toBeVisible();
+  await expect(universe.locator('#orbit-motion')).toBeVisible();
+  await expect(universe.locator('#orbit-reset')).toBeVisible();
+  await expect(universe.locator('.sky-universe-legend > li')).toHaveCount(9);
+  await expect(page.locator('.sky-current-motion')).toHaveCount(0);
+  await expect(page.locator('.sky-motion-details')).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await expect(dial.locator('.sky-motion-playback-label')).toBeHidden();
-  await expect(glyph).toHaveCSS('animation-name', 'none');
+  await page.setViewportSize({ width: 320, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
 });

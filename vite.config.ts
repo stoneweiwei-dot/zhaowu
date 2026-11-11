@@ -84,6 +84,9 @@ export default defineConfig({
     tsconfigPaths(),
     react(),
   ],
+  server: process.env.ZHAOWU_E2E_NO_OVERLAY === "1"
+    ? { hmr: { overlay: false } }
+    : undefined,
   build: {
     outDir: "dist",
     sourcemap: false,

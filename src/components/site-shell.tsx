@@ -14,7 +14,15 @@ import {
   type DisplayLanguage,
 } from "@/lib/display-language";
 import { SORTED_PUBLIC_CHANGELOG, publicChangeText } from "@/lib/public-changelog";
-import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSiteStats } from "@/lib/site-stats";
+import {
+  formatCumulativeVisitsLabel,
+  formatCumulativeVisitsNumber,
+  getPublicSiteStats,
+  LEGACY_VISITS_BASE,
+  recordVisit,
+  SITE_RELEASE_FALLBACK,
+  type PublicSiteStats,
+} from "@/lib/site-stats";
 import { JourneyNavigation } from "@/components/journey-navigation";
 import { SiteUtilityDock } from "@/components/site-utility-dock";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -189,12 +197,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
   ];
 
   const updateLabel = displayText(language, "正式版本序號", "正式版本序号", "Release number", "正式版番号", "정식 버전 번호", "रिलीज़ संख्या");
-  const todayLabel = displayText(language, "今日", "今日", "Today", "本日", "오늘", "आज");
-  const totalLabel = displayText(language, "累計訪問", "累计访问", "Total visits", "累計訪問", "누적 방문", "कुल विज़िट");
-  // Owner 2026-10-01: view counts must be visible. The header strip that used to carry them is hidden by the
-  // layout system, so they live in the page footer (existing counter/RPC unchanged).
-  const viewsTodayLabel = displayText(language, "今日瀏覽", "今日浏览", "Views today", "本日の閲覧", "오늘 조회", "आज के दृश्य");
-  const viewsTotalLabel = displayText(language, "累計瀏覽", "累计浏览", "Total views", "累計閲覧", "누적 조회", "कुल दृश्य");
+  // Owner 2026-10-01 / 2026-11-11: cumulative visit counts must always be visible in the footer as legacy base + new DB count.
+  const displayedTotal = LEGACY_VISITS_BASE + (stats.totalVisits > 0 ? stats.totalVisits : 0);
+  const cumulativeVisitsNumber = formatCumulativeVisitsNumber(displayedTotal, language);
+  const cumulativeVisitsLabel = formatCumulativeVisitsLabel(language);
   const latestLabel = displayText(language, "最新更新", "最新更新", "Latest update", "最新更新", "최신 업데이트", "नवीनतम अपडेट");
   const siteControlsLabel = displayText(language, "網站控制", "网站控制", "Site controls", "サイト操作", "사이트 메뉴", "साइट नियंत्रण");
   const galleryLabel = displayText(language, "素材管理", "素材管理", "Media", "素材管理", "미디어", "मीडिया");
@@ -264,7 +270,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
             {!isOwnerWorkspace && !isHome ? (
               <div className="mb-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-b border-line/50 pb-1 text-[11px] leading-4 text-ink-mute" data-site-status-strip>
                 <span data-site-release>{stats.version} · {updateLabel} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}</span>
-                <span>{todayLabel} {stats.todayVisits.toLocaleString(numberLocale)} · {totalLabel} {stats.totalVisits.toLocaleString(numberLocale)}</span>
                 <Link to="/updates" className="zhaowu-latest-update-link" data-latest-change-report aria-label={`${latestLabel}：${releaseSummary}`}>
                   <span>{latestLabel}</span><span aria-hidden="true">›</span>
                 </Link>
@@ -337,13 +342,16 @@ export function SiteShell({ children }: { children: ReactNode }) {
               </Link>
             )}
         </div>
-        {stats.totalVisits > 0 ? (
-          <p className="zhaowu-site-views" data-site-views aria-label={`${viewsTodayLabel} ${stats.todayVisits.toLocaleString(numberLocale)}，${viewsTotalLabel} ${stats.totalVisits.toLocaleString(numberLocale)}`}>
-            <span>{viewsTodayLabel} <b>{stats.todayVisits.toLocaleString(numberLocale)}</b></span>
-            <i aria-hidden="true" />
-            <span>{viewsTotalLabel} <b>{stats.totalVisits.toLocaleString(numberLocale)}</b></span>
-          </p>
-        ) : null}
+        <p
+          className="zhaowu-site-views"
+          data-site-views
+          aria-label={`${cumulativeVisitsLabel} ${cumulativeVisitsNumber}`}
+        >
+          <span className="zhaowu-site-views__total">
+            <strong className="zhaowu-site-views__number" data-site-views-number>{cumulativeVisitsNumber}</strong>
+            <span className="zhaowu-site-views__label" data-site-views-label>{cumulativeVisitsLabel}</span>
+          </span>
+        </p>
         {isHome ? (
           <details className="zhaowu-why" data-why-zhaowu>
             <summary>{displayText(language, "為何做昭梧", "为何做昭梧", "Why ZHAOWU exists", "昭梧をつくる理由", "昭梧를 만든 이유")}</summary>
