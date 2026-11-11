@@ -269,3 +269,37 @@ export async function renderShareCardPng(model: ShareCardModel): Promise<Blob> {
 
   return canvasBlob(canvas);
 }
+
+/** 在本機產生橫版分享圖；只使用明確列出的日柱及既有關鍵詞。 */
+export async function renderLandscapeShareCardPng(model: ShareCardModel, dayPillar: string, locale: Locale): Promise<Blob> {
+  const canvas = document.createElement("canvas");
+  canvas.width = 1200;
+  canvas.height = 630;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Canvas is unavailable");
+  const serif = '"Songti TC", "Songti SC", "Noto Serif CJK TC", serif';
+  ctx.fillStyle = "#f6f3e9";
+  ctx.fillRect(0, 0, 1200, 630);
+  ctx.strokeStyle = "#a18a5b";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(30, 30, 1140, 570);
+  ctx.fillStyle = "#38594b";
+  ctx.font = `600 28px ${serif}`;
+  ctx.fillText(model.brand, 75, 90);
+  ctx.font = `600 66px ${serif}`;
+  ctx.fillText(model.title, 75, 190, 1030);
+  ctx.font = `400 30px ${serif}`;
+  const pillarLabel = locale === "en" ? "Day pillar" : locale === "zh-Hans" ? "日柱" : "日柱";
+  ctx.fillText(`${pillarLabel} · ${dayPillar || "—"}`, 75, 260, 1030);
+  ctx.fillStyle = "#435a4e";
+  ctx.font = `400 30px ${serif}`;
+  drawWrappedText(ctx, model.keywords.join("  ·  "), 75, 345, 1020, 48, 2);
+  const quote = locale === "en" ? "Know what to keep, and where to go." : locale === "zh-Hans" ? "知所守，知所往" : "知所守，知所往";
+  ctx.font = `400 31px ${serif}`;
+  ctx.fillText(quote, 75, 465, 1020);
+  ctx.font = `400 22px ${serif}`;
+  ctx.fillText("zhao-wu.com", 75, 550);
+  ctx.textAlign = "right";
+  ctx.fillText(model.watermark, 1125, 550);
+  return canvasBlob(canvas);
+}

@@ -51,6 +51,7 @@ import { Route as QuizCultivationDestinyRouteImport } from './routes/quiz.cultiv
 import { Route as QuizDivineAffinityRouteImport } from './routes/quiz.divine-affinity'
 import { Route as QuizFiveElementOverdriveRouteImport } from './routes/quiz.five-element-overdrive'
 import { Route as QuizSixRealmsRouteImport } from './routes/quiz.six-realms'
+import { Route as MythXianhuiChronicleCreaturesKaiMingBeastRouteImport } from './routes/myth.xianhui-chronicle.creatures.kai-ming-beast'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -266,6 +267,12 @@ const QuizSixRealmsRoute = QuizSixRealmsRouteImport.update({
   path: '/quiz/six-realms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MythXianhuiChronicleCreaturesKaiMingBeastRoute =
+  MythXianhuiChronicleCreaturesKaiMingBeastRouteImport.update({
+    id: '/myth/xianhui-chronicle/creatures/kai-ming-beast',
+    path: '/myth/xianhui-chronicle/creatures/kai-ming-beast',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -310,6 +317,7 @@ export interface FileRoutesByFullPath {
   '/quiz/divine-affinity': typeof QuizDivineAffinityRoute
   '/quiz/five-element-overdrive': typeof QuizFiveElementOverdriveRoute
   '/quiz/six-realms': typeof QuizSixRealmsRoute
+  '/myth/xianhui-chronicle/creatures/kai-ming-beast': typeof MythXianhuiChronicleCreaturesKaiMingBeastRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -354,6 +362,7 @@ export interface FileRoutesByTo {
   '/quiz/divine-affinity': typeof QuizDivineAffinityRoute
   '/quiz/five-element-overdrive': typeof QuizFiveElementOverdriveRoute
   '/quiz/six-realms': typeof QuizSixRealmsRoute
+  '/myth/xianhui-chronicle/creatures/kai-ming-beast': typeof MythXianhuiChronicleCreaturesKaiMingBeastRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -399,6 +408,7 @@ export interface FileRoutesById {
   '/quiz/divine-affinity': typeof QuizDivineAffinityRoute
   '/quiz/five-element-overdrive': typeof QuizFiveElementOverdriveRoute
   '/quiz/six-realms': typeof QuizSixRealmsRoute
+  '/myth/xianhui-chronicle/creatures/kai-ming-beast': typeof MythXianhuiChronicleCreaturesKaiMingBeastRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -445,6 +455,7 @@ export interface FileRouteTypes {
     | '/quiz/divine-affinity'
     | '/quiz/five-element-overdrive'
     | '/quiz/six-realms'
+    | '/myth/xianhui-chronicle/creatures/kai-ming-beast'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -489,6 +500,7 @@ export interface FileRouteTypes {
     | '/quiz/divine-affinity'
     | '/quiz/five-element-overdrive'
     | '/quiz/six-realms'
+    | '/myth/xianhui-chronicle/creatures/kai-ming-beast'
   id:
     | '__root__'
     | '/'
@@ -533,6 +545,7 @@ export interface FileRouteTypes {
     | '/quiz/divine-affinity'
     | '/quiz/five-element-overdrive'
     | '/quiz/six-realms'
+    | '/myth/xianhui-chronicle/creatures/kai-ming-beast'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -571,6 +584,7 @@ export interface RootRouteChildren {
   QuizDivineAffinityRoute: typeof QuizDivineAffinityRoute
   QuizFiveElementOverdriveRoute: typeof QuizFiveElementOverdriveRoute
   QuizSixRealmsRoute: typeof QuizSixRealmsRoute
+  MythXianhuiChronicleCreaturesKaiMingBeastRoute: typeof MythXianhuiChronicleCreaturesKaiMingBeastRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -869,6 +883,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QuizSixRealmsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/myth/xianhui-chronicle/creatures/kai-ming-beast': {
+      id: '/myth/xianhui-chronicle/creatures/kai-ming-beast'
+      path: '/myth/xianhui-chronicle/creatures/kai-ming-beast'
+      fullPath: '/myth/xianhui-chronicle/creatures/kai-ming-beast'
+      preLoaderRoute: typeof MythXianhuiChronicleCreaturesKaiMingBeastRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -942,6 +963,8 @@ const rootRouteChildren: RootRouteChildren = {
   QuizDivineAffinityRoute: QuizDivineAffinityRoute,
   QuizFiveElementOverdriveRoute: QuizFiveElementOverdriveRoute,
   QuizSixRealmsRoute: QuizSixRealmsRoute,
+  MythXianhuiChronicleCreaturesKaiMingBeastRoute:
+    MythXianhuiChronicleCreaturesKaiMingBeastRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

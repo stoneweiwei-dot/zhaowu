@@ -155,9 +155,19 @@ export function renderTrueSolarStatic(origin) {
   return { main, jsonLd };
 }
 
+// 圖鑑正文與前端共用內容，讓搜尋引擎取得同一篇文章。
+export function renderKaimingStatic(origin) {
+  const c = JSON.parse(readFileSync(join(ROOT, "src/lib/kaiming-content.json"), "utf8"));
+  const t = c.locales["zh-Hant"];
+  const url = `${origin}${c.path}`;
+  const main = `<main class="zw-static-shell" lang="zh-Hant"><h1>${esc(t.title)}</h1><p>${esc(t.lead)}</p><figure><img src="/mythic-atlas/web/kaiming-beast-stone-original.webp" alt="開明獸虎身九首皆人面，面向東方立於崑崙晨光之間" width="941" height="1672"><figcaption>取意《山海經》的昭梧原創圖像。 · STONE 原創</figcaption></figure>${t.sections.map(([h, p]) => `<section><h2>${esc(h)}</h2><p>${esc(p)}</p></section>`).join("")}<section><h2>古籍出處</h2><p>《山海經·海內西經》記載：「開明獸身大類虎而九首，皆人面，東嚮立崑崙上。」本頁守界與觀心象徵屬昭梧原創詮釋。</p><a href="https://ctext.org/shan-hai-jing/hai-nei-xi-jing">Chinese Text Project · 海內西經</a></section><nav><a href="/mythic-atlas">${esc(t.atlas)}</a> · <a href="/knowledge/five-elements-tone-qi">${esc(t.related)}</a> · <a href="/#birth-form">${esc(t.chart)}</a></nav></main>`;
+  return { main, jsonLd: { "@context": "https://schema.org", "@type": "Article", headline: t.title, description: t.lead, inLanguage: "zh-Hant", mainEntityOfPage: url, author: { "@type": "Organization", name: "昭梧", url: `${origin}/` } } };
+}
+
 /** Route path -> renderer returning { main, jsonLd }. Routes not listed keep the homepage static shell. */
 export const STATIC_PAGES = {
   "/knowledge/true-solar-time": renderTrueSolarStatic,
+  "/myth/xianhui-chronicle/creatures/kai-ming-beast": renderKaimingStatic,
 };
 
 /** Replaces the homepage static shell with the route's own body and appends its JSON-LD to <head>. */

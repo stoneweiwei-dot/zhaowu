@@ -1,6 +1,20 @@
 {
   "origin": "https://zhao-wu.com",
   "routes": {
+    "/myth/xianhui-chronicle/creatures/kai-ming-beast": {
+      "zh-Hant": {
+        "title": "開明獸｜顯晦紀事神獸圖鑑｜昭梧",
+        "description": "九首面向東方，佇立在山闕的邊界。以觀照辨別外境與本心。"
+      },
+      "zh-Hans": {
+        "title": "开明兽｜显晦纪事神兽图鉴｜昭梧",
+        "description": "九首面向东方，伫立在山阙的边界。以观照辨别外境与本心。"
+      },
+      "en": {
+        "title": "Kaiming Beast | The Xianhui Chronicle Bestiary | ZHAOWU",
+        "description": "Nine heads face east at the mountain threshold, an invitation to distinguish the world outside from the voice within."
+      }
+    },
     "/": {
       "zh-Hant": { "title": "昭梧｜八字排盤・子平八字・真太陽時・流年運勢｜免登入免費", "description": "免登入免費八字排盤：依子平八字與真太陽時校正，整理五行旺衰、大運與流年運勢、今日提示。" },
       "zh-Hans": { "title": "昭梧｜八字排盘・子平八字・真太阳时・流年运势｜免登录免费", "description": "免登录免费八字排盘：依子平八字与真太阳时校正，整理五行旺衰、大运与流年运势、今日提示。" },
