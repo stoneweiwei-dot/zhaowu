@@ -372,6 +372,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 "そのため、命盤とクイックリーディングは無料・登録不要で、レポートはこの端末のブラウザに暗号化して保存されます。完全版レポートは一回払いで、自動更新はありません。昭梧が示すのは伝統的な象意の参考であり、医療診断ではありません。決めるのは、あなた自身です。",
                 "그래서 명반과 빠른 해석은 무료이며 가입이 필요 없고, 보고서는 이 기기의 브라우저에 암호화되어 저장됩니다. 전체 보고서는 1회 결제이며 자동 갱신되지 않습니다. 昭梧는 전통 상징에 기반한 참고 자료일 뿐 의료 진단이 아니며, 결정은 언제나 당신의 몫입니다.",
               )}</p>
+              <p><Link to="/knowledge" hash="zhaowu-four-classics" className="inline-flex min-h-11 items-center underline underline-offset-4">{displayText(language, "四書合參 · 昭梧判讀依據", "四书合参 · 昭梧判断依据", "Four classical sources · Our reading method", "四書に基づく分析方法", "네 가지 고전과 분석 방식", "चार ग्रंथ और विश्लेषण पद्धति")}</Link></p>
             </div>
           </details>
         ) : null}

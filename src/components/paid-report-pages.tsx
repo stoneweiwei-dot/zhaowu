@@ -1,4 +1,5 @@
 import { MobileScrollContainer } from "@/components/mobile-scroll-container";
+import { Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
 import type { AnalysisResult, Element, Pillar } from "@/lib/bazi/types";
 import type { ReportSection } from "@/lib/report/focused-report";
@@ -267,6 +268,7 @@ function MethodologyDisclosure({ locale }: { locale: Locale }) {
       <details className="zhaowu-report-methodology__more">
         <summary>{copy.methodologyMore}</summary>
         <p>{copy.methodologyExpanded}</p>
+        <Link to="/knowledge" hash="zhaowu-four-classics" className="mt-2 inline-flex min-h-11 items-center text-sm text-pine underline underline-offset-4">{locale === "en" ? "Four sources and seven-step method" : locale === "zh-Hans" ? "四书来源与七步判读" : "四書來源與七步判讀"}</Link>
       </details>
     </div>
   );
