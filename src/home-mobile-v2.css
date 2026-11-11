@@ -585,3 +585,39 @@ html[data-zws="southern-winter"] body #root .zw-painted-home.zw-v2-home .ph-tree
 }
 html[data-zws="southern-winter"] body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry :is(strong, small) { color: #1c333c !important; -webkit-text-fill-color: #1c333c !important; }
 html[data-zws="southern-winter"] body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry :is(strong, small) { color: #fffaf0 !important; -webkit-text-fill-color: #fffaf0 !important; }
+
+/* Solar terms and Sydney seasons stay still. The date rules live in seasonal-skins.ts. */
+html:is([data-zws^="solar-"], [data-zws^="southern-"], [data-zws="sydney-jacaranda"]) body #root .zw-painted-home .ph-tree-body,
+html:is([data-zws^="solar-"], [data-zws^="southern-"], [data-zws="sydney-jacaranda"]) body #root .zw-painted-home :is(button, a, .ph-tree-primary, .zw-v2-primary) {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Other themes: the four homepage blocks pick up that theme's edge motif. */
+html[data-zws]:not([data-zws^="solar-"]):not([data-zws^="southern-"]):not([data-zws="sydney-jacaranda"]) body #root .zw-painted-home.zw-v2-home .zw-v2-primary {
+  background: var(--zws-accent) !important;
+  color: var(--zws-on-accent) !important;
+  border: 2px solid var(--zws-gold) !important;
+  border-radius: var(--zws-btn-radius, 8px) !important;
+  box-shadow: none !important;
+}
+html[data-zws]:not([data-zws^="solar-"]):not([data-zws^="southern-"]):not([data-zws="sydney-jacaranda"]) body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry {
+  background: color-mix(in srgb, var(--zws-card) 94%, white) !important;
+  color: var(--zws-ink) !important;
+  border: 1px solid var(--zws-line) !important;
+  border-radius: var(--zws-card-radius, 8px) !important;
+  box-shadow: var(--zws-card-frame, none) !important;
+}
+html[data-zws]:not([data-zws^="solar-"]):not([data-zws^="southern-"]):not([data-zws="sydney-jacaranda"]) body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry {
+  background: var(--zws-accent) !important;
+  color: var(--zws-on-accent) !important;
+  border-color: var(--zws-gold) !important;
+}
+html[data-zws]:not([data-zws^="solar-"]):not([data-zws^="southern-"]):not([data-zws="sydney-jacaranda"]) body #root .zw-painted-home.zw-v2-home .ph-tree-node .ph-tree-primary.zw-entry :is(strong, small) {
+  color: var(--zws-ink) !important;
+  -webkit-text-fill-color: var(--zws-ink) !important;
+}
+html[data-zws]:not([data-zws^="solar-"]):not([data-zws^="southern-"]):not([data-zws="sydney-jacaranda"]) body #root .zw-painted-home.zw-v2-home .ph-tree-node:first-of-type .ph-tree-primary.zw-entry :is(strong, small) {
+  color: var(--zws-on-accent) !important;
+  -webkit-text-fill-color: var(--zws-on-accent) !important;
+}

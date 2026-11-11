@@ -113,6 +113,20 @@ export const SYDNEY_SEASON_SKINS = SYDNEY_SEASON_IDS.map((id) => SKINS.find((ski
 export const SEASONAL_SKINS = SKINS.filter((skin) => skin.id.startsWith("solar-"));
 export const ARCHIVED_SKINS = SKINS.filter((skin) => !skin.id.startsWith("solar-") && !CURATED_SKIN_CATALOG.some((entry) => entry.id === skin.id) && !SYDNEY_SEASON_IDS.includes(skin.id as (typeof SYDNEY_SEASON_IDS)[number]));
 
+/**
+ * Manual themes grouped for the owner console.
+ * The first id in each family is the lead; the rest stay selectable under that family.
+ * Skin ids are unchanged. Solar terms and the four Sydney seasons are not in these groups.
+ */
+export const MANUAL_THEME_FAMILIES: ReadonlyArray<{ id: string; zh: string; hans: string; en: string; noteZh: string; noteHans: string; noteEn: string; skins: readonly string[] }> = [
+  { id: "soft", zh: "粉彩荷鯉", hans: "粉彩荷鲤", en: "Pastel lotus", noteZh: "圓角、藕粉細線、鱗點只在邊緣", noteHans: "圆角、藕粉细线、鳞点只在边缘", noteEn: "Round cards, lotus-rose hairline, scale dots at the edge", skins: ["pastel-koi", "song-lotus-still", "petal-immortal", "butterfly-lotus"] },
+  { id: "water", zh: "水色", hans: "水色", en: "Water", noteZh: "水線壓頂或沙金底邊，卡片保持留白", noteHans: "水线压顶或沙金底边，卡片保持留白", noteEn: "A water line or sand-gold base, with open card paper", skins: ["song-rain-bank", "pink-lotus-stream", "lotus-boat", "cloud-jade"] },
+  { id: "warm", zh: "暖金", hans: "暖金", en: "Warm gold", noteZh: "金線、赭邊或桂色側條", noteHans: "金线、赭边或桂色侧条", noteEn: "Gold line, rust edge or osmanthus side bar", skins: ["golden-phoenix", "dawn-dragon", "song-osmanthus", "song-gallery-frostleaf"] },
+  { id: "green", zh: "青木", hans: "青木", en: "Green wood", noteZh: "左側新綠或松色立柱", noteHans: "左侧新绿或松色立柱", noteEn: "A sprout-green or pine bar on the left", skins: ["verdant-pavilion", "verdant-dragon", "verdant-mist", "bamboo-falls", "pine-ink"] },
+  { id: "scroll", zh: "龍卷", hans: "龙卷", en: "Dragon scroll", noteZh: "卷軸桿、墨邊或青玉細框", noteHans: "卷轴杆、墨边或青玉细框", noteEn: "Scroll rods, an ink edge or a thin jade frame", skins: ["dragon-lotus", "ink-dragon", "song-clear-dragon", "day-flute", "moon-lotus-boat"] },
+  { id: "night", zh: "夜色", hans: "夜色", en: "Night", noteZh: "金角或夜綠細線，不加閃動", noteHans: "金角或夜绿细线，不加闪动", noteEn: "Gold corners or a night-green line, with no motion", skins: ["night-flute", "night-palace", "verdant-rain"] },
+];
+
 let visitorHemisphere: Hemisphere = 'unknown';
 /** Southern meteorological seasons follow the Sydney civil calendar. Spring is 藍花楹. */
 export function southernSkinForDate(now: Date): string {

@@ -28,7 +28,7 @@ test("Song Quiet group uses the existing skin engine and light contrast mode", (
   assert.equal(quiet.length, 4);
   assert.ok(quiet.every((s) => s.id.startsWith("song-") && s.mode === "light"));
   const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
-  assert.match(manager, /data-archived-theme-collection/);
+  assert.match(manager, /data-theme-family=\{family\.id\}/);
   assert.ok(full.includes('html[data-zws^="song-"]'));
 });
 test("青木 series (15-18): three light skins and one dark rain skin on the existing engine", () => {
@@ -186,15 +186,21 @@ test('every actual skin palette keeps body, muted copy and primary actions reada
       assert.ok(ratio >= 4.5, `${skin.id}: ${fg} / ${bg} contrast ${ratio.toFixed(2)}`);
     }
     const sydneySeason = ['sydney-jacaranda', 'southern-summer', 'southern-autumn', 'southern-winter'].includes(skin.id);
-    if (sydneySeason) {
+    if (skin.id.startsWith('solar-')) {
+      assert.equal(vars['--zws-card-orn'], 'none', `${skin.id} stays a still solar skin`);
+      assert.equal(vars['--zws-card-frame'], 'none');
+      assert.equal(vars['--zws-card-blur'], 'none');
+    } else if (sydneySeason) {
       assert.notEqual(vars['--zws-card-orn'], 'none', `${skin.id} keeps a season ornament`);
       assert.notEqual(vars['--zws-card-frame'], 'none', `${skin.id} keeps a season frame`);
     } else {
-      assert.equal(vars['--zws-card-orn'], 'none');
-      assert.equal(vars['--zws-card-frame'], 'none');
+      assert.notEqual(vars['--zws-card-orn'], 'none', `${skin.id} needs an edge motif`);
+      assert.notEqual(vars['--zws-card-frame'], 'none', `${skin.id} needs a frame`);
       assert.equal(vars['--zws-card-blur'], 'none');
     }
   }
+  const manualFrames = ids.filter((skin) => !skin.id.startsWith('solar-') && !['sydney-jacaranda', 'southern-summer', 'southern-autumn', 'southern-winter'].includes(skin.id)).map((skin) => tokensForSkin(skin)['--zws-card-frame']);
+  assert.equal(new Set(manualFrames).size, manualFrames.length, 'each manual theme keeps its own frame');
   const seasons = ['sydney-jacaranda', 'southern-summer', 'southern-autumn', 'southern-winter'].map((id) => tokensForSkin(ids.find((skin) => skin.id === id)));
   assert.equal(new Set(seasons.map((vars) => vars['--zws-page'])).size, 4);
   assert.equal(new Set(seasons.map((vars) => vars['--zws-card-frame'])).size, 4);
@@ -253,14 +259,25 @@ test("all selectable skins share the Song editorial shell without overwriting th
   assert.match(manager, /src=\{skin\.hero\}/);
 });
 
-test("owner theme manager curates ten distinct choices and keeps the other fifteen in one disclosure", () => {
+test("owner theme manager groups manual themes and keeps solar and Sydney seasons still", () => {
   const registry = readFileSync("src/lib/theme-skins.ts", "utf8");
   const manager = readFileSync("src/components/owner-theme-skins-manager.tsx", "utf8");
-  const curated = registry.match(/CURATED_SKIN_CATALOG:[\s\S]*?= \[([\s\S]*?)\] as const;/)?.[1] ?? "";
-  assert.equal([...curated.matchAll(/\{ id: "[a-z-]+", family: "[a-z]+" \}/g)].length, 10);
-  assert.match(manager, /CURATED_SKINS/);
-  assert.match(manager, /ARCHIVED_SKINS/);
-  assert.match(manager, /data-archived-theme-collection/);
+  const home = readFileSync("src/home-mobile-v2.css", "utf8");
+  const familyBlock = registry.match(/MANUAL_THEME_FAMILIES:[\s\S]*?= \[([\s\S]*?)\];/)?.[1] ?? "";
+  const families = [...familyBlock.matchAll(/id: "([a-z]+)"/g)].map((match) => match[1]);
+  const grouped = [...familyBlock.matchAll(/"([a-z][a-z0-9-]+)"/g)].map((match) => match[1]).filter((id) => !families.includes(id) && id !== "zh" && id !== "hans" && id !== "en");
+  const manual = ids.filter((skin) => !skin.id.startsWith("solar-") && !["sydney-jacaranda", "southern-summer", "southern-autumn", "southern-winter"].includes(skin.id)).map((skin) => skin.id);
+  assert.equal(families.length, 6);
+  assert.deepEqual(grouped.slice().sort(), manual.slice().sort());
+  assert.equal(new Set(grouped).size, grouped.length);
+  assert.match(manager, /MANUAL_THEME_FAMILIES/);
+  assert.match(manager, /data-theme-family=\{family\.id\}/);
+  assert.match(manager, /data-theme-family-rest=\{family\.id\}/);
+  assert.match(manager, /data-theme-static="solar"/);
+  assert.match(manager, /data-theme-static="southern"/);
+  assert.match(home, /animation: none !important/);
+  assert.match(home, /data-zws\^="solar-"/);
+  assert.doesNotMatch(readFileSync("src/theme-skins-full.css", "utf8"), /@keyframes/);
 });
 
 test("all published skins keep the owner footer action, not the obsolete header-only transparency override", () => {
