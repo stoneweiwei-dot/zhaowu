@@ -125,6 +125,238 @@ export const OBSERVATIONS: DatedObservation[] = [
       { title: "Timeanddate · Sydney Moon, 3 Nov 2026", url: "https://www.timeanddate.com/moon/australia/sydney?month=11&year=2026" },
       { title: "Timeanddate · Sydney night sky, planetary viewing reference", url: "https://www.timeanddate.com/astronomy/night/australia/sydney" }
     ]
+  },
+    {
+    date: "2026-11-04",
+    moon: {
+      "zh-Hant": "殘月；08:37 過中天時照明 28.3%（月中天瞬時值，非全天固定照明）。02:52 月出，14:30 月落。",
+      "zh-Hans": "残月；08:37 过中天时照明 28.3%（月中天瞬时值，非全天固定照明）。02:52 月出，14:30 月落。",
+      en: "Waning crescent; 28.3% illuminated at its 08:37 meridian transit (transit instant, not fixed all day). Moonrise 02:52; moonset 14:30."
+    },
+    planets: {
+      "zh-Hant": "悉尼當日星曆計算：土星約 04:40 落下；凌晨火星 02:17、木星 02:27、金星 04:49 升起。水星鄰近太陽方向時不建議直接觀測。",
+      "zh-Hans": "悉尼当日星历计算：土星约 04:40 落下；凌晨火星 02:17、木星 02:27、金星 04:49 升起。水星邻近太阳方向时不建议直接观测。",
+      en: "Sydney ephemeris times: Saturn sets around 04:40; Mars rises at 02:17, Jupiter at 02:27 and Venus at 04:49. Avoid viewing Mercury when close to the Sun."
+    },
+    events: {
+      "zh-Hant": "資料暫缺：本日 S／A 重大行星事件、JPL 交叉比對與90天日曆尚待獨立星曆核驗，不代表沒有重大事件。",
+      "zh-Hans": "资料暂缺：本日 S／A 重大行星事件、JPL 交叉比对与90天日历尚待独立星历核验，不代表没有重大事件。",
+      en: "Data unavailable: today's S/A major planetary events, JPL cross-checks and the 90-day calendar await independent ephemeris verification; this does not mean there are no major events."
+    },
+    weather: {
+      "zh-Hant": "資料暫缺：當日逐時能見度與實測光害資料暫缺；外出觀測前請先核對澳洲氣象局（BoM）悉尼最新預報並遠離強光。",
+      "zh-Hans": "资料暂缺：当日逐时能见度与实测光害资料暂缺；外出观测前请先核对澳大利亚气象局（BoM）悉尼最新预报并远离强光。",
+      en: "Data unavailable: hour-by-hour visibility and measured light-pollution readings are unavailable; check the latest Australian Bureau of Meteorology (BoM) Sydney forecast before observing."
+    },
+    sources: [
+      { title: "Timeanddate · Sydney Astronomy (2026-11-04 AEDT/AEST)", url: "https://www.timeanddate.com/astronomy/australia/sydney" },
+      { title: "Timeanddate · Sydney Moon, 2026-11", url: "https://www.timeanddate.com/moon/australia/sydney?month=11&year=2026" },
+      { title: "Timeanddate · Sydney Night Sky Planets", url: "https://www.timeanddate.com/astronomy/night/australia/sydney" },
+      { title: "Australian Bureau of Meteorology · Sydney Forecast", url: "https://www.bom.gov.au/places/nsw/north-sydney/forecast" }
+    ]
+  },
+  {
+    date: "2026-11-05",
+    moon: {
+      "zh-Hant": "殘月；09:22 過中天時照明 18.9%（月中天瞬時值，非全天固定照明）。03:20 月出，15:32 月落。",
+      "zh-Hans": "残月；09:22 过中天时照明 18.9%（月中天瞬时值，非全天固定照明）。03:20 月出，15:32 月落。",
+      en: "Waning crescent; 18.9% illuminated at its 09:22 meridian transit (transit instant, not fixed all day). Moonrise 03:20; moonset 15:32."
+    },
+    planets: {
+      "zh-Hant": "悉尼當日星曆計算：土星約 04:36 落下；凌晨火星 02:15、木星 02:24、金星 04:45 升起。水星鄰近太陽方向時不建議直接觀測。",
+      "zh-Hans": "悉尼当日星历计算：土星约 04:36 落下；凌晨火星 02:15、木星 02:24、金星 04:45 升起。水星邻近太阳方向时不建议直接观测。",
+      en: "Sydney ephemeris times: Saturn sets around 04:36; Mars rises at 02:15, Jupiter at 02:24 and Venus at 04:45. Avoid viewing Mercury when close to the Sun."
+    },
+    events: {
+      "zh-Hant": "資料暫缺：本日 S／A 重大行星事件、JPL 交叉比對與90天日曆尚待獨立星曆核驗，不代表沒有重大事件。",
+      "zh-Hans": "资料暂缺：本日 S／A 重大行星事件、JPL 交叉比对与90天日历尚待独立星历核验，不代表没有重大事件。",
+      en: "Data unavailable: today's S/A major planetary events, JPL cross-checks and the 90-day calendar await independent ephemeris verification; this does not mean there are no major events."
+    },
+    weather: {
+      "zh-Hant": "資料暫缺：當日逐時能見度與實測光害資料暫缺；外出觀測前請先核對澳洲氣象局（BoM）悉尼最新預報並遠離強光。",
+      "zh-Hans": "资料暂缺：当日逐时能见度与实测光害资料暂缺；外出观测前请先核对澳大利亚气象局（BoM）悉尼最新预报并远离强光。",
+      en: "Data unavailable: hour-by-hour visibility and measured light-pollution readings are unavailable; check the latest Australian Bureau of Meteorology (BoM) Sydney forecast before observing."
+    },
+    sources: [
+      { title: "Timeanddate · Sydney Astronomy (2026-11-05 AEDT/AEST)", url: "https://www.timeanddate.com/astronomy/australia/sydney" },
+      { title: "Timeanddate · Sydney Moon, 2026-11", url: "https://www.timeanddate.com/moon/australia/sydney?month=11&year=2026" },
+      { title: "Timeanddate · Sydney Night Sky Planets", url: "https://www.timeanddate.com/astronomy/night/australia/sydney" },
+      { title: "Australian Bureau of Meteorology · Sydney Forecast", url: "https://www.bom.gov.au/places/nsw/north-sydney/forecast" }
+    ]
+  },
+  {
+    date: "2026-11-06",
+    moon: {
+      "zh-Hant": "殘月；10:06 過中天時照明 11.2%（月中天瞬時值，非全天固定照明）。03:47 月出，16:34 月落。",
+      "zh-Hans": "残月；10:06 过中天时照明 11.2%（月中天瞬时值，非全天固定照明）。03:47 月出，16:34 月落。",
+      en: "Waning crescent; 11.2% illuminated at its 10:06 meridian transit (transit instant, not fixed all day). Moonrise 03:47; moonset 16:34."
+    },
+    planets: {
+      "zh-Hant": "悉尼當日星曆計算：土星約 04:32 落下；凌晨火星 02:13、木星 02:20、金星 04:41 升起。水星鄰近太陽方向時不建議直接觀測。",
+      "zh-Hans": "悉尼当日星历计算：土星约 04:32 落下；凌晨火星 02:13、木星 02:20、金星 04:41 升起。水星邻近太阳方向时不建议直接观测。",
+      en: "Sydney ephemeris times: Saturn sets around 04:32; Mars rises at 02:13, Jupiter at 02:20 and Venus at 04:41. Avoid viewing Mercury when close to the Sun."
+    },
+    events: {
+      "zh-Hant": "資料暫缺：本日 S／A 重大行星事件、JPL 交叉比對與90天日曆尚待獨立星曆核驗，不代表沒有重大事件。",
+      "zh-Hans": "资料暂缺：本日 S／A 重大行星事件、JPL 交叉比对与90天日历尚待独立星历核验，不代表没有重大事件。",
+      en: "Data unavailable: today's S/A major planetary events, JPL cross-checks and the 90-day calendar await independent ephemeris verification; this does not mean there are no major events."
+    },
+    weather: {
+      "zh-Hant": "資料暫缺：當日逐時能見度與實測光害資料暫缺；外出觀測前請先核對澳洲氣象局（BoM）悉尼最新預報並遠離強光。",
+      "zh-Hans": "资料暂缺：当日逐时能见度与实测光害资料暂缺；外出观测前请先核对澳大利亚气象局（BoM）悉尼最新预报并远离强光。",
+      en: "Data unavailable: hour-by-hour visibility and measured light-pollution readings are unavailable; check the latest Australian Bureau of Meteorology (BoM) Sydney forecast before observing."
+    },
+    sources: [
+      { title: "Timeanddate · Sydney Astronomy (2026-11-06 AEDT/AEST)", url: "https://www.timeanddate.com/astronomy/australia/sydney" },
+      { title: "Timeanddate · Sydney Moon, 2026-11", url: "https://www.timeanddate.com/moon/australia/sydney?month=11&year=2026" },
+      { title: "Timeanddate · Sydney Night Sky Planets", url: "https://www.timeanddate.com/astronomy/night/australia/sydney" },
+      { title: "Australian Bureau of Meteorology · Sydney Forecast", url: "https://www.bom.gov.au/places/nsw/north-sydney/forecast" }
+    ]
+  },
+  {
+    date: "2026-11-07",
+    moon: {
+      "zh-Hant": "殘月；10:50 過中天時照明 5.5%（月中天瞬時值，非全天固定照明）。04:14 月出，17:35 月落。",
+      "zh-Hans": "残月；10:50 过中天时照明 5.5%（月中天瞬时值，非全天固定照明）。04:14 月出，17:35 月落。",
+      en: "Waning crescent; 5.5% illuminated at its 10:50 meridian transit (transit instant, not fixed all day). Moonrise 04:14; moonset 17:35."
+    },
+    planets: {
+      "zh-Hant": "悉尼當日星曆計算：土星約 04:28 落下；凌晨火星 02:10、木星 02:17、金星 04:37 升起。水星鄰近太陽方向時不建議直接觀測。",
+      "zh-Hans": "悉尼当日星历计算：土星约 04:28 落下；凌晨火星 02:10、木星 02:17、金星 04:37 升起。水星邻近太阳方向时不建议直接观测。",
+      en: "Sydney ephemeris times: Saturn sets around 04:28; Mars rises at 02:10, Jupiter at 02:17 and Venus at 04:37. Avoid viewing Mercury when close to the Sun."
+    },
+    events: {
+      "zh-Hant": "資料暫缺：本日 S／A 重大行星事件、JPL 交叉比對與90天日曆尚待獨立星曆核驗，不代表沒有重大事件。",
+      "zh-Hans": "资料暂缺：本日 S／A 重大行星事件、JPL 交叉比对与90天日历尚待独立星历核验，不代表没有重大事件。",
+      en: "Data unavailable: today's S/A major planetary events, JPL cross-checks and the 90-day calendar await independent ephemeris verification; this does not mean there are no major events."
+    },
+    weather: {
+      "zh-Hant": "資料暫缺：當日逐時能見度與實測光害資料暫缺；外出觀測前請先核對澳洲氣象局（BoM）悉尼最新預報並遠離強光。",
+      "zh-Hans": "资料暂缺：当日逐时能见度与实测光害资料暂缺；外出观测前请先核对澳大利亚气象局（BoM）悉尼最新预报并远离强光。",
+      en: "Data unavailable: hour-by-hour visibility and measured light-pollution readings are unavailable; check the latest Australian Bureau of Meteorology (BoM) Sydney forecast before observing."
+    },
+    sources: [
+      { title: "Timeanddate · Sydney Astronomy (2026-11-07 AEDT/AEST)", url: "https://www.timeanddate.com/astronomy/australia/sydney" },
+      { title: "Timeanddate · Sydney Moon, 2026-11", url: "https://www.timeanddate.com/moon/australia/sydney?month=11&year=2026" },
+      { title: "Timeanddate · Sydney Night Sky Planets", url: "https://www.timeanddate.com/astronomy/night/australia/sydney" },
+      { title: "Australian Bureau of Meteorology · Sydney Forecast", url: "https://www.bom.gov.au/places/nsw/north-sydney/forecast" }
+    ]
+  },
+  {
+    date: "2026-11-08",
+    moon: {
+      "zh-Hant": "殘月；11:35 過中天時照明 1.8%（月中天瞬時值，非全天固定照明）。04:42 月出，18:36 月落。",
+      "zh-Hans": "残月；11:35 过中天时照明 1.8%（月中天瞬时值，非全天固定照明）。04:42 月出，18:36 月落。",
+      en: "Waning crescent; 1.8% illuminated at its 11:35 meridian transit (transit instant, not fixed all day). Moonrise 04:42; moonset 18:36."
+    },
+    planets: {
+      "zh-Hant": "悉尼當日星曆計算：土星約 04:24 落下；凌晨火星 02:08、木星 02:13、金星 04:34 升起。水星鄰近太陽方向時不建議直接觀測。",
+      "zh-Hans": "悉尼当日星历计算：土星约 04:24 落下；凌晨火星 02:08、木星 02:13、金星 04:34 升起。水星邻近太阳方向时不建议直接观测。",
+      en: "Sydney ephemeris times: Saturn sets around 04:24; Mars rises at 02:08, Jupiter at 02:13 and Venus at 04:34. Avoid viewing Mercury when close to the Sun."
+    },
+    events: {
+      "zh-Hant": "資料暫缺：本日 S／A 重大行星事件、JPL 交叉比對與90天日曆尚待獨立星曆核驗，不代表沒有重大事件。",
+      "zh-Hans": "资料暂缺：本日 S／A 重大行星事件、JPL 交叉比对与90天日历尚待独立星历核验，不代表没有重大事件。",
+      en: "Data unavailable: today's S/A major planetary events, JPL cross-checks and the 90-day calendar await independent ephemeris verification; this does not mean there are no major events."
+    },
+    weather: {
+      "zh-Hant": "資料暫缺：當日逐時能見度與實測光害資料暫缺；外出觀測前請先核對澳洲氣象局（BoM）悉尼最新預報並遠離強光。",
+      "zh-Hans": "资料暂缺：当日逐时能见度与实测光害资料暂缺；外出观测前请先核对澳大利亚气象局（BoM）悉尼最新预报并远离强光。",
+      en: "Data unavailable: hour-by-hour visibility and measured light-pollution readings are unavailable; check the latest Australian Bureau of Meteorology (BoM) Sydney forecast before observing."
+    },
+    sources: [
+      { title: "Timeanddate · Sydney Astronomy (2026-11-08 AEDT/AEST)", url: "https://www.timeanddate.com/astronomy/australia/sydney" },
+      { title: "Timeanddate · Sydney Moon, 2026-11", url: "https://www.timeanddate.com/moon/australia/sydney?month=11&year=2026" },
+      { title: "Timeanddate · Sydney Night Sky Planets", url: "https://www.timeanddate.com/astronomy/night/australia/sydney" },
+      { title: "Australian Bureau of Meteorology · Sydney Forecast", url: "https://www.bom.gov.au/places/nsw/north-sydney/forecast" }
+    ]
+  },
+  {
+    date: "2026-11-09",
+    moon: {
+      "zh-Hant": "朔月（新月附近）；12:21 過中天時照明 0.2%（月中天瞬時值，非全天固定照明）。05:14 月出，19:37 月落。",
+      "zh-Hans": "朔月（新月附近）；12:21 过中天时照明 0.2%（月中天瞬时值，非全天固定照明）。05:14 月出，19:37 月落。",
+      en: "New Moon phase; 0.2% illuminated at its 12:21 meridian transit (transit instant, not fixed all day). Moonrise 05:14; moonset 19:37."
+    },
+    planets: {
+      "zh-Hant": "悉尼當日星曆計算：土星約 04:20 落下；凌晨火星 02:05、木星 02:09、金星 04:30 升起。水星鄰近太陽方向時不建議直接觀測。",
+      "zh-Hans": "悉尼当日星历计算：土星约 04:20 落下；凌晨火星 02:05、木星 02:09、金星 04:30 升起。水星邻近太阳方向时不建议直接观测。",
+      en: "Sydney ephemeris times: Saturn sets around 04:20; Mars rises at 02:05, Jupiter at 02:09 and Venus at 04:30. Avoid viewing Mercury when close to the Sun."
+    },
+    events: {
+      "zh-Hant": "資料暫缺：本日 S／A 重大行星事件、JPL 交叉比對與90天日曆尚待獨立星曆核驗，不代表沒有重大事件。",
+      "zh-Hans": "资料暂缺：本日 S／A 重大行星事件、JPL 交叉比对与90天日历尚待独立星历核验，不代表没有重大事件。",
+      en: "Data unavailable: today's S/A major planetary events, JPL cross-checks and the 90-day calendar await independent ephemeris verification; this does not mean there are no major events."
+    },
+    weather: {
+      "zh-Hant": "資料暫缺：當日逐時能見度與實測光害資料暫缺；外出觀測前請先核對澳洲氣象局（BoM）悉尼最新預報並遠離強光。",
+      "zh-Hans": "资料暂缺：当日逐时能见度与实测光害资料暂缺；外出观测前请先核对澳大利亚气象局（BoM）悉尼最新预报并远离强光。",
+      en: "Data unavailable: hour-by-hour visibility and measured light-pollution readings are unavailable; check the latest Australian Bureau of Meteorology (BoM) Sydney forecast before observing."
+    },
+    sources: [
+      { title: "Timeanddate · Sydney Astronomy (2026-11-09 AEDT/AEST)", url: "https://www.timeanddate.com/astronomy/australia/sydney" },
+      { title: "Timeanddate · Sydney Moon, 2026-11", url: "https://www.timeanddate.com/moon/australia/sydney?month=11&year=2026" },
+      { title: "Timeanddate · Sydney Night Sky Planets", url: "https://www.timeanddate.com/astronomy/night/australia/sydney" },
+      { title: "Australian Bureau of Meteorology · Sydney Forecast", url: "https://www.bom.gov.au/places/nsw/north-sydney/forecast" }
+    ]
+  },
+  {
+    date: "2026-11-10",
+    moon: {
+      "zh-Hant": "朔月（新月附近）；13:10 過中天時照明 0.8%（月中天瞬時值，非全天固定照明）。05:49 月出，20:38 月落。",
+      "zh-Hans": "朔月（新月附近）；13:10 过中天时照明 0.8%（月中天瞬时值，非全天固定照明）。05:49 月出，20:38 月落。",
+      en: "New Moon phase; 0.8% illuminated at its 13:10 meridian transit (transit instant, not fixed all day). Moonrise 05:49; moonset 20:38."
+    },
+    planets: {
+      "zh-Hant": "悉尼當日星曆計算：土星約 04:15 落下；凌晨火星 02:03、木星 02:06、金星 04:27 升起。水星鄰近太陽方向時不建議直接觀測。",
+      "zh-Hans": "悉尼当日星历计算：土星约 04:15 落下；凌晨火星 02:03、木星 02:06、金星 04:27 升起。水星邻近太阳方向时不建议直接观测。",
+      en: "Sydney ephemeris times: Saturn sets around 04:15; Mars rises at 02:03, Jupiter at 02:06 and Venus at 04:27. Avoid viewing Mercury when close to the Sun."
+    },
+    events: {
+      "zh-Hant": "資料暫缺：本日 S／A 重大行星事件、JPL 交叉比對與90天日曆尚待獨立星曆核驗，不代表沒有重大事件。",
+      "zh-Hans": "资料暂缺：本日 S／A 重大行星事件、JPL 交叉比对与90天日历尚待独立星历核验，不代表没有重大事件。",
+      en: "Data unavailable: today's S/A major planetary events, JPL cross-checks and the 90-day calendar await independent ephemeris verification; this does not mean there are no major events."
+    },
+    weather: {
+      "zh-Hant": "資料暫缺：當日逐時能見度與實測光害資料暫缺；外出觀測前請先核對澳洲氣象局（BoM）悉尼最新預報並遠離強光。",
+      "zh-Hans": "资料暂缺：当日逐时能见度与实测光害资料暂缺；外出观测前请先核对澳大利亚气象局（BoM）悉尼最新预报并远离强光。",
+      en: "Data unavailable: hour-by-hour visibility and measured light-pollution readings are unavailable; check the latest Australian Bureau of Meteorology (BoM) Sydney forecast before observing."
+    },
+    sources: [
+      { title: "Timeanddate · Sydney Astronomy (2026-11-10 AEDT/AEST)", url: "https://www.timeanddate.com/astronomy/australia/sydney" },
+      { title: "Timeanddate · Sydney Moon, 2026-11", url: "https://www.timeanddate.com/moon/australia/sydney?month=11&year=2026" },
+      { title: "Timeanddate · Sydney Night Sky Planets", url: "https://www.timeanddate.com/astronomy/night/australia/sydney" },
+      { title: "Australian Bureau of Meteorology · Sydney Forecast", url: "https://www.bom.gov.au/places/nsw/north-sydney/forecast" }
+    ]
+  },
+{
+    date: "2026-11-11",
+    moon: {
+      "zh-Hant": "盈眉月；14:01 過中天時照明 3.4%（月中天瞬時值，非全天固定照明）。06:29 月出，21:36 月落。",
+      "zh-Hans": "盈眉月；14:01 过中天时照明 3.4%（月中天瞬时值，非全天固定照明）。06:29 月出，21:36 月落。",
+      en: "Waxing crescent; 3.4% illuminated at its 14:01 meridian transit (transit instant, not fixed all day). Moonrise 06:29; moonset 21:36."
+    },
+    planets: {
+      "zh-Hant": "11月10日晚至11月11日晨可見時窗：土星於11月10日晚間至11月11日凌晨易觀，約 04:11 落下；11月11日凌晨火星 02:00、木星 02:02、金星 04:23 升起。水星緊貼太陽，不建議觀察。",
+      "zh-Hans": "11月10日晚至11月11日晨可见时窗：土星于11月10日晚间至11月11日凌晨易观，约 04:11 落下；11月11日凌晨火星 02:00、木星 02:02、金星 04:23 升起。水星紧贴太阳，不建议观察。",
+      en: "10 Nov evening to 11 Nov morning viewing window: Saturn is readily visible on the evening of 10 Nov and early 11 Nov, setting around 04:11; before dawn on 11 Nov, Mars rises at 02:00, Jupiter at 02:02 and Venus at 04:23. Mercury stays too close to the Sun and is not recommended for viewing."
+    },
+    events: {
+      "zh-Hant": "資料暫缺：11月11日 S／A 重大行星事件、JPL 交叉比對、90天日曆與精確推送時序尚待獨立星曆核驗，不代表沒有重大事件。流星雨可能有候選觀測事件，發布前需再核對機構與本地可見性。",
+      "zh-Hans": "资料暂缺：11月11日 S／A 重大行星事件、JPL 交叉比对、90天日历与精确推送时序尚待独立星历核验，不代表没有重大事件。流星雨可能有候选观测事件，发布前需再核对机构与本地可见性。",
+      en: "Data unavailable: 11 November S/A major planetary events, JPL cross-checks, the 90-day calendar and exact push timing await independent ephemeris verification; this does not mean there are no major events. Meteor showers may have candidate viewing windows pending institutional and local visibility checks."
+    },
+    weather: {
+      "zh-Hant": "澳洲氣象局（BoM）11月10日 16:20 AEDT 發布之11月11日悉尼區預報：部分多雲、局部陣雨，下午至傍晚可能雷暴，預測 16–26°C、降雨機率 50%（非逐小時能見度承諾）。實測光害資料暫缺；觀測前請確認最新雲雨並遠離強光。",
+      "zh-Hans": "澳大利亚气象局（BoM）11月10日 16:20 AEDT 发布之11月11日悉尼区预报：部分多云、局部阵雨，下午至傍晚可能雷暴，预测 16–26°C、降雨概率 50%（非逐小时能见度承诺）。实测光害资料暂缺；观测前请确认最新云雨并远离强光。",
+      en: "Australian Bureau of Meteorology (BoM) forecast issued 10 Nov 2026 16:20 AEDT for 11 Nov Sydney area: partly cloudy, isolated showers, possible afternoon/evening thunderstorm, 16–26°C, 50% rain chance (not an hour-by-hour visibility promise). Measured light-pollution data unavailable; check live clouds/rain and avoid bright lights."
+    },
+    sources: [
+      { title: "Timeanddate · Sydney Astronomy (checked 2026-11-11 AEDT)", url: "https://www.timeanddate.com/astronomy/australia/sydney" },
+      { title: "Timeanddate · Sydney Moon, November 2026 (checked 2026-11-11 AEDT)", url: "https://www.timeanddate.com/moon/australia/sydney?month=11&year=2026" },
+      { title: "Timeanddate · Sydney Night Sky Planets, 10–11 Nov 2026", url: "https://www.timeanddate.com/astronomy/night/australia/sydney" },
+      { title: "Australian Bureau of Meteorology · North Sydney / Sydney Forecast (issued 10 Nov 2026 16:20 AEDT)", url: "https://www.bom.gov.au/places/nsw/north-sydney/forecast" }
+    ]
   }
 ];
 
@@ -202,6 +434,7 @@ export function DailySkyObservation() {
       {observation.date === "2026-11-01" && <section><h3>{ui.actions}</h3><ul>{ui.tips.map((tip) => <li key={tip}>{tip}</li>)}</ul></section>}
       {observation.date === "2026-11-02" && <section><h3>{ui.actions}</h3><ul>{(lang === "en" ? ["Check the latest clouds and weather before observing.", "Choose a safe site with an open northeastern horizon.", "Before sunrise, look for Jupiter and Mars; do not point optical equipment near the Sun."] : lang === "zh-Hans" ? ["观测前查看最新云量及天气。", "选择安全、东北方视野开阔的地点。", "日出前寻找木星与火星；光学器材不要指向太阳附近。"] : ["觀測前查看最新雲量及天氣。", "選擇安全、東北方視野開闊的地點。", "日出前尋找木星與火星；光學器材不要指向太陽附近。"]).map((tip) => <li key={tip}>{tip}</li>)}</ul></section>}
       {observation.date === "2026-11-03" && <section><h3>{ui.actions}</h3><ul>{(lang === "en" ? ["Check local cloud cover before dawn.", "Choose a safe eastern view of the sky, away from traffic and bright lights."] : lang === "zh-Hans" ? ["黎明前检查当地云量。", "选择安全、东侧视野开阔且远离强光的位置。"] : ["黎明前檢查當地雲量。", "選擇安全、東側視野開闊且遠離強光的位置。"]).map((tip) => <li key={tip}>{tip}</li>)}</ul></section>}
+      {observation.date === "2026-11-11" && <section><h3>{ui.actions}</h3><ul>{(lang === "en" ? ["11 Nov 02:00–04:30 AEDT: look east-northeast before dawn for Mars (rises 02:00), Jupiter (02:02) and low-horizon Venus (04:23); Saturn sets around 04:11.", "Afternoon to evening carries a 50% shower chance and possible thunderstorm; verify live BoM radar and cloud cover before heading out.", "Do not attempt to view Mercury near the Sun; choose a safe, open vantage point away from street glare."] : lang === "zh-Hans" ? ["11月11日凌晨 02:00–04:30 AEDT 可朝东北偏东观察火星（02:00升）、木星（02:02升）与低空金星（04:23升）；土星约 04:11 落下。", "下午至傍晚有局部阵雨与可能雷暴（降雨概率 50%），外出前请先核对气象局实时云雨。", "水星紧贴太阳切勿使用光学器材寻找；请选择安全、避开街灯眩光的开阔位置。"] : ["11月11日凌晨 02:00–04:30 AEDT 可朝東北偏東觀察火星（02:00升）、木星（02:02升）與低空金星（04:23升）；土星約 04:11 落下。", "下午至傍晚有局部陣雨與可能雷暴（降雨機率 50%），外出前請先核對氣象局即時雲雨。", "水星緊貼太陽切勿使用光學器材尋找；請選擇安全、避開街燈眩光的開闊位置。"]).map((tip) => <li key={tip}>{tip}</li>)}</ul></section>}
       <details>
         <summary>{ui.sources}</summary>
         <p><time dateTime={observation.date}>{observation.date}</time> · Australia/Sydney</p>
