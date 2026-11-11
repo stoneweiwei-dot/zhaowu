@@ -262,6 +262,7 @@ function AboutZhaowu() {
       <nav className="zw-about-ctas" aria-label={editor.pageTitle}>
         <Link to="/">{editor.home}<span aria-hidden="true">↗</span></Link>
         <Link to="/knowledge">{editor.articles}<span aria-hidden="true">→</span></Link>
+        <Link to="/knowledge" hash="zhaowu-four-classics">{locale === "en" ? "Four-classics method" : locale === "zh-Hans" ? "四书合参 · 判断依据" : "四書合參 · 判讀依據"}<span aria-hidden="true">→</span></Link>
         <Link to="/login">{detailed.returnLogin}</Link>
       </nav>
       <details className="zw-about-notes"><summary>{editor.notes}</summary><p>{detailed.limits}</p><p>{editor.calculations}</p></details>

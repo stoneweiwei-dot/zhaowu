@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { FourClassicsMethodSection } from "@/components/four-classics-method-section";
 import { useI18n, type Locale } from "@/lib/i18n";
 
 type ElementKey = "wood" | "fire" | "earth" | "metal" | "water";
@@ -181,6 +182,8 @@ export function BaziKnowledgeNotesSection() {
           {tr(locale,"同樣地，「壬辰日的人通常……」這類日柱人格句，只能當教學背景，不能直接當成你的個人結論。","同样地，“壬辰日的人通常……”这类日柱人格句，只能当教学背景，不能直接当成你的个人结论。","Likewise, generic lines such as “people born on a Ren-Chen day usually…” are teaching background only, not a personal conclusion.")}
         </p>
       </section>
+
+      <FourClassicsMethodSection />
 
       <section className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
         <h3 className="font-display text-2xl text-ink">{tr(locale,"十天干本象","十天干本象","Ten Heavenly Stems")}</h3>
