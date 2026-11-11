@@ -60,21 +60,25 @@
       (function () {
         try {
           var savedLanguage = localStorage.getItem("zhaowu.display-language");
-          if (["zh-Hant", "zh-Hans", "en", "ja", "ko", "hi", "th", "id", "vi"].indexOf(savedLanguage) === -1) {
-            savedLanguage = "en";
+          if (["zh-Hant", "zh-Hans", "en", "ja", "ko", "hi", "th", "id", "vi", "fil"].indexOf(savedLanguage) === -1) {
+            var legacy = localStorage.getItem("zhaowu.locale");
+            savedLanguage = ["zh-Hant", "zh-Hans", "en"].indexOf(legacy) !== -1 ? legacy : "en";
             var tags = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
-            for (var i = 0; i < tags.length; i++) {
+            for (var i = 0; i < tags.length && ["zh-Hant", "zh-Hans", "en"].indexOf(legacy) === -1; i++) {
               var tag = String(tags[i] || "").toLowerCase();
-              if (tag.indexOf("zh") !== 0) continue;
+              var primary = tag.split("-")[0];
+              if (primary === "fil" || primary === "tl") { savedLanguage = "fil"; break; }
+              if (primary === "en") { savedLanguage = "en"; break; }
+              if (primary !== "zh") continue;
               savedLanguage = /-cn|-sg|hans/.test(tag) ? "zh-Hans" : "zh-Hant";
               break;
             }
           }
           document.documentElement.lang = savedLanguage;
           var manifestLink = document.querySelector('link[rel="manifest"]');
-          if (manifestLink) manifestLink.setAttribute("href", savedLanguage === "zh-Hans" ? "/manifest.zh-Hans.webmanifest" : savedLanguage === "en" ? "/manifest.en.webmanifest" : "/manifest.webmanifest");
+          if (manifestLink) manifestLink.setAttribute("href", savedLanguage === "zh-Hans" ? "/manifest.zh-Hans.webmanifest" : savedLanguage === "zh-Hant" ? "/manifest.webmanifest" : "/manifest.en.webmanifest");
           var appTitleMeta = document.querySelector('meta[name="apple-mobile-web-app-title"]');
-          if (appTitleMeta) appTitleMeta.setAttribute("content", savedLanguage === "en" ? "ZHAOWU" : "昭梧");
+          if (appTitleMeta) appTitleMeta.setAttribute("content", savedLanguage === "zh-Hant" || savedLanguage === "zh-Hans" ? "昭梧" : "ZHAOWU");
           if (localStorage.getItem("zhaowu.theme.v1") === "night") localStorage.setItem("zhaowu.theme.v1", "day");
         } catch (e) {}
       })();
