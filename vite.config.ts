@@ -59,6 +59,13 @@ function selfHostFfmpegCore(): Plugin {
     name: "zhaowu-selfhost-ffmpeg-core",
     apply: "build",
     closeBundle() {
+      // Pages rejects individual assets above 25 MiB; this WASM is about 31 MiB.
+      // Keep the existing pinned CDN fallback for this optional owner-only tool.
+      // Other hosts still receive the self-hosted pair.
+      if (process.env.CF_PAGES === "1") {
+        console.info("zhaowu-selfhost-ffmpeg-core: Pages asset limit; using existing CDN fallback.");
+        return;
+      }
       const from = "node_modules/@ffmpeg/core/dist/esm";
       const to = "dist/vendor/ffmpeg-core";
       if (!files.every((f) => existsSync(`${from}/${f}`))) {
