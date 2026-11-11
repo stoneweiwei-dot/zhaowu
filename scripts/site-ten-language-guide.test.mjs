@@ -45,3 +45,17 @@ test("Ten-language guidance provides complete static strings without script cont
   assert.doesNotMatch(JSON.stringify(table.hi), /[가-힣]/u, "Hindi must not contain Hangul");
   assert.doesNotMatch(JSON.stringify(table.ko), /[\u0900-\u097F]/u, "Korean must not contain Devanagari");
 });
+
+test("Seven additional languages have local navigation-intent vocabulary", () => {
+  const guide = read("src/lib/site-guide.ts");
+  const match = guide.match(/const LOCALIZED_INTENTS: Partial<Record<DisplayLanguage, LocalizedIntent>> = ([\s\S]*?);\n\nfunction matchesLocalizedIntent/);
+  assert.ok(match, "local intent table");
+  const intents = JSON.parse(match[1]);
+  assert.deepEqual(Object.keys(intents).sort(), ["ja", "ko", "hi", "th", "id", "vi", "fil"].sort());
+  for (const language of Object.keys(intents)) {
+    for (const intent of ["login", "account", "full", "history", "analysis", "home"]) {
+      assert.ok(Array.isArray(intents[language][intent]) && intents[language][intent].length > 0, language + " " + intent);
+    }
+  }
+  assert.ok(guide.includes("matchesLocalizedIntent(text, words?.history)"));
+});
