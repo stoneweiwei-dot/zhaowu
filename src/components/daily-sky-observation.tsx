@@ -357,6 +357,35 @@ export const OBSERVATIONS: DatedObservation[] = [
       { title: "Timeanddate · Sydney Night Sky Planets, 10–11 Nov 2026", url: "https://www.timeanddate.com/astronomy/night/australia/sydney" },
       { title: "Australian Bureau of Meteorology · North Sydney / Sydney Forecast (issued 10 Nov 2026 16:20 AEDT)", url: "https://www.bom.gov.au/places/nsw/north-sydney/forecast" }
     ]
+  },
+  {
+    date: "2026-11-12",
+    moon: {
+      "zh-Hant": "盈眉月；14:52 過中天時照明 7.8%（瞬時值，並非全天固定）。07:15 月出（124°），22:30 月落（236°）。",
+      "zh-Hans": "盈眉月；14:52 过中天时照明 7.8%（瞬时值，并非全天固定）。07:15 月出（124°），22:30 月落（236°）。",
+      en: "Waxing crescent; 7.8% illuminated at 14:52 meridian transit (an instant, not constant all day). Moonrise 07:15 (124°); moonset 22:30 (236°)."
+    },
+    planets: {
+      "zh-Hant": "11月12日晨火星與木星均於 01:58 升起；約 05:09 木星在東北方。金星 04:20 升起，土星約 04:07 落下。水星靠近太陽，避免尋找。",
+      "zh-Hans": "11月12日晨火星与木星均于 01:58 升起；约 05:09 木星在东北方。金星 04:20 升起，土星约 04:07 落下。水星靠近太阳，避免寻找。",
+      en: "On 12 November Mars and Jupiter rise at 01:58; Jupiter is in the northeast around 05:09. Venus rises at 04:20; Saturn sets around 04:07. Avoid looking for Mercury near the Sun."
+    },
+    events: {
+      "zh-Hant": "資料暫缺：當日重要天象及 S／A 行星事件尚未完整核驗；這不代表沒有重大事件。90天日曆與 JPL 交叉核對尚未完成。",
+      "zh-Hans": "资料暂缺：当日重要天象及 S／A 行星事件尚未完整核验；这不代表没有重大事件。90天日历与 JPL 交叉核对尚未完成。",
+      en: "Data unavailable: important astronomical phenomena and S/A planetary events have not been fully checked; this does not mean none occur. The 90-day calendar and JPL cross-check remain incomplete."
+    },
+    weather: {
+      "zh-Hant": "逐時雲量、能見度及實測光害資料暫缺；觀測前請核對氣象局最新預報，選擇安全並遠離強光的地點。",
+      "zh-Hans": "逐时云量、能见度及实测光害资料暂缺；观测前请核对气象局最新预报，选择安全并远离强光的地点。",
+      en: "Hourly cloud, visibility and measured light-pollution data are unavailable. Check the latest Bureau of Meteorology forecast and choose a safe site away from bright lights."
+    },
+    sources: [
+      { title: "Timeanddate · Sydney Moon, 12 Nov 2026; checked 12 Nov 03:58 AEDT", url: "https://www.timeanddate.com/moon/australia/sydney?month=11&year=2026" },
+      { title: "Timeanddate · Sydney Night Sky, 11–12 Nov 2026; checked 12 Nov 03:58 AEDT", url: "https://www.timeanddate.com/astronomy/night/australia/sydney" },
+      { title: "Zeninnov8 · Sydney Jupiter direction, 12 Nov 2026; checked 12 Nov 04:00 AEDT", url: "https://zeninnov8.com/tonights-sky/sydney/" },
+      { title: "Australian Bureau of Meteorology · Sydney forecast", url: "https://www.bom.gov.au/places/nsw/north-sydney/forecast" }
+    ]
   }
 ];
 
@@ -428,12 +457,15 @@ export function DailySkyObservation() {
       
       <section><h3>{ui.why}</h3><p>{observation.date === "2026-11-01"
         ? (lang === "en" ? "Late spring in Sydney brings later sunsets, while planetary visibility depends on the actual horizon and weather, not on astrology." : lang === "zh-Hans" ? "悉尼正值春末，日落渐晚；能否看见行星取决于地平线和天气，不代表命运变化。" : "悉尼正值春末，日落漸晚；能否看見行星取決於地平線和天氣，不代表命運變化。")
-        : ui.note}</p></section>
+        : observation.date === "2026-11-12"
+          ? (lang === "en" ? "Sydney is in late spring; take a moment to notice the changing daylight and choose a comfortable pace." : lang === "zh-Hans" ? "悉尼正值春末，留意渐长的日照，按自己的节奏安排一天。" : "悉尼正值春末，留意漸長的日照，按自己的節奏安排一天。")
+          : ui.note}</p></section>
       <section><h3>{ui.events}</h3><p>{observation.events[lang]}</p></section>
       <section><h3>{ui.weather}</h3><p>{observation.weather[lang]}</p></section>
       {observation.date === "2026-11-01" && <section><h3>{ui.actions}</h3><ul>{ui.tips.map((tip) => <li key={tip}>{tip}</li>)}</ul></section>}
       {observation.date === "2026-11-02" && <section><h3>{ui.actions}</h3><ul>{(lang === "en" ? ["Check the latest clouds and weather before observing.", "Choose a safe site with an open northeastern horizon.", "Before sunrise, look for Jupiter and Mars; do not point optical equipment near the Sun."] : lang === "zh-Hans" ? ["观测前查看最新云量及天气。", "选择安全、东北方视野开阔的地点。", "日出前寻找木星与火星；光学器材不要指向太阳附近。"] : ["觀測前查看最新雲量及天氣。", "選擇安全、東北方視野開闊的地點。", "日出前尋找木星與火星；光學器材不要指向太陽附近。"]).map((tip) => <li key={tip}>{tip}</li>)}</ul></section>}
       {observation.date === "2026-11-03" && <section><h3>{ui.actions}</h3><ul>{(lang === "en" ? ["Check local cloud cover before dawn.", "Choose a safe eastern view of the sky, away from traffic and bright lights."] : lang === "zh-Hans" ? ["黎明前检查当地云量。", "选择安全、东侧视野开阔且远离强光的位置。"] : ["黎明前檢查當地雲量。", "選擇安全、東側視野開闊且遠離強光的位置。"]).map((tip) => <li key={tip}>{tip}</li>)}</ul></section>}
+      {observation.date === "2026-11-12" && <section><h3>{ui.actions}</h3><ul>{(lang === "en" ? ["Before dawn, look northeast for Jupiter around 05:09; Mars is also above the horizon.", "Check the latest cloud and rain forecast, then choose a safe place away from bright lights.", "Never point optical equipment toward the Sun."] : lang === "zh-Hans" ? ["黎明前约 05:09 向东北方寻找木星；火星也已升起。", "先查看最新云雨预报，再选择安全、远离强光的地点。", "不要将光学器材指向太阳。"] : ["黎明前約 05:09 向東北方尋找木星；火星也已升起。", "先查看最新雲雨預報，再選擇安全、遠離強光的地點。", "不要將光學器材指向太陽。"]).map((tip) => <li key={tip}>{tip}</li>)}</ul></section>}
       {observation.date === "2026-11-11" && <section><h3>{ui.actions}</h3><ul>{(lang === "en" ? ["11 Nov 02:00–04:30 AEDT: look east-northeast before dawn for Mars (rises 02:00), Jupiter (02:02) and low-horizon Venus (04:23); Saturn sets around 04:11.", "Afternoon to evening carries a 50% shower chance and possible thunderstorm; verify live BoM radar and cloud cover before heading out.", "Do not attempt to view Mercury near the Sun; choose a safe, open vantage point away from street glare."] : lang === "zh-Hans" ? ["11月11日凌晨 02:00–04:30 AEDT 可朝东北偏东观察火星（02:00升）、木星（02:02升）与低空金星（04:23升）；土星约 04:11 落下。", "下午至傍晚有局部阵雨与可能雷暴（降雨概率 50%），外出前请先核对气象局实时云雨。", "水星紧贴太阳切勿使用光学器材寻找；请选择安全、避开街灯眩光的开阔位置。"] : ["11月11日凌晨 02:00–04:30 AEDT 可朝東北偏東觀察火星（02:00升）、木星（02:02升）與低空金星（04:23升）；土星約 04:11 落下。", "下午至傍晚有局部陣雨與可能雷暴（降雨機率 50%），外出前請先核對氣象局即時雲雨。", "水星緊貼太陽切勿使用光學器材尋找；請選擇安全、避開街燈眩光的開闊位置。"]).map((tip) => <li key={tip}>{tip}</li>)}</ul></section>}
       <details>
         <summary>{ui.sources}</summary>
