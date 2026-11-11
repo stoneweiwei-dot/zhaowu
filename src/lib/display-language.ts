@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { applyManifestLocale } from "@/lib/manifest-locale";
 import { detectDefaultLocale, useI18n, type CopyKey, type Locale } from "@/lib/i18n";
 
-export type DisplayLanguage = Locale | "ja" | "ko" | "hi" | "th" | "id" | "vi";
+export type DisplayLanguage = Locale | "ja" | "ko" | "hi" | "th" | "id" | "vi" | "fil";
 
 export type UiDictionary = Partial<Record<CopyKey, string>>;
 
@@ -560,10 +560,12 @@ export function displayText(
   ja: string,
   ko: string,
   hi = en,
+  fil = en,
 ) {
   if (language === "ja") return ja;
   if (language === "ko") return ko;
   if (language === "hi") return hi;
+  if (language === "fil") return fil;
   if (language === "en" || language === "th" || language === "id" || language === "vi") return en;
   return language === "zh-Hans" ? hans : hant;
 }
@@ -572,6 +574,7 @@ export function intlTagFor(language: DisplayLanguage) {
   if (language === "ja") return "ja-JP";
   if (language === "ko") return "ko-KR";
   if (language === "hi") return "hi-IN";
+  if (language === "fil") return "fil-PH";
   if (language === "th") return "th-TH";
   if (language === "id") return "id-ID";
   if (language === "vi") return "vi-VN";
@@ -585,7 +588,7 @@ function readDisplayLanguage(): DisplayLanguage {
   if (typeof window === "undefined") return "en";
   try {
     const value = window.localStorage.getItem("zhaowu.display-language");
-    if (value === "zh-Hant" || value === "zh-Hans" || value === "en" || value === "ja" || value === "ko" || value === "hi" || value === "th" || value === "id" || value === "vi") return value;
+    if (value === "zh-Hant" || value === "zh-Hans" || value === "en" || value === "ja" || value === "ko" || value === "hi" || value === "th" || value === "id" || value === "vi" || value === "fil") return value;
     const legacy = window.localStorage.getItem("zhaowu.locale");
     if (legacy === "zh-Hant" || legacy === "zh-Hans" || legacy === "en") return legacy;
   } catch {
@@ -594,18 +597,19 @@ function readDisplayLanguage(): DisplayLanguage {
   return detectDefaultLocale();
 }
 
-type LazyLanguage = "th" | "id" | "vi";
+type LazyLanguage = "th" | "id" | "vi" | "fil";
 const dictionaryLoaders = {
   th: () => import("@/lib/display-dictionaries/th"),
   id: () => import("@/lib/display-dictionaries/id"),
   vi: () => import("@/lib/display-dictionaries/vi"),
+  fil: () => import("@/lib/display-dictionaries/fil"),
 };
 const dictionaryCache: Partial<Record<LazyLanguage, UiDictionary>> = {};
 const dictionaryRequests: Partial<Record<LazyLanguage, Promise<UiDictionary>>> = {};
 let activeLanguage: DisplayLanguage;
 
 function isLazyLanguage(language: DisplayLanguage): language is LazyLanguage {
-  return language === "th" || language === "id" || language === "vi";
+  return language === "th" || language === "id" || language === "vi" || language === "fil";
 }
 
 function applyLanguage(language: DisplayLanguage) {

@@ -191,6 +191,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
     { value: "ja" as const, label: "日本語", aria: "日本語" },
     { value: "ko" as const, label: "한국어", aria: "한국어" },
     { value: "hi" as const, label: "हिन्दी", aria: "हिन्दी" },
+    { value: "fil" as const, label: "Filipino", aria: "Filipino (Pilipinas)" },
     { value: "th" as const, label: "ไทย", aria: "ไทย" },
     { value: "id" as const, label: "Bahasa Indonesia", aria: "Bahasa Indonesia" },
     { value: "vi" as const, label: "Tiếng Việt", aria: "Tiếng Việt" },
