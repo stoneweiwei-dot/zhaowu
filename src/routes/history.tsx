@@ -1,3 +1,5 @@
+import { useDisplayLanguage } from "@/lib/display-language";
+import { customerChrome } from "@/lib/customer-chrome";
 import { buildDecisionReportModel } from "@/lib/report/decision-report-model";
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
@@ -16,9 +18,8 @@ import {
 
 export const Route = createFileRoute("/history")({ component: HistoryPage });
 
-function tr(locale: Locale, hant: string, hans: string, en: string) {
-  if (locale === "en") return en;
-  return locale === "zh-Hans" ? hans : hant;
+function tr(_locale: Locale, hant: string, hans: string, en: string) {
+  return customerChrome(hant, hans, en);
 }
 
 function kindLabel(kind: SpecialistHistoryKind, locale: Locale) {
@@ -28,6 +29,7 @@ function kindLabel(kind: SpecialistHistoryKind, locale: Locale) {
 
 function HistoryPage() {
   const { locale } = useI18n();
+  const language = useDisplayLanguage((state) => state.language);
   const [entries, setEntries] = useState<SpecialistHistoryEntry[]>([]);
   const publicEntries = entries;
   const [reports, setReports] = useState<LocalReport[]>([]);
@@ -63,7 +65,7 @@ function HistoryPage() {
     confirmAll: tr(locale, "確定清除這台裝置上的全部本機紀錄？此動作無法復原。", "确定清除这台设备上的全部本机记录？此操作无法恢复。", "Clear all local history from this device? This cannot be undone."),
     start: tr(locale, "建立第一份命書後，報告會自動保存在這台裝置。", "建立第一份命书后，报告会自动保存在这台设备。", "Create your first chart and its report will be saved on this device."),
     createFirst: tr(locale, "建立第一份命書", "建立第一份命书", "Create my first chart"),
-  }), [locale]);
+  }), [locale, language]);
 
   function markOpened(id: string, open: boolean) {
     if (!open) return;

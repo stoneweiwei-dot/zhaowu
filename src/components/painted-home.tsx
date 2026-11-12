@@ -1,3 +1,5 @@
+import { useDisplayLanguage } from "@/lib/display-language";
+import { customerChrome } from "@/lib/customer-chrome";
 import { Link } from '@tanstack/react-router';
 import { FROST_SKIN_ID, seasonalPackForSkin, SEASONAL_AUTO_ID, SOLAR_TERMS_24, seasonalState, frostEdition } from '@/lib/seasonal-skins';
 import { useEffect, type CSSProperties } from 'react';
@@ -24,7 +26,8 @@ export function homeComposition(skin: SkinDef | null): 'scroll' | 'comic' | 'koi
 export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) {
   const { id, skin } = useSkin();
   const { locale } = useI18n();
-  const t = (zh: string, hans: string, en: string) => locale === 'en' ? en : locale === 'zh-Hans' ? hans : zh;
+  useDisplayLanguage((state) => state.language);
+  const t = customerChrome;
   const layout = homeComposition(skin);
   const seasonalAuto = id === SEASONAL_AUTO_ID ? seasonalState() : null;
   const frostOnly = !seasonalAuto && skin?.id === FROST_SKIN_ID ? frostEdition() : null;

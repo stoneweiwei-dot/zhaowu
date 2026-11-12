@@ -1,3 +1,5 @@
+import { useDisplayLanguage } from "@/lib/display-language";
+import { customerChrome, translateChromeObject } from "@/lib/customer-chrome";
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
@@ -57,7 +59,8 @@ type Variant = "home" | "page" | "embed";
 
 export function DailyColorsModule({ variant, date }: { variant: Variant; date?: Date }) {
   const { locale } = useI18n();
-  const page = DAILY_COLOR_PAGE[locale];
+  const { language } = useDisplayLanguage();
+  const page = translateChromeObject(language, DAILY_COLOR_PAGE[locale]);
   const [localNow, setLocalNow] = useState(() => new Date());
   useEffect(() => {
     if (date) return;
@@ -116,7 +119,7 @@ export function DailyColorsModule({ variant, date }: { variant: Variant; date?: 
     >
       <header>
         <p data-daily-colors-date>{formatDailyColorDate(almanac.date, locale)}</p>
-        <h2>{compact ? (locale === "en" ? "Today's dress colour" : locale === "zh-Hans" ? "今日穿衣" : "今日穿衣") : page.title}</h2>
+        <h2>{compact ? customerChrome("今日穿衣", "今日穿衣", "Today's dress colour") : page.title}</h2>
         <p>{compact ? `${page.todaySuit}：${recommended.name} · ${recommended.colorsLabel}` : page.subtitle}</p>
       </header>
 
@@ -168,7 +171,7 @@ export function DailyColorsModule({ variant, date }: { variant: Variant; date?: 
 
       {compact ? (
         <details data-daily-colour-choices-fold>
-          <summary>{locale === "en" ? "Choose a different five-element colour" : locale === "zh-Hans" ? "选择其他五行配色" : "選擇其他五行配色"}<span aria-hidden="true">＋</span></summary>
+          <summary>{customerChrome("選擇其他五行配色", "选择其他五行配色", "Choose a different five-element colour")}<span aria-hidden="true">＋</span></summary>
           {choices}
           <article data-five-element-correspondence-compact aria-live="polite">
             <small>{guide.compactTitle}</small>

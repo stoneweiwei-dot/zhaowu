@@ -1,3 +1,5 @@
+import { useDisplayLanguage, intlTagFor } from "@/lib/display-language";
+import { customerChrome, translateCustomerChrome, translateChromeObject } from "@/lib/customer-chrome";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { StellarLifeCycleInteractive } from "@/components/stellar-life-cycle-interactive";
 import { Link } from "@tanstack/react-router";
@@ -23,7 +25,7 @@ import { fetchArticleOverrides, applyArticleOverrides, type ArticleOverride } fr
 import { useAuthState } from "@/lib/auth/provider";
 import { ownerData } from "@/lib/owner-data-client";
 
-const trImageOpenLabel = (locale: Locale) => locale === "en" ? "Open original full-size image" : locale === "zh-Hans" ? "打开高清原图" : "開啟高清原圖";
+const trImageOpenLabel = (_locale: Locale) => customerChrome("開啟高清原圖", "打开高清原图", "Open original full-size image");
 
 type ContentKind = "article" | "short-note";
 
@@ -69,6 +71,7 @@ ARTICLE_CATALOG.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
 
 export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSectionProps) {
   const { locale } = useI18n();
+  const { language } = useDisplayLanguage();
   const { user } = useAuthState();
   const isOwner = user?.isOwner === true;
   const [overrides, setOverrides] = useState<ArticleOverride[] | null>(null);
@@ -128,11 +131,12 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
 
   const viewsLabel = (articleId: string) => {
     const count = viewCounts[articleId] ?? 0;
-    const formatted = new Intl.NumberFormat(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW").format(count);
+    const formatted = new Intl.NumberFormat(intlTagFor(language)).format(count);
+    if (language !== "en" && language !== "zh-Hant" && language !== "zh-Hans") return `${formatted} ${translateCustomerChrome(language, "views")}`;
     return locale === "en" ? `${formatted} views` : locale === "zh-Hans" ? `已浏览 ${formatted}` : `已瀏覽 ${formatted}`;
   };
 
-  const copy = useMemo(() => {
+  const baseCopy = useMemo(() => {
     if (locale === "en") {
       return {
         kicker: "STONE · ARTICLES",
@@ -186,13 +190,14 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
       empty: "文章會在這裡持續更新。",
     };
   }, [archiveMode, locale]);
+  const copy = translateChromeObject(language, baseCopy);
 
   if (!latest) {
     return (
       <section id="life-view" className="rounded-2xl border border-line/80 bg-paper px-5 py-5">
         <p role="status" className="text-sm text-ink-mute">{articlesError
-          ? (locale === "en" ? "Articles are temporarily unavailable." : locale === "zh-Hans" ? "文章暂时无法加载。" : "文章暫時無法載入。")
-          : overrides === null ? (locale === "en" ? "Loading articles…" : "文章載入中…") : copy.empty}</p>
+          ? customerChrome("文章暫時無法載入。", "文章暂时无法加载。", "Articles are temporarily unavailable.")
+          : overrides === null ? customerChrome("文章載入中…", "文章加载中…", "Loading articles…") : copy.empty}</p>
       </section>
     );
   }

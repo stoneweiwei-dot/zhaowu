@@ -6,7 +6,8 @@ const journeyNav = await readFile(new URL("../src/components/journey-navigation.
 const siteShell = await readFile(new URL("../src/components/site-shell.tsx", import.meta.url), "utf8");
 const historyRoute = await readFile(new URL("../src/routes/history.tsx", import.meta.url), "utf8");
 const reportSaveStatus = await readFile(new URL("../src/components/report-save-status.tsx", import.meta.url), "utf8");
-const siteGuide = await readFile(new URL("../src/lib/site-guide.ts", import.meta.url), "utf8");
+const siteGuide = await readFile(new URL("../src/lib/site-guide.ts", import.meta.url), "utf8")
+  + await readFile(new URL("../src/lib/site-localization.ts", import.meta.url), "utf8");
 const accountRoute = await readFile(new URL("../src/routes/account.tsx", import.meta.url), "utf8");
 const i18nLib = await readFile(new URL("../src/lib/i18n.ts", import.meta.url), "utf8");
 const displayLangLib = await readFile(new URL("../src/lib/display-language.ts", import.meta.url), "utf8");

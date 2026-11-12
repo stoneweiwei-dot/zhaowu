@@ -1,3 +1,5 @@
+import { useDisplayLanguage } from "@/lib/display-language";
+import { customerChrome, translateChromeObject } from "@/lib/customer-chrome";
 import { Link } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
 import { lazy, Suspense, useState, useEffect } from "react";
@@ -181,8 +183,12 @@ const LazyScentFiveElementTest = lazy(() =>
 /* ── Home ──────────────────────────────────────────────────── */
 function Home() {
   const { locale } = useI18n();
-  const copy = useCopy(locale);
-  const heroUi = heroUiCopy(locale);
+  const { language } = useDisplayLanguage();
+  const copy = translateChromeObject(language, useCopy(locale));
+  const heroUi = translateChromeObject(language, heroUiCopy(locale));
+  if (language !== "zh-Hant" && language !== "zh-Hans" && language !== "en") {
+    heroUi.painting = (index, total, title) => `${index} / ${total}: ${title}`;
+  }
   const { user } = useAuthState();
   const current = useAppStore((s) => s.current);
   const setCurrent = useAppStore((s) => s.setCurrent);
@@ -338,7 +344,7 @@ function Home() {
           <section id="home-today-guide" className="zw-home-today-priority" aria-label={copy.navToday}>
             <Suspense
               fallback={
-                <div className="zw-home-today-skeleton" role="status" aria-label={locale === "en" ? "Loading Today Guide" : locale === "zh-Hans" ? "正在载入今日指引" : "正在載入今日指引"}>
+                <div className="zw-home-today-skeleton" role="status" aria-label={customerChrome("正在載入今日指引", "正在载入今日指引", "Loading Today Guide")}>
                   <span />
                   <strong />
                   <i />
@@ -356,13 +362,13 @@ function Home() {
       {activeSection === "form" && (
         <>
           {activeSection === "form" ? <section className="zw-report-wayfinding">
-            <h2>{locale === "en" ? (current ? "Your report is ready" : "Create your report") : locale === "zh-Hans" ? (current ? "你的报告已生成" : "开始排盘与提问") : (current ? "你的報告已生成" : "開始排盤與提問")}</h2>
-            <Link to="/history">{locale === "en" ? "My saved reports" : locale === "zh-Hans" ? "查看我的报告" : "查看我的報告"}</Link>
-            {current ? <a href="#report">{locale === "en" ? "Read this answer" : locale === "zh-Hans" ? "直接看本次答案" : "直接看本次答案"}</a> : null}
+            <h2>{current ? customerChrome("你的報告已生成", "你的报告已生成", "Your report is ready") : customerChrome("開始排盤與提問", "开始排盘与提问", "Create your report")}</h2>
+            <Link to="/history">{customerChrome("查看我的報告", "查看我的报告", "My saved reports")}</Link>
+            {current ? <a href="#report">{customerChrome("直接看本次答案", "直接看本次答案", "Read this answer")}</a> : null}
             {user?.isOwner ? <p className="zw-owner-access-note">{locale === "en" ? "Owner access: all report content is available without payment." : locale === "zh-Hans" ? "站主已登入：所有报告内容免费阅读，无需购买。" : "站主已登入：所有報告內容免費閱讀，無需購買。"}</p> : null}
           </section> : null}
           <details className="zw-report-edit" open={formExpanded} onToggle={event => setFormExpanded(event.currentTarget.open)}>
-            <summary hidden={!current}>{locale === "en" ? "Birth details and question" : locale === "zh-Hans" ? "出生资料与问题（点此修改）" : "出生資料與問題（點此修改）"}</summary>
+            <summary hidden={!current}>{customerChrome("出生資料與問題（點此修改）", "出生资料与问题（点此修改）", "Birth details and question")}</summary>
           <HomeSectionBoundary
             id="analysis"
             locale={locale}
