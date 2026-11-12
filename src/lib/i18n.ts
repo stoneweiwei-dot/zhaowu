@@ -508,18 +508,20 @@ type I18nState = {
 };
 
 // Browser preferences are checked in order; an explicit saved choice wins in the readers.
-export function detectBrowserLanguage(): Locale | "fil" {
+export function detectBrowserLanguage(): Locale | "ja" | "ko" | "hi" | "th" | "id" | "vi" | "fil" {
   if (typeof navigator === "undefined") return "en";
-  const candidates = navigator.languages?.length ? navigator.languages : [navigator.language];
+  const candidates = [...(navigator.languages ?? []), navigator.language];
   for (const candidate of candidates) {
     const tag = candidate?.toLowerCase();
     if (!tag) continue;
     const primary = tag.split("-")[0];
     if (primary === "fil" || primary === "tl") return "fil";
     if (primary === "en") return "en";
+    if (primary === "ja" || primary === "ko" || primary === "hi" || primary === "th" || primary === "id" || primary === "vi") return primary;
     if (primary !== "zh") continue;
-    if (tag.includes("-cn") || tag.includes("-sg") || tag.includes("hans")) return "zh-Hans";
-    return "zh-Hant";
+    if (tag.includes("hans")) return "zh-Hans";
+    if (tag.includes("hant") || /-(tw|hk|mo)(-|$)/.test(tag)) return "zh-Hant";
+    return "zh-Hans";
   }
   return "en";
 }
@@ -527,7 +529,7 @@ export function detectBrowserLanguage(): Locale | "fil" {
 // The calculation/report locale remains limited to Chinese and English.
 export function detectDefaultLocale(): Locale {
   const language = detectBrowserLanguage();
-  return language === "fil" ? "en" : language;
+  return language === "zh-Hant" || language === "zh-Hans" ? language : "en";
 }
 
 function readLocale(): Locale {

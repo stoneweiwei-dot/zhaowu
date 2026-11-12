@@ -1,3 +1,5 @@
+import { useDisplayLanguage } from "@/lib/display-language";
+import { customerChrome } from "@/lib/customer-chrome";
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { BaziKnowledgeNotesSection } from "@/components/bazi-knowledge-notes-section";
 import { ZiweiKnowledgeNotesSection } from "@/components/ziwei-knowledge-notes-section";
@@ -9,12 +11,13 @@ import { RealityPatchSection } from "@/components/2012-reality-patch-section";
 
 export const Route = createFileRoute("/knowledge")({ component: KnowledgePage });
 
-function tr(locale: Locale, hant: string, hans: string, en: string) {
-  return locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
+function tr(_locale: Locale, hant: string, hans: string, en: string) {
+  return customerChrome(hant, hans, en);
 }
 
 function KnowledgePage() {
   const { locale } = useI18n();
+  useDisplayLanguage((state) => state.language);
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   if (pathname.startsWith("/knowledge/")) return <Outlet />;
 
