@@ -1,0 +1,44 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { buildQuizShareModel, QUIZ_SHARE_PALETTE, QUIZ_SHARE_SIZE } from "../src/lib/quiz-share-card.ts";
+
+test("quiz share model keeps a light 1080x1350 card, short description and route", () => {
+  assert.deepEqual(QUIZ_SHARE_SIZE, { width: 1080, height: 1350 });
+  assert.match(QUIZ_SHARE_PALETTE.paper, /^#[fF]/);
+  const model = buildQuizShareModel({ quizId: "six-realms", quizName: "六道", resultLabel: "人道", description: "一二三四五六七八九十".repeat(5), locale: "zh-Hant" }, "/en/quiz/six-realms");
+  assert.ok([...model.description].length <= 40);
+  assert.equal(model.marks.site, "zhao-wu.com");
+  assert.equal(model.marks.original, "STONE 原創");
+  assert.equal(new URL(model.shareUrl).pathname, "/en/quiz/six-realms");
+  assert.notEqual(new URL(model.shareUrl).pathname, "/");
+});
+
+test("build outputs a Sydney-based all-day ICS window and valid RSS items", () => {
+  execFileSync(process.execPath, ["scripts/generate-calendar-feed.mjs"]);
+  const ics = readFileSync("dist/calendar.ics", "utf8");
+  const events = ics.match(/BEGIN:VEVENT/g) ?? [];
+  const uids = [...ics.matchAll(/^UID:(.+)$/gm)].map((m) => m[1]);
+  assert.equal(events.length, 60);
+  assert.equal(new Set(uids).size, 60);
+  assert.match(ics, /DTSTART;VALUE=DATE:\d{8}/);
+  assert.match(ics, /DTEND;VALUE=DATE:\d{8}/);
+  assert.match(ics, /SUMMARY:今日五行色彩/);
+  assert.doesNotMatch(ics.match(/^SUMMARY:.*$/m)?.[0] ?? "", /#[0-9a-f]{3,8}|紅|绿|藍|白|黑|青|赤|黄/i);
+  assert.match(readFileSync("scripts/generate-calendar-feed.mjs", "utf8"), /Australia\/Sydney/);
+  const rss = readFileSync("dist/feed.xml", "utf8");
+  assert.match(rss, /^<\?xml/);
+  assert.match(rss, /<item>/);
+  assert.match(rss, /https:\/\/zhao-wu\.com\/updates#/);
+  execFileSync("python3", ["-c", "import xml.etree.ElementTree as E; r=E.parse('dist/feed.xml').getroot(); assert r.tag=='rss' and len(r.findall('./channel/item'))>0"]);
+});
+
+test("funnel telemetry names are registered and share events remain sanitized", () => {
+  const telemetry = readFileSync("src/lib/observability/conversion-telemetry.ts", "utf8");
+  for (const event of ["chart_started", "chart_completed", "report_viewed", "unlock_clicked", "unlock_paid", "quiz_shared", "calendar_subscribe_clicked"]) assert.ok(telemetry.includes(`"${event}"`));
+  assert.match(telemetry, /sanitizePosthogProperties/);
+  const privacy = readFileSync("src/lib/observability/posthog-privacy.ts", "utf8");
+  assert.match(telemetry, /sanitizePosthogProperties/);
+  assert.doesNotMatch(readFileSync("src/components/quiz-share-button.tsx", "utf8"), /birthData|email|access_key|session_id/);
+});

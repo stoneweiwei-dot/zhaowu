@@ -239,6 +239,7 @@ export async function resolveReportAccess(system: ReportSystemId) {
   // but is reported separately as zhaowu_promo_redeemed).
   if (stripeGranted && oncePerSession(`confirmed:${system}`)) {
     trackConversion("zhaowu_purchase_confirmed", { system });
+    trackConversion("unlock_paid", { system });
   }
   return { level, pending, owner: false };
 }

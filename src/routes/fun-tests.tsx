@@ -1,4 +1,5 @@
 import { useDisplayLanguage } from "@/lib/display-language";
+import { QuizShareButton } from "@/components/quiz-share-button";
 import { customerChrome } from "@/lib/customer-chrome";
 import { pickElementArt } from "@/lib/quiz-result-art";
 import { useMemo, useState } from "react";
@@ -362,6 +363,7 @@ function FunTestsIndex() {
           )}
 
           <SongBeastPromptDisclosure locale={locale} innerAnimal={animalResultKey ?? "eagle"} guardianElement={guardian?.element} />
+          <QuizShareButton quizId="animal" quizName={locale === "en" ? "Inner Animal × Guardian Beast" : locale === "zh-Hans" ? "内在动物 × 命局瑞兽" : "內在動物 × 命局瑞獸"} resultLabel={`${inner.name} · ${inner.subtitle}`} description={inner.desire} />
 
           <div className="grid gap-3 sm:grid-cols-2">
             <button type="button" onClick={startAnimal} className="min-h-12 rounded-full border border-line bg-cream px-5 py-3 text-sm text-ink">{pageCopy.restart}</button>
@@ -386,6 +388,7 @@ function FunTestsIndex() {
 
       {mode === "element" && elementScore && elementResult ? (
         <section className="space-y-4">
+          <QuizShareButton quizId="element" quizName={locale === "en" ? "Five-Element Function Test" : locale === "zh-Hans" ? "五行功能测验" : "五行功能測驗"} resultLabel={`${elementResult.name}｜${elementResult.title}`} description={elementResult.core} />
           <article className="seal-border rounded-2xl bg-cream/95 p-5 sm:p-8">
             <p className="text-xs tracking-[0.25em] text-cinnabar">{elementUi.resultKicker}</p>
             <h2 className="mt-2 font-display text-3xl text-ink">{elementResult.name}｜{elementResult.title}</h2>

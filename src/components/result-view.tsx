@@ -68,10 +68,32 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
   useEffect(() => {
     if (oncePerSession(`answer-shown:${result.id ?? ""}`)) trackConversion("zhaowu_answer_shown", { system: "bazi" });
+    if (oncePerSession(`chart-completed:${result.id ?? ""}`)) trackConversion("chart_completed", { system: "bazi", locale });
+  }, [result.id]);
+
+  useEffect(() => {
+    let visible = false; let bottom = false; let dwellTimer: number | undefined; let sent = false;
+    const maybeSend = () => {
+      if (!sent && visible && bottom) {
+        sent = true;
+        if (oncePerSession(`report-viewed:${result.id ?? ""}`)) trackConversion("report_viewed", { system: "bazi" });
+      }
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible && dwellTimer === undefined) dwellTimer = window.setTimeout(() => { dwellTimer = -1; maybeSend(); }, 30_000);
+      if (!visible && dwellTimer !== undefined && dwellTimer >= 0) { clearTimeout(dwellTimer); dwellTimer = undefined; }
+      maybeSend();
+    });
+    const root = document.getElementById("result"); if (root) observer.observe(root);
+    const onScroll = () => { bottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 16; maybeSend(); };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => { observer.disconnect(); if (dwellTimer !== undefined && dwellTimer >= 0) clearTimeout(dwellTimer); window.removeEventListener("scroll", onScroll); };
   }, [result.id]);
 
   async function handleUnlock(product: ReportAccessProduct) {
     if (!consent.require()) return;
+    trackConversion("unlock_clicked", { system: "bazi", product: product });
     setPurchasing(product);
     setPurchaseError(null);
     try {

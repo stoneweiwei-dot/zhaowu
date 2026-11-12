@@ -28,6 +28,7 @@ const ALLOWED_HOSTS = new Set(
     .map((host) => host.trim().toLowerCase())
     .filter(Boolean),
 );
+const PRIVATE_PROPERTY_KEYS = new Set(["birth", "birthdata", "birth_data", "name", "email", "session_id", "access_key", "client_reference_id", "report_id"]);
 
 // 与 answer-quality-telemetry 共用同一个会话键，保证漏斗事件和 QA 事件同 session。
 const SESSION_KEY = "zhaowu:qa-session-id";
@@ -59,12 +60,20 @@ export type ConversionEvent =
   | "zhaowu_paywall_viewed"
   | "zhaowu_checkout_clicked"
   | "zhaowu_purchase_confirmed"
-  | "zhaowu_promo_redeemed";
+  | "zhaowu_promo_redeemed"
+  | "chart_started"
+  | "chart_completed"
+  | "report_viewed"
+  | "unlock_clicked"
+  | "unlock_paid"
+  | "quiz_shared"
+  | "calendar_subscribe_clicked";
 
 /** 上报一个漏斗事件。fire-and-forget，永不抛错、永不 await。 */
 export function trackConversion(event: ConversionEvent, properties: Record<string, unknown> = {}) {
   if (!telemetryAllowed() || !POSTHOG_KEY) return;
   const sid = sessionId();
+  const safeProperties = Object.fromEntries(Object.entries(properties).filter(([key]) => !PRIVATE_PROPERTY_KEYS.has(key.toLowerCase())));
   const payload = {
     api_key: POSTHOG_KEY,
     event,
@@ -78,7 +87,7 @@ export function trackConversion(event: ConversionEvent, properties: Record<strin
       $host: window.location.host,
       app: "zhaowu",
       funnel_contract: "STONE-F1",
-      ...properties,
+      ...safeProperties,
     }, window.location.href),
     timestamp: new Date().toISOString(),
   };
