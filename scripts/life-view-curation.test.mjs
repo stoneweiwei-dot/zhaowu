@@ -9,20 +9,12 @@ const { LIFE_VIEW_CURATED_ARTICLES } = await import("../src/lib/life-view-curate
 const { LIFE_VIEW_LONG_FORM_ARTICLES } = await import("../src/lib/life-view-long-form.ts");
 const { LIFE_VIEW_SHORT_FORM_ARTICLES } = await import("../src/lib/life-view-short-form.ts");
 
-test("homepage life-view uses curated, long-form and short-form sources without stacking legacy packs", () => {
+test("homepage life-view uses curated, long-form and short-form sources with explicitly filtered restored essays", () => {
   assert.match(homeSection, /LIFE_VIEW_CURATED_ARTICLES/);
   assert.match(homeSection, /LIFE_VIEW_LONG_FORM_ARTICLES/);
   assert.match(homeSection, /LIFE_VIEW_SHORT_FORM_ARTICLES/);
-  for (const legacy of [
-    "LIFE_VIEW_20260903_LATE_ARTICLES",
-    "LIFE_VIEW_20260903_ARTICLES",
-    "LIFE_VIEW_20260831_ARTICLES",
-    "LIFE_VIEW_PRACTICE_ARTICLES",
-    "LIFE_VIEW_FILE_ARTICLES",
-    "LIFE_VIEW_ARTICLES",
-  ]) {
-    assert.equal(homeSection.includes(legacy), false, `${legacy} should remain archive-only`);
-  }
+  assert.match(homeSection, /\.\.\.RESTORED_ORPHAN_ARTICLES/);
+  assert.match(homeSection, /\.filter\(\(article\) => RESTORED_ORPHAN_IDS\.has\(article\.id\)\)/);
 });
 
 test("curated archive remains concise, unique and tri-lingual", () => {

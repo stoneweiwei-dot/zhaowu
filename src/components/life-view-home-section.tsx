@@ -4,7 +4,12 @@ import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { StellarLifeCycleInteractive } from "@/components/stellar-life-cycle-interactive";
 import { Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
-import type { LifeViewArticle } from "@/lib/life-view";
+import { LIFE_VIEW_ARTICLES, type LifeViewArticle } from "@/lib/life-view";
+import { LIFE_VIEW_FILE_ARTICLES } from "@/lib/life-view-from-files";
+import { LIFE_VIEW_PRACTICE_ARTICLES } from "@/lib/life-view-practice-manual";
+import { LIFE_VIEW_20260831_ARTICLES } from "@/lib/life-view-20260831";
+import { LIFE_VIEW_20260903_ARTICLES } from "@/lib/life-view-20260903";
+import { LIFE_VIEW_20260903_LATE_ARTICLES } from "@/lib/life-view-20260903-late";
 import { LIFE_VIEW_CURATED_ARTICLES } from "@/lib/life-view-curated";
 import { LIFE_VIEW_LONG_FORM_ARTICLES } from "@/lib/life-view-long-form";
 import { THREE_AGES_SPIRITUAL_WORLD_LONG_FORM } from "@/lib/life-view-long-form/three-ages-spiritual-world";
@@ -43,6 +48,38 @@ type LifeViewHomeSectionProps = {
   archiveMode?: boolean;
 };
 
+// Explicit allowlist: superseded drafts stay unpublished. See docs/RESTORE-ARTICLES-20261112.md.
+const RESTORED_ORPHAN_IDS = new Set([
+  "world-as-mirror-not-physics",
+  "emotion-does-not-run-the-decision",
+  "clarity-studies-patterns-rules-people",
+  "care-without-taking-over",
+  "money-needs-order-not-anxiety",
+  "five-elements-as-movement",
+  "frequency-is-not-the-entrance",
+  "sensitivity-needs-boundaries",
+  "love-reveals-the-unfinished-self",
+  "capacity-is-real-energy",
+  "fate-has-bounds-choice-has-space",
+  "follow-the-flow-not-surrender",
+  "five-pillars-of-practice",
+  "break-the-deadlock",
+  "awakening-and-reality",
+  "belief-and-world",
+  "relationships-and-boundaries",
+  "emotion-and-judgement",
+  "long-term-practice",
+]);
+
+const RESTORED_ORPHAN_ARTICLES = [
+  ...LIFE_VIEW_ARTICLES,
+  ...LIFE_VIEW_FILE_ARTICLES,
+  ...LIFE_VIEW_PRACTICE_ARTICLES,
+  ...LIFE_VIEW_20260831_ARTICLES,
+  ...LIFE_VIEW_20260903_ARTICLES,
+  ...LIFE_VIEW_20260903_LATE_ARTICLES,
+].filter((article) => RESTORED_ORPHAN_IDS.has(article.id));
+
 const LONG_ARTICLES: IllustratedArticle[] = [
   SEVEN_CULTURAL_ATLASES_20261023,
   ABHIDHAMMA_THIRTY_ONE_PLANES,
@@ -58,6 +95,7 @@ const LONG_ARTICLES: IllustratedArticle[] = [
   THREE_TEACHINGS_CULTIVATION_LONG_FORM,
   ...LIFE_VIEW_LONG_FORM_ARTICLES,
   ...LIFE_VIEW_CURATED_ARTICLES,
+  ...RESTORED_ORPHAN_ARTICLES,
 ].map((article) => ({ ...article, contentKind: "article" as const }));
 
 const SHORT_NOTES: IllustratedArticle[] = LIFE_VIEW_SHORT_FORM_ARTICLES.map((article) => ({
