@@ -4,23 +4,17 @@ import { ARTICLE_CATALOG } from "../src/components/life-view-home-section.tsx";
 
 const restoredIds = [
   "world-as-mirror-not-physics",
-  "emotion-does-not-run-the-decision",
-  "clarity-studies-patterns-rules-people",
-  "care-without-taking-over",
   "money-needs-order-not-anxiety",
   "five-elements-as-movement",
   "frequency-is-not-the-entrance",
   "sensitivity-needs-boundaries",
   "love-reveals-the-unfinished-self",
   "capacity-is-real-energy",
-  "fate-has-bounds-choice-has-space",
   "follow-the-flow-not-surrender",
   "five-pillars-of-practice",
   "break-the-deadlock",
-  "awakening-and-reality",
   "belief-and-world",
   "relationships-and-boundaries",
-  "emotion-and-judgement",
   "long-term-practice"
 ];
 const superseded = {
@@ -33,12 +27,14 @@ const superseded = {
   "know-fate-keep-choice": "know-fate-keep-choice-curated"
 };
 
-test("catalog restores exactly 19 orphan ids alongside the existing 55 without duplicates", () => {
-  assert.equal(ARTICLE_CATALOG.length, 74);
+test("catalog restores 13 distinct orphans and one new essay alongside 55 existing entries", () => {
+  assert.equal(ARTICLE_CATALOG.length, 69);
   const ids = new Set(ARTICLE_CATALOG.map((article) => article.id));
-  assert.equal(ids.size, 74);
-  assert.equal(restoredIds.length, 19);
+  assert.equal(ids.size, 69);
+  assert.equal(restoredIds.length, 13);
   for (const id of restoredIds) assert.ok(ids.has(id), `missing restored essay: ${id}`);
+  assert.ok(ids.has("emotional-intelligence-four-practices-20261112"), "missing new emotional intelligence essay");
+  for (const id of ["emotion-does-not-run-the-decision","clarity-studies-patterns-rules-people","care-without-taking-over","fate-has-bounds-choice-has-space","awakening-and-reality","emotion-and-judgement"]) assert.ok(!ids.has(id), `duplicate topic returned to catalog: ${id}`);
   for (const [id, successor] of Object.entries(superseded)) {
     assert.ok(!ids.has(id), `superseded draft published: ${id}`);
     assert.ok(ids.has(successor), `missing successor: ${successor}`);
