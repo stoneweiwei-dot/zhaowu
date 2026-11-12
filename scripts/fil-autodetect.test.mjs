@@ -12,13 +12,15 @@ Object.defineProperty(globalThis, "window", { configurable: true, value: {
 }});
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const bootstrap = html.match(/<script>\s*(\(function \(\) \{\s*try \{\s*var savedLanguage[\s\S]*?)<\/script>/)[1];
-function browser(languages) {
-  Object.defineProperty(globalThis, "navigator", { configurable: true, value: { languages, language: "tl-PH" } });
+function browser(languages, language = languages[0] ?? "tl-PH") {
+  Object.defineProperty(globalThis, "navigator", { configurable: true, value: { languages, language } });
 }
 test("ordered browser preferences match the early HTML bootstrap", () => {
   for (const [tags, expected] of [
-    [["zh-TW"], "zh-Hant"], [["zh-HK"], "zh-Hant"],
-    [["zh-CN"], "zh-Hans"], [["zh-SG"], "zh-Hans"],
+    [["zh-Hans-HK"], "zh-Hans"], [["zh-Hant-CN"], "zh-Hant"], [["zh-TW"], "zh-Hant"], [["zh-HK"], "zh-Hant"],
+    [["zh-CN"], "zh-Hans"], [["zh"], "zh-Hans"], [["zh-Hans"], "zh-Hans"], [["zh-Hant"], "zh-Hant"],
+    ...["ja", "ko", "hi", "th", "id", "vi"].map(tag => [[tag + "-XX", "en"], tag]),
+    [["tl-PH"], "fil"], [["zh-SG"], "zh-Hans"],
     [["fil-PH", "zh-TW"], "fil"], [["TL", "en"], "fil"],
     [["en-AU", "zh-CN"], "en"], [["fr", "tl-PH"], "fil"],
     [["zh-HK", "fil"], "zh-Hant"], [["fr", "de"], "en"],
@@ -31,7 +33,7 @@ test("ordered browser preferences match the early HTML bootstrap", () => {
     runInNewContext(bootstrap, { navigator, localStorage: window.localStorage, document });
     assert.equal(document.documentElement.lang, expected, tags.join(","));
     assert.equal(storage.size, 0);
-    assert.equal(detectDefaultLocale(), expected === "fil" ? "en" : expected);
+    assert.equal(detectDefaultLocale(), expected.startsWith("zh-") ? expected : "en");
   }
 });
 test("detected defaults remain automatic; manual choices persist through hydration", async () => {
@@ -65,4 +67,29 @@ test("storage denial still allows detection and manual selection", () => {
     useDisplayLanguage.getState().setLanguage("zh-Hans");
     assert.equal(useDisplayLanguage.getState().language, "zh-Hans");
   } finally { window.localStorage = original; }
+});
+
+ test("navigator.language fallback and every saved display choice win consistently", () => {
+  storage.clear(); browser(["fr"], "ja-JP");
+  assert.equal(detectBrowserLanguage(), "ja");
+  const document = { documentElement: {}, querySelector: () => null };
+  runInNewContext(bootstrap, { navigator, localStorage: window.localStorage, document });
+  assert.equal(document.documentElement.lang, "ja");
+  for (const language of ["zh-Hant", "zh-Hans", "en", "ja", "ko", "hi", "th", "id", "vi", "fil"]) {
+    storage.clear(); storage.set("zhaowu.display-language", language);
+    storage.set("zhaowu.locale", "zh-Hans"); browser(["en"]);
+    hydrateDisplayLanguage();
+    assert.equal(useDisplayLanguage.getState().language, language);
+    assert.equal(useI18n.getState().locale, language.startsWith("zh-") ? language : "en");
+    runInNewContext(bootstrap, { navigator, localStorage: window.localStorage, document });
+    assert.equal(document.documentElement.lang, language);
+  }
+});
+
+test("early HTML detection still works when localStorage is denied", () => {
+  browser(["ko-KR"]);
+  const document = { documentElement: {}, querySelector: () => null };
+  const denied = { getItem() { throw Error("denied"); } };
+  runInNewContext(bootstrap, { navigator, localStorage: denied, document });
+  assert.equal(document.documentElement.lang, "ko");
 });

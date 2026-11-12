@@ -1,6 +1,7 @@
+import { useDisplayLanguage } from "@/lib/display-language";
+import { customerChrome } from "@/lib/customer-chrome";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
-import { useI18n } from "@/lib/i18n";
 import { validateMemberForm, type MemberMode } from "@/lib/auth/member-form";
 import {
   loginVisitor,
@@ -18,8 +19,8 @@ export const Route = createFileRoute("/member")({ component: MemberPage });
 type Mode = MemberMode;
 
 function MemberPage() {
-  const { locale } = useI18n();
-  const tx = useCallback((hant: string, hans: string, en: string) => (locale === "en" ? en : locale === "zh-Hans" ? hans : hant), [locale]);
+  const { language } = useDisplayLanguage();
+  const tx = useCallback((hant: string, hans: string, en: string) => customerChrome(hant, hans, en), [language]);
   const { visitor, pending } = useVisitor();
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
@@ -118,7 +119,7 @@ function MemberPage() {
   return (
     <main className="mx-auto max-w-md space-y-5" data-member-page>
       <section className="seal-border rounded-xl bg-cream/95 p-6 sm:p-8">
-        <p className="text-xs tracking-[0.28em] text-cinnabar">MEMBER</p>
+        <p className="text-xs tracking-[0.28em] text-cinnabar">{tx("會員", "会员", "Member")}</p>
         <h1 className="mt-1 font-display text-3xl">{title}</h1>
         <p className="mt-3 text-sm leading-7 text-ink-soft">
           {tx("排盤與試讀免登入，深入內容依項目付費。跨裝置同步尚未開放；註冊或登入不會備份或還原既有報告與購買權限，請保留原瀏覽器資料。註冊不需要收驗證信。", "排盘与试读免登录，深入内容按项目付费。跨设备同步尚未开放；注册或登录不会备份或恢复已有报告与购买权限，请保留原浏览器数据。注册不需要收验证邮件。", "Charting and previews need no sign-in; deeper content is purchased separately. Cross-device sync is not available yet. Signing up or in does not back up or restore existing reports or purchases. Keep your original browser data. No confirmation email is needed.")}

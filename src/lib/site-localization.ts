@@ -651,7 +651,7 @@ export const SITE_LOCALIZATION: Record<DisplayLanguage, SiteLocalizedCopy> = {
   },
   "fil": {
     "navigation": {
-      "home": "Home",
+      "home": "Simula",
       "book": "Gumawa ng ulat",
       "reports": "Aking mga ulat",
       "aria": "Mga ulat at nabigasyon",

@@ -1,3 +1,5 @@
+import { useDisplayLanguage } from "@/lib/display-language";
+import { customerChrome } from "@/lib/customer-chrome";
 import { pickElementArt } from "@/lib/quiz-result-art";
 import { useMemo, useState } from "react";
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
@@ -34,9 +36,8 @@ type AnimalCopy = {
   group: AnimalGroup;
 };
 
-function tr(locale: Locale, hant: string, hans: string, en: string) {
-  if (locale === "en") return en;
-  return locale === "zh-Hans" ? hans : hant;
+function tr(_locale: Locale, hant: string, hans: string, en: string) {
+  return customerChrome(hant, hans, en);
 }
 
 const ANIMALS: Record<Locale, Record<AnimalKey, AnimalCopy>> = {
@@ -158,6 +159,7 @@ function FunTests() {
 
 function FunTestsIndex() {
   const { locale } = useI18n();
+  useDisplayLanguage((state) => state.language);
   const current = useAppStore((s) => s.current);
   const [mode, setMode] = useState<QuizMode>(() => {
     if (typeof window === "undefined") return "menu";
