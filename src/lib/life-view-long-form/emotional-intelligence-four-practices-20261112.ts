@@ -1,4 +1,9 @@
 import type { LifeViewArticle } from "@/lib/life-view";
+import { ZHAOJIAN_BENXIN_ARTICLE } from "@/lib/life-view-long-form/zhaojian-benxin-awareness-compassion";
+import { CAUSE_ACTION_KINDNESS_ARTICLE } from "@/lib/life-view-long-form/cause-action-kindness";
+
+const awarenessArt = ZHAOJIAN_BENXIN_ARTICLE.illustrations?.[0];
+const actionArt = CAUSE_ACTION_KINDNESS_ARTICLE.illustrations?.[0];
 
 /** Edited from the owner-provided summary of Wei Shan Psychology's EQ teaching video; not a transcript. */
 export const EMOTIONAL_INTELLIGENCE_FOUR_PRACTICES_ARTICLE: LifeViewArticle = {
@@ -19,26 +24,8 @@ export const EMOTIONAL_INTELLIGENCE_FOUR_PRACTICES_ARTICLE: LifeViewArticle = {
     "zh-Hans": "情商不是把每个人哄得开心，也不是把自己的情绪藏起来。真正重要的，是遇到冲突时，仍能看清自己的需要，理解对方可能的感受，然后选择有助于解决问题的做法。这四个练习，适用于工作、亲密关系和朋友相处。\n\n一、识己心：生气的表面，常有另一种需要\n\n忙了一整天，回家看到家里凌乱、另一半还在打游戏。你或许想说：“你就不能做点事吗？”可怒气背后，可能是疲惫、委屈，或希望有人分担的需要。\n\n分清三件事：我看到的事实是什么？我感受到什么？我希望改变什么？“家里还没整理”是观察；“他根本不在乎我”是解读；“我今天很累，希望我们一起收拾”是可以表达的需求。\n\n每天问自己：“我现在真正难受的是什么？”情绪不必立刻消失，重要的是知道它在提醒什么。\n\n二、察人心：开口前，想想这句话会怎么被听见\n\n同事出了错，直接说“你怎么又搞砸了”，容易让对方忙着自辩。换成“这里出了几个问题，我们先找原因，再决定怎么补救”，并不是回避责任，而是把注意力放回事情上。\n\n说话前想两秒：我想得到的是反击、服从，还是合作？这句话会帮助对方理解问题，还是只听见指责？预判不是读心术；不确定时可以直接问。好的沟通讲究清楚、尊重与可执行。\n\n三、定心绪：先暂停，不必在情绪最强时做决定\n\n被激怒时，很容易说出后来后悔的话。数三秒、放慢呼吸、喝杯水，或短暂离开现场，都可以作为暂停的提醒，但并不能保证立刻冷静。\n\n可以说：“我现在情绪比较强，需要十分钟整理一下，等会儿再谈。”这不是逃避，而是为更有效的谈话留出空间。如果遇到威胁或暴力，安全永远优先。\n\n四、善应对：先理解感受，再讨论办法\n\n朋友抱怨上司不公平，未必立刻需要建议。与其马上劝他辞职或忍耐，不如先说：“听起来你今天真的很受挫。”再问：“你想先说说，还是一起想办法？”\n\n共情不等于相信对方的每一项指控，也不等于无条件站队。理解感受，同时保留事实判断，才可能讨论责任、限制和下一步。\n\n边界，是高情商不可缺的一部分\n\n理解别人，不等于承担所有人的情绪；语气温和，也不等于容忍辱骂、控制或反复越界。“我理解你，但你不能这样对我说话”，同样是成熟的表达。不是每场冲突都必须和好。\n\n今天就能开始的小练习\n\n情绪升起时，先说出感受和需要；开口前想想对方会怎么理解；过于激动时暂停；有人倾诉时，先问他需要陪伴还是建议。反复练习，让自己拥有更多选择。\n\n情商不是控制人，而是在不失去自己的前提下，好好处理人与事。\n\n编者注：本文受“韦珊心理”《4步练就恐怖的高情商》教学视频启发，依据读者提供的视频摘要重新组织、扩写与修订；并非逐字稿。\n\n昭梧 ZHAOWU｜STONE 整理与改写",
     "en": "Emotional intelligence is not the ability to keep everyone happy. Nor does it mean hiding frustration to avoid conflict. It is the capacity to recognise what you feel, consider what someone else might be experiencing, and choose a response that helps rather than inflames the situation. Four small habits can make this more practical.\n\n1. Name what is happening underneath the anger\n\nYou come home exhausted. The place is messy, and your partner is playing a game. Anger arrives quickly. Yet what hurts most may not be the mess; it may be feeling unsupported.\n\nSeparate three things: what happened, what you felt, and what you need. “The kitchen hasn't been cleaned” is an observation. “You don't care about me” is an interpretation. “I'm exhausted and need us to share the work tonight” is a request someone can respond to.\n\nAsk yourself: “What is the difficult feeling underneath my first reaction?” Your feelings do not need to disappear before you can understand them.\n\n2. Consider how your words may land\n\nWhen a colleague makes a mistake, “How did you mess this up again?” invites defensiveness. “There are a few problems here. Can we identify what went wrong and decide how to fix them?” keeps accountability in view while making collaboration possible.\n\nBefore speaking, ask what you actually want: retaliation, compliance, or cooperation? Will the other person hear the issue, or just the accusation? You cannot read minds, so ask when you are unsure. Good communication is clear and respectful, not artificially sweet.\n\n3. Pause before the next move\n\nStrong emotions can make an impulsive remark feel urgent. Counting slowly, taking a breath, having water, or briefly changing rooms may help interrupt that momentum. None is a guaranteed reset button.\n\nYou can say, “I'm getting upset and need ten minutes. Let's come back to this.” Taking a pause is not pretending the problem has gone away; it is protecting the next conversation. If a situation is threatening or abusive, prioritise safety over trying to resolve it through dialogue.\n\n4. Offer understanding before advice\n\nWhen a friend says their manager treated them unfairly, they may not want instant solutions. Start with, “That sounds really frustrating.” Then ask, “Do you want me to listen, or should we think through your options?”\n\nEmpathy does not require accepting every claim as fact, agreeing with every choice, or taking sides without thinking. Recognise the feeling first; then examine the facts and practical options together.\n\nBoundaries belong in emotional intelligence\n\nYou can understand someone's distress without carrying it all. You can speak gently and still refuse insults, controlling behaviour, or repeated violations of your limits. “I understand you're upset, but you cannot speak to me that way” is a valid, emotionally intelligent response. Not every conflict has to end in reconciliation.\n\nTry one practice today\n\nName a feeling and its underlying need. Before a difficult conversation, consider how your words might land. Pause when you are too activated to think clearly. When someone opens up, ask whether they need company or advice.\n\nEmotional intelligence is not about controlling other people. It is about relating to them more thoughtfully while remaining yourself.\n\nEditor's note: Adapted and expanded from a user-provided summary of a teaching video by 韋珊心理 (Wei Shan Psychology), “Four Steps to High Emotional Intelligence.” This is not a transcript or a verbatim translation.\n\nZHAOWU | Adapted and edited by STONE"
   },
-  "illustrations": [
-    {
-      "src": "/articles/zhaojian-benxin-stone-original.webp",
-      "afterParagraph": 5,
-      "alt": {
-        "zh-Hant": "宋式山水意象，象徵照見內心與感受",
-        "zh-Hans": "宋式山水意象，象征觉察内心与感受",
-        "en": "Song-style landscape representing emotional self-awareness"
-      },
-      "display": "portrait"
-    },
-    {
-      "src": "/articles/stone-cause-and-action.webp",
-      "afterParagraph": 11,
-      "alt": {
-        "zh-Hant": "宋式山水畫卷，象徵有分寸的行動與人際關係",
-        "zh-Hans": "宋式山水画卷，象征有分寸的行动与人际关系",
-        "en": "Song-style painting representing thoughtful action and relationships"
-      },
-      "display": "portrait"
-    }
-  ]
+  illustrations: [
+    ...(awarenessArt ? [{ ...awarenessArt, afterParagraph: 5 }] : []),
+    ...(actionArt ? [{ ...actionArt, afterParagraph: 11 }] : []),
+  ],
 };
