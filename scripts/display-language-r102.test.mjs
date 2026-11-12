@@ -33,21 +33,13 @@ test("global language selector exposes all ten native language options", async (
   assert.match(css, /min-height: 44px/);
 });
 
-test("all ten browser languages and saved display choices are supported", async () => {
-  const [indexHtml, layer] = await Promise.all([
-    source("index.html"),
-    source("src/lib/display-language.ts"),
-  ]);
-  assert.match(indexHtml, /<html lang="zh-Hant">/);
-  assert.match(indexHtml, /\["zh-Hant", "zh-Hans", "en", "ja", "ko", "hi", "th", "id", "vi", "fil"\]/);
-  assert.doesNotMatch(indexHtml, /\["zh-Hant", "en", "ko", "hi", "th", "id", "vi", "fil"\]/);
-  assert.match(layer, /value === "zh-Hant" \|\| value === "zh-Hans" \|\| value === "en"/);
-  // The pre-React bootstrap must not force Traditional or persist a default as if it were a choice.
-  assert.ok(indexHtml.includes('legacy : "en"'));
-  assert.ok(indexHtml.includes('savedLanguage = /hans/.test(tag) ? "zh-Hans" : /hant|-(tw|hk|mo)(-|$)/.test(tag) ? "zh-Hant" : "zh-Hans"'));
-  assert.doesNotMatch(indexHtml, /savedLanguage = "zh-Hant";\s*localStorage\.setItem/);
-  assert.match(layer, /detectBrowserLanguage/);
+test("indexed URL language wins over browser and saved display choices", async () => {
+  const [indexHtml, layer] = await Promise.all([source("index.html"), source("src/lib/display-language.ts")]);
+  assert.match(indexHtml, /window.location.pathname.split/);
+  assert.match(layer, /parseLanguagePath\(window.location.pathname\).language/);
+  assert.doesNotMatch(layer, /detectBrowserLanguage/);
   assert.match(layer, /zhaowu\.display-language/);
+  assert.match(layer, /window.location.assign/);
 });
 
 test("Non-Chinese display languages never alter the calculation locale", async () => {
@@ -69,7 +61,7 @@ test("Thai, Indonesian, Vietnamese and Filipino are complete lazy UI packs", asy
     assert.match(dictionary, /satisfies Partial<Record<CopyKey, string>>/);
     assert.ok(layer.includes(`() => import("@/lib/display-dictionaries/${language}")`));
     assert.doesNotMatch(layer, /import\s+(?!type)[^;]*from ["'][^"']*display-dictionaries/);
-    assert.ok(layer.includes(`value === "${language}"`));
+    assert.ok(layer.includes(`language === "${language}"`));
   }
   assert.match(layer, /activeLanguage === language/);
   assert.match(layer, /dictionaryRequests\[language\] \?\?=/);

@@ -59,24 +59,10 @@
     <script>
       (function () {
         try {
-          var savedLanguage = null;
-          try { savedLanguage = localStorage.getItem("zhaowu.display-language"); } catch (storageError) {}
-          if (["zh-Hant", "zh-Hans", "en", "ja", "ko", "hi", "th", "id", "vi", "fil"].indexOf(savedLanguage) === -1) {
-            var legacy = null;
-            try { legacy = localStorage.getItem("zhaowu.locale"); } catch (legacyStorageError) {}
-            savedLanguage = ["zh-Hant", "zh-Hans", "en"].indexOf(legacy) !== -1 ? legacy : "en";
-            var tags = [].concat(navigator.languages || [], navigator.language || []);
-            for (var i = 0; i < tags.length && ["zh-Hant", "zh-Hans", "en"].indexOf(legacy) === -1; i++) {
-              var tag = String(tags[i] || "").toLowerCase();
-              var primary = tag.split("-")[0];
-              if (primary === "fil" || primary === "tl") { savedLanguage = "fil"; break; }
-              if (["ja", "ko", "hi", "th", "id", "vi"].indexOf(primary) !== -1) { savedLanguage = primary; break; }
-              if (primary === "en") { savedLanguage = "en"; break; }
-              if (primary !== "zh") continue;
-              savedLanguage = /hans/.test(tag) ? "zh-Hans" : /hant|-(tw|hk|mo)(-|$)/.test(tag) ? "zh-Hant" : "zh-Hans";
-              break;
-            }
-          }
+          // URL language wins over browser and remembered preferences; never redirect the root.
+          var prefix = window.location.pathname.split("/")[1];
+          var savedLanguage = prefix === "zh-hans" ? "zh-Hans" :
+            ["en", "ja", "ko", "hi", "th", "id", "vi", "fil"].indexOf(prefix) !== -1 ? prefix : "zh-Hant";
           document.documentElement.lang = savedLanguage;
           var manifestLink = document.querySelector('link[rel="manifest"]');
           if (manifestLink) manifestLink.setAttribute("href", savedLanguage === "zh-Hans" ? "/manifest.zh-Hans.webmanifest" : savedLanguage === "zh-Hant" ? "/manifest.webmanifest" : "/manifest.en.webmanifest");

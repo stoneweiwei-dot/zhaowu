@@ -1,8 +1,9 @@
+import { parseLanguagePath, type UrlLanguage } from "./language-routing.js";
 import routeMetaData from "./route-meta.json";
 
 export const SITE_ORIGIN: string = routeMetaData.origin;
 
-export type RouteMetaLanguage = "zh-Hant" | "zh-Hans" | "en";
+export type RouteMetaLanguage = UrlLanguage;
 export type RouteMetaEntry = { title: string; description: string };
 export type RouteMeta = Record<RouteMetaLanguage, RouteMetaEntry>;
 
@@ -29,16 +30,11 @@ function normalizePathname(pathname: string): string {
 
 /** Returns the meta entry for a pathname, or null when the route has no entry. */
 export function routeMetaFor(pathname: string): RouteMeta | null {
-  const meta = ROUTE_META[normalizePathname(pathname)];
+  const meta = ROUTE_META[normalizePathname(parseLanguagePath(pathname).rest)];
   return meta ?? null;
 }
 
-/**
- * Picks the entry for a UI language. ja/ko/hi (implemented but hidden from the
- * public language selector) intentionally fall back to English meta rather
- * than getting machine-invented translations.
- */
+/** Every indexed URL has its own localized metadata. */
 export function routeMetaForLanguage(meta: RouteMeta, language: string): RouteMetaEntry {
-  if (language === "zh-Hant" || language === "zh-Hans") return meta[language];
-  return meta.en;
+  return meta[language as RouteMetaLanguage] ?? meta["zh-Hant"];
 }

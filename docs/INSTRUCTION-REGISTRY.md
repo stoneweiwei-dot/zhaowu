@@ -1,3 +1,11 @@
+## 2026-11-12｜十語 URL SEO（PR／Preview only，待 Stone 批准）
+
+- 本次站主明確指示：`zh-Hant` 保持無前綴；`zh-Hans/en/ja/ko/hi/th/id/vi/fil` 對應 `/zh-hans` 及同名小寫前綴。URL 語言優先於 browser／localStorage，根路徑不得依 Accept-Language 自動轉址。
+- SUPERSEDES（僅重疊部分）：2026-10-27 共用 canonical／不輸出 hreflang 的舊決策；2026-11-11 瀏覽器與手選偏好優先於目前 URL 的部分。瀏覽器偵測工具及手選儲存保留，但不覆寫 URL。文章／報告既有中英回退、非中文 engine locale=en 保留。
+- 建置 33 公開路由 × 十語文件，原始 HTML 自帶 lang/title/description/self canonical 與十一項 alternate（十語＋x-default）；Sitemap 採 B，330 URL 均互指。四頁補十語編輯摘要，不宣稱全文已譯。
+- 僅精確辨識九個合法前綴；其他首段保留為完整路徑，真實既有 routes 仍有效。沒有 `/xx`、`/zh-hant` 靜態檔或 catch-all rewrite，故直接請求 404；不建立繁中重複路徑。2026-11-12 follow-up SUPERSEDES（僅伺服器 fallback）：合法語言前綴缺少靜態檔時回傳該語言 SPA shell（/{lang}/index.html），由 client router 判斷子路徑；既有靜態文件優先，query/hash 保留。非法前綴仍 404。
+- 僅於指定 worktree／分支提交與開 PR，明確授權一次 Preview 驗收；不合併、不發布 Production、不改 ignoreCommand 或現有 Vercel settings。排盤、登入驗證、付款、資料及原畫受保護。
+
 ## 2026-11-11｜Filipino 第十語與瀏覽器語言優先序（PR only）
 
 - 本次站主指示取代舊「九語」數量與僅中文偵測的部分：沿用 #1029 的 Filipino 178-key 離線字典，不複製；第十個選項保留。
@@ -71,7 +79,7 @@
 
 - ACTIVE：`/sample-report` 是繁體／簡體／英文完整公開命書示例；人物、生辰與情境全部虛構，明示不代表真實客戶。內容固定維持直接回答 → 總體概括 → 身體提醒 → 六段深讀 → 時間／行動 → 判斷備註，且把盤面可確認、條件推斷與無法確認分開。
 - ACTIVE：公開分享先移除原 query／hash（含 `session_id`、`access_key`、`zw_release` 等），再固定加入非識別性的 `utm_source=zhaowu&utm_medium=share`；不得把付款、報告或存取 token 帶入分享網址。
-- ACTIVE SEO 決策：公開繁／簡／英共用同一 canonical path，由客戶端語言狀態切換內容，沒有可供搜尋引擎抓取的獨立語言 URL；因此不輸出三個都指向同一 URL 的虛假 `hreflang` alternate。若未來建立真實 `/zh-hant/`、`/zh-hans/`、`/en/` 路由，再一併接入互指 `hreflang`。
+- SUPERSEDED（2026-11-12 SEO PR scope；Production 尚未改動）：先前繁／簡／英共用 canonical／不輸出 hreflang 的決策由十語實際 URL 與互指 alternate 取代；繁中仍保持無前綴，不新增 `/zh-hant/` 副本。
 - ACTIVE 依賴邊界：ffmpeg core 自家託管為第一順位，jsDelivr 只作站主專用音樂／影片優化器的 core/wasm 備援；在 `@ffmpeg/ffmpeg` wrapper、worker 與 core 全部同源且站主流程通過前，不得只刪 CSP 白名單造成後台失效。公開訪客流程不依賴 jsDelivr。
 - PROTECTED：不改命盤 calculation truth、付款、登入、Supabase schema、站主媒體資料或單一 Vercel Production。
 

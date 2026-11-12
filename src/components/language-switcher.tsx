@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
+import { useEffect, useLayoutEffect, useId, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { BrandIcon } from "@/components/brand-icon";
 
 export type LanguageSwitcherOption<T extends string> = {
@@ -56,6 +56,24 @@ export function LanguageSwitcher<T extends string>({
       document.removeEventListener("keydown", onKey);
     };
   }, [open]);
+
+  // The inner-page control can wrap to either side depending on its translated
+  // label. Clamp the open list to the viewport rather than assuming alignment.
+  useLayoutEffect(() => {
+    if (!open) return;
+    const fit = () => {
+      const root = rootRef.current;
+      const track = root?.querySelector<HTMLElement>(".zw-langpick__track");
+      if (!root || !track) return;
+      root.style.setProperty("--zw-langpick-shift", "0px");
+      const rect = track.getBoundingClientRect();
+      const shift = rect.left < 12 ? rect.left - 12 : Math.max(0, rect.right - window.innerWidth + 12);
+      root.style.setProperty("--zw-langpick-shift", `${shift}px`);
+    };
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, [open, value]);
 
   function move(from: number, step: number) {
     const next = (from + step + options.length) % options.length;

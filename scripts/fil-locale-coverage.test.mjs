@@ -18,7 +18,7 @@ test("Filipino UI dictionary covers all master copy keys", () => {
 test("Filipino choice is persisted and dynamically loaded", () => {
   const code = read("src/lib/display-language.ts");
   const shell = read("src/components/site-shell.tsx");
-  for (const needle of ['"fil-PH"', 'import("@/lib/display-dictionaries/fil")', 'value === "fil"', 'language === "fil"']) {
+  for (const needle of ['"fil-PH"', 'import("@/lib/display-dictionaries/fil")', 'window.localStorage.setItem("zhaowu.display-language", language)', 'language === "fil"']) {
     assert.ok(code.includes(needle), needle);
   }
   assert.ok(shell.includes('value: "fil" as const'));

@@ -1,0 +1,12 @@
+{
+ "zh-Hant": {"home":"昭梧首頁","knowledge":"知識庫","chart":"免費八字排盤","fallback":"完整內容與互動功能需要 JavaScript；若頁面未正常載入，請重試或使用 Safari／Chrome。部分文章與報告沿用繁體、簡體或英文正文。"},
+ "zh-Hans": {"home":"昭梧首页","knowledge":"知识库","chart":"免费八字排盘","fallback":"完整内容与互动功能需要 JavaScript；若页面未正常载入，请重试或使用 Safari／Chrome。部分文章与报告沿用繁体、简体或英文正文。"},
+ "en": {"home":"ZHAOWU home","knowledge":"Knowledge base","chart":"Free birth chart","fallback":"Enable JavaScript for the full content and interactive tools. Retry in Safari or Chrome if loading fails. Some articles and reports retain their existing Chinese or English text."},
+ "ja": {"home":"昭梧ホーム","knowledge":"知識庫","chart":"無料の八字命盤","fallback":"全文と対話機能にはJavaScriptが必要です。読み込めない場合はSafariやChromeで再試行してください。一部の記事とレポート本文は既存の中国語または英語を使用します。"},
+ "ko": {"home":"昭梧 홈","knowledge":"지식 자료실","chart":"무료 사주 명식","fallback":"전체 내용과 도구에는 JavaScript가 필요합니다. 로드되지 않으면 Safari나 Chrome에서 다시 시도하세요. 일부 글과 보고서는 기존 중국어 또는 영어 본문을 사용합니다."},
+ "hi": {"home":"ZHAOWU होम","knowledge":"ज्ञान केंद्र","chart":"मुफ़्त जन्म-चार्ट","fallback":"पूरी सामग्री और संवादात्मक साधनों के लिए JavaScript चालू करें। समस्या होने पर Safari या Chrome में फिर खोलें। कुछ लेख और रिपोर्ट अपने मौजूदा चीनी या अंग्रेज़ी पाठ का उपयोग करते हैं।"},
+ "th": {"home":"หน้าแรก ZHAOWU","knowledge":"คลังความรู้","chart":"ผังดวงเกิดฟรี","fallback":"เปิด JavaScript เพื่ออ่านเนื้อหาเต็มและใช้เครื่องมือ หากโหลดไม่ได้ให้ลอง Safari หรือ Chrome บทความและรายงานบางส่วนยังใช้ข้อความภาษาจีนหรืออังกฤษเดิม"},
+ "id": {"home":"Beranda ZHAOWU","knowledge":"Pusat pengetahuan","chart":"Bagan kelahiran gratis","fallback":"Aktifkan JavaScript untuk isi lengkap dan alat interaktif. Coba Safari atau Chrome jika gagal dimuat. Sebagian artikel dan laporan tetap memakai teks Mandarin atau Inggris yang sudah tersedia."},
+ "vi": {"home":"Trang chủ ZHAOWU","knowledge":"Thư viện kiến thức","chart":"Lá số miễn phí","fallback":"Bật JavaScript để đọc đầy đủ và dùng công cụ tương tác. Nếu không tải được, thử Safari hoặc Chrome. Một số bài viết và báo cáo vẫn dùng nội dung tiếng Trung hoặc tiếng Anh hiện có."},
+ "fil": {"home":"Tahanan ng ZHAOWU","knowledge":"Aklatan ng kaalaman","chart":"Libreng chart ng kapanganakan","fallback":"Paganahin ang JavaScript para sa buong nilalaman at mga kasangkapan. Subukan ang Safari o Chrome kung hindi ma-load. Nananatili sa kasalukuyang Tsino o Ingles ang ilang artikulo at ulat."}
+}
