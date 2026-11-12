@@ -37,6 +37,7 @@ test("CSP allows the origins the client really calls and the blob/wasm ffmpeg pa
 
 test("CSP closes the generic injection channels", () => {
   const csp = header("Content-Security-Policy");
+  assert.equal(directive(csp, "frame-src"), "frame-src 'self'", "the self-hosted sky chart is the only permitted iframe source");
   assert.match(csp, /object-src 'none'/);
   assert.match(csp, /base-uri 'self'/);
   assert.match(csp, /form-action 'self'/);

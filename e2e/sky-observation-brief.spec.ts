@@ -47,8 +47,9 @@ test('interpretive-first reading and upper SkyUniverse work while lower SkyCurre
   await page.goto('/sky-events');
   const universe = page.locator('.sky-universe-section');
   await expect(universe).toBeVisible();
-  await expect(universe.locator('canvas#universe')).toBeVisible();
-  await expect(universe.locator('.sky-universe-legend > li')).toHaveCount(9);
+  const chart = universe.locator('iframe').contentFrame();
+  await expect(chart.locator('canvas')).toBeVisible();
+  await expect(chart.locator('.planet-shortcuts > button')).toHaveCount(8);
   await expect(page.locator('.sky-current-motion')).toHaveCount(0);
   await expect(page.locator('.sky-motion-dial')).toHaveCount(0);
   const impact = page.locator('.sky-event-impact');
@@ -75,13 +76,44 @@ test('upper SkyUniverse controls and legend render cleanly without lower SkyCurr
   await page.goto('/sky-events');
   const universe = page.locator('.sky-universe-section');
   await universe.scrollIntoViewIfNeeded();
-  await expect(universe.locator('canvas#universe')).toBeVisible();
-  await expect(universe.locator('#orbit-motion')).toBeVisible();
-  await expect(universe.locator('#orbit-reset')).toBeVisible();
-  await expect(universe.locator('.sky-universe-legend > li')).toHaveCount(9);
+  const chart = universe.locator('iframe').contentFrame();
+  await expect(chart.locator('canvas')).toBeVisible();
+  await expect(chart.locator('.planet-shortcuts > button')).toHaveCount(8);
+  await expect(chart.locator('.chart-zoom input')).toBeVisible();
+  await expect(chart.locator('footer')).toBeVisible();
   await expect(page.locator('.sky-current-motion')).toHaveCount(0);
   await expect(page.locator('.sky-motion-details')).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   await page.setViewportSize({ width: 320, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
+});
+
+test('Meta chart follows Sydney midnight and Today restores the date slider', async ({ page }) => {
+  await page.clock.install({ time: new Date('2026-11-12T12:59:00Z') });
+  await page.clock.pauseAt(new Date('2026-11-12T12:59:59.900Z'));
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/sky-events');
+  const universe = page.locator('.sky-universe-section');
+  await universe.scrollIntoViewIfNeeded();
+  const chart = universe.locator('iframe').contentFrame();
+  await expect(chart.locator('footer')).toContainText('2026-11-12');
+  await page.clock.runFor(100);
+  await expect(chart.locator('footer')).toContainText('2026-11-13');
+  await chart.locator('button[aria-haspopup="dialog"]').click();
+  const timeline = chart.locator('input[min="-30"]');
+  await timeline.fill('5');
+  await expect(chart.locator('footer')).toContainText('2026-11-18');
+  await chart.getByRole('button', { name: /^(回到今天|Today)$/ }).click();
+  await expect(chart.locator('footer')).toContainText('2026-11-13');
+});
+
+test('failed chart loading leaves the dated observation readable', async ({ page }) => {
+  await page.route('**/sky-universe/chart-artwork.js*', (route) => route.abort());
+  await page.goto('/sky-events');
+  const universe = page.locator('.sky-universe-section');
+  await universe.scrollIntoViewIfNeeded();
+  await expect(universe.getByRole('status')).toContainText(/暫時無法顯示|暂时无法显示|unavailable/);
+  const record = page.locator('details#sky-observation-record');
+  await record.locator('summary').click();
+  await expect(record.locator('.daily-sky')).toBeVisible();
 });
