@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { D60KarmaSection } from "@/components/d60-karma-section";
 import type { CityHit } from "@/lib/bazi/types";
 import { useI18n, type Locale } from "@/lib/i18n";
+import { logD60MinutePrecisionConfirmation } from "@/lib/indian-astrology/d60-precision-log";
 import { localBirthToUtc } from "@/lib/qizheng/engine";
 
 const ASTRO_SCRIPT_ID = "zhaowu-astronomy-engine-d60";
@@ -169,7 +170,7 @@ async function isStableAtPlusMinusTwoMinutes(birth: D60GateBirth) {
   return signAt(-2) === base && signAt(2) === base;
 }
 
-export function D60ReliabilityGate({ reportBirth, depth = "full" }: { reportBirth: D60GateBirth | null; depth?: "quick" | "full" }) {
+export function D60ReliabilityGate({ reportBirth, depth = "full", precision = "minute" }: { reportBirth: D60GateBirth | null; depth?: "quick" | "full"; precision?: "minute" }) {
   const { locale } = useI18n();
   const copy = COPY[locale];
   const key = useMemo(() => reportBirth ? birthKey(reportBirth) : "", [reportBirth]);
@@ -206,7 +207,7 @@ export function D60ReliabilityGate({ reportBirth, depth = "full" }: { reportBirt
         </div>
         <p className="mt-3 text-xs leading-6 text-cinnabar">{copy.caution}</p>
         <div className="mt-4 flex flex-wrap gap-2">
-          <button type="button" className="rounded-xl bg-ink px-4 py-3 text-sm font-semibold text-paper" aria-label={`${copy.confirm}（${String(reportBirth.hour).padStart(2, "0")}:${String(reportBirth.minute).padStart(2, "0")}）`} onClick={() => setConfirmedKey(key)}>
+          <button type="button" className="rounded-xl bg-ink px-4 py-3 text-sm font-semibold text-paper" aria-label={`${copy.confirm}（${String(reportBirth.hour).padStart(2, "0")}:${String(reportBirth.minute).padStart(2, "0")}）`} onClick={() => { logD60MinutePrecisionConfirmation(precision); setConfirmedKey(key); }}>
             {copy.confirm}
           </button>
           <a className="rounded-xl border border-line px-4 py-3 text-sm font-semibold text-ink-soft" href="/#bazi">{copy.edit}</a>

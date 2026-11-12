@@ -60,3 +60,10 @@ test("engine diagnostics remain available manually while Netlify archive stays b
   assert.match(netlify, /functions = "netlify\/functions"/);
   assert.match(netlify, /ignore = "exit 0"/);
 });
+
+test("silent logging happens only on explicit confirmation, before the existing state transition", () => {
+  assert.equal((gate.match(/logD60MinutePrecisionConfirmation\(precision\)/g) ?? []).length, 1);
+  assert.match(gate, /onClick=\{\(\) => \{ logD60MinutePrecisionConfirmation\(precision\); setConfirmedKey\(key\); \}\}/);
+  assert.match(gate, /precision = "minute"/);
+  assert.doesNotMatch(gate, /localStorage|sendBeacon|fetch\(/);
+});
