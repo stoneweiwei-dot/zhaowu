@@ -1,3 +1,4 @@
+import { languagePath, languageAlternates } from "@/lib/language-routing.js";
 import { FROST_PHASES } from '@/lib/seasonal-skins';
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
@@ -378,11 +379,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const skipLabel = displayShellText(language, "跳到主要內容", "跳到主要内容", "Skip to main content", "本文へ移動", "본문으로 이동", "मुख्य सामग्री पर जाएँ");
 
   useEffect(() => {
-    // Per-route metadata from src/lib/route-meta.json for the three public
-    // article languages (zh-Hant/zh-Hans/en). Other display languages and unknown
-    // routes keep the previous inline site-wide defaults below.
+    // Public routes use the same ten-language metadata as the static build.
+    // Unknown/private routes retain the site-wide fallback.
     const routeMeta = routeMetaFor(pathname);
-    const routeEntry = routeMeta && (language === "zh-Hant" || language === "zh-Hans" || language === "en")
+    const routeEntry = routeMeta
       ? routeMetaForLanguage(routeMeta, language)
       : null;
     const title = routeEntry?.title ?? displayShellText(
@@ -421,12 +421,22 @@ export function SiteShell({ children }: { children: ReactNode }) {
     const origin = "https://zhao-wu.com";
     const normalized = pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
     const isPrivate = PRIVATE_ROUTES.some((route) => normalized === route || normalized.startsWith(`${route}/`));
-    const canonicalPath = SELF_CANONICAL_ROUTES.includes(normalized) ? normalized : "/";
+    const canonicalPath = languagePath(SELF_CANONICAL_ROUTES.includes(normalized) ? normalized : "/", language);
     const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (canonical) canonical.href = `${origin}${canonicalPath === "/" ? "/" : canonicalPath}`;
     updateMeta('meta[property="og:url"]', `${origin}${canonicalPath}`);
     updateMeta('meta[name="robots"]', isPrivate ? "noindex,nofollow" : "index,follow");
-  }, [pathname]);
+    document.querySelectorAll('link[hreflang]').forEach(node => node.remove());
+    if (!isPrivate && SELF_CANONICAL_ROUTES.includes(normalized)) {
+      for (const alternate of languageAlternates(normalized, origin)) {
+        const link = document.createElement("link");
+        link.rel = "alternate";
+        link.hreflang = alternate.language;
+        link.href = alternate.href;
+        document.head.appendChild(link);
+      }
+    }
+  }, [pathname, language]);
 
   return (
     <div data-owner-view={user?.isOwner ? "true" : undefined} style={shellStyle} className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isHome ? "zhaowu-route-home" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>

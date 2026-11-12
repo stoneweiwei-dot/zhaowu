@@ -1,6 +1,7 @@
+import { parseLanguagePath, languagePath } from "./language-routing.js";
 import { create } from "zustand";
 import { applyManifestLocale } from "@/lib/manifest-locale";
-import { detectBrowserLanguage, useI18n, type CopyKey, type Locale } from "@/lib/i18n";
+import { useI18n, type CopyKey, type Locale } from "@/lib/i18n";
 
 export type DisplayLanguage = Locale | "ja" | "ko" | "hi" | "th" | "id" | "vi" | "fil";
 
@@ -585,18 +586,9 @@ export function intlTagFor(language: DisplayLanguage) {
   return language === "zh-Hans" ? "zh-CN" : "zh-TW";
 }
 
-// Saved manual choices (including legacy choices) override browser language detection.
+// Indexed URLs always win over saved preferences and browser detection.
 function readDisplayLanguage(): DisplayLanguage {
-  if (typeof window === "undefined") return "en";
-  try {
-    const value = window.localStorage.getItem("zhaowu.display-language");
-    if (value === "zh-Hant" || value === "zh-Hans" || value === "en" || value === "ja" || value === "ko" || value === "hi" || value === "th" || value === "id" || value === "vi" || value === "fil") return value;
-    const legacy = window.localStorage.getItem("zhaowu.locale");
-    if (legacy === "zh-Hant" || legacy === "zh-Hans" || legacy === "en") return legacy;
-  } catch {
-    return detectBrowserLanguage();
-  }
-  return detectBrowserLanguage();
+  return typeof window === "undefined" ? "zh-Hant" : parseLanguagePath(window.location.pathname).language;
 }
 
 type LazyLanguage = "th" | "id" | "vi" | "fil";
@@ -667,6 +659,11 @@ export const useDisplayLanguage = create<DisplayLanguageState>((set) => ({
     } catch {
       /* ignore */
     }
+    // Full navigation keeps the static document and the URL in the same language.
+    // URL mutators preserve the exact query string and hash (including anchors).
+    const url = new URL(window.location.href);
+    url.pathname = languagePath(url.pathname, language);
+    if (url.href !== window.location.href) { window.location.assign(url.href); return; }
     applyLanguage(language);
     set({ language });
   },
@@ -679,3 +676,11 @@ export function hydrateDisplayLanguage() {
 }
 
 if (typeof window !== "undefined") applyLanguage(initialLanguage);
+
+export function syncDisplayLanguageFromUrl() {
+  const language = readDisplayLanguage();
+  if (useDisplayLanguage.getState().language !== language) {
+    applyLanguage(language);
+    useDisplayLanguage.setState({ language });
+  }
+}

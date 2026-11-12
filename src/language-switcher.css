@@ -64,7 +64,7 @@ html body #root .zw-langpick .zw-langpick__toggle:focus-visible {
 html body #root .zw-langpick .zw-langpick__track {
   position: absolute;
   top: calc(100% + 6px);
-  right: 0;
+  right: var(--zw-langpick-shift, 0px);
   z-index: 5;
   display: grid;
   grid-template-columns: repeat(3, minmax(44px, 1fr));

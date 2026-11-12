@@ -1,30 +1,13 @@
-/**
- * Post-build step: write static per-route HTML into dist/ for every
- * sitemap-listed public route.
- *
- * Why: the app is a Vite SPA, so every direct request otherwise gets the
- * homepage shell — one title/description/og set for all URLs. Crawlers and
- * share previews do not run JavaScript. This script reuses the single source
- * of truth in src/lib/route-meta.json (the same data the runtime <SiteShell>
- * effect applies) and writes dist<route>/index.html with route-specific
- * zh-Hant metadata (the fixed default language of the static shell, matching
- * the homepage's existing static copy).
- *
- * Vercel serves these files from the filesystem before the SPA fallback
- * rewrite, so /ziwei gets its own meta while unknown paths keep the fallback.
- * The runtime effect still switches title/description per UI language after
- * hydration; the SPA itself is unchanged.
- *
- * Routes listed in STATIC_PAGES additionally get a route-specific static body
- * (replacing the homepage static shell) plus Article/FAQPage/BreadcrumbList
- * JSON-LD, rendered from the same JSON the React page reads, so the crawlable
- * text can never drift from the page.
- *
- * Zero-config: no framework migration, no prerender pipeline, no new service.
+/** Build crawlable documents for every public route × ten URL languages.
+ * Public static files take precedence over Vercel's restricted language rewrites.
+ * Existing rich Chinese/English content is reused; other article bodies retain
+ * their runtime fallback, with localized editorial summaries in the document.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync, realpathSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { LANGUAGES, languagePath, languageAlternates } from "../src/lib/language-routing.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const META_PATH = join(ROOT, "src/lib/route-meta.json");
@@ -52,9 +35,13 @@ function replaceMetaTag(html, pattern, value) {
  * Removes the homepage-only JSON-LD block so structured data is not
  * duplicated across every public URL.
  */
-export function injectRouteMeta(html, entry, routePath, origin) {
+export function injectRouteMeta(html, entry, routePath, origin, language = "zh-Hant") {
   const url = `${origin}${routePath === "/" ? "/" : routePath}`;
-  let out = html;
+  let out = html.replace(/(<html[^>]* lang=")[^"]*(")/, `$1${language}$2`);
+  out = out.replace(/<link[^>]*hreflang=[^>]*>\s*/g, "");
+  const alternates = languageAlternates(routePath, origin).map(({ language, href }) =>
+    `<link rel="alternate" hreflang="${language}" href="${escapeHtmlAttribute(href)}" />`).join("\n  ");
+  out = out.replace("</head>", `${alternates}\n</head>`);
 
   out = out.replace(/<title>[\s\S]*?<\/title>/, () => `<title>${escapeHtmlAttribute(entry.title)}</title>`);
   out = replaceMetaTag(out, /(<meta name="description" content=")[^"]*(")/, entry.description);
@@ -64,7 +51,7 @@ export function injectRouteMeta(html, entry, routePath, origin) {
   out = replaceMetaTag(out, /(<meta name="twitter:title" content=")[^"]*(")/, entry.title);
   out = replaceMetaTag(out, /(<meta name="twitter:description" content=")[^"]*(")/, entry.description);
   out = out.replace(/(<link rel="canonical" href=")[^"]*(")/, (_match, before, after) => before + escapeHtmlAttribute(url) + after);
-  out = out.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>\s*/, "");
+  if (routePath !== "/" || language !== "zh-Hant") out = out.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>\s*/, "");
   return out;
 }
 
@@ -83,19 +70,20 @@ function utcLabel(offset) {
 }
 
 /** Static zh-Hant body + JSON-LD for /knowledge/true-solar-time, from the shared content JSON. */
-export function renderTrueSolarStatic(origin) {
+export function renderTrueSolarStatic(origin, language = "zh-Hant") {
   const c = JSON.parse(readFileSync(TRUE_SOLAR_CONTENT_PATH, "utf8"));
-  const t = c.locales["zh-Hant"];
+  const t = c.locales[language];
   const pairs = (items) => `<ul>${items.map(([n, x]) => `<li><strong>${esc(n)}</strong>\uff1a${esc(x)}</li>`).join("")}</ul>`;
   const rows = c.examples
     .map(
       (r) =>
-        `<tr><th scope="row">${esc(r.place["zh-Hant"])}</th><td>${esc(r.civilStamp)}</td><td>${utcLabel(r.utcOffset)}</td><td>${signed(r.longitudeMinutes)}</td><td>${signed(r.eotMinutes)}</td><td>${signed(r.shiftMinutes)}</td><td>${esc(r.trueSolarStamp)}</td></tr>`,
+        `<tr><th scope="row">${esc(r.place[language])}</th><td>${esc(r.civilStamp)}</td><td>${utcLabel(r.utcOffset)}</td><td>${signed(r.longitudeMinutes)}</td><td>${signed(r.eotMinutes)}</td><td>${signed(r.shiftMinutes)}</td><td>${esc(r.trueSolarStamp)}</td></tr>`,
     )
     .join("");
+  const copy = SHELL_COPY[language];
   const main = [
     '<main class="zw-static-shell" lang="zh-Hant">',
-    '<nav aria-label="breadcrumb"><a href="/">\u662d\u68a7</a> \u203a <a href="/knowledge">\u77e5\u8b58\u5eab</a></nav>',
+    `<nav aria-label="breadcrumb"><a href="/">${esc(copy.home)}</a> › <a href="/knowledge">${esc(copy.knowledge)}</a></nav>`,
     `<h1>${esc(t.h1)}</h1>`,
     `<p>${esc(t.lead)}</p>`,
     `<p>${esc(t.basis)}</p>`,
@@ -119,11 +107,11 @@ export function renderTrueSolarStatic(origin) {
     `<h2>${esc(t.faq.h)}</h2>`,
     ...t.faq.items.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`),
     `<p><a href="/#birth-form">${esc(t.cta.label)}</a> \u00b7 <a href="/knowledge">${esc(t.cta.back)}</a></p>`,
-    '<nav aria-label="相關知識"><h2>相關知識</h2><ul><li><a href="/knowledge/five-elements-tone-qi">五行五色、五音與五氣</a></li><li><a href="/knowledge/shushu-boundary">術數的邊界</a></li><li><a href="/knowledge/system-map">昭梧命理系統能力地圖</a></li></ul></nav>',
+    `<nav aria-label="${esc(copy.knowledge)}"><h2>${esc(copy.knowledge)}</h2><ul>${["/knowledge/five-elements-tone-qi", "/knowledge/shushu-boundary", "/knowledge/system-map"].map(p => `<li><a href="${p}">${esc(readRouteMeta().routes[p][language].title)}</a></li>`).join("")}</ul></nav>`,
     "</main>",
   ].join("\n");
 
-  const url = `${origin}${c.path}`;
+  const url = `${origin}${languagePath(c.path, language)}`;
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -131,7 +119,7 @@ export function renderTrueSolarStatic(origin) {
         "@type": "Article",
         headline: t.h1,
         description: t.lead,
-        inLanguage: "zh-Hant",
+        inLanguage: language,
         datePublished: c.datePublished,
         dateModified: c.dateModified,
         mainEntityOfPage: url,
@@ -152,7 +140,7 @@ export function renderTrueSolarStatic(origin) {
       },
     ],
   };
-  return { main, jsonLd };
+  return { main: localizeStaticLinks(main.replace('lang="zh-Hant"', `lang="${language}"`), language), jsonLd };
 }
 
 /** Route path -> renderer returning { main, jsonLd }. Routes not listed keep the homepage static shell. */
@@ -161,25 +149,35 @@ export const STATIC_PAGES = {
 };
 
 /** Replaces the homepage static shell with the route's own body and appends its JSON-LD to <head>. */
-export function injectStaticPage(html, routePath, origin) {
-  const render = STATIC_PAGES[routePath];
-  const { main, jsonLd } = render ? render(origin) : renderRouteSummary(routePath);
+export function injectStaticPage(html, routePath, origin, language = "zh-Hant") {
+  const render = ["zh-Hant", "zh-Hans", "en"].includes(language) && STATIC_PAGES[routePath];
+  const { main, jsonLd } = render ? render(origin, language) : renderRouteSummary(routePath, language);
   const shellPattern = /<main class="zw-static-shell"[\s\S]*?<\/main>/;
   if (!shellPattern.test(html)) throw new Error(`static shell not found in built index.html for ${routePath}`);
   const ld = jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, "\\u003c")}</script>\n  ` : "";
   return html.replace(shellPattern, () => main).replace("</head>", () => `${ld}</head>`);
 }
 
-/** Honest route-specific fallback, using the existing public metadata as a summary. */
-export function renderRouteSummary(routePath) {
+const SUMMARIES = JSON.parse(readFileSync(join(ROOT, "src/lib/route-static-summaries.json"), "utf8"));
+const SHELL_COPY = JSON.parse(readFileSync(join(ROOT, "src/lib/seo-shell-copy.json"), "utf8"));
+
+function localizeStaticLinks(main, language) {
+  return main.replace(/href="(\/[^"\s]*)"/g, (_, path) => `href="${languagePath(path, language)}"`);
+}
+
+/** Localized title, lead and editorial body; never a claim of full article translation. */
+export function renderRouteSummary(routePath, language = "zh-Hant") {
   const routes = readRouteMeta().routes;
-  const entry = routes[routePath]?.["zh-Hant"];
-  if (!entry) throw new Error(`missing route metadata for ${routePath}`);
+  const entry = routes[routePath]?.[language];
+  if (!entry) throw new Error(`missing route metadata for ${routePath} ${language}`);
+  const copy = SHELL_COPY[language];
   const knowledgePaths = ["/knowledge/true-solar-time", "/knowledge/five-elements-tone-qi", "/knowledge/shushu-boundary", "/knowledge/system-map"];
   const links = (routePath === "/knowledge" || knowledgePaths.includes(routePath))
-    ? `<nav aria-label="知識頁面"><h2>知識頁面</h2><ul>${knowledgePaths.filter(p => p !== routePath).map(p => `<li><a href="${esc(p)}">${esc(routes[p]["zh-Hant"].title)}</a></li>`).join("")}</ul></nav>`
+    ? `<nav aria-label="${esc(copy.knowledge)}"><h2>${esc(copy.knowledge)}</h2><ul>${knowledgePaths.filter(p => p !== routePath).map(p => `<li><a href="${esc(p)}">${esc(routes[p][language].title)}</a></li>`).join("")}</ul></nav>`
     : "";
-  return { main: `<main class="zw-static-shell" lang="zh-Hant"><nav aria-label="導覽"><a href="/">昭梧首頁</a> · <a href="/knowledge">知識庫</a></nav><h1>${esc(entry.title)}</h1><p>${esc(entry.description)}</p>${links}<p>完整內容與互動功能需要 JavaScript；若頁面未正常載入，請重試或使用 Safari／Chrome。</p><p><a href="/?zw_entry=chart#birth-form">免費八字排盤</a></p></main>`, jsonLd: null };
+  const paragraphs = SUMMARIES[routePath]?.[language] ?? [];
+  const main = `<main class="zw-static-shell" lang="${language}"><nav aria-label="${esc(copy.home)}"><a href="/">${esc(copy.home)}</a> · <a href="/knowledge">${esc(copy.knowledge)}</a></nav><h1>${esc(entry.title)}</h1><p data-static-lead>${esc(entry.description)}</p><section data-static-summary>${paragraphs.map(p => `<p>${esc(p)}</p>`).join("\n")}</section>${links}<p>${esc(copy.fallback)}</p><p><a href="/?zw_entry=chart#birth-form">${esc(copy.chart)}</a></p></main>`;
+  return { main: localizeStaticLinks(main, language), jsonLd: null };
 }
 
 export function buildRouteHtml(distDir = join(ROOT, "dist")) {
@@ -191,13 +189,16 @@ export function buildRouteHtml(distDir = join(ROOT, "dist")) {
   const shell = readFileSync(indexPath, "utf8");
   const written = [];
   for (const route of Object.keys(routes)) {
-    if (route === "/") continue; // homepage shell already carries its own meta
-    const entry = routes[route]["zh-Hant"];
-    const html = injectStaticPage(injectRouteMeta(shell, entry, route, origin), route, origin);
-    const target = join(distDir, route, "index.html");
-    mkdirSync(dirname(target), { recursive: true });
-    writeFileSync(target, html);
-    written.push(route);
+    for (const language of LANGUAGES) {
+      const path = languagePath(route, language);
+      let html = injectRouteMeta(shell, routes[route][language], path, origin, language);
+      // Preserve the established rich default homepage and its reader recovery links.
+      if (route !== "/" || language !== "zh-Hant") html = injectStaticPage(html, route, origin, language);
+      const target = join(distDir, path, "index.html");
+      mkdirSync(dirname(target), { recursive: true });
+      writeFileSync(target, html);
+      written.push(path);
+    }
   }
   return written;
 }
@@ -205,5 +206,5 @@ export function buildRouteHtml(distDir = join(ROOT, "dist")) {
 const invokedDirectly = process.argv[1] && fileURLToPath(import.meta.url) === realpathSync(process.argv[1]);
 if (invokedDirectly) {
   const written = buildRouteHtml();
-  console.log(`build-route-html: wrote ${written.length} route HTML files (${written.join(", ")})`);
+  console.log(`build-route-html: wrote ${written.length} route HTML files (10 languages)`);
 }

@@ -1,3 +1,4 @@
+import { parseLanguagePath } from '../src/lib/language-routing.js';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFileSync } from 'node:fs';
@@ -27,7 +28,7 @@ test('robots.txt and sitemap.xml agree: private routes disallowed, sitemap url d
   assert.match(robots, /Sitemap: https:\/\/zhao-wu\.com\/sitemap\.xml/);
   for (const p of ['/login', '/account', '/history']) assert.match(robots, new RegExp(`Disallow: ${p}`));
   const sitemap = read('public/sitemap.xml');
-  const locs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1].replace('https://zhao-wu.com', '') || '/');
+  const locs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => parseLanguagePath(m[1].replace('https://zhao-wu.com', '') || '/').rest);
   assert.ok(locs.includes('/'));
   const tree = read('src/routeTree.gen.ts');
   for (const p of locs.filter((x) => x !== '/')) assert.ok(tree.includes(`'${p}'`) || tree.includes(`"${p}"`), `route ${p} missing from routeTree`);
@@ -39,7 +40,7 @@ test('site shell sets multilingual title/description, noindex for private routes
   assert.match(shell, /Free BaZi/);
   assert.match(shell, /真太陽時/);
   const result = read('src/components/result-view.tsx');
-  assert.match(result, /<ReportTimingGuide chart=\{chart\} unlocked=/);
+  assert.match(result, /<ReportTimingGuide chart=\{chart\} unlocked(?:=| \/>)/);
   const guide = read('src/components/report-timing-guide.tsx');
   assert.match(guide, /data-timing-locked/);
   assert.match(guide, /toSimplifiedCustomerText/);

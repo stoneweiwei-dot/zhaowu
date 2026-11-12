@@ -1,7 +1,10 @@
+import { LanguageAnchorBridge } from './components/language-anchor-bridge';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { KoHiLocalizationBridge } from './components/ko-hi-localization-bridge';
+import { createLanguageRewrite, parseLanguagePath } from './lib/language-routing.js';
+import { syncDisplayLanguageFromUrl } from './lib/display-language';
 import { routeTree } from './routeTree.gen';
 import './styles.css';
 import './zhaowu-layered-styles.css';
@@ -19,7 +22,8 @@ import './painted-home.css';
 import './language-switcher.css';
 
 
-const router = createRouter({ routeTree, scrollRestoration: true, defaultPreload: "viewport" });
+const router = createRouter({ rewrite: createLanguageRewrite(() => parseLanguagePath(window.location.pathname).language), routeTree, scrollRestoration: true, defaultPreload: "viewport" });
+router.subscribe('onBeforeLoad', () => syncDisplayLanguageFromUrl());
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }
 declare const __ZHAOWU_RELEASE_ID__: string;
 const root = document.getElementById('root');
@@ -326,4 +330,4 @@ if ('serviceWorker' in navigator) {
   }, 60_000);
 }
 
-createRoot(root).render(<StrictMode><RouterProvider router={router} /><KoHiLocalizationBridge /></StrictMode>);
+createRoot(root).render(<StrictMode><RouterProvider router={router} /><KoHiLocalizationBridge /><LanguageAnchorBridge /></StrictMode>);

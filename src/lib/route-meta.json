@@ -2,169 +2,1390 @@
   "origin": "https://zhao-wu.com",
   "routes": {
     "/": {
-      "zh-Hant": { "title": "昭梧｜八字排盤・子平八字・真太陽時・流年運勢｜免登入免費", "description": "免登入免費八字排盤：依子平八字與真太陽時校正，整理五行旺衰、大運與流年運勢、今日提示。" },
-      "zh-Hans": { "title": "昭梧｜八字排盘・子平八字・真太阳时・流年运势｜免登录免费", "description": "免登录免费八字排盘：依子平八字与真太阳时校正，整理五行旺衰、大运与流年运势、今日提示。" },
-      "en": { "title": "ZHAOWU｜Free BaZi Chart · Four Pillars · True Solar Time · Annual Luck · No Sign-up", "description": "Free BaZi (Four Pillars) chart with true solar time correction: five-element balance, luck cycles, annual luck and daily guidance. No sign-up needed." }
+      "zh-Hant": {
+        "title": "昭梧｜八字排盤・子平八字・真太陽時・流年運勢｜免登入免費",
+        "description": "免登入免費八字排盤：依子平八字與真太陽時校正，整理五行旺衰、大運與流年運勢、今日提示。"
+      },
+      "zh-Hans": {
+        "title": "昭梧｜八字排盘・子平八字・真太阳时・流年运势｜免登录免费",
+        "description": "免登录免费八字排盘：依子平八字与真太阳时校正，整理五行旺衰、大运与流年运势、今日提示。"
+      },
+      "en": {
+        "title": "ZHAOWU｜Free BaZi Chart · Four Pillars · True Solar Time · Annual Luck · No Sign-up",
+        "description": "Free BaZi (Four Pillars) chart with true solar time correction: five-element balance, luck cycles, annual luck and daily guidance. No sign-up needed."
+      },
+      "ja": {
+        "title": "無料の四柱推命・真太陽時 | ZHAOWU",
+        "description": "ログイン不要の八字命盤。真太陽時を補正し、五行の働き、大運、年運と日々の指針を整理します。"
+      },
+      "ko": {
+        "title": "무료 사주 명식·진태양시 | ZHAOWU",
+        "description": "로그인 없이 사주를 확인하세요. 진태양시를 보정하고 오행의 작용, 대운, 연운과 일상 지침을 정리합니다."
+      },
+      "hi": {
+        "title": "मुफ़्त BaZi जन्म-चार्ट और सच्चा सौर समय | ZHAOWU",
+        "description": "बिना साइन इन जन्म-चार्ट देखें। सच्चे सौर समय के सुधार के साथ पंचतत्व, दीर्घकालिक चक्र, वार्षिक प्रवाह और दैनिक संकेत समझें।"
+      },
+      "th": {
+        "title": "ผังดวงโป๊ยหยี่ฟรีและเวลาสุริยะจริง | ZHAOWU",
+        "description": "ดูผังสี่เสาโดยไม่ต้องเข้าสู่ระบบ พร้อมปรับเวลาสุริยะจริง อธิบายธาตุทั้งห้า รอบชีวิต แนวโน้มรายปีและคำแนะนำประจำวัน"
+      },
+      "id": {
+        "title": "Bagan BaZi Gratis dan Waktu Matahari Sejati | ZHAOWU",
+        "description": "Buat bagan Empat Pilar tanpa masuk akun. Koreksi waktu matahari sejati membantu membaca lima unsur, siklus panjang, arus tahunan dan panduan harian."
+      },
+      "vi": {
+        "title": "Lá số Bát tự miễn phí và giờ mặt trời thật | ZHAOWU",
+        "description": "Lập lá số Tứ trụ không cần đăng nhập. Hiệu chỉnh giờ mặt trời thật để tìm hiểu ngũ hành, đại vận, lưu niên và gợi ý hằng ngày."
+      },
+      "fil": {
+        "title": "Libreng BaZi Chart at Tunay na Oras ng Araw | ZHAOWU",
+        "description": "Gumawa ng Four Pillars chart nang walang pag-sign in. May pagwawasto ng oras ng araw at gabay sa limang elemento, mga siklo at takbo ng taon."
+      }
     },
     "/about": {
-      "zh-Hant": { "title": "認識昭梧｜宋式美學・二十四節氣・七十二候・命理文化", "description": "走進昭梧：宋式畫境、節氣與七十二候、即時天氣、主題換裝、個人命書與今日黃曆星象。" },
-      "zh-Hans": { "title": "认识昭梧｜宋式美学・二十四节气・七十二候・命理文化", "description": "走进昭梧：宋式画境、节气与七十二候、实时天气、主题换装、个人命书与今日黄历星象。" },
-      "en": { "title": "Discover ZHAOWU | Song Art, Solar Terms, Personal Destiny", "description": "Explore ZHAOWU: Song-inspired design, 24 solar terms, 72 pentads, live weather, curated site themes and personal destiny books." }
+      "zh-Hant": {
+        "title": "認識昭梧｜宋式美學・二十四節氣・七十二候・命理文化",
+        "description": "走進昭梧：宋式畫境、節氣與七十二候、即時天氣、主題換裝、個人命書與今日黃曆星象。"
+      },
+      "zh-Hans": {
+        "title": "认识昭梧｜宋式美学・二十四节气・七十二候・命理文化",
+        "description": "走进昭梧：宋式画境、节气与七十二候、实时天气、主题换装、个人命书与今日黄历星象。"
+      },
+      "en": {
+        "title": "Discover ZHAOWU | Song Art, Solar Terms, Personal Destiny",
+        "description": "Explore ZHAOWU: Song-inspired design, 24 solar terms, 72 pentads, live weather, curated site themes and personal destiny books."
+      },
+      "ja": {
+        "title": "昭梧について・宋の美と二十四節気 | ZHAOWU",
+        "description": "宋代を思わせる画境、二十四節気と七十二候、天気、着せ替えテーマと個人の命書を紹介します。"
+      },
+      "ko": {
+        "title": "昭梧 소개·송대 미학과 절기 | ZHAOWU",
+        "description": "송대 회화에서 영감을 얻은 디자인, 24절기와 72후, 날씨, 테마와 개인 명서를 소개합니다."
+      },
+      "hi": {
+        "title": "ZHAOWU के बारे में·सोंग कला और सौर पर्व | ZHAOWU",
+        "description": "सोंग शैली की कला, 24 सौर पर्व, 72 मौसमी खंड, मौसम, थीम और व्यक्तिगत जीवन-पुस्तकों से परिचित हों।"
+      },
+      "th": {
+        "title": "รู้จัก ZHAOWU·ศิลปะซ่งและฤดูกาล | ZHAOWU",
+        "description": "สำรวจศิลปะที่ได้แรงบันดาลใจจากราชวงศ์ซ่ง 24 สารท 72 ช่วงฤดู สภาพอากาศ ธีมเว็บไซต์และหนังสือชีวิตส่วนบุคคล"
+      },
+      "id": {
+        "title": "Tentang ZHAOWU·Seni Song dan Musim | ZHAOWU",
+        "description": "Jelajahi desain bernuansa Song, 24 penanda musim, 72 periode pendek, cuaca, tema situs dan buku kehidupan pribadi."
+      },
+      "vi": {
+        "title": "Về ZHAOWU·Mỹ học Tống và tiết khí | ZHAOWU",
+        "description": "Khám phá hội họa gợi phong cách Tống, 24 tiết khí, 72 hậu, thời tiết, giao diện và mệnh thư cá nhân."
+      },
+      "fil": {
+        "title": "Tungkol sa ZHAOWU·Sining Song at mga Panahon | ZHAOWU",
+        "description": "Kilalanin ang disenyong hango sa Song, 24 na solar term, 72 yugto ng panahon, lagay ng panahon, mga tema at personal na aklat ng buhay."
+      }
     },
     "/sample-report": {
-      "zh-Hant": { "title": "公開命書示例｜直接答案・完整結構・判斷邊界｜昭梧", "description": "閱讀一份完全虛構的昭梧命書示例：直接答案、總體概括、身體提醒、六段深讀、行動與可確認／條件推斷／無法確認的邊界。" },
-      "zh-Hans": { "title": "公开命书示例｜直接答案・完整结构・判断边界｜昭梧", "description": "阅读一份完全虚构的昭梧命书示例：直接答案、总体概括、身体提醒、六段深读、行动与可确认／条件推断／无法确认的边界。" },
-      "en": { "title": "Sample Destiny Book | Answer, Structure & Evidence Boundaries | ZHAOWU", "description": "Read a fully fictional ZHAOWU sample: direct answer, whole-chart summary, wellbeing note, six deeper chapters, action and clear evidence boundaries." }
+      "zh-Hant": {
+        "title": "公開命書示例｜直接答案・完整結構・判斷邊界｜昭梧",
+        "description": "閱讀一份完全虛構的昭梧命書示例：直接答案、總體概括、身體提醒、六段深讀、行動與可確認／條件推斷／無法確認的邊界。"
+      },
+      "zh-Hans": {
+        "title": "公开命书示例｜直接答案・完整结构・判断边界｜昭梧",
+        "description": "阅读一份完全虚构的昭梧命书示例：直接答案、总体概括、身体提醒、六段深读、行动与可确认／条件推断／无法确认的边界。"
+      },
+      "en": {
+        "title": "Sample Destiny Book | Answer, Structure & Evidence Boundaries | ZHAOWU",
+        "description": "Read a fully fictional ZHAOWU sample: direct answer, whole-chart summary, wellbeing note, six deeper chapters, action and clear evidence boundaries."
+      },
+      "ja": {
+        "title": "命書の公開サンプル・判断の根拠と限界 | ZHAOWU",
+        "description": "架空の人物の命書で、直接の答え、全体像、心身の注意、六つの章、行動と判断の限界を確認できます。"
+      },
+      "ko": {
+        "title": "공개 명서 예시·근거와 판단의 한계 | ZHAOWU",
+        "description": "가상 인물의 명서로 직접 답변, 전체 요약, 건강 유의점, 여섯 장의 심층 해석과 판단의 한계를 확인합니다."
+      },
+      "hi": {
+        "title": "नमूना जीवन-पुस्तक·उत्तर और प्रमाण की सीमाएँ | ZHAOWU",
+        "description": "पूरी तरह काल्पनिक नमूने में सीधा उत्तर, समग्र सार, स्वास्थ्य संबंधी सावधानी, छह गहरे अध्याय, कार्य और निर्णय की सीमाएँ पढ़ें।"
+      },
+      "th": {
+        "title": "ตัวอย่างหนังสือชีวิต·คำตอบและขอบเขตหลักฐาน | ZHAOWU",
+        "description": "อ่านตัวอย่างที่แต่งขึ้นทั้งหมด มีคำตอบโดยตรง ภาพรวม ข้อควรระวังด้านสุขภาวะ หกบทเจาะลึก แนวทางและขอบเขตการตัดสิน"
+      },
+      "id": {
+        "title": "Contoh Buku Kehidupan·Jawaban dan Batas Bukti | ZHAOWU",
+        "description": "Baca contoh yang sepenuhnya fiktif: jawaban langsung, ringkasan menyeluruh, catatan kesejahteraan, enam bab, tindakan dan batas penilaian."
+      },
+      "vi": {
+        "title": "Mệnh thư mẫu·Câu trả lời và giới hạn chứng cứ | ZHAOWU",
+        "description": "Đọc ví dụ hoàn toàn hư cấu: câu trả lời trực tiếp, tổng quan, lưu ý sức khỏe, sáu chương chuyên sâu, hành động và giới hạn nhận định."
+      },
+      "fil": {
+        "title": "Halimbawang Aklat ng Buhay·Sagot at Hangganan ng Ebidensiya | ZHAOWU",
+        "description": "Basahin ang ganap na kathang-isip na halimbawa: tuwirang sagot, buod, paalala sa kalusugan, anim na kabanata, hakbang at hangganan ng paghatol."
+      }
     },
     "/knowledge": {
-      "zh-Hant": { "title": "昭梧知識庫｜命理文章與命理小知識", "description": "文章與短札讀觀點與研究；命理小知識查方法、術語與判讀規則，證據等級分開標示。" },
-      "zh-Hans": { "title": "昭梧知识库｜命理文章与命理小知识", "description": "文章与短札读观点与研究；命理小知识查方法、术语与判读规则，证据等级分开标示。" },
-      "en": { "title": "ZHAOWU Knowledge Base | Essays & Reference Cards", "description": "Essays and notes on viewpoints and research; concise reference cards for methods, terms and reading rules." }
+      "zh-Hant": {
+        "title": "昭梧知識庫｜命理文章與命理小知識",
+        "description": "文章與短札讀觀點與研究；命理小知識查方法、術語與判讀規則，證據等級分開標示。"
+      },
+      "zh-Hans": {
+        "title": "昭梧知识库｜命理文章与命理小知识",
+        "description": "文章与短札读观点与研究；命理小知识查方法、术语与判读规则，证据等级分开标示。"
+      },
+      "en": {
+        "title": "ZHAOWU Knowledge Base | Essays & Reference Cards",
+        "description": "Essays and notes on viewpoints and research; concise reference cards for methods, terms and reading rules."
+      },
+      "ja": {
+        "title": "知識庫・論考と用語案内 | ZHAOWU",
+        "description": "命理の論考と研究ノート、方法と用語の解説を収録。根拠の種類と解釈の境界を分けて示します。"
+      },
+      "ko": {
+        "title": "지식 자료실·글과 용어 안내 | ZHAOWU",
+        "description": "명리 관점과 연구를 담은 글, 방법과 용어를 설명하는 참고 자료를 근거의 종류와 구분해 제공합니다."
+      },
+      "hi": {
+        "title": "ज्ञान केंद्र·लेख और संदर्भ | ZHAOWU",
+        "description": "विचार और शोध पर लेख पढ़ें तथा विधियों, शब्दों और व्याख्या के नियमों को उनके प्रमाण के स्तर से अलग समझें।"
+      },
+      "th": {
+        "title": "คลังความรู้·บทความและคำอธิบาย | ZHAOWU",
+        "description": "อ่านบทความและบันทึกวิจัย พร้อมข้อมูลวิธีการ คำศัพท์และกฎการตีความ โดยแยกประเภทหลักฐานอย่างชัดเจน"
+      },
+      "id": {
+        "title": "Pusat Pengetahuan·Esai dan Referensi | ZHAOWU",
+        "description": "Esai dan catatan tentang sudut pandang dan riset, serta panduan metode, istilah dan aturan membaca dengan jenis bukti yang dibedakan."
+      },
+      "vi": {
+        "title": "Thư viện kiến thức·Bài viết và tham khảo | ZHAOWU",
+        "description": "Bài luận, ghi chép nghiên cứu và thẻ tham khảo về phương pháp, thuật ngữ, quy tắc luận giải với các loại chứng cứ được phân biệt."
+      },
+      "fil": {
+        "title": "Aklatan ng Kaalaman·Mga Sanaysay at Sanggunian | ZHAOWU",
+        "description": "Mga sanaysay at tala sa pananaw at pananaliksik, kasama ang paliwanag ng pamamaraan, mga termino at tuntunin na may malinaw na uri ng ebidensiya."
+      }
     },
     "/knowledge/nine-heavens-lamps": {
-      "zh-Hant": { "title": "九重天外，無人掌燈｜緣起、業果與無我的哲學寓言｜昭梧", "description": "四幅圖境與完整玄學寓言，從青燈、黑焰、風與放下執取的故事，深入理解佛教緣起、無我、業果相續及空性的哲學界線。" },
-      "zh-Hans": { "title": "九重天外，无人掌灯｜缘起、业果与无我的哲学寓言｜昭梧", "description": "四幅图境与完整玄学寓言，从青灯、黑焰、风与放下执取的故事，深入理解佛教缘起、无我、业果相续及空性的哲学边界。" },
-      "en": { "title": "Beyond Nine Heavens, No Keeper of the Lamp | ZHAOWU", "description": "An illustrated parable in four scenes about dependent origination, karma, non-self and emptiness, followed by a sourced Buddhist philosophy explanation." }
+      "zh-Hant": {
+        "title": "九重天外，無人掌燈｜緣起、業果與無我的哲學寓言｜昭梧",
+        "description": "四幅圖境與完整玄學寓言，從青燈、黑焰、風與放下執取的故事，深入理解佛教緣起、無我、業果相續及空性的哲學界線。"
+      },
+      "zh-Hans": {
+        "title": "九重天外，无人掌灯｜缘起、业果与无我的哲学寓言｜昭梧",
+        "description": "四幅图境与完整玄学寓言，从青灯、黑焰、风与放下执取的故事，深入理解佛教缘起、无我、业果相续及空性的哲学边界。"
+      },
+      "en": {
+        "title": "Beyond Nine Heavens, No Keeper of the Lamp | ZHAOWU",
+        "description": "An illustrated parable in four scenes about dependent origination, karma, non-self and emptiness, followed by a sourced Buddhist philosophy explanation."
+      },
+      "ja": {
+        "title": "九重天の彼方、灯を守る者はいない | ZHAOWU",
+        "description": "四つの場面からなる挿絵付き寓話。縁起、業、無我、空を物語と出典に基づく解説で考えます。"
+      },
+      "ko": {
+        "title": "구천 너머, 등불을 지키는 이는 없다 | ZHAOWU",
+        "description": "네 장면의 그림 우화로 연기, 업, 무아와 공을 살펴보고 출처를 밝힌 불교 철학 해설을 읽습니다."
+      },
+      "hi": {
+        "title": "नौ आकाशों के पार, दीप का कोई रक्षक नहीं | ZHAOWU",
+        "description": "चार चित्रित दृश्यों की कथा से प्रतीत्यसमुत्पाद, कर्म, अनात्म और शून्यता समझें। साथ में स्रोतों पर आधारित बौद्ध दर्शन की व्याख्या है।"
+      },
+      "th": {
+        "title": "เหนือเก้าชั้นฟ้า ไม่มีผู้เฝ้าตะเกียง | ZHAOWU",
+        "description": "นิทานภาพสี่ฉากว่าด้วยปฏิจจสมุปบาท กรรม อนัตตาและสุญญตา พร้อมคำอธิบายพุทธปรัชญาที่ระบุแหล่งอ้างอิง"
+      },
+      "id": {
+        "title": "Di Luar Sembilan Langit, Tiada Penjaga Pelita | ZHAOWU",
+        "description": "Perumpamaan bergambar empat adegan tentang kemunculan bergantungan, karma, tanpa-diri dan kekosongan, disertai penjelasan filsafat Buddhis bersumber."
+      },
+      "vi": {
+        "title": "Ngoài chín tầng trời, không ai giữ đèn | ZHAOWU",
+        "description": "Ngụ ngôn minh họa bốn cảnh về duyên khởi, nghiệp, vô ngã và tính không, kèm giải thích triết học Phật giáo có nguồn tham khảo."
+      },
+      "fil": {
+        "title": "Lampas sa Siyam na Langit, Walang Tagapagbantay ng Ilawan | ZHAOWU",
+        "description": "Talinghagang may apat na larawang tagpo tungkol sa magkakaugnay na paglitaw, karma, kawalan ng permanenteng sarili at kahungkagan, na may sanggunian."
+      }
     },
     "/knowledge/five-elements-tone-qi": {
-      "zh-Hant": { "title": "五行五色、五音與五氣｜傳統象義與使用邊界", "description": "五行對應的色、音、氣是傳統象義系統，用來理解功能語言，不是物理測量，也不直接改變命局。" },
-      "zh-Hans": { "title": "五行五色、五音与五气｜传统象义与使用边界", "description": "五行对应的色、音、气是传统象义系统，用来理解功能语言，不是物理测量，也不直接改变命局。" },
-      "en": { "title": "Five Elements, Colours, Tones & Qi | Traditional Symbolism", "description": "The colour, tone and qi correspondences are traditional symbolism for understanding functions — not physical measurements." }
+      "zh-Hant": {
+        "title": "五行五色、五音與五氣｜傳統象義與使用邊界",
+        "description": "五行對應的色、音、氣是傳統象義系統，用來理解功能語言，不是物理測量，也不直接改變命局。"
+      },
+      "zh-Hans": {
+        "title": "五行五色、五音与五气｜传统象义与使用边界",
+        "description": "五行对应的色、音、气是传统象义系统，用来理解功能语言，不是物理测量，也不直接改变命局。"
+      },
+      "en": {
+        "title": "Five Elements, Colours, Tones & Qi | Traditional Symbolism",
+        "description": "The colour, tone and qi correspondences are traditional symbolism for understanding functions — not physical measurements."
+      },
+      "ja": {
+        "title": "五行の色・音・気 | ZHAOWU",
+        "description": "伝統の色、音、気の対応を機能の象徴として解説。物理測定や運命を直接変える方法ではありません。"
+      },
+      "ko": {
+        "title": "오행의 색·음·기 | ZHAOWU",
+        "description": "전통의 색과 음, 기의 대응을 기능적 상징으로 설명합니다. 물리적 측정이나 운명을 직접 바꾸는 방법이 아닙니다."
+      },
+      "hi": {
+        "title": "पंचतत्व के रंग, स्वर और ची | ZHAOWU",
+        "description": "रंग, स्वर और ची के पारंपरिक संबंध कार्यों को समझने के प्रतीक हैं। वे भौतिक माप या भाग्य बदलने का सीधा उपाय नहीं हैं।"
+      },
+      "th": {
+        "title": "ห้าธาตุ สี เสียงและชี่ | ZHAOWU",
+        "description": "ความสัมพันธ์ของสี เสียงและชี่เป็นสัญลักษณ์ตามขนบเพื่อเข้าใจหน้าที่ ไม่ใช่การวัดทางกายภาพหรือวิธีเปลี่ยนดวงโดยตรง"
+      },
+      "id": {
+        "title": "Lima Unsur, Warna, Nada dan Qi | ZHAOWU",
+        "description": "Kaitan warna, nada dan qi adalah simbol tradisional untuk memahami fungsi, bukan ukuran fisik atau cara langsung mengubah nasib."
+      },
+      "vi": {
+        "title": "Ngũ hành, màu sắc, âm và khí | ZHAOWU",
+        "description": "Tương ứng màu, âm và khí là biểu tượng truyền thống để hiểu chức năng, không phải phép đo vật lý hay cách trực tiếp đổi mệnh."
+      },
+      "fil": {
+        "title": "Limang Elemento, Kulay, Tono at Qi | ZHAOWU",
+        "description": "Ang ugnayan ng kulay, tono at qi ay tradisyonal na simbolo ng mga tungkulin, hindi pisikal na sukat o tuwirang paraan ng pagbabago ng kapalaran."
+      }
     },
     "/knowledge/shushu-boundary": {
-      "zh-Hant": { "title": "術數的邊界：資料求真，規則求明｜昭梧研究札記", "description": "從《荀子》「善為易者不占」出發，區分事實、模型、證據與選擇；術數是分析工具，不是替人決定人生的主人。" },
-      "zh-Hans": { "title": "术数的边界：资料求真，规则求明｜昭梧研究札记", "description": "从《荀子》「善为易者不占」出发，区分事实、模型、证据与选择；术数是分析工具，不是替人决定人生的主人。" },
-      "en": { "title": "The Boundary of the Divination Arts | ZHAOWU Research Note", "description": "Starting from Xunzi, separating facts, models, evidence and choice: divination as an analysis tool, never the master of your life." }
+      "zh-Hant": {
+        "title": "術數的邊界：資料求真，規則求明｜昭梧研究札記",
+        "description": "從《荀子》「善為易者不占」出發，區分事實、模型、證據與選擇；術數是分析工具，不是替人決定人生的主人。"
+      },
+      "zh-Hans": {
+        "title": "术数的边界：资料求真，规则求明｜昭梧研究札记",
+        "description": "从《荀子》「善为易者不占」出发，区分事实、模型、证据与选择；术数是分析工具，不是替人决定人生的主人。"
+      },
+      "en": {
+        "title": "The Boundary of the Divination Arts | ZHAOWU Research Note",
+        "description": "Starting from Xunzi, separating facts, models, evidence and choice: divination as an analysis tool, never the master of your life."
+      },
+      "ja": {
+        "title": "術数の境界・事実と選択 | ZHAOWU",
+        "description": "荀子を手掛かりに、事実、モデル、証拠、選択を区別。術数を人生の決定者ではなく分析の道具として考えます。"
+      },
+      "ko": {
+        "title": "술수의 경계·사실과 선택 | ZHAOWU",
+        "description": "순자의 글을 출발점으로 사실, 모형, 근거와 선택을 구별합니다. 술수는 삶을 대신 결정하는 주인이 아닌 분석 도구입니다."
+      },
+      "hi": {
+        "title": "भविष्यकथन की सीमा·तथ्य और चुनाव | ZHAOWU",
+        "description": "शुनज़ी से आरंभ कर तथ्य, मॉडल, प्रमाण और चुनाव अलग करें। पारंपरिक विश्लेषण जीवन का निर्णय लेने वाला स्वामी नहीं है।"
+      },
+      "th": {
+        "title": "ขอบเขตศาสตร์พยากรณ์·ข้อเท็จจริงและทางเลือก | ZHAOWU",
+        "description": "เริ่มจากสวินจื่อเพื่อแยกข้อเท็จจริง แบบจำลอง หลักฐานและทางเลือก ศาสตร์พยากรณ์เป็นเครื่องมือวิเคราะห์ ไม่ใช่ผู้กำหนดชีวิต"
+      },
+      "id": {
+        "title": "Batas Seni Ramal·Fakta dan Pilihan | ZHAOWU",
+        "description": "Berangkat dari Xunzi, bedakan fakta, model, bukti dan pilihan. Seni ramal adalah alat analisis, bukan penguasa keputusan hidup."
+      },
+      "vi": {
+        "title": "Ranh giới thuật số·Sự thật và lựa chọn | ZHAOWU",
+        "description": "Từ Tuân Tử, phân biệt sự thật, mô hình, chứng cứ và lựa chọn. Thuật số là công cụ phân tích, không phải chủ nhân quyết định đời người."
+      },
+      "fil": {
+        "title": "Hangganan ng Panghuhula·Katotohanan at Pagpili | ZHAOWU",
+        "description": "Mula kay Xunzi, paghiwalayin ang katotohanan, modelo, ebidensiya at pagpili. Kasangkapan ang pagsusuri, hindi panginoon ng buhay."
+      }
     },
     "/knowledge/system-map": {
-      "zh-Hant": { "title": "昭梧命理系統能力地圖｜正式運行與研究中的分界", "description": "把正式運行、部分運行、研究中與象徵性內容分開；狀態標籤就是目前真實能力，不把研究冒充完成。" },
-      "zh-Hans": { "title": "昭梧命理系统能力地图｜正式运行与研究中的分界", "description": "把正式运行、部分运行、研究中与象征性内容分开；状态标签就是目前真实能力，不把研究冒充完成。" },
-      "en": { "title": "ZHAOWU System Capability Map | Live vs In-Research", "description": "What is live, partially running, in research or symbolic is kept separate; status labels are the real current capability." }
+      "zh-Hant": {
+        "title": "昭梧命理系統能力地圖｜正式運行與研究中的分界",
+        "description": "把正式運行、部分運行、研究中與象徵性內容分開；狀態標籤就是目前真實能力，不把研究冒充完成。"
+      },
+      "zh-Hans": {
+        "title": "昭梧命理系统能力地图｜正式运行与研究中的分界",
+        "description": "把正式运行、部分运行、研究中与象征性内容分开；状态标签就是目前真实能力，不把研究冒充完成。"
+      },
+      "en": {
+        "title": "ZHAOWU System Capability Map | Live vs In-Research",
+        "description": "What is live, partially running, in research or symbolic is kept separate; status labels are the real current capability."
+      },
+      "ja": {
+        "title": "昭梧のシステム能力図 | ZHAOWU",
+        "description": "稼働中、一部稼働、研究中、象徴表現を区別し、現時点で実際に使える機能を明示します。"
+      },
+      "ko": {
+        "title": "昭梧 시스템 역량 지도 | ZHAOWU",
+        "description": "운영 중, 부분 운영, 연구 중과 상징적 내용을 구분해 현재 실제로 제공하는 기능을 밝힙니다."
+      },
+      "hi": {
+        "title": "ZHAOWU क्षमता मानचित्र | ZHAOWU",
+        "description": "सक्रिय, आंशिक रूप से सक्रिय, शोधाधीन और प्रतीकात्मक सामग्री को अलग देखें। स्थिति-चिह्न वर्तमान वास्तविक क्षमता बताते हैं।"
+      },
+      "th": {
+        "title": "แผนที่ความสามารถของ ZHAOWU | ZHAOWU",
+        "description": "แยกส่วนที่ใช้งานจริง ใช้ได้บางส่วน อยู่ระหว่างวิจัยและเนื้อหาเชิงสัญลักษณ์ ป้ายสถานะแสดงความสามารถปัจจุบัน"
+      },
+      "id": {
+        "title": "Peta Kemampuan Sistem ZHAOWU | ZHAOWU",
+        "description": "Bedakan fitur aktif, sebagian aktif, dalam riset dan simbolis. Label status menunjukkan kemampuan nyata saat ini."
+      },
+      "vi": {
+        "title": "Bản đồ năng lực hệ thống ZHAOWU | ZHAOWU",
+        "description": "Phân biệt chức năng đang chạy, chạy một phần, đang nghiên cứu và nội dung biểu tượng. Nhãn trạng thái phản ánh năng lực thực tế hiện tại."
+      },
+      "fil": {
+        "title": "Mapa ng Kakayahan ng ZHAOWU | ZHAOWU",
+        "description": "Magkahiwalay ang aktibo, bahagyang gumagana, sinasaliksik at simbolikong nilalaman. Ipinapakita ng mga label ang tunay na kakayahan ngayon."
+      }
     },
     "/knowledge/true-solar-time": {
-      "zh-Hant": { "title": "真太陽時怎麼算？經度差、均時差與夏令時（含南半球／澳洲實例）｜昭梧", "description": "八字真太陽時的計算公式與實例：經度差每度 4 分鐘、均時差約 −14 至 +16 分、夏令時以實際 UTC 偏移代入；含悉尼、台北、北京數值範例，並說明誤差與限制。" },
-      "zh-Hans": { "title": "真太阳时怎么算？经度差、均时差与夏令时（含南半球／澳洲实例）｜昭梧", "description": "八字真太阳时的计算公式与实例：经度差每度 4 分钟、均时差约 −14 至 +16 分、夏令时以实际 UTC 偏移代入；含悉尼、台北、北京数值范例，并说明误差与限制。" },
-      "en": { "title": "True Solar Time for BaZi: Formula, Equation of Time & DST (Sydney Examples) | ZHAOWU", "description": "How true solar time is calculated for a BaZi chart: 4 minutes per degree of longitude, the equation of time (about −14 to +16 min) and daylight saving via the actual UTC offset, with Sydney, Taipei and Beijing worked examples, plus error and limits." }
+      "zh-Hant": {
+        "title": "真太陽時怎麼算？經度差、均時差與夏令時（含南半球／澳洲實例）｜昭梧",
+        "description": "八字真太陽時的計算公式與實例：經度差每度 4 分鐘、均時差約 −14 至 +16 分、夏令時以實際 UTC 偏移代入；含悉尼、台北、北京數值範例，並說明誤差與限制。"
+      },
+      "zh-Hans": {
+        "title": "真太阳时怎么算？经度差、均时差与夏令时（含南半球／澳洲实例）｜昭梧",
+        "description": "八字真太阳时的计算公式与实例：经度差每度 4 分钟、均时差约 −14 至 +16 分、夏令时以实际 UTC 偏移代入；含悉尼、台北、北京数值范例，并说明误差与限制。"
+      },
+      "en": {
+        "title": "True Solar Time for BaZi: Formula, Equation of Time & DST (Sydney Examples) | ZHAOWU",
+        "description": "How true solar time is calculated for a BaZi chart: 4 minutes per degree of longitude, the equation of time (about −14 to +16 min) and daylight saving via the actual UTC offset, with Sydney, Taipei and Beijing worked examples, plus error and limits."
+      },
+      "ja": {
+        "title": "八字と真太陽時・計算式と夏時間 | ZHAOWU",
+        "description": "経度一度につき四分の補正、均時差、実際のUTC差と夏時間をシドニー、台北、北京の例で解説します。"
+      },
+      "ko": {
+        "title": "사주와 진태양시·계산식과 서머타임 | ZHAOWU",
+        "description": "경도 1도당 4분 보정, 균시차, 실제 UTC 차이와 서머타임을 시드니·타이베이·베이징 사례로 설명합니다."
+      },
+      "hi": {
+        "title": "BaZi में सच्चा सौर समय·सूत्र और ग्रीष्मकालीन समय | ZHAOWU",
+        "description": "प्रति देशांतर अंश चार मिनट, समय समीकरण, वास्तविक UTC अंतर और ग्रीष्मकालीन समय को सिडनी, ताइपे और बीजिंग के उदाहरणों से समझें।"
+      },
+      "th": {
+        "title": "เวลาสุริยะจริงสำหรับโป๊ยหยี่·สูตรและเวลาออมแสง | ZHAOWU",
+        "description": "เรียนรู้การปรับสี่นาทีต่อหนึ่งองศาลองจิจูด สมการเวลา ผลต่าง UTC และเวลาออมแสง ผ่านตัวอย่างซิดนีย์ ไทเปและปักกิ่ง"
+      },
+      "id": {
+        "title": "Waktu Matahari Sejati untuk BaZi·Rumus dan DST | ZHAOWU",
+        "description": "Pelajari koreksi empat menit per derajat bujur, persamaan waktu, selisih UTC dan waktu musim panas melalui contoh Sydney, Taipei dan Beijing."
+      },
+      "vi": {
+        "title": "Giờ mặt trời thật trong Bát tự·Công thức và giờ mùa hè | ZHAOWU",
+        "description": "Tìm hiểu bốn phút mỗi độ kinh độ, phương trình thời gian, chênh UTC và giờ mùa hè qua ví dụ Sydney, Đài Bắc và Bắc Kinh."
+      },
+      "fil": {
+        "title": "Tunay na Oras ng Araw sa BaZi·Pormula at Daylight Saving | ZHAOWU",
+        "description": "Alamin ang apat na minuto bawat digri ng longhitud, equation of time, aktuwal na UTC offset at daylight saving sa Sydney, Taipei at Beijing."
+      }
     },
     "/knowledge/southern-hemisphere-bazi": {
-      "zh-Hant": { "title": "南半球八字怎麼排？澳洲／紐西蘭節氣、真太陽時與季節環境校正｜昭梧", "description": "說明南半球（悉尼、墨爾本、奧克蘭等）排八字為何不反轉四柱與月令，如何計算跨年夏令時真太陽時，並將當地四季氣候與採光列為環境校正層。" },
-      "zh-Hans": { "title": "南半球八字怎么排？澳洲／新西兰节气、真太阳时与季节环境校正｜昭梧", "description": "说明南半球（悉尼、墨尔本、奥克兰等）排八字为何不反转四柱与月令，如何计算跨年夏令时真太阳时，并将当地四季气候与采光列为环境校正层。" },
-      "en": { "title": "Southern Hemisphere BaZi: Solar Terms, True Solar Time & Seasonal Calibration | ZHAOWU", "description": "Why Southern Hemisphere BaZi charts (Sydney, Melbourne, Auckland) keep the Four Pillars and solar-term month branch invariant, how cross-year DST affects true solar time, and how local seasons inform environmental calibration." }
+      "zh-Hant": {
+        "title": "南半球八字怎麼排？澳洲／紐西蘭節氣、真太陽時與季節環境校正｜昭梧",
+        "description": "說明南半球（悉尼、墨爾本、奧克蘭等）排八字為何不反轉四柱與月令，如何計算跨年夏令時真太陽時，並將當地四季氣候與採光列為環境校正層。"
+      },
+      "zh-Hans": {
+        "title": "南半球八字怎么排？澳洲／新西兰节气、真太阳时与季节环境校正｜昭梧",
+        "description": "说明南半球（悉尼、墨尔本、奥克兰等）排八字为何不反转四柱与月令，如何计算跨年夏令时真太阳时，并将当地四季气候与采光列为环境校正层。"
+      },
+      "en": {
+        "title": "Southern Hemisphere BaZi: Solar Terms, True Solar Time & Seasonal Calibration | ZHAOWU",
+        "description": "Why Southern Hemisphere BaZi charts (Sydney, Melbourne, Auckland) keep the Four Pillars and solar-term month branch invariant, how cross-year DST affects true solar time, and how local seasons inform environmental calibration."
+      },
+      "ja": {
+        "title": "南半球の八字・節気と季節補正 | ZHAOWU",
+        "description": "南半球でも四柱と節気の月支を保つ理由、夏時間の真太陽時への影響、現地の季節の補足的な扱いを説明します。"
+      },
+      "ko": {
+        "title": "남반구 사주·절기와 계절 보정 | ZHAOWU",
+        "description": "남반구에서 사주와 절기의 월지를 유지하는 이유, 서머타임의 영향, 현지 계절을 환경 정보로 쓰는 방식을 설명합니다."
+      },
+      "hi": {
+        "title": "दक्षिणी गोलार्ध में BaZi और स्थानीय ऋतुएँ | ZHAOWU",
+        "description": "चार स्तंभ और सौर पर्व का मास स्थिर क्यों रहता है, ग्रीष्मकालीन समय का सुधार पर असर और स्थानीय ऋतु की सहायक भूमिका जानें।"
+      },
+      "th": {
+        "title": "โป๊ยหยี่ในซีกโลกใต้·สารทและฤดูกาล | ZHAOWU",
+        "description": "อธิบายเหตุที่สี่เสาและกิ่งเดือนตามสารทคงเดิม ผลของเวลาออมแสงต่อเวลาสุริยะจริง และบทบาทเสริมของฤดูท้องถิ่น"
+      },
+      "id": {
+        "title": "BaZi Belahan Selatan·Musim dan Kalibrasi | ZHAOWU",
+        "description": "Mengapa Empat Pilar dan cabang bulan tetap, bagaimana waktu musim panas memengaruhi koreksi, serta peran tambahan musim setempat."
+      },
+      "vi": {
+        "title": "Bát tự Nam bán cầu·Tiết khí và mùa địa phương | ZHAOWU",
+        "description": "Vì sao Tứ trụ và chi tháng theo tiết khí giữ nguyên, giờ mùa hè ảnh hưởng hiệu chỉnh ra sao và vai trò bổ trợ của mùa địa phương."
+      },
+      "fil": {
+        "title": "BaZi sa Timog Hemisperyo·Mga Panahon at Pagsasaayos | ZHAOWU",
+        "description": "Bakit nananatili ang Four Pillars at buwan ayon sa solar term, paano nakaaapekto ang daylight saving at paano ginagamit ang lokal na panahon bilang konteksto."
+      }
     },
     "/mythic-atlas": {
-      "zh-Hant": { "title": "幽明萬象錄・三界異聞錄七卷｜十二地支四態・大裂隙災異編年｜昭梧", "description": "昭梧原創《三界異聞錄》全書七卷：神籍官僚制、黃泉與輪迴、十二地支四態、十二流煞及十年災異終局。區分古籍、民俗與架空改寫。" },
-      "zh-Hans": { "title": "幽明万象录・三界异闻录七卷｜十二地支四态・大裂隙灾异编年｜昭梧", "description": "昭梧原创《三界异闻录》全书七卷：神籍官僚制、黄泉与轮回、十二地支四态、十二流煞及十年灾异终局。区分古籍、民俗与架空改写。" },
-      "en": { "title": "Tales of the Three Realms | Seven Volumes of the Hidden and Manifest Worlds | ZHAOWU", "description": "ZHAOWU's seven-volume mythic chronicle: celestial bureaucracy, the Yellow Springs, twelve zodiac aspects and a decade of calamity, with sources distinguished from fiction." }
+      "zh-Hant": {
+        "title": "幽明萬象錄・三界異聞錄七卷｜十二地支四態・大裂隙災異編年｜昭梧",
+        "description": "昭梧原創《三界異聞錄》全書七卷：神籍官僚制、黃泉與輪迴、十二地支四態、十二流煞及十年災異終局。區分古籍、民俗與架空改寫。"
+      },
+      "zh-Hans": {
+        "title": "幽明万象录・三界异闻录七卷｜十二地支四态・大裂隙灾异编年｜昭梧",
+        "description": "昭梧原创《三界异闻录》全书七卷：神籍官僚制、黄泉与轮回、十二地支四态、十二流煞及十年灾异终局。区分古籍、民俗与架空改写。"
+      },
+      "en": {
+        "title": "Tales of the Three Realms | Seven Volumes of the Hidden and Manifest Worlds | ZHAOWU",
+        "description": "ZHAOWU's seven-volume mythic chronicle: celestial bureaucracy, the Yellow Springs, twelve zodiac aspects and a decade of calamity, with sources distinguished from fiction."
+      },
+      "ja": {
+        "title": "幽明の万象・七巻の神話年代記 | ZHAOWU",
+        "description": "天界の官制、黄泉、十二支の姿、十年の災厄をたどる昭梧の神話年代記。出典と創作を区別します。"
+      },
+      "ko": {
+        "title": "유명만상록·일곱 권의 신화 연대기 | ZHAOWU",
+        "description": "천계의 관제, 황천, 열두 띠의 모습과 십 년의 재난을 다룬 昭梧 신화 연대기. 출처와 창작을 구분합니다."
+      },
+      "hi": {
+        "title": "दृश्य और अदृश्य लोकों की सात-खंडीय कथा | ZHAOWU",
+        "description": "स्वर्गीय शासन, पीली धारा का लोक, बारह राशिचिह्नों के रूप और दस वर्षों के संकट की ZHAOWU कथा में स्रोत और कल्पना अलग हैं।"
+      },
+      "th": {
+        "title": "พงศาวดารโลกเร้นลับ·เจ็ดเล่ม | ZHAOWU",
+        "description": "เรื่องเทพนิยายของ ZHAOWU ว่าด้วยราชสำนักสวรรค์ ปรโลก สิบสองนักษัตรและภัยพิบัติสิบปี โดยแยกแหล่งโบราณกับเรื่องแต่ง"
+      },
+      "id": {
+        "title": "Kisah Dunia Tersembunyi·Tujuh Jilid | ZHAOWU",
+        "description": "Kronik mitis ZHAOWU tentang birokrasi langit, alam kematian, dua belas wujud zodiak dan sepuluh tahun bencana. Sumber dan fiksi dibedakan."
+      },
+      "vi": {
+        "title": "U Minh Vạn Tượng Lục·Bảy quyển thần thoại | ZHAOWU",
+        "description": "Biên niên thần thoại ZHAOWU về thiên giới, Hoàng Tuyền, mười hai con giáp và mười năm tai biến, phân biệt nguồn cổ với hư cấu."
+      },
+      "fil": {
+        "title": "Mga Kuwento ng Nakatago at Hayag·Pitong Tomo | ZHAOWU",
+        "description": "Kronikang mitiko ng ZHAOWU tungkol sa pamahalaang langit, daigdig ng mga yumao, labindalawang anyo ng zodiak at sampung taon ng sakuna. Hiwalay ang sanggunian at kathang-isip."
+      }
     },
     "/guaili-luanshen": {
-      "zh-Hant": { "title": "三界異聞錄｜昭梧幽明萬象錄七卷獨立書目・十二地支與八災", "description": "獨立《三界異聞錄》系列分組，按七卷原書、十二地支四態及黃泉曆十年災異編年導航至昭梧原始正文。古籍與原創清楚分層。" },
-      "zh-Hans": { "title": "三界异闻录｜昭梧幽明万象录七卷独立书目・十二地支与八灾", "description": "独立《三界异闻录》系列分组，按七卷原书、十二地支四态及黄泉历十年灾异编年导航至昭梧原始正文。古籍与原创清楚分层。" },
-      "en": { "title": "Tales of the Three Realms · Seven-Volume Series Index | ZHAOWU", "description": "Explore all seven volumes of the Tales of the Three Realms, twelve zodiac aspects and the ten-year calamity chronicle. An original series index linking to the published mythic archive." }
+      "zh-Hant": {
+        "title": "三界異聞錄｜昭梧幽明萬象錄七卷獨立書目・十二地支與八災",
+        "description": "獨立《三界異聞錄》系列分組，按七卷原書、十二地支四態及黃泉曆十年災異編年導航至昭梧原始正文。古籍與原創清楚分層。"
+      },
+      "zh-Hans": {
+        "title": "三界异闻录｜昭梧幽明万象录七卷独立书目・十二地支与八灾",
+        "description": "独立《三界异闻录》系列分组，按七卷原书、十二地支四态及黄泉历十年灾异编年导航至昭梧原始正文。古籍与原创清楚分层。"
+      },
+      "en": {
+        "title": "Tales of the Three Realms · Seven-Volume Series Index | ZHAOWU",
+        "description": "Explore all seven volumes of the Tales of the Three Realms, twelve zodiac aspects and the ten-year calamity chronicle. An original series index linking to the published mythic archive."
+      },
+      "ja": {
+        "title": "怪力乱神・七巻の書目案内 | ZHAOWU",
+        "description": "七巻、十二支の姿、十年の災厄年代記への入口。本文は公開済みの神話図録の同じ章へ案内します。"
+      },
+      "ko": {
+        "title": "괴력난신·일곱 권의 목차 | ZHAOWU",
+        "description": "일곱 권, 열두 띠의 모습, 십 년의 재난 연대기로 안내합니다. 본문은 기존 신화 자료실의 같은 장으로 연결합니다."
+      },
+      "hi": {
+        "title": "अद्भुत कथाएँ·सात खंडों की विषय सूची | ZHAOWU",
+        "description": "सात खंड, बारह राशिचिह्नों के रूप और दस वर्षों के संकट का सूचकांक। सभी कड़ियाँ प्रकाशित मिथक संग्रह के उसी मूल पाठ पर जाती हैं।"
+      },
+      "th": {
+        "title": "เรื่องพิสดาร·สารบัญเจ็ดเล่ม | ZHAOWU",
+        "description": "ทางเข้าสู่เจ็ดเล่ม รูปทั้งสิบสองนักษัตรและพงศาวดารภัยพิบัติสิบปี เชื่อมไปยังเนื้อหาต้นฉบับเดียวในคลังเทพนิยาย"
+      },
+      "id": {
+        "title": "Kisah Ajaib·Indeks Tujuh Jilid | ZHAOWU",
+        "description": "Jelajahi tujuh jilid, dua belas wujud zodiak dan kronik bencana sepuluh tahun. Indeks ini menuju teks asli yang sama di arsip mitos."
+      },
+      "vi": {
+        "title": "Quái Lực Loạn Thần·Mục lục bảy quyển | ZHAOWU",
+        "description": "Khám phá bảy quyển, mười hai hình thái con giáp và biên niên tai biến mười năm. Mục lục dẫn về cùng bản gốc trong kho thần thoại."
+      },
+      "fil": {
+        "title": "Mga Kakaibang Kuwento·Talaan ng Pitong Tomo | ZHAOWU",
+        "description": "Tuklasin ang pitong tomo, labindalawang anyo ng zodiak at sampung taong kronika ng sakuna. Talaan ito patungo sa iisang nailathalang arkibo ng mito."
+      }
     },
     "/updates": {
-      "zh-Hant": { "title": "最新版本更新內容｜昭梧", "description": "昭梧正式版本更新紀錄：新功能、修正與天象新增，依日期與版本整理。" },
-      "zh-Hans": { "title": "最新版本更新内容｜昭梧", "description": "昭梧正式版本更新纪录：新功能、修正与天象新增，依日期与版本整理。" },
-      "en": { "title": "Release Notes | ZHAOWU", "description": "ZHAOWU production release notes: features, fixes and sky-event additions, organized by date and version." }
+      "zh-Hant": {
+        "title": "最新版本更新內容｜昭梧",
+        "description": "昭梧正式版本更新紀錄：新功能、修正與天象新增，依日期與版本整理。"
+      },
+      "zh-Hans": {
+        "title": "最新版本更新内容｜昭梧",
+        "description": "昭梧正式版本更新纪录：新功能、修正与天象新增，依日期与版本整理。"
+      },
+      "en": {
+        "title": "Release Notes | ZHAOWU",
+        "description": "ZHAOWU production release notes: features, fixes and sky-event additions, organized by date and version."
+      },
+      "ja": {
+        "title": "更新履歴 | ZHAOWU",
+        "description": "昭梧の正式版の機能追加、修正、天象情報を日付とバージョンごとに確認できます。"
+      },
+      "ko": {
+        "title": "업데이트 기록 | ZHAOWU",
+        "description": "昭梧 정식 버전의 기능 추가, 수정과 천문 정보 업데이트를 날짜와 버전별로 확인할 수 있습니다."
+      },
+      "hi": {
+        "title": "संस्करण और बदलाव | ZHAOWU",
+        "description": "ZHAOWU के आधिकारिक संस्करणों की नई सुविधाएँ, सुधार और आकाशीय घटनाओं के बदलाव तारीख और संस्करण के अनुसार देखें।"
+      },
+      "th": {
+        "title": "บันทึกการอัปเดต | ZHAOWU",
+        "description": "ดูฟังก์ชันใหม่ การแก้ไขและข้อมูลปรากฏการณ์ท้องฟ้าในรุ่นทางการของ ZHAOWU เรียงตามวันที่และรุ่น"
+      },
+      "id": {
+        "title": "Catatan Pembaruan | ZHAOWU",
+        "description": "Lihat fitur, perbaikan dan tambahan peristiwa langit pada rilis resmi ZHAOWU, disusun menurut tanggal dan versi."
+      },
+      "vi": {
+        "title": "Lịch sử cập nhật | ZHAOWU",
+        "description": "Xem tính năng mới, sửa lỗi và bổ sung thiên tượng trong các bản chính thức của ZHAOWU theo ngày và phiên bản."
+      },
+      "fil": {
+        "title": "Tala ng mga Pagbabago | ZHAOWU",
+        "description": "Tingnan ang mga tampok, pagwawasto at dagdag na pangyayaring pangkalangitan sa opisyal na ZHAOWU ayon sa petsa at bersiyon."
+      }
     },
     "/daily-colors": {
-      "zh-Hant": { "title": "每日穿衣五行色彩｜昭梧", "description": "依今日五行狀態給穿衣顏色建議：靜心、提氣等五種狀態對應不同顏色；是生活提示，不是保證改運。" },
-      "zh-Hans": { "title": "每日穿衣五行色彩｜昭梧", "description": "依今日五行状态给穿衣颜色建议：静心、提气等五种状态对应不同颜色；是生活提示，不是保证改运。" },
-      "en": { "title": "Daily Five-Element Colour Guide | ZHAOWU", "description": "Dressing colour suggestions by today's five-element state: five states, five colours — a daily nudge, not a luck guarantee." }
+      "zh-Hant": {
+        "title": "每日穿衣五行色彩｜昭梧",
+        "description": "依今日五行狀態給穿衣顏色建議：靜心、提氣等五種狀態對應不同顏色；是生活提示，不是保證改運。"
+      },
+      "zh-Hans": {
+        "title": "每日穿衣五行色彩｜昭梧",
+        "description": "依今日五行状态给穿衣颜色建议：静心、提气等五种状态对应不同颜色；是生活提示，不是保证改运。"
+      },
+      "en": {
+        "title": "Daily Five-Element Colour Guide | ZHAOWU",
+        "description": "Dressing colour suggestions by today's five-element state: five states, five colours — a daily nudge, not a luck guarantee."
+      },
+      "ja": {
+        "title": "今日の五行カラー案内 | ZHAOWU",
+        "description": "今日の五行の状態から服の色を考える小さなヒント。五つの状態と色は幸運の保証ではありません。"
+      },
+      "ko": {
+        "title": "오늘의 오행 색상 안내 | ZHAOWU",
+        "description": "오늘의 오행 상태를 바탕으로 옷 색상을 제안합니다. 다섯 상태와 다섯 색은 작은 참고이며 행운을 보장하지 않습니다."
+      },
+      "hi": {
+        "title": "आज के पंचतत्व रंग | ZHAOWU",
+        "description": "आज की पंचतत्व स्थिति से पहनावे के रंग के सुझाव देखें। पाँच स्थितियाँ और रंग दैनिक संकेत हैं, सौभाग्य की गारंटी नहीं।"
+      },
+      "th": {
+        "title": "สีประจำวันตามห้าธาตุ | ZHAOWU",
+        "description": "เลือกสีเสื้อผ้าจากสภาวะห้าธาตุประจำวัน ห้าสภาวะและห้าสีเป็นข้อเสนอเล็ก ๆ ไม่ใช่การรับประกันโชค"
+      },
+      "id": {
+        "title": "Panduan Warna Lima Unsur Harian | ZHAOWU",
+        "description": "Saran warna pakaian berdasarkan keadaan lima unsur hari ini. Lima keadaan dan warna adalah pengingat harian, bukan jaminan keberuntungan."
+      },
+      "vi": {
+        "title": "Gợi ý màu ngũ hành hôm nay | ZHAOWU",
+        "description": "Gợi ý màu trang phục theo trạng thái ngũ hành hôm nay. Năm trạng thái và năm màu là nhắc nhở nhỏ, không bảo đảm may mắn."
+      },
+      "fil": {
+        "title": "Gabay sa Kulay ng Limang Elemento Ngayon | ZHAOWU",
+        "description": "Mungkahi sa kulay ng damit ayon sa kalagayan ng limang elemento ngayon. Paalala lamang ang limang kulay, hindi garantiya ng suwerte."
+      }
     },
     "/privacy": {
-      "zh-Hant": { "title": "隱私權政策｜昭梧", "description": "昭梧以澳洲為營運基地，依《1988 年澳洲隱私法》說明資料收集、用途、第三方與查閱刪除權。" },
-      "zh-Hans": { "title": "隐私权政策｜昭梧", "description": "昭梧以澳洲为营运基地，依《1988 年澳洲隐私法》说明资料收集、用途、第三方与查阅删除权。" },
-      "en": { "title": "Privacy Policy | ZHAOWU", "description": "ZHAOWU operates from Australia: what we collect, why, third parties involved, and your rights to access and deletion." }
+      "zh-Hant": {
+        "title": "隱私權政策｜昭梧",
+        "description": "昭梧以澳洲為營運基地，依《1988 年澳洲隱私法》說明資料收集、用途、第三方與查閱刪除權。"
+      },
+      "zh-Hans": {
+        "title": "隐私权政策｜昭梧",
+        "description": "昭梧以澳洲为营运基地，依《1988 年澳洲隐私法》说明资料收集、用途、第三方与查阅删除权。"
+      },
+      "en": {
+        "title": "Privacy Policy | ZHAOWU",
+        "description": "ZHAOWU operates from Australia: what we collect, why, third parties involved, and your rights to access and deletion."
+      },
+      "ja": {
+        "title": "プライバシーポリシー | ZHAOWU",
+        "description": "オーストラリアで運営する昭梧の収集情報、目的、関係する外部サービス、開示と削除の権利を説明します。"
+      },
+      "ko": {
+        "title": "개인정보 처리방침 | ZHAOWU",
+        "description": "호주에서 운영하는 昭梧의 수집 정보, 목적, 관련 외부 서비스, 정보 열람과 삭제 권리를 설명합니다."
+      },
+      "hi": {
+        "title": "गोपनीयता नीति | ZHAOWU",
+        "description": "ऑस्ट्रेलिया से संचालित ZHAOWU कौन-सी जानकारी लेता है, क्यों, कौन-सी बाहरी सेवाएँ जुड़ी हैं और पहुँच व हटाने के अधिकार क्या हैं।"
+      },
+      "th": {
+        "title": "นโยบายความเป็นส่วนตัว | ZHAOWU",
+        "description": "ZHAOWU ดำเนินงานจากออสเตรเลีย อธิบายข้อมูลที่เก็บ วัตถุประสงค์ บริการภายนอก และสิทธิเข้าถึงหรือลบข้อมูล"
+      },
+      "id": {
+        "title": "Kebijakan Privasi | ZHAOWU",
+        "description": "ZHAOWU beroperasi dari Australia: data yang dikumpulkan, tujuan, pihak ketiga dan hak Anda untuk mengakses serta menghapus data."
+      },
+      "vi": {
+        "title": "Chính sách quyền riêng tư | ZHAOWU",
+        "description": "ZHAOWU hoạt động tại Úc: dữ liệu thu thập, mục đích, bên thứ ba và quyền truy cập, xóa dữ liệu của bạn."
+      },
+      "fil": {
+        "title": "Patakaran sa Pagkapribado | ZHAOWU",
+        "description": "Mula sa Australia pinatatakbo ang ZHAOWU. Alamin ang kinokolektang datos, layunin, panlabas na serbisyo at karapatang makita o burahin ang datos."
+      }
     },
     "/terms": {
-      "zh-Hant": { "title": "服務條款｜昭梧", "description": "使用昭梧網站與服務的條款：命理內容屬傳統文化與自我反思工具，不是對未來的保證或科學驗證的預測。" },
-      "zh-Hans": { "title": "服务条款｜昭梧", "description": "使用昭梧网站与服务的条款：命理内容属传统文化与自我反思工具，不是对未来的保证或科学验证的预测。" },
-      "en": { "title": "Terms of Service | ZHAOWU", "description": "Terms for using ZHAOWU: readings are traditional culture and self-reflection tools, not guarantees or scientifically verified predictions." }
+      "zh-Hant": {
+        "title": "服務條款｜昭梧",
+        "description": "使用昭梧網站與服務的條款：命理內容屬傳統文化與自我反思工具，不是對未來的保證或科學驗證的預測。"
+      },
+      "zh-Hans": {
+        "title": "服务条款｜昭梧",
+        "description": "使用昭梧网站与服务的条款：命理内容属传统文化与自我反思工具，不是对未来的保证或科学验证的预测。"
+      },
+      "en": {
+        "title": "Terms of Service | ZHAOWU",
+        "description": "Terms for using ZHAOWU: readings are traditional culture and self-reflection tools, not guarantees or scientifically verified predictions."
+      },
+      "ja": {
+        "title": "利用規約 | ZHAOWU",
+        "description": "昭梧の利用条件。鑑定は伝統文化と自己省察のための道具で、出来事の保証や科学的予測ではありません。"
+      },
+      "ko": {
+        "title": "이용약관 | ZHAOWU",
+        "description": "昭梧 이용 조건을 확인하세요. 해석은 전통문화와 자기 성찰 도구이며 결과를 보장하거나 과학적으로 검증된 예측이 아닙니다."
+      },
+      "hi": {
+        "title": "सेवा की शर्तें | ZHAOWU",
+        "description": "ZHAOWU उपयोग की शर्तें पढ़ें। व्याख्याएँ पारंपरिक संस्कृति और आत्मचिंतन के साधन हैं, निश्चित या वैज्ञानिक भविष्यवाणी नहीं।"
+      },
+      "th": {
+        "title": "ข้อกำหนดการใช้บริการ | ZHAOWU",
+        "description": "อ่านเงื่อนไขการใช้ ZHAOWU การอ่านเป็นวัฒนธรรมดั้งเดิมและเครื่องมือทบทวนตนเอง ไม่รับประกันผลหรือเป็นคำทำนายทางวิทยาศาสตร์"
+      },
+      "id": {
+        "title": "Ketentuan Layanan | ZHAOWU",
+        "description": "Ketentuan penggunaan ZHAOWU. Pembacaan adalah alat budaya tradisional dan refleksi diri, bukan jaminan atau prediksi ilmiah."
+      },
+      "vi": {
+        "title": "Điều khoản dịch vụ | ZHAOWU",
+        "description": "Điều kiện sử dụng ZHAOWU. Luận giải là công cụ văn hóa truyền thống và tự suy ngẫm, không bảo đảm kết quả hay dự đoán khoa học."
+      },
+      "fil": {
+        "title": "Mga Tuntunin ng Serbisyo | ZHAOWU",
+        "description": "Mga kondisyon sa paggamit ng ZHAOWU. Tradisyonal na kultura at pagninilay ang pagbasa, hindi garantiya o prediksiyong siyentipiko."
+      }
     },
     "/copyright": {
-      "zh-Hant": { "title": "版權聲明｜昭梧", "description": "昭梧原創內容受澳洲《1968 年版權法》與國際條約保護；傳統命理方法屬公共知識，主張的是自己的表達與編排。" },
-      "zh-Hans": { "title": "版权声明｜昭梧", "description": "昭梧原创内容受澳洲《1968 年版权法》与国际条约保护；传统命理方法属公共知识，主张的是自己的表达与编排。" },
-      "en": { "title": "Copyright Notice | ZHAOWU", "description": "Original ZHAOWU content is protected under Australian and international copyright; traditional methods remain public knowledge." }
+      "zh-Hant": {
+        "title": "版權聲明｜昭梧",
+        "description": "昭梧原創內容受澳洲《1968 年版權法》與國際條約保護；傳統命理方法屬公共知識，主張的是自己的表達與編排。"
+      },
+      "zh-Hans": {
+        "title": "版权声明｜昭梧",
+        "description": "昭梧原创内容受澳洲《1968 年版权法》与国际条约保护；传统命理方法属公共知识，主张的是自己的表达与编排。"
+      },
+      "en": {
+        "title": "Copyright Notice | ZHAOWU",
+        "description": "Original ZHAOWU content is protected under Australian and international copyright; traditional methods remain public knowledge."
+      },
+      "ja": {
+        "title": "著作権について | ZHAOWU",
+        "description": "昭梧の創作物はオーストラリアと国際的な著作権で保護されます。伝統的な方法は共有の知識です。"
+      },
+      "ko": {
+        "title": "저작권 안내 | ZHAOWU",
+        "description": "昭梧의 창작물은 호주 및 국제 저작권으로 보호됩니다. 전통적인 방법은 공유된 지식으로 남습니다."
+      },
+      "hi": {
+        "title": "कॉपीराइट सूचना | ZHAOWU",
+        "description": "मौलिक ZHAOWU सामग्री ऑस्ट्रेलियाई और अंतरराष्ट्रीय कॉपीराइट से सुरक्षित है। पारंपरिक विधियाँ सार्वजनिक ज्ञान बनी रहती हैं।"
+      },
+      "th": {
+        "title": "ประกาศลิขสิทธิ์ | ZHAOWU",
+        "description": "ผลงานต้นฉบับของ ZHAOWU ได้รับความคุ้มครองตามกฎหมายออสเตรเลียและสากล วิธีการดั้งเดิมยังเป็นความรู้สาธารณะ"
+      },
+      "id": {
+        "title": "Pemberitahuan Hak Cipta | ZHAOWU",
+        "description": "Konten asli ZHAOWU dilindungi hak cipta Australia dan internasional. Metode tradisional tetap merupakan pengetahuan umum."
+      },
+      "vi": {
+        "title": "Thông báo bản quyền | ZHAOWU",
+        "description": "Nội dung gốc của ZHAOWU được luật bản quyền Úc và quốc tế bảo vệ. Phương pháp truyền thống vẫn là tri thức công cộng."
+      },
+      "fil": {
+        "title": "Paunawa sa Karapatang-ari | ZHAOWU",
+        "description": "Protektado ang orihinal na ZHAOWU sa ilalim ng batas ng Australia at pandaigdigang karapatang-ari. Pampublikong kaalaman ang tradisyonal na pamamaraan."
+      }
     },
     "/ziwei": {
-      "zh-Hant": { "title": "昭梧｜紫微斗數排盤・宮位四化・大限流年｜免登入", "description": "紫微斗數獨立分析：以宮位與時限作旁證，看性格、關係、事業、財務與階段主軸；填一次生辰，六種命理專卷共用。" },
-      "zh-Hans": { "title": "昭梧｜紫微斗数排盘・宫位四化・大限流年｜免登录", "description": "紫微斗数独立分析：以宫位与时限作旁证，看性格、关系、事业、财务与阶段主轴；填一次生辰，六种命理专卷共用。" },
-      "en": { "title": "ZHAOWU | Zi Wei Dou Shu Chart · Palaces · Decadal Luck | No Sign-up", "description": "Independent Zi Wei Dou Shu (Chinese astrology) analysis: palaces and timings as corroboration for character, relations, career and life stages." }
+      "zh-Hant": {
+        "title": "昭梧｜紫微斗數排盤・宮位四化・大限流年｜免登入",
+        "description": "紫微斗數獨立分析：以宮位與時限作旁證，看性格、關係、事業、財務與階段主軸；填一次生辰，六種命理專卷共用。"
+      },
+      "zh-Hans": {
+        "title": "昭梧｜紫微斗数排盘・宫位四化・大限流年｜免登录",
+        "description": "紫微斗数独立分析：以宫位与时限作旁证，看性格、关系、事业、财务与阶段主轴；填一次生辰，六种命理专卷共用。"
+      },
+      "en": {
+        "title": "ZHAOWU | Zi Wei Dou Shu Chart · Palaces · Decadal Luck | No Sign-up",
+        "description": "Independent Zi Wei Dou Shu (Chinese astrology) analysis: palaces and timings as corroboration for character, relations, career and life stages."
+      },
+      "ja": {
+        "title": "紫微斗数・命盤と大限 | ZHAOWU",
+        "description": "独立した紫微斗数の分析。宮と時期を、性質、人間関係、仕事、人生段階の補助的な観察に用います。"
+      },
+      "ko": {
+        "title": "자미두수·명반과 대한 | ZHAOWU",
+        "description": "독립적인 자미두수 분석. 궁과 시기를 성향, 관계, 직업과 삶의 단계에 대한 보조 관찰로 활용합니다."
+      },
+      "hi": {
+        "title": "ज़िवेई दोउशू·जन्म-चक्र और दशकीय प्रवाह | ZHAOWU",
+        "description": "स्वतंत्र ज़िवेई विश्लेषण में भाव और समय को स्वभाव, संबंध, काम और जीवन के चरणों के सहायक अवलोकन के रूप में पढ़ें।"
+      },
+      "th": {
+        "title": "จื่อเวยโต่วซู่·ผังดวงและรอบสิบปี | ZHAOWU",
+        "description": "การวิเคราะห์จื่อเวยแบบอิสระ ใช้เรือนและช่วงเวลาเป็นข้อมูลประกอบเรื่องบุคลิก ความสัมพันธ์ งานและช่วงชีวิต"
+      },
+      "id": {
+        "title": "Zi Wei Dou Shu·Bagan dan Siklus Sepuluh Tahun | ZHAOWU",
+        "description": "Analisis Zi Wei mandiri menggunakan istana dan waktu sebagai pengamatan pendukung untuk watak, hubungan, karier dan tahap hidup."
+      },
+      "vi": {
+        "title": "Tử Vi Đẩu Số·Lá số và đại hạn | ZHAOWU",
+        "description": "Phân tích Tử Vi độc lập, dùng cung và thời điểm làm quan sát bổ trợ về tính cách, quan hệ, sự nghiệp và giai đoạn sống."
+      },
+      "fil": {
+        "title": "Zi Wei Dou Shu·Chart at Sampung Taong Siklo | ZHAOWU",
+        "description": "Malayang pagsusuri ng Zi Wei gamit ang mga palasyo at panahon bilang karagdagang pagtingin sa ugali, relasyon, trabaho at yugto ng buhay."
+      }
     },
     "/astrology": {
-      "zh-Hant": { "title": "昭梧｜西洋星座本命盤・七曜落宮・十二宮與相位", "description": "西洋占星獨立分析：從完整本命盤、七曜落宮、十二宮、四軸與主要相位，看另一種性格與生活視角。" },
-      "zh-Hans": { "title": "昭梧｜西洋星座本命盘・七曜落宫・十二宫与相位", "description": "西洋占星独立分析：从完整本命盘、七曜落宫、十二宫、四轴与主要相位，看另一种性格与生活视角。" },
-      "en": { "title": "ZHAOWU | Western Astrology Natal Chart · Houses & Aspects", "description": "Independent Western astrology analysis: full natal chart, planets in houses, angles and major aspects as another lens on character and life." }
+      "zh-Hant": {
+        "title": "昭梧｜西洋星座本命盤・七曜落宮・十二宮與相位",
+        "description": "西洋占星獨立分析：從完整本命盤、七曜落宮、十二宮、四軸與主要相位，看另一種性格與生活視角。"
+      },
+      "zh-Hans": {
+        "title": "昭梧｜西洋星座本命盘・七曜落宫・十二宫与相位",
+        "description": "西洋占星独立分析：从完整本命盘、七曜落宫、十二宫、四轴与主要相位，看另一种性格与生活视角。"
+      },
+      "en": {
+        "title": "ZHAOWU | Western Astrology Natal Chart · Houses & Aspects",
+        "description": "Independent Western astrology analysis: full natal chart, planets in houses, angles and major aspects as another lens on character and life."
+      },
+      "ja": {
+        "title": "西洋占星術・出生図とアスペクト | ZHAOWU",
+        "description": "惑星のハウス、感受点、主要アスペクトを含む独立した出生図で、性質と人生を別の視点から読みます。"
+      },
+      "ko": {
+        "title": "서양 점성술·출생도와 각 | ZHAOWU",
+        "description": "행성의 하우스, 주요 지점과 각을 포함하는 독립 출생도로 성향과 삶을 다른 관점에서 살펴봅니다."
+      },
+      "hi": {
+        "title": "पाश्चात्य ज्योतिष·जन्म-चक्र और दृष्टियाँ | ZHAOWU",
+        "description": "भावों में ग्रह, कोण और प्रमुख दृष्टियों सहित स्वतंत्र जन्म-चक्र से स्वभाव और जीवन को दूसरे दृष्टिकोण से देखें।"
+      },
+      "th": {
+        "title": "โหราศาสตร์ตะวันตก·ผังเกิดและมุมดาว | ZHAOWU",
+        "description": "ผังเกิดอิสระที่มีดาวในเรือน จุดมุมและมุมสัมพันธ์หลัก เพื่อมองบุคลิกและชีวิตจากอีกมุมหนึ่ง"
+      },
+      "id": {
+        "title": "Astrologi Barat·Bagan Kelahiran dan Aspek | ZHAOWU",
+        "description": "Analisis mandiri dengan planet dalam rumah, sudut dan aspek utama untuk melihat watak dan kehidupan dari sudut pandang lain."
+      },
+      "vi": {
+        "title": "Chiêm tinh phương Tây·Lá số và góc hợp | ZHAOWU",
+        "description": "Lá số độc lập với hành tinh trong nhà, các góc và góc hợp chính, thêm một cách nhìn về tính cách và đời sống."
+      },
+      "fil": {
+        "title": "Astrolohiyang Kanluranin·Natal Chart at mga Aspekto | ZHAOWU",
+        "description": "Malayang natal chart na may planeta sa mga bahay, anggulo at pangunahing aspekto bilang ibang pagtingin sa ugali at buhay."
+      }
     },
     "/qizheng": {
-      "zh-Hant": { "title": "昭梧｜七政四餘・七曜運行與天時變化", "description": "七政四餘獨立分析：從七曜運行看性情、節奏、壓力反應與天時變化。" },
-      "zh-Hans": { "title": "昭梧｜七政四余・七曜运行与天时变化", "description": "七政四余独立分析：从七曜运行看性情、节奏、压力反应与天时变化。" },
-      "en": { "title": "ZHAOWU | Qi Zheng Si Yu · Seven Luminaries & Timing", "description": "Independent Qi Zheng Si Yu analysis: temperament, rhythm, stress responses and timing through the motions of the seven luminaries." }
+      "zh-Hant": {
+        "title": "昭梧｜七政四餘・七曜運行與天時變化",
+        "description": "七政四餘獨立分析：從七曜運行看性情、節奏、壓力反應與天時變化。"
+      },
+      "zh-Hans": {
+        "title": "昭梧｜七政四余・七曜运行与天时变化",
+        "description": "七政四余独立分析：从七曜运行看性情、节奏、压力反应与天时变化。"
+      },
+      "en": {
+        "title": "ZHAOWU | Qi Zheng Si Yu · Seven Luminaries & Timing",
+        "description": "Independent Qi Zheng Si Yu analysis: temperament, rhythm, stress responses and timing through the motions of the seven luminaries."
+      },
+      "ja": {
+        "title": "七政四余・七つの天体と時機 | ZHAOWU",
+        "description": "七つの天体の動きから気質、リズム、負荷への反応と時機を観察する独立した七政四余分析です。"
+      },
+      "ko": {
+        "title": "칠정사여·일곱 천체와 시기 | ZHAOWU",
+        "description": "일곱 천체의 움직임으로 기질, 생활 리듬, 부담에 대한 반응과 시기를 관찰하는 독립적인 칠정사여 분석입니다."
+      },
+      "hi": {
+        "title": "ची झेंग सी यू·सात ज्योतियों का समय | ZHAOWU",
+        "description": "सात ज्योतियों की गति से स्वभाव, लय, दबाव की प्रतिक्रिया और समय का स्वतंत्र पारंपरिक विश्लेषण पढ़ें।"
+      },
+      "th": {
+        "title": "ชี่เจิ้งซื่ออวี๋·เจ็ดดวงสว่างและจังหวะเวลา | ZHAOWU",
+        "description": "การวิเคราะห์อิสระผ่านการเคลื่อนของเจ็ดดวงสว่าง เพื่อสังเกตอุปนิสัย จังหวะชีวิต การตอบสนองต่อความกดดันและเวลา"
+      },
+      "id": {
+        "title": "Qi Zheng Si Yu·Tujuh Benda Langit dan Waktu | ZHAOWU",
+        "description": "Analisis mandiri tentang temperamen, ritme, respons tekanan dan waktu melalui gerak tujuh benda langit tradisional."
+      },
+      "vi": {
+        "title": "Thất Chính Tứ Dư·Bảy tinh thể và thời vận | ZHAOWU",
+        "description": "Phân tích độc lập về khí chất, nhịp sống, phản ứng khi áp lực và thời điểm qua chuyển động của bảy tinh thể truyền thống."
+      },
+      "fil": {
+        "title": "Qi Zheng Si Yu·Pitong Tanglaw at Panahon | ZHAOWU",
+        "description": "Malayang pagsusuri sa ugali, ritmo, tugon sa bigat at panahon sa pamamagitan ng galaw ng pitong tradisyonal na tanglaw."
+      }
     },
     "/indian-astrology": {
-      "zh-Hant": { "title": "昭梧｜印度古法占星・古典吠陀星盤", "description": "古典印度占星的獨立旁證：D60 分盤對出生分鐘非常敏感，解讀時會標示資料限制。" },
-      "zh-Hans": { "title": "昭梧｜印度古法占星・古典吠陀星盘", "description": "古典印度占星的独立旁证：D60 分盘对出生分钟非常敏感，解读时会标示资料限制。" },
-      "en": { "title": "ZHAOWU | Indian (Vedic) Astrology · Classical Chart", "description": "Independent classical Indian astrology analysis; the D60 division is very sensitive to birth minutes, and data limits are stated." }
+      "zh-Hant": {
+        "title": "昭梧｜印度古法占星・古典吠陀星盤",
+        "description": "古典印度占星的獨立旁證：D60 分盤對出生分鐘非常敏感，解讀時會標示資料限制。"
+      },
+      "zh-Hans": {
+        "title": "昭梧｜印度古法占星・古典吠陀星盘",
+        "description": "古典印度占星的独立旁证：D60 分盘对出生分钟非常敏感，解读时会标示资料限制。"
+      },
+      "en": {
+        "title": "ZHAOWU | Indian (Vedic) Astrology · Classical Chart",
+        "description": "Independent classical Indian astrology analysis; the D60 division is very sensitive to birth minutes, and data limits are stated."
+      },
+      "ja": {
+        "title": "インド古典占星術・出生図 | ZHAOWU",
+        "description": "インド古典占星術の独立した分析。D60分割図は出生時刻の分単位の違いに敏感で、データの限界を明示します。"
+      },
+      "ko": {
+        "title": "인도 고전 점성술·출생도 | ZHAOWU",
+        "description": "인도 고전 점성술의 독립 분석입니다. D60 분할도는 출생 시각의 분 단위 변화에 민감하며 자료의 한계를 밝힙니다."
+      },
+      "hi": {
+        "title": "भारतीय शास्त्रीय ज्योतिष·जन्म-चक्र | ZHAOWU",
+        "description": "स्वतंत्र भारतीय शास्त्रीय ज्योतिष विश्लेषण। D60 जन्म के मिनटों के प्रति अत्यंत संवेदनशील है और डेटा की सीमाएँ स्पष्ट की जाती हैं।"
+      },
+      "th": {
+        "title": "โหราศาสตร์อินเดียคลาสสิก·ผังเกิด | ZHAOWU",
+        "description": "การวิเคราะห์โหราศาสตร์อินเดียแบบอิสระ ผังย่อย D60 ไวต่อความต่างระดับนาทีของเวลาเกิด จึงระบุขอบเขตข้อมูลไว้ชัดเจน"
+      },
+      "id": {
+        "title": "Astrologi India Klasik·Bagan Kelahiran | ZHAOWU",
+        "description": "Analisis astrologi India mandiri. Pembagian D60 sangat peka terhadap menit kelahiran dan batas data dinyatakan dengan jelas."
+      },
+      "vi": {
+        "title": "Chiêm tinh Ấn Độ cổ điển·Lá số | ZHAOWU",
+        "description": "Phân tích chiêm tinh Ấn Độ độc lập. Phân cung D60 rất nhạy với phút sinh và giới hạn dữ liệu được nêu rõ."
+      },
+      "fil": {
+        "title": "Klasikong Astrolohiyang Indian·Chart ng Kapanganakan | ZHAOWU",
+        "description": "Malayang pagsusuri ng klasikong astrolohiyang Indian. Napakasensitibo ng D60 sa minuto ng kapanganakan at malinaw ang hangganan ng datos."
+      }
     },
     "/numerology": {
-      "zh-Hant": { "title": "昭梧｜生命靈數報告", "description": "生命靈數獨立報告：從出生年月日計算靈數組合，看性格傾向與人生課題；填一次生辰自動生成。" },
-      "zh-Hans": { "title": "昭梧｜生命灵数报告", "description": "生命灵数独立报告：从出生年月日计算灵数组合，看性格倾向与人生课题；填一次生辰自动生成。" },
-      "en": { "title": "ZHAOWU | Numerology Report", "description": "Independent numerology report from your birth date: number combinations, character tendencies and life lessons." }
+      "zh-Hant": {
+        "title": "昭梧｜生命靈數報告",
+        "description": "生命靈數獨立報告：從出生年月日計算靈數組合，看性格傾向與人生課題；填一次生辰自動生成。"
+      },
+      "zh-Hans": {
+        "title": "昭梧｜生命灵数报告",
+        "description": "生命灵数独立报告：从出生年月日计算灵数组合，看性格倾向与人生课题；填一次生辰自动生成。"
+      },
+      "en": {
+        "title": "ZHAOWU | Numerology Report",
+        "description": "Independent numerology report from your birth date: number combinations, character tendencies and life lessons."
+      },
+      "ja": {
+        "title": "数秘術レポート | ZHAOWU",
+        "description": "生年月日から数の組み合わせ、性質の傾向、人生の課題を読む独立した数秘術のレポートです。"
+      },
+      "ko": {
+        "title": "수비학 보고서 | ZHAOWU",
+        "description": "생년월일의 숫자 조합에서 성향과 삶의 과제를 살펴보는 독립적인 수비학 보고서입니다."
+      },
+      "hi": {
+        "title": "अंकशास्त्र रिपोर्ट | ZHAOWU",
+        "description": "जन्म तारीख से संख्याओं के संयोजन, स्वभाव की प्रवृत्तियों और जीवन के पाठों पर स्वतंत्र अंकशास्त्र रिपोर्ट पढ़ें।"
+      },
+      "th": {
+        "title": "รายงานเลขศาสตร์ | ZHAOWU",
+        "description": "รายงานเลขศาสตร์อิสระจากวันเกิด พิจารณาการรวมตัวของตัวเลข แนวโน้มบุคลิกและบทเรียนชีวิต"
+      },
+      "id": {
+        "title": "Laporan Numerologi | ZHAOWU",
+        "description": "Laporan numerologi mandiri dari tanggal lahir: kombinasi angka, kecenderungan watak dan pelajaran kehidupan."
+      },
+      "vi": {
+        "title": "Báo cáo thần số học | ZHAOWU",
+        "description": "Báo cáo độc lập từ ngày sinh: tổ hợp số, xu hướng tính cách và bài học cuộc sống."
+      },
+      "fil": {
+        "title": "Ulat sa Numerolohiya | ZHAOWU",
+        "description": "Malayang ulat mula sa petsa ng kapanganakan: mga kombinasyon ng numero, hilig ng ugali at mga aral sa buhay."
+      }
     },
     "/yizhangjing": {
-      "zh-Hant": { "title": "昭梧｜達摩一掌經・前世今生四宮", "description": "達摩一掌經前世今生專題：四宮串成前世到今生的因果線，看從哪一道來、留下什麼習氣、今生怎麼用。" },
-      "zh-Hans": { "title": "昭梧｜达摩一掌经・前世今生四宫", "description": "达摩一掌经前世今生专题：四宫串成前世到今生的因果线，看从哪一道来、留下什么习气、今生怎么用。" },
-      "en": { "title": "ZHAOWU | Da Mo Yi Zhang Jing · Past-Life Four Palaces", "description": "The Da Mo Yi Zhang Jing past-life topic: four palaces as a karmic line — where you came from, what habits remain, how to use them." }
+      "zh-Hant": {
+        "title": "昭梧｜達摩一掌經・前世今生四宮",
+        "description": "達摩一掌經前世今生專題：四宮串成前世到今生的因果線，看從哪一道來、留下什麼習氣、今生怎麼用。"
+      },
+      "zh-Hans": {
+        "title": "昭梧｜达摩一掌经・前世今生四宫",
+        "description": "达摩一掌经前世今生专题：四宫串成前世到今生的因果线，看从哪一道来、留下什么习气、今生怎么用。"
+      },
+      "en": {
+        "title": "ZHAOWU | Da Mo Yi Zhang Jing · Past-Life Four Palaces",
+        "description": "The Da Mo Yi Zhang Jing past-life topic: four palaces as a karmic line — where you came from, what habits remain, how to use them."
+      },
+      "ja": {
+        "title": "達摩一掌経・前世の四宮 | ZHAOWU",
+        "description": "達摩一掌経の四宮を象徴的な因縁の流れとして読み、残る習慣と今の暮らしでの生かし方を考えます。"
+      },
+      "ko": {
+        "title": "달마일장경·전생의 네 궁 | ZHAOWU",
+        "description": "달마일장경의 네 궁을 상징적인 인연의 흐름으로 읽고 남은 습관과 지금 삶에 활용하는 방법을 살펴봅니다."
+      },
+      "hi": {
+        "title": "बोधिधर्म एक-हथेली सूत्र·चार पूर्वजन्म भाव | ZHAOWU",
+        "description": "चार भावों को प्रतीकात्मक कर्म-धारा के रूप में पढ़ें। बनी हुई आदतों और उन्हें वर्तमान जीवन में उपयोग करने के तरीकों पर विचार करें।"
+      },
+      "th": {
+        "title": "คัมภีร์ฝ่ามือตั๊กม้อ·สี่เรือนอดีตชาติ | ZHAOWU",
+        "description": "อ่านสี่เรือนเป็นสายสัมพันธ์เชิงสัญลักษณ์ สำรวจนิสัยที่ยังอยู่และวิธีใช้ความเข้าใจนั้นในชีวิตปัจจุบัน"
+      },
+      "id": {
+        "title": "Sutra Telapak Bodhidharma·Empat Istana Lampau | ZHAOWU",
+        "description": "Empat istana dibaca sebagai alur karma simbolis: kebiasaan yang tersisa dan cara memahaminya dalam kehidupan sekarang."
+      },
+      "vi": {
+        "title": "Đạt Ma Nhất Chưởng Kinh·Bốn cung tiền kiếp | ZHAOWU",
+        "description": "Đọc bốn cung như dòng nhân duyên mang tính biểu tượng, tìm hiểu thói quen còn lại và cách vận dụng trong hiện tại."
+      },
+      "fil": {
+        "title": "Sutra ng Palad ni Bodhidharma·Apat na Palasyo | ZHAOWU",
+        "description": "Basahin ang apat na palasyo bilang simbolikong daloy ng karma, mga naiwang gawi at paraan ng paggamit ng pag-unawa sa kasalukuyan."
+      }
     },
     "/sky-events": {
-      "zh-Hant": { "title": "昭梧近日天象｜天文實況與星象解讀", "description": "天文事實優先、占星象徵解讀獨立標示：行星順逆行、月相與角度，附 UTC／悉尼時間，不使用出生資料。" },
-      "zh-Hans": { "title": "昭梧近日天象｜天文实况与星象解读", "description": "天文事实优先、占星象征解读独立标示：行星顺逆行、月相与角度，附 UTC／悉尼时间，不使用出生资料。" },
-      "en": { "title": "ZHAOWU Sky Events | Astronomy First, Astrology Separate", "description": "Planetary stations, moon phases and aspects with UTC/Sydney times. Measurable astronomy stays separate from symbolic readings." }
+      "zh-Hant": {
+        "title": "昭梧近日天象｜天文實況與星象解讀",
+        "description": "天文事實優先、占星象徵解讀獨立標示：行星順逆行、月相與角度，附 UTC／悉尼時間，不使用出生資料。"
+      },
+      "zh-Hans": {
+        "title": "昭梧近日天象｜天文实况与星象解读",
+        "description": "天文事实优先、占星象征解读独立标示：行星顺逆行、月相与角度，附 UTC／悉尼时间，不使用出生资料。"
+      },
+      "en": {
+        "title": "ZHAOWU Sky Events | Astronomy First, Astrology Separate",
+        "description": "Planetary stations, moon phases and aspects with UTC/Sydney times. Measurable astronomy stays separate from symbolic readings."
+      },
+      "ja": {
+        "title": "天象案内・天文学と象徴を区別 | ZHAOWU",
+        "description": "惑星の留、月相、アスペクトをUTCとシドニー時刻で表示。測定可能な天文学と象徴解釈を分けます。"
+      },
+      "ko": {
+        "title": "천문 현상·천문학과 상징의 구분 | ZHAOWU",
+        "description": "행성의 정지, 달의 위상과 각을 UTC 및 시드니 시간으로 표시합니다. 측정 가능한 천문학과 상징 해석을 구분합니다."
+      },
+      "hi": {
+        "title": "आकाशीय घटनाएँ·खगोल और प्रतीक अलग | ZHAOWU",
+        "description": "ग्रहों की स्थिर स्थिति, चंद्र कलाएँ और दृष्टियाँ UTC व सिडनी समय में देखें। मापने योग्य खगोल और प्रतीकात्मक व्याख्या अलग हैं।"
+      },
+      "th": {
+        "title": "ปรากฏการณ์ท้องฟ้า·แยกดาราศาสตร์กับสัญลักษณ์ | ZHAOWU",
+        "description": "ดูดาวหยุดนิ่ง ข้างขึ้นข้างแรมและมุมดาวในเวลา UTC และซิดนีย์ แยกสิ่งที่วัดได้จากการตีความเชิงสัญลักษณ์"
+      },
+      "id": {
+        "title": "Peristiwa Langit·Astronomi dan Simbol Terpisah | ZHAOWU",
+        "description": "Stasiun planet, fase bulan dan aspek dengan waktu UTC serta Sydney. Astronomi terukur dipisahkan dari tafsir simbolis."
+      },
+      "vi": {
+        "title": "Thiên tượng·Tách thiên văn và biểu tượng | ZHAOWU",
+        "description": "Điểm dừng hành tinh, pha trăng và góc hợp theo giờ UTC và Sydney. Thiên văn đo được tách biệt với luận giải biểu tượng."
+      },
+      "fil": {
+        "title": "Mga Pangyayari sa Langit·Astronomiya at Simbolo | ZHAOWU",
+        "description": "Mga paghinto ng planeta, yugto ng buwan at aspekto sa UTC at Sydney. Hiwalay ang nasusukat na astronomiya sa simbolikong pagbasa."
+      }
     },
     "/auspicious-atlas": {
-      "zh-Hant": { "title": "昭梧吉象圖鑑｜結緣聖像與瑞獸意象", "description": "從昭梧總圖庫整理的結緣聖像、吉祥風水、瑞獸與命理意象，點開即可查看原圖。" },
-      "zh-Hans": { "title": "昭梧吉象图鉴｜结缘圣像与瑞兽意象", "description": "从昭梧总图库整理的结缘圣像、吉祥风水、瑞兽与命理意象，点开即可查看原图。" },
-      "en": { "title": "ZHAOWU Auspicious Atlas | Sacred Images & Guardians", "description": "Sacred images, auspicious motifs, mythical guardians and symbolic illustrations curated from the ZHAOWU gallery." }
+      "zh-Hant": {
+        "title": "昭梧吉象圖鑑｜結緣聖像與瑞獸意象",
+        "description": "從昭梧總圖庫整理的結緣聖像、吉祥風水、瑞獸與命理意象，點開即可查看原圖。"
+      },
+      "zh-Hans": {
+        "title": "昭梧吉象图鉴｜结缘圣像与瑞兽意象",
+        "description": "从昭梧总图库整理的结缘圣像、吉祥风水、瑞兽与命理意象，点开即可查看原图。"
+      },
+      "en": {
+        "title": "ZHAOWU Auspicious Atlas | Sacred Images & Guardians",
+        "description": "Sacred images, auspicious motifs, mythical guardians and symbolic illustrations curated from the ZHAOWU gallery."
+      },
+      "ja": {
+        "title": "吉象図鑑・聖なる姿と守護者 | ZHAOWU",
+        "description": "昭梧の画廊から選んだ聖なる姿、吉祥文様、神話の守護者と象徴的な挿絵を閲覧できます。"
+      },
+      "ko": {
+        "title": "길상 도감·성스러운 형상과 수호자 | ZHAOWU",
+        "description": "昭梧 갤러리에서 고른 성스러운 형상, 길상 문양, 신화 속 수호자와 상징 삽화를 둘러봅니다."
+      },
+      "hi": {
+        "title": "शुभ प्रतीक संग्रह·पवित्र चित्र और रक्षक | ZHAOWU",
+        "description": "ZHAOWU दीर्घा से चुने पवित्र चित्र, शुभ रूपांकन, पौराणिक रक्षक और प्रतीकात्मक चित्र देखें।"
+      },
+      "th": {
+        "title": "สมุดภาพมงคล·รูปศักดิ์สิทธิ์และผู้พิทักษ์ | ZHAOWU",
+        "description": "ชมรูปศักดิ์สิทธิ์ ลวดลายมงคล ผู้พิทักษ์ในเทพนิยายและภาพสัญลักษณ์ที่คัดจากแกลเลอรี ZHAOWU"
+      },
+      "id": {
+        "title": "Atlas Keberuntungan·Citra Suci dan Penjaga | ZHAOWU",
+        "description": "Lihat citra suci, motif keberuntungan, penjaga mitis dan ilustrasi simbolis pilihan dari galeri ZHAOWU."
+      },
+      "vi": {
+        "title": "Đồ giám cát tường·Hình tượng và hộ thần | ZHAOWU",
+        "description": "Xem hình tượng thiêng, họa tiết cát tường, hộ thần huyền thoại và tranh biểu tượng tuyển chọn từ phòng tranh ZHAOWU."
+      },
+      "fil": {
+        "title": "Atlas ng Mabubuting Simbolo·Mga Larawan at Bantay | ZHAOWU",
+        "description": "Tingnan ang mga banal na larawan, mabubuting sagisag, mitikong tagapagbantay at simbolikong ilustrasyon mula sa galerya ng ZHAOWU."
+      }
     },
     "/soul-chapters": {
-      "zh-Hant": { "title": "昭梧靈階十章｜人生有十章，哪一章最像現在的你？", "description": "靈階十章圖鑑：從萌芽、初啼到圓滿的十章人生地圖，看現在的自己正在哪一章。" },
-      "zh-Hans": { "title": "昭梧灵阶十章｜人生有十章，哪一章最像现在的你？", "description": "灵阶十章图鉴：从萌芽、初啼到圆满的十章人生地图，看现在的自己正在哪一章。" },
-      "en": { "title": "ZHAOWU Soul Chapters | Ten Chapters of a Life", "description": "The Soul Chapters illustrated map: from first light to completion — which chapter are you living right now?" }
+      "zh-Hant": {
+        "title": "昭梧靈階十章｜人生有十章，哪一章最像現在的你？",
+        "description": "靈階十章圖鑑：從萌芽、初啼到圓滿的十章人生地圖，看現在的自己正在哪一章。"
+      },
+      "zh-Hans": {
+        "title": "昭梧灵阶十章｜人生有十章，哪一章最像现在的你？",
+        "description": "灵阶十章图鉴：从萌芽、初啼到圆满的十章人生地图，看现在的自己正在哪一章。"
+      },
+      "en": {
+        "title": "ZHAOWU Soul Chapters | Ten Chapters of a Life",
+        "description": "The Soul Chapters illustrated map: from first light to completion — which chapter are you living right now?"
+      },
+      "ja": {
+        "title": "魂の章・人生の十章 | ZHAOWU",
+        "description": "最初の光から完成までを描く十章の絵図。今の自分がどの章を生きているかを静かに振り返ります。"
+      },
+      "ko": {
+        "title": "영혼의 장·삶의 열 장 | ZHAOWU",
+        "description": "첫 빛에서 완성까지 열 장의 그림 지도로 지금 삶의 어느 장을 지나고 있는지 돌아봅니다."
+      },
+      "hi": {
+        "title": "आत्मा के अध्याय·जीवन के दस चरण | ZHAOWU",
+        "description": "पहली रोशनी से पूर्णता तक दस चित्रित अध्यायों में अपने वर्तमान जीवन के चरण पर विचार करें।"
+      },
+      "th": {
+        "title": "บทแห่งจิตวิญญาณ·สิบช่วงชีวิต | ZHAOWU",
+        "description": "แผนที่ภาพสิบบทจากแสงแรกถึงความสมบูรณ์ ชวนทบทวนว่าขณะนี้คุณอยู่ในช่วงใดของชีวิต"
+      },
+      "id": {
+        "title": "Bab Jiwa·Sepuluh Bab Kehidupan | ZHAOWU",
+        "description": "Peta bergambar sepuluh bab dari cahaya pertama hingga penyelesaian, untuk merenungkan tahap kehidupan Anda sekarang."
+      },
+      "vi": {
+        "title": "Chương hồn·Mười chương cuộc đời | ZHAOWU",
+        "description": "Bản đồ tranh mười chương từ ánh sáng đầu tiên đến hoàn tất, giúp suy ngẫm bạn đang ở chương nào trong đời."
+      },
+      "fil": {
+        "title": "Mga Kabanata ng Kaluluwa·Sampung Yugto ng Buhay | ZHAOWU",
+        "description": "Mapa ng sampung larawang kabanata mula unang liwanag hanggang pagtatapos, para pagnilayan ang kasalukuyang yugto ng iyong buhay."
+      }
     },
     "/fun-tests": {
-      "zh-Hant": { "title": "昭梧趣味測驗系列｜內在動物・五行功能・六道", "description": "從行為、選擇與狀態認識自己的趣味測驗：自評歸自評，不把趣味測驗冒充命盤。" },
-      "zh-Hans": { "title": "昭梧趣味测验系列｜内在动物・五行功能・六道", "description": "从行为、选择与状态认识自己的趣味测验：自评归自评，不把趣味测验冒充命盘。" },
-      "en": { "title": "ZHAOWU Fun Tests | Inner Animal, Five Elements & Six Realms", "description": "Playful self-knowledge quizzes based on behaviour and state — never presented as a substitute for a real chart." }
+      "zh-Hant": {
+        "title": "昭梧趣味測驗系列｜內在動物・五行功能・六道",
+        "description": "從行為、選擇與狀態認識自己的趣味測驗：自評歸自評，不把趣味測驗冒充命盤。"
+      },
+      "zh-Hans": {
+        "title": "昭梧趣味测验系列｜内在动物・五行功能・六道",
+        "description": "从行为、选择与状态认识自己的趣味测验：自评归自评，不把趣味测验冒充命盘。"
+      },
+      "en": {
+        "title": "ZHAOWU Fun Tests | Inner Animal, Five Elements & Six Realms",
+        "description": "Playful self-knowledge quizzes based on behaviour and state — never presented as a substitute for a real chart."
+      },
+      "ja": {
+        "title": "遊びのテスト・内なる動物と五行 | ZHAOWU",
+        "description": "行動や今の状態から自分を知る小さなテスト。本当の八字命盤の代わりにはしません。"
+      },
+      "ko": {
+        "title": "재미로 보는 테스트·내면 동물과 오행 | ZHAOWU",
+        "description": "행동과 현재 상태를 통해 자신을 돌아보는 테스트입니다. 실제 사주 명식을 대신하는 도구로 제시하지 않습니다."
+      },
+      "hi": {
+        "title": "मनोरंजक परीक्षण·भीतरी पशु और पंचतत्व | ZHAOWU",
+        "description": "व्यवहार और वर्तमान स्थिति के आधार पर स्वयं को समझने के हल्के परीक्षण। ये वास्तविक जन्म-चार्ट का विकल्प नहीं हैं।"
+      },
+      "th": {
+        "title": "แบบทดสอบสนุก·สัตว์ภายในและห้าธาตุ | ZHAOWU",
+        "description": "แบบทดสอบรู้จักตนเองจากพฤติกรรมและสภาวะปัจจุบัน ไม่ใช้แทนผังดวงเกิดจริง"
+      },
+      "id": {
+        "title": "Kuis Santai·Hewan Batin dan Lima Unsur | ZHAOWU",
+        "description": "Kuis pengenalan diri berdasarkan perilaku dan keadaan, bukan pengganti bagan kelahiran yang sesungguhnya."
+      },
+      "vi": {
+        "title": "Trắc nghiệm vui·Linh thú bên trong và ngũ hành | ZHAOWU",
+        "description": "Trắc nghiệm hiểu bản thân qua hành vi và trạng thái hiện tại, không thay thế lá số Bát tự thực sự."
+      },
+      "fil": {
+        "title": "Masasayang Pagsusulit·Hayop sa Loob at Limang Elemento | ZHAOWU",
+        "description": "Mga pagsusulit sa pagkilala sa sarili batay sa kilos at kalagayan. Hindi kapalit ng tunay na chart ng kapanganakan."
+      }
     },
     "/fun-tests/earth-online": {
-      "zh-Hant": { "title": "地球 ONLINE 古籍攻略｜八題看你卡在哪一關", "description": "八道題看古人會塞給你哪一本攻略：人生卡關不一定是缺答案，有時只是拿錯攻略本。" },
-      "zh-Hans": { "title": "地球 ONLINE 古籍攻略｜八题看你卡在哪一关", "description": "八道题看古人会塞给你哪一本攻略：人生卡关不一定是缺答案，有时只是拿错攻略本。" },
-      "en": { "title": "Earth ONLINE | Which Classic Is Your Walkthrough?", "description": "Eight questions to find which classic text the ancients would hand you: sometimes being stuck is just holding the wrong manual." }
+      "zh-Hant": {
+        "title": "地球 ONLINE 古籍攻略｜八題看你卡在哪一關",
+        "description": "八道題看古人會塞給你哪一本攻略：人生卡關不一定是缺答案，有時只是拿錯攻略本。"
+      },
+      "zh-Hans": {
+        "title": "地球 ONLINE 古籍攻略｜八题看你卡在哪一关",
+        "description": "八道题看古人会塞给你哪一本攻略：人生卡关不一定是缺答案，有时只是拿错攻略本。"
+      },
+      "en": {
+        "title": "Earth ONLINE | Which Classic Is Your Walkthrough?",
+        "description": "Eight questions to find which classic text the ancients would hand you: sometimes being stuck is just holding the wrong manual."
+      },
+      "ja": {
+        "title": "地球ONLINE・あなたの攻略書は？ | ZHAOWU",
+        "description": "八つの質問から、昔の人が渡してくれそうな古典を探します。行き詰まりを別の視点で見直す遊びです。"
+      },
+      "ko": {
+        "title": "지구 ONLINE·나의 공략서는? | ZHAOWU",
+        "description": "여덟 질문으로 옛사람이 건네줄 만한 고전을 찾아봅니다. 막힘을 다른 관점에서 보는 가벼운 테스트입니다."
+      },
+      "hi": {
+        "title": "पृथ्वी ONLINE·आपकी मार्गदर्शक पुस्तक कौन-सी? | ZHAOWU",
+        "description": "आठ प्रश्नों से खोजें कि प्राचीन विद्वान आपको कौन-सा ग्रंथ देते। अटकाव को नए दृष्टिकोण से देखने का मनोरंजक परीक्षण।"
+      },
+      "th": {
+        "title": "โลก ONLINE·คู่มือชีวิตของคุณคือเล่มใด | ZHAOWU",
+        "description": "แปดคำถามเพื่อค้นหาคัมภีร์ที่คนโบราณอาจมอบให้คุณ ชวนมองภาวะติดขัดจากอีกมุมอย่างสนุก"
+      },
+      "id": {
+        "title": "Bumi ONLINE·Kitab Panduan Anda? | ZHAOWU",
+        "description": "Delapan pertanyaan untuk menemukan kitab klasik yang mungkin diberikan orang dahulu. Lihat kebuntuan dari sudut pandang baru."
+      },
+      "vi": {
+        "title": "Trái Đất ONLINE·Cẩm nang của bạn là kinh điển nào? | ZHAOWU",
+        "description": "Tám câu hỏi tìm cuốn sách cổ người xưa có thể trao cho bạn, gợi một góc nhìn mới khi bế tắc."
+      },
+      "fil": {
+        "title": "Daigdig ONLINE·Anong Klasiko ang Gabay Mo? | ZHAOWU",
+        "description": "Walong tanong para tuklasin ang klasikong aklat na maaaring iabot ng mga sinauna. Bagong pagtingin sa pakiramdam na hindi makausad."
+      }
     },
     "/tea-guardian": {
-      "zh-Hant": { "title": "昭梧茶仙守護測驗｜七題找到你真正適合的茶", "description": "口味與生活狀態先獨立計算，有命盤時再加入月令與旺衰底盤，避免只靠五行貼標籤。" },
-      "zh-Hans": { "title": "昭梧茶仙守护测验｜七题找到你真正适合的茶", "description": "口味与生活状态先独立计算，有命盘时再加入月令与旺衰底盘，避免只靠五行贴标签。" },
-      "en": { "title": "ZHAOWU Tea Guardian Quiz | Seven Questions to Your Tea", "description": "Taste and life-state are scored independently; your chart adds depth when available — no crude five-element labels." }
+      "zh-Hant": {
+        "title": "昭梧茶仙守護測驗｜七題找到你真正適合的茶",
+        "description": "口味與生活狀態先獨立計算，有命盤時再加入月令與旺衰底盤，避免只靠五行貼標籤。"
+      },
+      "zh-Hans": {
+        "title": "昭梧茶仙守护测验｜七题找到你真正适合的茶",
+        "description": "口味与生活状态先独立计算，有命盘时再加入月令与旺衰底盘，避免只靠五行贴标签。"
+      },
+      "en": {
+        "title": "ZHAOWU Tea Guardian Quiz | Seven Questions to Your Tea",
+        "description": "Taste and life-state are scored independently; your chart adds depth when available — no crude five-element labels."
+      },
+      "ja": {
+        "title": "お茶の守護者・七つの質問 | ZHAOWU",
+        "description": "味覚と生活の状態を別々に評価。命盤があれば補足に使い、単純な五行ラベルには当てはめません。"
+      },
+      "ko": {
+        "title": "차 수호자·일곱 질문 | ZHAOWU",
+        "description": "맛 취향과 삶의 상태를 따로 평가하고 명식이 있으면 보충합니다. 단순한 오행 분류에 사람을 맞추지 않습니다."
+      },
+      "hi": {
+        "title": "चाय रक्षक·सात प्रश्न | ZHAOWU",
+        "description": "स्वाद और जीवन-स्थिति का अलग मूल्यांकन होता है। उपलब्ध जन्म-चार्ट संदर्भ जोड़ता है, मनमाने पंचतत्व लेबल नहीं।"
+      },
+      "th": {
+        "title": "ผู้พิทักษ์ชา·เจ็ดคำถาม | ZHAOWU",
+        "description": "ประเมินรสชาติที่ชอบและสภาวะชีวิตแยกกัน ใช้ผังดวงเสริมเมื่อมีข้อมูล ไม่ตีตราด้วยห้าธาตุแบบง่าย ๆ"
+      },
+      "id": {
+        "title": "Penjaga Teh·Tujuh Pertanyaan | ZHAOWU",
+        "description": "Selera dan keadaan hidup dinilai terpisah. Bagan menambah konteks jika tersedia, tanpa label lima unsur yang dangkal."
+      },
+      "vi": {
+        "title": "Hộ thần trà·Bảy câu hỏi | ZHAOWU",
+        "description": "Khẩu vị và trạng thái sống được chấm riêng. Lá số bổ sung chiều sâu khi có dữ liệu, không gắn nhãn ngũ hành đơn giản."
+      },
+      "fil": {
+        "title": "Tagapagbantay ng Tsaa·Pitong Tanong | ZHAOWU",
+        "description": "Magkahiwalay ang marka ng panlasa at kalagayan sa buhay. Dagdag na konteksto ang chart kung mayroon, walang payak na tatak ng limang elemento."
+      }
     },
     "/quiz/cultivation-destiny": {
-      "zh-Hant": { "title": "修仙命格靈測｜昭梧趣味測驗", "description": "把已保存的生辰命盤轉譯成仙俠世界的靈根、宗門、峰脈與修行道途；不靠答題反推八字。" },
-      "zh-Hans": { "title": "修仙命格灵测｜昭梧趣味测验", "description": "把已保存的生辰命盘转译成仙侠世界的灵根、宗门、峰脉与修行道途；不靠答题反推八字。" },
-      "en": { "title": "Cultivation Destiny Test | ZHAOWU Fun Test", "description": "Translates your saved birth chart into a xianxia build: spiritual root, sect, peak and path — never reverse-engineered from answers." }
+      "zh-Hant": {
+        "title": "修仙命格靈測｜昭梧趣味測驗",
+        "description": "把已保存的生辰命盤轉譯成仙俠世界的靈根、宗門、峰脈與修行道途；不靠答題反推八字。"
+      },
+      "zh-Hans": {
+        "title": "修仙命格灵测｜昭梧趣味测验",
+        "description": "把已保存的生辰命盘转译成仙侠世界的灵根、宗门、峰脉与修行道途；不靠答题反推八字。"
+      },
+      "en": {
+        "title": "Cultivation Destiny Test | ZHAOWU Fun Test",
+        "description": "Translates your saved birth chart into a xianxia build: spiritual root, sect, peak and path — never reverse-engineered from answers."
+      },
+      "ja": {
+        "title": "修行の資質テスト | ZHAOWU",
+        "description": "保存した出生図を仙侠の霊根、門派、峰、道の象徴に翻訳。回答から命盤を逆算しません。"
+      },
+      "ko": {
+        "title": "수련 자질 테스트 | ZHAOWU",
+        "description": "저장된 출생 명식을 선협 세계의 영근, 문파, 봉우리와 길로 옮깁니다. 답변으로 명식을 역산하지 않습니다."
+      },
+      "hi": {
+        "title": "साधना क्षमता परीक्षण | ZHAOWU",
+        "description": "सहेजे जन्म-चार्ट को काल्पनिक साधना-जगत की जड़, संप्रदाय, शिखर और मार्ग में रूपांतरित करता है; उत्तरों से चार्ट नहीं बनाता।"
+      },
+      "th": {
+        "title": "แบบทดสอบวิถีบำเพ็ญ | ZHAOWU",
+        "description": "แปลงผังเกิดที่บันทึกไว้เป็นรากพลัง สำนัก ยอดเขาและวิถีในโลกเซียน ไม่ย้อนสร้างผังจากคำตอบ"
+      },
+      "id": {
+        "title": "Kuis Bakat Kultivasi | ZHAOWU",
+        "description": "Mengubah bagan tersimpan menjadi akar spiritual, perguruan, puncak dan jalan dalam dunia xianxia, bukan membuat bagan dari jawaban."
+      },
+      "vi": {
+        "title": "Trắc nghiệm căn cơ tu luyện | ZHAOWU",
+        "description": "Chuyển lá số đã lưu thành linh căn, môn phái, đỉnh núi và đạo trong thế giới tiên hiệp, không suy ngược lá số từ câu trả lời."
+      },
+      "fil": {
+        "title": "Pagsusulit sa Landas ng Paglinang | ZHAOWU",
+        "description": "Isinasalin ang naka-save na chart sa ugat, paaralan, tuktok at landas ng kathang-isip na xianxia. Hindi binubuo ang chart mula sa sagot."
+      }
     },
     "/quiz/divine-affinity": {
-      "zh-Hant": { "title": "仙佛淵源本緣測試｜16 題深層版", "description": "從魂格、象徵脈象到天命六層，看你此刻更接近哪種神聖原型；結果只描述象徵傾向，不證明前世或宗教身份。" },
-      "zh-Hans": { "title": "仙佛渊源本缘测试｜16 题深层版", "description": "从魂格、象征脉象到天命六层，看你此刻更接近哪种神圣原型；结果只描述象征倾向，不证明前世或宗教身份。" },
-      "en": { "title": "Divine Affinity Test | 16 Questions", "description": "From soul pattern to life mission: which sacred archetype do you lean toward? Symbolic tendencies only — never proof of identity." }
+      "zh-Hant": {
+        "title": "仙佛淵源本緣測試｜16 題深層版",
+        "description": "從魂格、象徵脈象到天命六層，看你此刻更接近哪種神聖原型；結果只描述象徵傾向，不證明前世或宗教身份。"
+      },
+      "zh-Hans": {
+        "title": "仙佛渊源本缘测试｜16 题深层版",
+        "description": "从魂格、象征脉象到天命六层，看你此刻更接近哪种神圣原型；结果只描述象征倾向，不证明前世或宗教身份。"
+      },
+      "en": {
+        "title": "Divine Affinity Test | 16 Questions",
+        "description": "From soul pattern to life mission: which sacred archetype do you lean toward? Symbolic tendencies only — never proof of identity."
+      },
+      "ja": {
+        "title": "神格の親和性・十六の質問 | ZHAOWU",
+        "description": "心の傾向から人生の役割まで、親しみを感じる聖なる原型を探します。象徴的な傾向であり身分の証明ではありません。"
+      },
+      "ko": {
+        "title": "신성한 원형 친화도·열여섯 질문 | ZHAOWU",
+        "description": "마음의 경향부터 삶의 역할까지 가까이 느끼는 신성한 원형을 찾아봅니다. 상징적 성향이며 정체성의 증명이 아닙니다."
+      },
+      "hi": {
+        "title": "दिव्य अनुराग·सोलह प्रश्न | ZHAOWU",
+        "description": "मन की प्रवृत्ति और जीवन के उद्देश्य से अपना निकट पवित्र आदिरूप खोजें। यह प्रतीकात्मक रुझान है, पहचान का प्रमाण नहीं।"
+      },
+      "th": {
+        "title": "สายสัมพันธ์เทพ·สิบหกคำถาม | ZHAOWU",
+        "description": "สำรวจต้นแบบศักดิ์สิทธิ์ที่ใกล้กับแนวโน้มใจและภารกิจชีวิต เป็นเพียงสัญลักษณ์ ไม่ใช่หลักฐานยืนยันตัวตน"
+      },
+      "id": {
+        "title": "Kedekatan Ilahi·Enam Belas Pertanyaan | ZHAOWU",
+        "description": "Dari kecenderungan jiwa hingga peran hidup, temukan arketipe suci yang terasa dekat. Simbol saja, bukan bukti identitas."
+      },
+      "vi": {
+        "title": "Duyên với thần linh·Mười sáu câu hỏi | ZHAOWU",
+        "description": "Từ xu hướng tâm hồn đến vai trò cuộc sống, tìm nguyên mẫu thiêng gần gũi. Chỉ là biểu tượng, không chứng minh căn tính."
+      },
+      "fil": {
+        "title": "Pagkakaugnay sa Banal·Labing-anim na Tanong | ZHAOWU",
+        "description": "Mula hilig ng kaluluwa hanggang papel sa buhay, alamin ang malapit na banal na huwaran. Simbolo lamang, hindi patunay ng pagkakakilanlan."
+      }
     },
     "/quiz/five-element-overdrive": {
-      "zh-Hant": { "title": "五行功能測驗｜你最容易把哪種優勢用成內耗？", "description": "十個日常情境看你最常使用的功能與壓力下怎麼用過頭；只反映目前行為傾向，不等同八字命盤。" },
-      "zh-Hans": { "title": "五行功能测验｜你最容易把哪种优势用成内耗？", "description": "十个日常情境看你最常使用的功能与压力下怎么用过头；只反映目前行为倾向，不等同八字命盘。" },
-      "en": { "title": "Five-Element Overdrive | Which Strength Backfires?", "description": "Ten everyday scenarios show which function you overuse under pressure. Behavioural tendencies only — not a BaZi chart." }
+      "zh-Hant": {
+        "title": "五行功能測驗｜你最容易把哪種優勢用成內耗？",
+        "description": "十個日常情境看你最常使用的功能與壓力下怎麼用過頭；只反映目前行為傾向，不等同八字命盤。"
+      },
+      "zh-Hans": {
+        "title": "五行功能测验｜你最容易把哪种优势用成内耗？",
+        "description": "十个日常情境看你最常使用的功能与压力下怎么用过头；只反映目前行为倾向，不等同八字命盘。"
+      },
+      "en": {
+        "title": "Five-Element Overdrive | Which Strength Backfires?",
+        "description": "Ten everyday scenarios show which function you overuse under pressure. Behavioural tendencies only — not a BaZi chart."
+      },
+      "ja": {
+        "title": "五行の使いすぎ・強みの裏返し | ZHAOWU",
+        "description": "日常の十場面で、負荷の下で使いすぎる働きを観察します。行動傾向のテストで、八字命盤ではありません。"
+      },
+      "ko": {
+        "title": "오행 과잉·강점이 부담이 될 때 | ZHAOWU",
+        "description": "열 가지 일상 상황에서 압박을 받을 때 과하게 쓰는 기능을 살핍니다. 행동 경향 테스트이며 사주 명식이 아닙니다."
+      },
+      "hi": {
+        "title": "पंचतत्व अतिरेक·जब ताकत उलटी पड़े | ZHAOWU",
+        "description": "दस दैनिक स्थितियाँ दिखाती हैं कि दबाव में कौन-सा कार्य अधिक इस्तेमाल होता है। यह व्यवहार का परीक्षण है, BaZi चार्ट नहीं।"
+      },
+      "th": {
+        "title": "ห้าธาตุเกินพอดี·เมื่อจุดแข็งย้อนทำร้าย | ZHAOWU",
+        "description": "สิบสถานการณ์ประจำวันช่วยสังเกตหน้าที่ที่ใช้เกินเมื่อกดดัน เป็นแนวโน้มพฤติกรรม ไม่ใช่ผังโป๊ยหยี่"
+      },
+      "id": {
+        "title": "Lima Unsur Berlebihan·Saat Kekuatan Berbalik | ZHAOWU",
+        "description": "Sepuluh situasi sehari-hari menunjukkan fungsi yang terlalu dipakai saat tertekan. Ini kecenderungan perilaku, bukan bagan BaZi."
+      },
+      "vi": {
+        "title": "Ngũ hành quá đà·Khi điểm mạnh phản tác dụng | ZHAOWU",
+        "description": "Mười tình huống thường ngày chỉ ra chức năng bị dùng quá mức khi chịu áp lực. Đây là xu hướng hành vi, không phải lá số Bát tự."
+      },
+      "fil": {
+        "title": "Sobrang Limang Elemento·Kapag Bumabalik ang Lakas | ZHAOWU",
+        "description": "Sampung pang-araw-araw na tagpo upang makita ang tungkuling labis gamitin sa ilalim ng bigat. Kilos ang sinusuri, hindi BaZi chart."
+      }
     },
     "/quiz/six-realms": {
-      "zh-Hant": { "title": "六道習氣測驗｜你今天正在經歷哪一道？", "description": "六個日常情境看你此刻較常落入的主導心境；六道作為意識與情緒的觀察框架，不是斷定死後去處。" },
-      "zh-Hans": { "title": "六道习气测验｜你今天正在经历哪一道？", "description": "六个日常情境看你此刻较常落入的主导心境；六道作为意识与情绪的观察框架，不是断定死后去处。" },
-      "en": { "title": "Six Realms Quiz | Which Mind-State Are You In?", "description": "Six everyday scenarios locate your dominant mind-state today. The realms are an observation framework, not a verdict on afterlives." }
+      "zh-Hant": {
+        "title": "六道習氣測驗｜你今天正在經歷哪一道？",
+        "description": "六個日常情境看你此刻較常落入的主導心境；六道作為意識與情緒的觀察框架，不是斷定死後去處。"
+      },
+      "zh-Hans": {
+        "title": "六道习气测验｜你今天正在经历哪一道？",
+        "description": "六个日常情境看你此刻较常落入的主导心境；六道作为意识与情绪的观察框架，不是断定死后去处。"
+      },
+      "en": {
+        "title": "Six Realms Quiz | Which Mind-State Are You In?",
+        "description": "Six everyday scenarios locate your dominant mind-state today. The realms are an observation framework, not a verdict on afterlives."
+      },
+      "ja": {
+        "title": "六道テスト・今の心の状態 | ZHAOWU",
+        "description": "六つの日常場面から今日の主な心の状態を観察します。六道は観察の枠組みで、来世の判定ではありません。"
+      },
+      "ko": {
+        "title": "육도 테스트·지금 마음의 상태 | ZHAOWU",
+        "description": "여섯 일상 상황으로 오늘의 주된 마음 상태를 관찰합니다. 육도는 관찰 틀이며 내세에 대한 판결이 아닙니다."
+      },
+      "hi": {
+        "title": "छह लोक परीक्षण·आज मन कहाँ है? | ZHAOWU",
+        "description": "छह दैनिक स्थितियों से आज की प्रमुख मानसिक अवस्था पहचानें। लोक अवलोकन का ढाँचा हैं, मृत्यु के बाद का निर्णय नहीं।"
+      },
+      "th": {
+        "title": "แบบทดสอบหกภูมิ·สภาวะใจวันนี้ | ZHAOWU",
+        "description": "หกสถานการณ์ช่วยสังเกตสภาวะใจหลักของวันนี้ หกภูมิเป็นกรอบการสังเกต ไม่ใช่คำตัดสินเรื่องชีวิตหลังความตาย"
+      },
+      "id": {
+        "title": "Kuis Enam Alam·Keadaan Batin Hari Ini | ZHAOWU",
+        "description": "Enam situasi untuk mengamati keadaan batin utama hari ini. Alam adalah kerangka pengamatan, bukan putusan tentang akhirat."
+      },
+      "vi": {
+        "title": "Trắc nghiệm lục đạo·Tâm trạng hôm nay | ZHAOWU",
+        "description": "Sáu tình huống để quan sát trạng thái tâm chủ đạo hôm nay. Lục đạo là khung quan sát, không phán xét đời sau."
+      },
+      "fil": {
+        "title": "Pagsusulit sa Anim na Daigdig·Kalagayan ng Isip Ngayon | ZHAOWU",
+        "description": "Anim na tagpo upang pagmasdan ang nangingibabaw na kalagayan ng isip. Balangkas ng pagtingin ang mga daigdig, hindi hatol sa kabilang buhay."
+      }
     }
   }
 }
