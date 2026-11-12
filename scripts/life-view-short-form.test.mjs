@@ -12,18 +12,10 @@ test("homepage keeps short-form notes active and explicitly separate from long-f
   assert.match(homeSection, /const LONG_ARTICLES: IllustratedArticle\[\] = \[/);
   assert.match(homeSection, /const SHORT_NOTES: IllustratedArticle\[\] = LIFE_VIEW_SHORT_FORM_ARTICLES\.map/);
   assert.match(homeSection, /contentKind: "short-note"/);
-  assert.match(homeSection, /const CONTENTS: IllustratedArticle\[\] = \[\.\.\.LONG_ARTICLES, \.\.\.SHORT_NOTES\]/);
-  assert.match(homeSection, /CONTENTS\.sort\(\(a, b\) => b\.publishedAt\.localeCompare\(a\.publishedAt\)\)/);
-  for (const legacy of [
-    "LIFE_VIEW_20260903_LATE_ARTICLES",
-    "LIFE_VIEW_20260903_ARTICLES",
-    "LIFE_VIEW_20260831_ARTICLES",
-    "LIFE_VIEW_PRACTICE_ARTICLES",
-    "LIFE_VIEW_FILE_ARTICLES",
-    "LIFE_VIEW_ARTICLES",
-  ]) {
-    assert.equal(homeSection.includes(legacy), false, `${legacy} should remain archive-only`);
-  }
+  assert.match(homeSection, /export const ARTICLE_CATALOG: IllustratedArticle\[\] = \[\.\.\.LONG_ARTICLES, \.\.\.SHORT_NOTES\]/);
+  assert.match(homeSection, /ARTICLE_CATALOG\.sort\(\(a, b\) => b\.publishedAt\.localeCompare\(a\.publishedAt\)\)/);
+  assert.match(homeSection, /\.\.\.RESTORED_ORPHAN_ARTICLES/);
+  assert.match(homeSection, /\.filter\(\(article\) => RESTORED_ORPHAN_IDS\.has\(article\.id\)\)/);
 });
 
 test("short-form archive can keep growing while IDs remain unique and every note stays tri-lingual", () => {
@@ -46,7 +38,9 @@ test("approved short-form themes remain as standalone notes, including the 23-po
   assert.match(byId.get("flowers-fall-mind-stays-steady")?.body["zh-Hans"] ?? "", /花开不喜，花落不悲，缘来不拒，缘去不追/);
   assert.match(byId.get("flowers-fall-mind-stays-steady")?.body["zh-Hans"] ?? "", /不以人言乱其神，不以世事动其心/);
   assert.match(byId.get("effort-in-causes-ease-with-results")?.body["zh-Hans"] ?? "", /因上努力，果上随缘/);
-  assert.match(byId.get("know-yourself-master-yourself")?.body["zh-Hans"] ?? "", /知人，是看懂世界；自知，是看懂自己/);\n\n  const folklore = byId.get("twenty-three-mysticism-life-reminders");
+  assert.match(byId.get("know-yourself-master-yourself")?.body["zh-Hans"] ?? "", /知人，是看懂世界；自知，是看懂自己/);
+
+  const folklore = byId.get("twenty-three-mysticism-life-reminders");
   assert.ok(folklore, "the 23-point article should be included in the archive");
   assert.match(folklore.body["zh-Hans"], /23\. 孝亲重在关心与陪伴/);
   assert.equal(folklore.body["zh-Hans"].split(/\n\n/).filter((paragraph) => /^\d+\./.test(paragraph)).length, 23);

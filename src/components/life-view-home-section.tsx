@@ -4,9 +4,15 @@ import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { StellarLifeCycleInteractive } from "@/components/stellar-life-cycle-interactive";
 import { Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
-import type { LifeViewArticle } from "@/lib/life-view";
+import { LIFE_VIEW_ARTICLES, type LifeViewArticle } from "@/lib/life-view";
+import { LIFE_VIEW_FILE_ARTICLES } from "@/lib/life-view-from-files";
+import { LIFE_VIEW_PRACTICE_ARTICLES } from "@/lib/life-view-practice-manual";
+import { LIFE_VIEW_20260831_ARTICLES } from "@/lib/life-view-20260831";
+import { LIFE_VIEW_20260903_ARTICLES } from "@/lib/life-view-20260903";
+import { LIFE_VIEW_20260903_LATE_ARTICLES } from "@/lib/life-view-20260903-late";
 import { LIFE_VIEW_CURATED_ARTICLES } from "@/lib/life-view-curated";
 import { LIFE_VIEW_LONG_FORM_ARTICLES } from "@/lib/life-view-long-form";
+import { EMOTIONAL_INTELLIGENCE_FOUR_PRACTICES_ARTICLE } from "@/lib/life-view-long-form/emotional-intelligence-four-practices-20261112";
 import { THREE_AGES_SPIRITUAL_WORLD_LONG_FORM } from "@/lib/life-view-long-form/three-ages-spiritual-world";
 import { LIFE_VIEW_SHORT_FORM_ARTICLES } from "@/lib/life-view-short-form";
 import { DAO_SELF_MASTERY_LONG_FORM } from "@/lib/life-view-long-form/dao-self-mastery";
@@ -43,7 +49,34 @@ type LifeViewHomeSectionProps = {
   archiveMode?: boolean;
 };
 
+// Explicit allowlist: superseded drafts stay unpublished. See docs/RESTORE-ARTICLES-20261112.md.
+const RESTORED_ORPHAN_IDS = new Set([
+  "world-as-mirror-not-physics",
+  "money-needs-order-not-anxiety",
+  "five-elements-as-movement",
+  "frequency-is-not-the-entrance",
+  "sensitivity-needs-boundaries",
+  "love-reveals-the-unfinished-self",
+  "capacity-is-real-energy",
+  "follow-the-flow-not-surrender",
+  "five-pillars-of-practice",
+  "break-the-deadlock",
+  "belief-and-world",
+  "relationships-and-boundaries",
+  "long-term-practice",
+]);
+
+const RESTORED_ORPHAN_ARTICLES = [
+  ...LIFE_VIEW_ARTICLES,
+  ...LIFE_VIEW_FILE_ARTICLES,
+  ...LIFE_VIEW_PRACTICE_ARTICLES,
+  ...LIFE_VIEW_20260831_ARTICLES,
+  ...LIFE_VIEW_20260903_ARTICLES,
+  ...LIFE_VIEW_20260903_LATE_ARTICLES,
+].filter((article) => RESTORED_ORPHAN_IDS.has(article.id));
+
 const LONG_ARTICLES: IllustratedArticle[] = [
+  EMOTIONAL_INTELLIGENCE_FOUR_PRACTICES_ARTICLE,
   SEVEN_CULTURAL_ATLASES_20261023,
   ABHIDHAMMA_THIRTY_ONE_PLANES,
   A_DAY_WITH_INCENSE_LONG_FORM,
@@ -58,6 +91,7 @@ const LONG_ARTICLES: IllustratedArticle[] = [
   THREE_TEACHINGS_CULTIVATION_LONG_FORM,
   ...LIFE_VIEW_LONG_FORM_ARTICLES,
   ...LIFE_VIEW_CURATED_ARTICLES,
+  ...RESTORED_ORPHAN_ARTICLES,
 ].map((article) => ({ ...article, contentKind: "article" as const }));
 
 const SHORT_NOTES: IllustratedArticle[] = LIFE_VIEW_SHORT_FORM_ARTICLES.map((article) => ({
@@ -68,6 +102,25 @@ const SHORT_NOTES: IllustratedArticle[] = LIFE_VIEW_SHORT_FORM_ARTICLES.map((art
 // 文章區只收文章與觀點短札。命理教學／術語知識另由「昭梧 · 命理小知識」承載。
 export const ARTICLE_CATALOG: IllustratedArticle[] = [...LONG_ARTICLES, ...SHORT_NOTES];
 ARTICLE_CATALOG.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+
+const READING_MAP_GROUPS = [
+  {
+    label: { "zh-Hant": "觀心與理解", "zh-Hans": "观心与理解", en: "Self-awareness" },
+    ids: ["emotional-intelligence-four-practices-20261112", "world-as-mirror-not-physics", "belief-and-world", "break-the-deadlock"],
+  },
+  {
+    label: { "zh-Hant": "人際與界線", "zh-Hans": "人际与边界", en: "Relationships & boundaries" },
+    ids: ["frequency-is-not-the-entrance", "sensitivity-needs-boundaries", "love-reveals-the-unfinished-self", "relationships-and-boundaries"],
+  },
+  {
+    label: { "zh-Hant": "現實與行動", "zh-Hans": "现实与行动", en: "Practical choices" },
+    ids: ["capacity-is-real-energy", "five-pillars-of-practice", "long-term-practice"],
+  },
+  {
+    label: { "zh-Hant": "五行與趨勢", "zh-Hans": "五行与趋势", en: "Five Elements & timing" },
+    ids: ["five-elements-as-movement", "follow-the-flow-not-surrender", "money-needs-order-not-anxiety"],
+  },
+] as const;
 
 export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSectionProps) {
   const { locale } = useI18n();
@@ -231,6 +284,41 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
         </button>
       )}
 
+      {(archiveMode || showAll) ? (
+        <nav aria-label={customerChrome("觀世錄閱讀地圖", "观世录阅读地图", "Articles reading map")} className="mt-5 border-y border-line/70 py-5">
+          <p className="font-display text-xl text-ink">{customerChrome("觀世錄 · 閱讀地圖", "观世录 · 阅读地图", "Notes on Life · Reading map")}</p>
+          <p className="mt-2 text-sm leading-6 text-ink-soft">{customerChrome("按主題選讀本次整理的文章；其餘原有篇章仍保留於完整文章目錄。", "按主题选读本次整理的文章；其余原有篇章仍保留在完整目录。", "Explore the newly restored essays by theme; the full archive remains below.")}</p>
+          <div className="mt-5 grid gap-x-9 gap-y-6 sm:grid-cols-2">
+            {READING_MAP_GROUPS.map((group) => (
+              <div key={group.label.en} className="border-t border-cinnabar/20 pt-3">
+                <h3 className="font-display text-lg text-ink">{group.label[locale]}</h3>
+                <ul className="mt-2 space-y-2">
+                  {group.ids.map((id) => {
+                    const target = contents.find((item) => item.id === id);
+                    if (!target) return null;
+                    return (
+                      <li key={id}>
+                        <a
+                          className="block min-h-10 py-1 text-sm leading-6 text-ink-soft underline decoration-line underline-offset-4 hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-offset-2"
+                          href={`#article-${id}`}
+                          onClick={(event) => {
+                            event.preventDefault();
+                            setOpenId(id);
+                            document.getElementById(`article-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                          }}
+                        >
+                          {target.title[locale]}
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </nav>
+      ) : null}
+
       <div className="mt-4 border-t border-line/70">
         {visibleArticles.map((article, index) => {
           const paragraphs = article.body[locale].split(/\n\n+/);
@@ -238,7 +326,7 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
           const kindLabel = article.contentKind === "short-note" ? copy.shortNote : copy.article;
 
           return (
-            <article key={article.id} className={`${index ? "border-t border-line/60" : ""} py-4`}>
+            <article key={article.id} id={`article-${article.id}`} className={`${index ? "border-t border-line/60" : ""} scroll-mt-24 py-4`}>
               <button
                 type="button"
                 onClick={() => toggleArticle(article.id, isOpen)}
