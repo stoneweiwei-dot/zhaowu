@@ -316,75 +316,75 @@
     },
     {
       "source": "/zh-hans/:page(login|account|member|history|auth|gallery|social|tianji-dual|tianji-xinggong)/:path*",
-      "destination": "/index.html"
+      "destination": "/zh-hans/index.html"
     },
     {
       "source": "/zh-hans/:path*",
-      "destination": "/zh-hans/:path*/index.html"
+      "destination": "/zh-hans/index.html"
     },
     {
       "source": "/en/:page(login|account|member|history|auth|gallery|social|tianji-dual|tianji-xinggong)/:path*",
-      "destination": "/index.html"
+      "destination": "/en/index.html"
     },
     {
       "source": "/en/:path*",
-      "destination": "/en/:path*/index.html"
+      "destination": "/en/index.html"
     },
     {
       "source": "/ja/:page(login|account|member|history|auth|gallery|social|tianji-dual|tianji-xinggong)/:path*",
-      "destination": "/index.html"
+      "destination": "/ja/index.html"
     },
     {
       "source": "/ja/:path*",
-      "destination": "/ja/:path*/index.html"
+      "destination": "/ja/index.html"
     },
     {
       "source": "/ko/:page(login|account|member|history|auth|gallery|social|tianji-dual|tianji-xinggong)/:path*",
-      "destination": "/index.html"
+      "destination": "/ko/index.html"
     },
     {
       "source": "/ko/:path*",
-      "destination": "/ko/:path*/index.html"
+      "destination": "/ko/index.html"
     },
     {
       "source": "/hi/:page(login|account|member|history|auth|gallery|social|tianji-dual|tianji-xinggong)/:path*",
-      "destination": "/index.html"
+      "destination": "/hi/index.html"
     },
     {
       "source": "/hi/:path*",
-      "destination": "/hi/:path*/index.html"
+      "destination": "/hi/index.html"
     },
     {
       "source": "/th/:page(login|account|member|history|auth|gallery|social|tianji-dual|tianji-xinggong)/:path*",
-      "destination": "/index.html"
+      "destination": "/th/index.html"
     },
     {
       "source": "/th/:path*",
-      "destination": "/th/:path*/index.html"
+      "destination": "/th/index.html"
     },
     {
       "source": "/id/:page(login|account|member|history|auth|gallery|social|tianji-dual|tianji-xinggong)/:path*",
-      "destination": "/index.html"
+      "destination": "/id/index.html"
     },
     {
       "source": "/id/:path*",
-      "destination": "/id/:path*/index.html"
+      "destination": "/id/index.html"
     },
     {
       "source": "/vi/:page(login|account|member|history|auth|gallery|social|tianji-dual|tianji-xinggong)/:path*",
-      "destination": "/index.html"
+      "destination": "/vi/index.html"
     },
     {
       "source": "/vi/:path*",
-      "destination": "/vi/:path*/index.html"
+      "destination": "/vi/index.html"
     },
     {
       "source": "/fil/:page(login|account|member|history|auth|gallery|social|tianji-dual|tianji-xinggong)/:path*",
-      "destination": "/index.html"
+      "destination": "/fil/index.html"
     },
     {
       "source": "/fil/:path*",
-      "destination": "/fil/:path*/index.html"
+      "destination": "/fil/index.html"
     }
   ],
   "ignoreCommand": "if [ \"$VERCEL_GIT_COMMIT_REF\" != \"main\" ]; then exit 0; fi; git diff --quiet HEAD^ HEAD -- . ':(exclude)docs/**' ':(exclude)**/*.md' ':(exclude).github/**'"

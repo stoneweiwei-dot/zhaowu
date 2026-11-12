@@ -3,7 +3,7 @@
 - 本次站主明確指示：`zh-Hant` 保持無前綴；`zh-Hans/en/ja/ko/hi/th/id/vi/fil` 對應 `/zh-hans` 及同名小寫前綴。URL 語言優先於 browser／localStorage，根路徑不得依 Accept-Language 自動轉址。
 - SUPERSEDES（僅重疊部分）：2026-10-27 共用 canonical／不輸出 hreflang 的舊決策；2026-11-11 瀏覽器與手選偏好優先於目前 URL 的部分。瀏覽器偵測工具及手選儲存保留，但不覆寫 URL。文章／報告既有中英回退、非中文 engine locale=en 保留。
 - 建置 33 公開路由 × 十語文件，原始 HTML 自帶 lang/title/description/self canonical 與十一項 alternate（十語＋x-default）；Sitemap 採 B，330 URL 均互指。四頁補十語編輯摘要，不宣稱全文已譯。
-- 僅精確辨識九個合法前綴；其他首段保留為完整路徑，真實既有 routes 仍有效。沒有 `/xx`、`/zh-hant` 靜態檔或 catch-all rewrite，故直接請求 404；不建立繁中重複路徑。未知合法前綴子路徑也不降級成首頁。
+- 僅精確辨識九個合法前綴；其他首段保留為完整路徑，真實既有 routes 仍有效。沒有 `/xx`、`/zh-hant` 靜態檔或 catch-all rewrite，故直接請求 404；不建立繁中重複路徑。2026-11-12 follow-up SUPERSEDES（僅伺服器 fallback）：合法語言前綴缺少靜態檔時回傳該語言 SPA shell（/{lang}/index.html），由 client router 判斷子路徑；既有靜態文件優先，query/hash 保留。非法前綴仍 404。
 - 僅於指定 worktree／分支提交與開 PR，明確授權一次 Preview 驗收；不合併、不發布 Production、不改 ignoreCommand 或現有 Vercel settings。排盤、登入驗證、付款、資料及原畫受保護。
 
 ## 2026-11-11｜Filipino 第十語與瀏覽器語言優先序（PR only）

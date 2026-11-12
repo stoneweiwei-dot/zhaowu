@@ -35,7 +35,11 @@ test('every static document contains exact localized SEO, reciprocal 11 alternat
   try {
     writeFileSync(join(dir, 'index.html'), read('index.html'));
     const written = buildRouteHtml(dir);
-    assert.equal(written.length, Object.keys(meta.routes).length * 10);
+    assert.equal(written.length, 330);
+    assert.equal(Object.keys(meta.routes).length, 33);
+    // Static documents remain on disk ahead of the host fallback rewrites.
+    assert.ok(written.includes("/en/about"));
+    assert.ok(written.includes("/ja/knowledge/true-solar-time"));
     const summaries = ['/sample-report', '/mythic-atlas', '/guaili-luanshen', '/knowledge/nine-heavens-lamps'];
     for (const path of Object.keys(meta.routes)) for (const language of LANGUAGES) {
       const publicPath = languagePath(path, language);
@@ -79,9 +83,14 @@ test('only language rewrites added; unknown prefixes retain a real host 404', ()
   const config = JSON.parse(read('vercel.json'));
   const localized = config.rewrites.filter(r => Object.values(LANGUAGE_PREFIXES).some(prefix => prefix && r.source.startsWith(prefix + '/')));
   assert.equal(localized.length, 18);
+  for (const rule of localized) {
+    const prefix = rule.source.split("/")[1];
+    assert.equal(rule.destination, `/${prefix}/index.html`);
+    assert.ok(!rule.destination.includes("?") && !rule.destination.includes("#"));
+  }
   for (const language of LANGUAGES.slice(1)) {
     const prefix = LANGUAGE_PREFIXES[language];
-    assert.ok(localized.some(r => r.source === `${prefix}/:path*` && r.destination === `${prefix}/:path*/index.html`));
+    assert.ok(localized.some(r => r.source === `${prefix}/:path*` && r.destination === `${prefix}/index.html`));
   }
   assert.ok(!config.rewrites.some(r => /xx|zh-hant/.test(r.source)));
   assert.ok(!config.rewrites.some(r => r.source === '/:path*'));
