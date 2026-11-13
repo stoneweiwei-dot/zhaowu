@@ -2,13 +2,35 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
-import { buildCta, buildQuizShareModel, deriveElementChips, estimateShareText, planQuizShareLayout, quizSharePath, sanitizeResultLabel, shareLayoutViolations, QUIZ_SHARE_PALETTE, QUIZ_SHARE_SIZE } from "../src/lib/quiz-share-card.ts";
+import { buildCta, buildQuizShareModel, deriveElementChips, estimateShareText, planQuizShareLayout, quizSharePath, sanitizeResultLabel, shareLayoutViolations, QUIZ_SHARE_PALETTE, QUIZ_SHARE_SIZE, resolveQuizShareTerm, QUIZ_SHARE_CROP_FOCUS_Y } from "../src/lib/quiz-share-card.ts";
+import { SOLAR_TERMS_24 } from "../src/lib/seasonal-skins.ts";
 
-test("quiz share model keeps a light 1080x1350 card, short description and route", () => {
-  assert.deepEqual(QUIZ_SHARE_SIZE, { width: 1080, height: 1350 });
+test("quiz share art and label follow the pinned Sydney solar term", () => {
+  const lidong = resolveQuizShareTerm(new Date("2026-11-14T12:00:00+11:00"));
+  assert.equal(lidong.term.zh, "立冬");
+  assert.equal(lidong.term.en, "Start of Winter");
+  assert.equal(lidong.term.skinId, "solar-start-winter");
+  assert.match(lidong.artPath, /earth-begins-freezing\.webp$/);
+  assert.equal(resolveQuizShareTerm(new Date("2026-04-10T12:00:00+10:00")).term.zh, "清明");
+  assert.equal(resolveQuizShareTerm(new Date("2026-11-22T00:02:00+11:00")).term.zh, "小雪");
+  const model = buildQuizShareModel({ quizId: "six-realms", quizName: "六道習氣測驗", resultLabel: "人道", description: "安定從容", locale: "zh-Hant" });
+  const zhLayout = planQuizShareLayout(model, estimateShareText, lidong);
+  assert.equal(zhLayout.term.text, "立冬");
+  assert.ok(zhLayout.boxes.some((box) => box.id === "termName"));
+  const en = buildQuizShareModel({ quizId: "six-realms", quizName: "Six Realms", resultLabel: "Human realm", description: "Steady and calm", locale: "en" });
+  assert.equal(planQuizShareLayout(en, estimateShareText, lidong).term.text, "Start of Winter");
+  for (const term of SOLAR_TERMS_24) {
+    const pinned = resolveQuizShareTerm(new Date("2026-11-14T12:00:00+11:00"), { skinId: term.skinId });
+    assert.ok(pinned.artPath.startsWith(`/theme-skins/${term.skinId}/`), `${term.skinId}: ${pinned.artPath}`);
+    assert.ok(Object.hasOwn(QUIZ_SHARE_CROP_FOCUS_Y, term.skinId), `${term.skinId} uses the documented default crop when absent from theme skins`);
+  }
+});
+
+test("quiz share model keeps a light 1080x1920 card, short description and route", () => {
+  assert.deepEqual(QUIZ_SHARE_SIZE, { width: 1080, height: 1920 });
   assert.match(QUIZ_SHARE_PALETTE.paper, /^#[fF]/);
   const model = buildQuizShareModel({ quizId: "six-realms", quizName: "六道", resultLabel: "人道", description: "一二三四五六七八九十".repeat(5), locale: "zh-Hant" }, "/en/quiz/six-realms");
-  assert.ok([...model.description].length <= 40);
+  assert.ok([...model.description].length <= 180);
   assert.equal(model.marks.site, "zhao-wu.com");
   assert.equal(model.marks.original, "STONE 原創");
   assert.equal(new URL(model.shareUrl).pathname, "/en/quiz/six-realms");
@@ -24,11 +46,12 @@ test("share cards drop option letters, fill traits/chips, and keep quiz paths in
   assert.equal(sanitizeResultLabel("玄豹 · 單點突破者", "animal"), "玄豹");
   const six = buildQuizShareModel({ quizId: "six-realms", quizName: "六道習氣測驗", resultLabel: "A · 天道習氣", description: "你較容易帶著『本來就會順』『我還有餘裕』的感受，對小事不太執著。", locale: "zh-Hant" }, "/quiz/six-realms");
   assert.equal(six.resultLabel, "天道習氣");
-  assert.ok(six.traits.length >= 2 && six.traits.length <= 3);
+  assert.ok(six.traits.length >= 3 && six.traits.length <= 3);
   assert.equal(six.cta.path, "zhao-wu.com/quiz/six-realms");
   assert.match(six.cta.lead, /哪一道/);
   const english = buildQuizShareModel({ quizId: "six-realms", quizName: "Six Realms Habit Test With An Extra Long English Title For Wrapping", resultLabel: "A · Heaven-realm habit", description: "You often move from a sense that life will work out and that you have enough room to breathe.", locale: "en" }, "/en/quiz/six-realms");
   assert.equal(english.resultLabel, "Heaven-realm habit");
+  assert.ok(english.traits.length >= 3, `English six-realms traits: ${english.traits.join(", ")}`);
   assert.equal(english.cta.path, "zhao-wu.com/quiz/six-realms");
   assert.match(english.cta.lead, /path/i);
   assert.equal(quizSharePath("animal", "/en/fun-tests?test=animal"), "/fun-tests?test=animal");
@@ -111,19 +134,49 @@ test("element share labels use a compound name, drop duplicate chips, and keep s
 
 test("share card layout keeps measured gaps and does not overlap boxes", () => {
   const fixtures = [
-    { quizId: "six-realms", quizName: "六道習氣測驗", resultLabel: "A · 天道習氣", description: "你較容易帶著『本來就會順』『我還有餘裕』的感受，對小事不太執著。", locale: "zh-Hant" },
-    { quizId: "divine-affinity", quizName: "仙佛淵源本緣測試", resultLabel: "佛系", description: "空性 · 觀照 · 智慧", locale: "zh-Hant" },
-    { quizId: "earth-online", quizName: "地球 Online · 古籍攻略", resultLabel: "周易 × 孫子兵法", description: "時機與變局 / 競爭與布局", traits: ["時機與變局", "競爭與布局"], locale: "zh-Hant" },
+    { quizId: "six-realms", quizName: "六道習氣測驗", resultLabel: "A · 天道習氣", description: "你較容易帶著『本來就會順』『我還有餘裕』的感受，對小事不太執著。", traits: ["心境安穩", "從容有餘", "不執小事"], locale: "zh-Hant" },
+    { quizId: "divine-affinity", quizName: "仙佛淵源本緣測試", resultLabel: "佛系", description: "空性 · 觀照 · 智慧", traits: ["空性", "觀照", "智慧"], locale: "zh-Hant" },
+    { quizId: "earth-online", quizName: "地球 Online · 古籍攻略", resultLabel: "周易 × 孫子兵法", description: "時機與變局 / 競爭與布局", traits: ["時機與變局", "競爭與布局", "因勢而動"], locale: "zh-Hant" },
     { quizId: "cultivation-destiny", quizName: "修仙命格靈測", resultLabel: "靈木仙根 · 雙靈根", description: "依你的資質與際遇，此生宜穩中求進。", traits: ["散修出身", "落腳青雲峰", "以柔守中"], locale: "zh-Hant" },
     { quizId: "animal", quizName: "內在動物 × 命局瑞獸", resultLabel: "玄豹 · 單點突破者", description: "掌控節奏與有效成果", traits: ["單點突破者", "專注", "膽識"], locale: "zh-Hant" },
-    { quizId: "element", quizName: "五行功能測驗", resultLabel: "木｜生長與方向", description: "你現在不一定是沒能力，而是需要先把路理清、把堵點疏通，再讓新的東西長出來。", traits: ["生長與方向", "只定一個未來 30 天主方向。"], locale: "zh-Hant" },
-    { quizId: "five-element-overdrive", quizName: "五行優勢內耗測驗", resultLabel: "木｜生發型", description: "你擅長看見可能性、讓事情生長、連結資源與開新路。", traits: ["生發型"], locale: "zh-Hant" },
-    { quizId: "six-realms", quizName: "Six Realms Habit Test: An Extra-Long English Title That Must Wrap Cleanly", resultLabel: "A · Heaven-realm habit", description: "You often move from a sense that life will work out and that you have enough room to breathe.", locale: "en" },
+    { quizId: "element", quizName: "五行功能測驗", resultLabel: "木｜生長與方向", description: "你現在不一定是沒能力，而是需要先把路理清、把堵點疏通，再讓新的東西長出來。", traits: ["生長與方向", "只定一個未來 30 天主方向。", "理清路徑"], locale: "zh-Hant" },
+    { quizId: "five-element-overdrive", quizName: "五行優勢內耗測驗", resultLabel: "木｜生發型", description: "你擅長看見可能性、讓事情生長、連結資源與開新路。", traits: ["生發型", "連結資源", "開拓新路"], locale: "zh-Hant" },
+    { quizId: "six-realms", quizName: "Six Realms Habit Test: An Extra-Long English Title That Must Wrap Cleanly", resultLabel: "A · Heaven-realm habit", description: "You often move from a sense that life will work out and that you have enough room to breathe.", traits: ["Reflective and steady", "Grounded under pressure", "Open to a wider view"], locale: "en" },
     { quizId: "cultivation-destiny", quizName: "Cultivation Destiny Dossier", resultLabel: "Twin Spiritual Roots of Azure Wood and Hidden Fire, with an Exceptionally Long Secondary Title", description: "Your dossier points to a steady, adaptive path rather than a sudden breakthrough.", traits: ["Independent cultivator", "Azure Cloud Peak", "Hold the centre with softness"], locale: "en" },
   ];
   for (const fixture of fixtures) {
     const model = buildQuizShareModel({ ...fixture, locale: fixture.locale }, "");
+    assert.ok(model.traits.length >= 3, `${fixture.quizId} ${fixture.locale} has fewer than three traits`);
     const layout = planQuizShareLayout(model, estimateShareText);
+    assert.ok(layout.header.box.y >= 780, `${fixture.quizId} ${fixture.locale}: kicker must sit in the paper panel`);
+    assert.ok(layout.traits.every((trait) => trait.fitted.lines.length <= 2), `${fixture.quizId} ${fixture.locale}: traits must fit within two lines`);
+    if (fixture.quizId === "six-realms" && fixture.locale === "en") {
+      assert.deepEqual(layout.traits.map((trait) => trait.fitted.lines.join(" ")), fixture.traits);
+      assert.ok(layout.traits.every((trait) => !trait.fitted.lines.join("").endsWith("…")));
+      assert.ok(layout.result.fitted.size >= 80, `English six-realms result size ${layout.result.fitted.size} should stay a large headline`);
+      assert.match(layout.result.fitted.lines.join(" "), /Heaven-realm habit/);
+    }
+    if (fixture.quizId === "cultivation-destiny" && fixture.locale === "zh-Hant") {
+      const long = buildQuizShareModel({
+        quizId: "cultivation-destiny",
+        quizName: "修仙命格靈測",
+        resultLabel: "靈木仙根 · 雙靈根",
+        description: "依你的資質與際遇，此生宜穩中求進，持續修習並保有彈性。",
+        traits: ["穩中求進", "持續修習", "柔韌應變"],
+        locale: "zh-Hant",
+      }, "/quiz/cultivation-destiny");
+      const longLayout = planQuizShareLayout(long, estimateShareText);
+      assert.ok(longLayout.description, "cultivation description should render");
+      const desc = longLayout.description.fitted.lines.join("");
+      assert.match(desc, /彈性/);
+      assert.doesNotMatch(desc, /…/);
+      assert.ok(longLayout.description.fitted.lines.every((line) => !/^[。．.、，,;；:：!！?？]+$/.test(line)), `orphan punctuation in ${JSON.stringify(longLayout.description.fitted.lines)}`);
+    }
+    const lastTrait = layout.boxes.find((box) => box.id === `trait-${layout.traits.length - 1}`);
+    const mark = layout.boxes.find((box) => box.id === "mark");
+    const cta = layout.boxes.find((box) => box.id === "cta");
+    if (lastTrait && mark) assert.ok(mark.y - (lastTrait.y + lastTrait.h) >= 32 - 0.5, `${fixture.quizId} ${fixture.locale}: last trait must have 32px clearance before mark`);
+    if (mark && cta) assert.ok(cta.y - (mark.y + mark.h) >= 32 - 0.5, `${fixture.quizId} ${fixture.locale}: mark must have 32px clearance before CTA`);
     const violations = shareLayoutViolations(layout.boxes);
     assert.deepEqual(violations, [], `${fixture.quizId} ${fixture.locale}: ${violations.join("; ")}`);
   }

@@ -1,13 +1,14 @@
 import type { Locale } from "@/lib/i18n";
+import { FROST_PHASES, FROST_SKIN_ID, seasonalPackForSkin, seasonalState, SOLAR_TERMS_24, type SolarTermSpec } from "@/lib/seasonal-skins";
 
-export const QUIZ_SHARE_SIZE = { width: 1080, height: 1350 } as const;
+export const QUIZ_SHARE_SIZE = { width: 1080, height: 1920 } as const;
 export const QUIZ_SHARE_PALETTE = {
-  paper: "#F3EBDD",
-  jade: "#286653",
-  indigo: "#414C78",
-  vermilion: "#A8463D",
-  gold: "#B28A45",
-  ink: "#28271F",
+  paper: "#F4F1E9",
+  jade: "#305B50",
+  indigo: "#1D3550",
+  vermilion: "#965342",
+  gold: "#A08658",
+  ink: "#23302D",
 } as const;
 
 export const QUIZ_SHARE_PATHS: Record<string, string> = {
@@ -45,17 +46,54 @@ const CTA_FALLBACK: Record<Locale, string> = {
   en: "Take the free quiz",
 };
 
-const SERIF = '"Noto Serif CJK TC", "Noto Serif CJK SC", "Noto Serif TC", "Source Han Serif TC", serif';
+const SERIF = '"Chiron Sung HK", "Songti TC", "Songti SC", "Noto Serif CJK TC", "Noto Serif TC", "STSong", "Cormorant Garamond", "Playfair Display", serif';
 const SANS = '"Noto Sans CJK TC", "Noto Sans CJK SC", "Noto Sans TC", "Noto Sans", system-ui, sans-serif';
 
-const FRAME = { left: 57, top: 57, right: 1023, bottom: 1293 };
+const FRAME = { left: 57, top: 57, right: 1023, bottom: 1863 };
 const CORNER = 36;
 const CONTENT_LEFT = 120;
 const CONTENT_RIGHT = 960;
 const CONTENT_WIDTH = CONTENT_RIGHT - CONTENT_LEFT;
 const TITLE_WIDTH = 640;
-const SEAL = { x: 900, y: 196, size: 148, rotate: (13 * Math.PI) / 180 };
-const BOTTOM_SAFE = 1220;
+const SEAL = { x: 900, y: 515, size: 148, rotate: (13 * Math.PI) / 180 };
+const BOTTOM_SAFE = 1790;
+export type QuizShareTerm = { term: SolarTermSpec; houIndex: number; artPath: string; name: { "zh-Hant": string; "zh-Hans": string; en: string } };
+export function resolveQuizShareTerm(now = new Date(), override: { skinId?: string; houIndex?: number } = {}): QuizShareTerm {
+  const live = seasonalState(now);
+  const term = override.skinId ? SOLAR_TERMS_24.find((item) => item.skinId === override.skinId) : live.term;
+  if (!term) throw new Error(`Unknown solar term skin: ${override.skinId}`);
+  const houIndex = Math.max(0, Math.min(2, Math.trunc(override.houIndex ?? (override.skinId ? 0 : live.houIndex))));
+  const pack = seasonalPackForSkin(term.skinId);
+  const artPath = pack?.[houIndex]?.art ?? (term.skinId === FROST_SKIN_ID ? FROST_PHASES[houIndex].art : undefined) ?? pack?.[0]?.art ?? `/theme-skins/${term.skinId}/1.webp`;
+  return { term, houIndex, artPath, name: { "zh-Hant": term.zh, "zh-Hans": term.hans, en: term.en } };
+}
+
+const defaultQuizShareTerm = resolveQuizShareTerm();
+const shareArtCache = new Map<string, HTMLImageElement>();
+export function preloadQuizShareArt(src: string): Promise<HTMLImageElement> {
+  if (typeof Image === "undefined") return Promise.reject(new Error("Images are unavailable"));
+  let image = shareArtCache.get(src);
+  if (!image) {
+    image = new Image();
+    image.src = src;
+    shareArtCache.set(src, image);
+  }
+  if (image.complete && image.naturalWidth) return Promise.resolve(image);
+  return image.decode().then(() => image!);
+}
+if (typeof Image !== "undefined") void preloadQuizShareArt(defaultQuizShareTerm.artPath).catch(() => undefined);
+
+/** Cover-fit focal point in the 1080×760 band (0 = top, 1 = bottom). Default 0.5 keeps a mid-subject window; a few terms are shifted so the 候 subject is in frame. */
+export const QUIZ_SHARE_CROP_FOCUS_Y: Record<string, number> = Object.fromEntries(
+  SOLAR_TERMS_24.map((term) => [term.skinId, 0.5]),
+);
+Object.assign(QUIZ_SHARE_CROP_FOCUS_Y, {
+  "solar-minor-cold": 0.32,
+  "solar-start-summer": 0.58,
+  "solar-start-autumn": 0.34,
+  "solar-frost-descent": 0.62,
+  "solar-minor-snow": 0.76,
+});
 
 export type QuizShareChip = { label: string; color: string };
 export type QuizShareInput = {
@@ -136,10 +174,17 @@ export function deriveTraits(description: string, resultLabel = "", quizId = "")
     .map((part) => clipPhrase(part, 14, 32));
   const preferred = uniquePhrases([...leftover, ...quoted, ...split]);
   const extra = clauses.filter((clause) => !preferred.some((item) => clause.includes(item) || item.includes(clause)));
-  return uniquePhrases([...preferred, ...extra])
+  const base = uniquePhrases([...preferred, ...extra])
     .map(stripTraitLead)
     .filter((trait) => trait && !isWeakTrait(trait))
     .slice(0, 6);
+  if (isMostlyLatin(description) && base.length < 3) {
+    for (const fallback of ["Reflective and steady", "Grounded under pressure", "Open to a wider view"]) {
+      if (base.length >= 3) break;
+      if (!base.some((item) => compact(item) === compact(fallback))) base.push(fallback);
+    }
+  }
+  return base;
 }
 
 export function deriveElementChips(quizId: string, resultLabel: string, locale: Locale): QuizShareChip[] {
@@ -155,7 +200,7 @@ export function buildQuizShareModel(input: QuizShareInput & { locale: Locale }, 
   const resultLabel = sanitizeResultLabel(input.resultLabel, input.quizId, input.locale);
   const traits = collectTraits(input, resultLabel);
   const chips = dropDuplicateChips(deriveElementChips(input.quizId, `${input.resultLabel} ${resultLabel}`, input.locale), resultLabel);
-  const description = clipPhrase(String(input.description ?? ""), 40, 40);
+  const description = clipPhrase(String(input.description ?? ""), 180, 180);
   const origin = typeof window === "undefined" ? "https://zhao-wu.com" : window.location.origin;
   const rawPath = (href.split("#")[0] || "/");
   const sharePath = rawPath.startsWith("/") ? rawPath : `/${rawPath}`;
@@ -169,7 +214,7 @@ export function buildQuizShareModel(input: QuizShareInput & { locale: Locale }, 
     shareUrl: `${origin}${sharePath}`,
     quizPath,
     cta: buildCta(input.locale, input.quizId, quizPath),
-    marks: { site: "zhao-wu.com", original: input.locale === "en" ? "© STONE" : "STONE 原創" },
+    marks: { site: "zhao-wu.com", original: "STONE 原創" },
   };
 }
 
@@ -213,14 +258,14 @@ function isRedundantPhrase(trait: string, resultLabel: string): boolean {
   return false;
 }
 
-export function renderQuizShareCard(model: QuizShareModel): HTMLCanvasElement {
+export function renderQuizShareCard(model: QuizShareModel, term = defaultQuizShareTerm): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   canvas.width = QUIZ_SHARE_SIZE.width;
   canvas.height = QUIZ_SHARE_SIZE.height;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas unavailable");
-  const layout = planQuizShareLayout(model, measureWithContext(ctx));
-  paintQuizShareCard(ctx, model, layout);
+  const layout = planQuizShareLayout(model, measureWithContext(ctx), term);
+  paintQuizShareCard(ctx, model, layout, term);
   return canvas;
 }
 
@@ -250,41 +295,44 @@ export function estimateShareText(font: string, text: string): FontMetrics {
   return { width, ascent: size * 0.88, descent: size * 0.24 };
 }
 
-export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
-  const kickerFont = `600 28px ${SANS}`;
+export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn, term = defaultQuizShareTerm) {
+  const kickerFont = `500 28px ${SERIF}`;
   const markFont = `700 24px ${SANS}`;
-  const kicker = measure(kickerFont, "ZHAOWU · QUIZ");
+  const kicker = measure(kickerFont, model.locale === "en" ? "A NOTE FROM ZHAOWU" : "昭梧 · 測驗箋記");
+  const termFont = `500 26px ${SERIF}`;
+  const termText = term.name[model.locale];
+  const termMetrics = measure(termFont, termText);
   const markMetrics = measure(markFont, model.marks.original);
   const markHeight = Math.ceil(markMetrics.ascent + markMetrics.descent);
 
-  const headerTop = 118;
+  const headerTop = 800;
   const headerBottom = headerTop + kicker.ascent + kicker.descent;
   const ruleTop = headerBottom + 12;
   const ruleBottom = ruleTop + 6;
   const titleTop = ruleBottom + QUIZ_SHARE_MIN_GAP;
-  const title = fitWrapped(measure, model.quizName, TITLE_WIDTH, 2, 42, 28, `600 {size}px ${SANS}`);
+  const title = fitWrapped(measure, model.quizName, TITLE_WIDTH, 2, 54, 34, `500 {size}px ${SERIF}`);
   const titleBottom = titleTop + title.height;
 
-  const lead = fitWrapped(measure, model.cta.lead, 800, 2, 36, 26, `700 {size}px ${SERIF}`);
-  const pathLine = fitWrapped(measure, `→ ${model.cta.path}`, 800, 2, 30, 22, `600 {size}px ${SANS}`);
-  const ctaInner = 22 + lead.height + 10 + pathLine.height + 22;
-  const ctaHeight = Math.max(120, Math.ceil(ctaInner));
+  const lead = fitWrapped(measure, model.cta.lead, 808, 2, 36, 28, `600 {size}px ${SERIF}`);
+  const pathLine = fitWrapped(measure, model.cta.path, 808, 2, 30, 26, `500 {size}px ${SANS}`);
+  const ctaHeight = Math.ceil(lead.height + 12 + pathLine.height + 32);
   const ctaTop = BOTTOM_SAFE - ctaHeight;
-  const markTop = ctaTop - 16 - markHeight;
+  const markTop = ctaTop - QUIZ_SHARE_MIN_GAP - markHeight;
   const middleBottom = markTop - QUIZ_SHARE_MIN_GAP;
   const middleTop = titleBottom + QUIZ_SHARE_MIN_GAP;
   const available = Math.max(0, middleBottom - middleTop);
   const sealBox = sealBounds();
 
-  const layoutFor = (resultSize: number, resultWidth: number, gaps: MiddleGaps) => {
-    const result = fitWrapped(measure, model.resultLabel || " ", resultWidth, 3, resultSize, 36, `700 {size}px ${SERIF}`);
+  const RESULT_MIN_SIZE = 80;
+  const layoutFor = (resultSize: number, resultWidth: number, gaps: MiddleGaps, descSize = 50, traitSize = 44) => {
+    const result = fitWrapped(measure, model.resultLabel || " ", resultWidth, 3, resultSize, Math.min(36, resultSize), `700 {size}px ${SERIF}`);
     const description = model.description
-      ? fitWrapped(measure, model.description, CONTENT_WIDTH, 1, 34, 20, `400 {size}px ${SANS}`)
+      ? fitWrapped(measure, model.description, CONTENT_WIDTH, 4, descSize, 32, `400 {size}px ${SANS}`)
       : null;
     const chipHeight = model.chips.length ? 56 : 0;
     const traits = model.traits.map((trait) => {
-      const fitted = fitWrapped(measure, trait, CONTENT_WIDTH - 48, 2, 34, 24, `600 {size}px ${SANS}`);
-      const height = Math.ceil(fitted.height + 28);
+      const fitted = fitWrapped(measure, trait, CONTENT_WIDTH - 48, 2, traitSize, 28, `600 {size}px ${SANS}`);
+      const height = Math.ceil(fitted.height + 6);
       return { trait, fitted, height };
     });
     const traitStack = traits.reduce((sum, item, index) => sum + item.height + (index ? gaps.trait : 0), 0);
@@ -301,18 +349,34 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
   };
 
   let resultSize = 132;
+  let descSize = 50;
+  let traitSize = 44;
   let resultWidth = CONTENT_WIDTH;
-  let gaps: MiddleGaps = { afterResult: 28, afterRule: 24, beforeChips: 28, beforeTraits: 24, trait: 16 };
-  let planned = layoutFor(resultSize, resultWidth, gaps);
-  const minGaps: MiddleGaps = { afterResult: 20, afterRule: 18, beforeChips: 20, beforeTraits: 18, trait: 12 };
+  let gaps: MiddleGaps = { afterResult: 28, afterRule: 24, beforeChips: 28, beforeTraits: 24, trait: 6 };
+  const refit = () => layoutFor(resultSize, resultWidth, gaps, descSize, traitSize);
+  let planned = refit();
+  const minGaps: MiddleGaps = { afterResult: 20, afterRule: 18, beforeChips: 20, beforeTraits: 18, trait: 4 };
 
-  while (planned.natural > available && resultSize > 36) {
-    resultSize -= 4;
-    planned = layoutFor(resultSize, resultWidth, gaps);
+  // Shrink body and traits first so the result headline stays large.
+  while (planned.natural > available && descSize > 40) {
+    descSize -= 2;
+    planned = refit();
+  }
+  while (planned.natural > available && traitSize > 28) {
+    traitSize -= 2;
+    planned = refit();
   }
   if (planned.natural > available) {
     gaps = minGaps;
-    planned = layoutFor(resultSize, resultWidth, gaps);
+    planned = refit();
+  }
+  while (planned.natural > available && resultSize > RESULT_MIN_SIZE) {
+    resultSize -= 4;
+    planned = refit();
+  }
+  while (planned.natural > available && descSize > 32) {
+    descSize -= 2;
+    planned = refit();
   }
 
   let leftover = Math.max(0, available - planned.natural);
@@ -320,17 +384,21 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
   const resultTopCandidate = middleTop + topPad;
   if (resultTopCandidate < sealBox.y + sealBox.h + 16) {
     resultWidth = TITLE_WIDTH;
-    planned = layoutFor(resultSize, resultWidth, gaps);
+    planned = refit();
     leftover = Math.max(0, available - planned.natural);
     topPad = leftover * 0.34;
   } else {
     resultWidth = CONTENT_WIDTH;
   }
 
-  // Re-fit at the chosen width/size after any width change, then distribute leftover.
-  while (planned.natural > available && resultSize > 36) {
+  // Re-fit after any width change. Only drop below RESULT_MIN_SIZE for overflowing long titles.
+  while (planned.natural > available && resultSize > RESULT_MIN_SIZE) {
     resultSize -= 4;
-    planned = layoutFor(resultSize, resultWidth, gaps);
+    planned = refit();
+  }
+  while (planned.natural > available && resultSize > 48) {
+    resultSize -= 4;
+    planned = refit();
   }
   leftover = Math.max(0, available - planned.natural);
   topPad = leftover * 0.42;
@@ -371,17 +439,18 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
   });
 
   const headerBox: ShareBox = { id: "header", x: CONTENT_LEFT, y: headerTop, w: Math.ceil(kicker.width), h: headerBottom - headerTop, role: "content" };
+  const termBox: ShareBox = { id: "termName", x: CONTENT_RIGHT - Math.ceil(termMetrics.width), y: headerTop, w: Math.ceil(termMetrics.width), h: Math.ceil(termMetrics.ascent + termMetrics.descent), role: "content" };
   const titleBox: ShareBox = { id: "quizTitle", x: CONTENT_LEFT, y: titleTop, w: TITLE_WIDTH, h: title.height, role: "content" };
   const markBox: ShareBox = { id: "mark", x: CONTENT_LEFT, y: markTop, w: Math.ceil(markMetrics.width + 8), h: markHeight, role: "content" };
   const ctaBox: ShareBox = { id: "cta", x: 108, y: ctaTop, w: 864, h: ctaHeight, role: "content" };
   const corners: ShareBox[] = [
     { id: "corner-tl", x: 78, y: 78, w: CORNER, h: CORNER, role: "chrome" },
     { id: "corner-tr", x: 1002 - CORNER, y: 78, w: CORNER, h: CORNER, role: "chrome" },
-    { id: "corner-bl", x: 78, y: 1272 - CORNER, w: CORNER, h: CORNER, role: "chrome" },
-    { id: "corner-br", x: 1002 - CORNER, y: 1272 - CORNER, w: CORNER, h: CORNER, role: "chrome" },
+    { id: "corner-bl", x: 78, y: 1842 - CORNER, w: CORNER, h: CORNER, role: "chrome" },
+    { id: "corner-br", x: 1002 - CORNER, y: 1842 - CORNER, w: CORNER, h: CORNER, role: "chrome" },
   ];
 
-  const boxes: ShareBox[] = [headerBox, titleBox, resultBox, markBox, ctaBox, sealBox, ...corners];
+  const boxes: ShareBox[] = [headerBox, termBox, titleBox, resultBox, markBox, ctaBox, sealBox, ...corners];
   if (descriptionBox) boxes.push(descriptionBox);
   if (chipsBox) boxes.push(chipsBox);
   for (const box of traitBoxes) boxes.push({ id: box.id, x: box.x, y: box.y, w: box.w, h: box.h, role: "content" });
@@ -389,6 +458,7 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
   return {
     boxes,
     header: { box: headerBox, font: kickerFont, metrics: kicker },
+    term: { box: termBox, text: termText, font: termFont, metrics: termMetrics },
     title: { box: titleBox, fitted: title },
     result: { box: resultBox, fitted: result },
     description: planned.description && descriptionBox ? { box: descriptionBox, fitted: planned.description } : null,
@@ -439,25 +509,32 @@ export function shareLayoutViolations(boxes: ShareBox[]): string[] {
   return violations;
 }
 
-function paintQuizShareCard(ctx: CanvasRenderingContext2D, model: QuizShareModel, layout: ReturnType<typeof planQuizShareLayout>) {
+function paintQuizShareCard(ctx: CanvasRenderingContext2D, model: QuizShareModel, layout: ReturnType<typeof planQuizShareLayout>, term: QuizShareTerm) {
   const { paper, jade, indigo, vermilion, gold, ink } = QUIZ_SHARE_PALETTE;
   ctx.fillStyle = paper;
   ctx.fillRect(0, 0, QUIZ_SHARE_SIZE.width, QUIZ_SHARE_SIZE.height);
+  drawLandscape(ctx, term);
+  drawLowerPaperPanel(ctx);
   drawRiceTexture(ctx);
   ctx.strokeStyle = "#D7C8AE";
   ctx.lineWidth = 3;
-  ctx.strokeRect(38, 38, 1004, 1274);
+  ctx.strokeRect(38, 38, 1004, 1844);
   ctx.strokeStyle = gold;
   ctx.lineWidth = 2;
   ctx.strokeRect(FRAME.left, FRAME.top, FRAME.right - FRAME.left, FRAME.bottom - FRAME.top);
   drawCornerMarks(ctx, gold, vermilion);
-  drawSeal(ctx, SEAL.x, SEAL.y, model.quizId);
+  drawSeal(ctx, SEAL.x, SEAL.y);
 
   ctx.textAlign = "left";
   ctx.textBaseline = "alphabetic";
   ctx.fillStyle = jade;
   ctx.font = layout.header.font;
-  ctx.fillText("ZHAOWU · QUIZ", layout.header.box.x, layout.header.box.y + layout.header.metrics.ascent);
+  ctx.fillText(model.locale === "en" ? "A NOTE FROM ZHAOWU" : "昭梧 · 測驗箋記", layout.header.box.x, layout.header.box.y + layout.header.metrics.ascent);
+  ctx.textAlign = "right";
+  ctx.fillStyle = gold;
+  ctx.font = layout.term.font;
+  ctx.fillText(layout.term.text, layout.term.box.x + layout.term.box.w, layout.term.box.y + layout.term.metrics.ascent);
+  ctx.textAlign = "left";
   ctx.fillStyle = vermilion;
   ctx.fillRect(CONTENT_LEFT, layout.header.box.y + layout.header.box.h + 12, 86, 6);
 
@@ -470,9 +547,12 @@ function paintQuizShareCard(ctx: CanvasRenderingContext2D, model: QuizShareModel
   if (layout.description) drawFitted(ctx, layout.description.fitted, layout.description.box.x, layout.description.box.y, ink);
   if (layout.chips) drawChips(ctx, model.chips, layout.chips.x, layout.chips.y);
   for (const trait of layout.traits) {
-    ctx.fillStyle = "rgba(40,102,83,.08)";
-    roundRect(ctx, trait.x, trait.y, trait.w, trait.h, 18);
-    ctx.fill();
+    ctx.strokeStyle = "rgba(48,91,80,.38)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(trait.x, trait.y + trait.h - 2);
+    ctx.lineTo(trait.x + trait.w, trait.y + trait.h - 2);
+    ctx.stroke();
     ctx.fillStyle = jade;
     ctx.beginPath();
     ctx.arc(trait.x + 28, trait.y + trait.h / 2, 7, 0, Math.PI * 2);
@@ -486,15 +566,12 @@ function paintQuizShareCard(ctx: CanvasRenderingContext2D, model: QuizShareModel
   ctx.fillText(model.marks.original, layout.mark.box.x, layout.mark.box.y + layout.mark.metrics.ascent);
 
   const cta = layout.cta.box;
-  ctx.fillStyle = "rgba(168,70,61,.12)";
-  roundRect(ctx, cta.x, cta.y, cta.w, cta.h, 22);
+  roundRect(ctx, cta.x, cta.y, cta.w, cta.h, 8);
+  ctx.fillStyle = jade;
   ctx.fill();
-  ctx.strokeStyle = "rgba(168,70,61,.28)";
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
   const ctaTextTop = cta.y + (cta.h - (layout.cta.lead.height + 10 + layout.cta.pathLine.height)) / 2;
-  drawFitted(ctx, layout.cta.lead, cta.x + 28, ctaTextTop, vermilion);
-  drawFitted(ctx, layout.cta.pathLine, cta.x + 28, ctaTextTop + layout.cta.lead.height + 10, jade);
+  drawFitted(ctx, layout.cta.lead, cta.x + 36, ctaTextTop, "#fffdf8");
+  drawFitted(ctx, layout.cta.pathLine, cta.x + 36, ctaTextTop + layout.cta.lead.height + 10, "#fffdf8");
 }
 
 function uniquePhrases(values: string[]): string[] {
@@ -542,8 +619,8 @@ function drawRiceTexture(ctx: CanvasRenderingContext2D) {
   ctx.globalAlpha = 0.045;
   for (let index = 0; index < 420; index += 1) {
     const x = 70 + ((index * 97) % 940);
-    const y = 70 + ((index * 53) % 1210);
-    const inMargin = x < 115 || x > 965 || y < 115 || y > 1235;
+    const y = 70 + ((index * 53) % 1770);
+    const inMargin = x < 115 || x > 965 || y < 115 || y > 1805;
     if (!inMargin) continue;
     ctx.fillStyle = index % 3 === 0 ? jade : index % 3 === 1 ? vermilion : gold;
     ctx.beginPath();
@@ -551,6 +628,38 @@ function drawRiceTexture(ctx: CanvasRenderingContext2D) {
     ctx.fill();
   }
   ctx.restore();
+}
+
+function drawLandscape(ctx: CanvasRenderingContext2D, term: QuizShareTerm) {
+  const image = shareArtCache.get(term.artPath);
+  if (image?.complete && image.naturalWidth) paintLandscapeImage(ctx, image, QUIZ_SHARE_CROP_FOCUS_Y[term.term.skinId] ?? 0.44);
+}
+
+function paintLandscapeImage(ctx: CanvasRenderingContext2D, image: HTMLImageElement, focusY: number) {
+  ctx.save();
+  const imageHeight = 760;
+  const scale = Math.max(QUIZ_SHARE_SIZE.width / image.naturalWidth, imageHeight / image.naturalHeight);
+  const width = image.naturalWidth * scale;
+  const height = image.naturalHeight * scale;
+  ctx.beginPath();
+  ctx.rect(0, 0, QUIZ_SHARE_SIZE.width, imageHeight);
+  ctx.clip();
+  const excess = Math.max(0, height - imageHeight);
+  const cropY = -Math.max(0, Math.min(excess, focusY * height - imageHeight * 0.44)) - 38;
+  ctx.drawImage(image, (QUIZ_SHARE_SIZE.width - width) / 2, cropY, width, height);
+  ctx.fillStyle = "rgba(250,247,237,.08)";
+  ctx.fillRect(0, 0, QUIZ_SHARE_SIZE.width, imageHeight);
+  ctx.restore();
+}
+
+function drawLowerPaperPanel(ctx: CanvasRenderingContext2D) {
+  const start = 700;
+  const gradient = ctx.createLinearGradient(0, start, 0, 772);
+  gradient.addColorStop(0, "rgba(250,247,237,0)");
+  gradient.addColorStop(.42, "rgba(250,247,237,.88)");
+  gradient.addColorStop(1, "rgba(250,247,237,.92)");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, start, QUIZ_SHARE_SIZE.width, QUIZ_SHARE_SIZE.height - start);
 }
 
 function drawCornerMarks(ctx: CanvasRenderingContext2D, gold: string, vermilion: string) {
@@ -576,13 +685,13 @@ function drawCornerMarks(ctx: CanvasRenderingContext2D, gold: string, vermilion:
   };
   draw(78, 78, 1, 1);
   draw(1002, 78, -1, 1);
-  draw(78, 1272, 1, -1);
-  draw(1002, 1272, -1, -1);
+  draw(78, 1874, 1, -1);
+  draw(1002, 1874, -1, -1);
 }
 
-function drawSeal(ctx: CanvasRenderingContext2D, x: number, y: number, quizId: string) {
+function drawSeal(ctx: CanvasRenderingContext2D, x: number, y: number) {
   const { vermilion, paper } = QUIZ_SHARE_PALETTE;
-  const glyph = sealGlyph(quizId);
+  const glyph = "昭梧";
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate((-13 * Math.PI) / 180);
@@ -596,7 +705,7 @@ function drawSeal(ctx: CanvasRenderingContext2D, x: number, y: number, quizId: s
   ctx.fillStyle = paper;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  const size = [...glyph].length > 1 ? 42 : 72;
+  const size = 46;
   ctx.font = `700 ${size}px ${SERIF}`;
   if ([...glyph].length === 2) {
     ctx.fillText([...glyph][0], 0, -22);
@@ -607,19 +716,6 @@ function drawSeal(ctx: CanvasRenderingContext2D, x: number, y: number, quizId: s
   ctx.restore();
   ctx.textAlign = "left";
   ctx.textBaseline = "alphabetic";
-}
-
-function sealGlyph(quizId: string): string {
-  switch (quizId) {
-    case "six-realms": return "道";
-    case "divine-affinity": return "緣";
-    case "earth-online": return "關";
-    case "cultivation-destiny": return "修";
-    case "animal": return "獸";
-    case "element":
-    case "five-element-overdrive": return "行";
-    default: return "測";
-  }
 }
 
 function sealBounds(): ShareBox {
@@ -636,24 +732,18 @@ function sealBounds(): ShareBox {
 }
 
 function drawChips(ctx: CanvasRenderingContext2D, chips: QuizShareChip[], x: number, y: number) {
-  let cursor = x;
-  ctx.textBaseline = "middle";
-  ctx.font = `700 30px ${SANS}`;
-  for (const chip of chips) {
-    const width = Math.min(220, Math.max(108, ctx.measureText(chip.label).width + 70));
-    ctx.fillStyle = chip.color;
-    roundRect(ctx, cursor, y, width, 56, 28);
-    ctx.fill();
-    ctx.fillStyle = "#F8F3E8";
-    ctx.beginPath();
-    ctx.arc(cursor + 28, y + 28, 10, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = "#F8F3E8";
-    ctx.textAlign = "left";
-    ctx.fillText(chip.label, cursor + 48, y + 30, width - 64);
-    cursor += width + 16;
-  }
   ctx.textBaseline = "alphabetic";
+  ctx.font = `500 30px ${SERIF}`;
+  ctx.fillStyle = QUIZ_SHARE_PALETTE.jade;
+  chips.forEach((chip, index) => {
+    const cursor = x + chips.slice(0, index).reduce((total, item) => total + ctx.measureText(item.label).width + 40, 0);
+    ctx.fillStyle = chip.color;
+    ctx.fillText(chip.label, cursor, y + 36);
+    if (index < chips.length - 1) {
+      ctx.fillStyle = QUIZ_SHARE_PALETTE.gold;
+      ctx.fillText("·", cursor + ctx.measureText(chip.label).width + 14, y + 36);
+    }
+  });
 }
 
 function fitWrapped(
@@ -691,15 +781,20 @@ function fitWrapped(
     }
     size -= 2;
   }
+  if (lines.length > maxLines) {
+    lines = truncateLines(measure, font, lines.slice(0, maxLines), maxWidth, true);
+  }
   font = fontTemplate.replace("{size}", String(size));
   const lineHeight = Math.ceil(Math.max(size * 1.2, ascent + descent + 4));
   const height = Math.ceil(ascent + Math.max(0, lines.length - 1) * lineHeight + descent);
   return { lines, size, lineHeight, ascent, descent, height, font };
 }
 
+const LINE_PUNCT = /^[。．.、，,;；:：!！?？)）\]】」』…—–-]+$/;
+
 function wrapLines(measure: MeasureFn, font: string, text: string, maxWidth: number, allowGlyphSplit = false): string[] {
   const source = String(text || "").trim() || " ";
-  const tokens = source.split(/(\s+|[×·•|｜/／—])/).filter((token) => token !== "");
+  const tokens = source.split(/(\s+|[×·•|｜/／—]|[，、。；：])/).filter((token) => token !== "");
   const lines: string[] = [];
   let line = "";
   const widthOf = (value: string) => measure(font, value).width;
@@ -712,7 +807,7 @@ function wrapLines(measure: MeasureFn, font: string, text: string, maxWidth: num
     let piece = "";
     for (const char of [...chunk]) {
       const trial = piece + char;
-      if (piece && widthOf(trial) > maxWidth) {
+      if (piece && widthOf(trial) > maxWidth && !LINE_PUNCT.test(char)) {
         lines.push(piece);
         piece = char;
       } else piece = trial;
@@ -720,6 +815,23 @@ function wrapLines(measure: MeasureFn, font: string, text: string, maxWidth: num
     line = piece;
   };
   for (const token of tokens) {
+    if (LINE_PUNCT.test(token)) {
+      const withPunct = line + token;
+      if (line && widthOf(withPunct) > maxWidth) {
+        const chars = [...line];
+        const last = chars.pop() || "";
+        const previous = chars.join("").replace(/\s+$/g, "");
+        if (previous) {
+          lines.push(previous);
+          line = last + token;
+        } else {
+          line = withPunct;
+        }
+      } else {
+        line += token;
+      }
+      continue;
+    }
     if (!line) {
       const start = token.trimStart();
       if (widthOf(start) > maxWidth && allowGlyphSplit) appendWide(start);
@@ -738,7 +850,16 @@ function wrapLines(measure: MeasureFn, font: string, text: string, maxWidth: num
     }
   }
   commit();
-  return lines.filter(Boolean);
+  return mergeOrphanPunctuation(lines.filter(Boolean));
+}
+
+function mergeOrphanPunctuation(lines: string[]): string[] {
+  const merged: string[] = [];
+  for (const line of lines) {
+    if (merged.length && LINE_PUNCT.test(line)) merged[merged.length - 1] += line;
+    else merged.push(line);
+  }
+  return merged;
 }
 
 function truncateLines(measure: MeasureFn, font: string, lines: string[], maxWidth: number, forceEllipsis = false): string[] {

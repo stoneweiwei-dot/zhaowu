@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { trackConversion } from "@/lib/observability/conversion-telemetry";
-import { buildQuizShareModel, renderQuizShareCard, type QuizShareInput } from "@/lib/quiz-share-card";
+import { buildQuizShareModel, preloadQuizShareArt, renderQuizShareCard, resolveQuizShareTerm, type QuizShareInput } from "@/lib/quiz-share-card";
 
 const UI = {
   "zh-Hant": { share: "分享結果", copied: "已下載分享圖並複製測驗連結。", failed: "分享圖製作失敗，請再試一次。" },
@@ -15,7 +15,9 @@ export function QuizShareButton(props: QuizShareInput) {
     if (busy) return; setBusy(true); setMessage("");
     try {
       const model = buildQuizShareModel({ ...props, locale });
-      const canvas = renderQuizShareCard(model);
+      const term = resolveQuizShareTerm();
+      await preloadQuizShareArt(term.artPath);
+      const canvas = renderQuizShareCard(model, term);
       const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob((value) => value ? resolve(value) : reject(new Error("PNG export failed")), "image/png"));
       const file = new File([blob], `zhaowu-${props.quizId}-result.png`, { type: "image/png" });
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
