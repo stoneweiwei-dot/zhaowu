@@ -131,6 +131,24 @@ test("share card layout keeps measured gaps and does not overlap boxes", () => {
     if (fixture.quizId === "six-realms" && fixture.locale === "en") {
       assert.deepEqual(layout.traits.map((trait) => trait.fitted.lines.join(" ")), fixture.traits);
       assert.ok(layout.traits.every((trait) => !trait.fitted.lines.join("").endsWith("…")));
+      assert.ok(layout.result.fitted.size >= 80, `English six-realms result size ${layout.result.fitted.size} should stay a large headline`);
+      assert.match(layout.result.fitted.lines.join(" "), /Heaven-realm habit/);
+    }
+    if (fixture.quizId === "cultivation-destiny" && fixture.locale === "zh-Hant") {
+      const long = buildQuizShareModel({
+        quizId: "cultivation-destiny",
+        quizName: "修仙命格靈測",
+        resultLabel: "靈木仙根 · 雙靈根",
+        description: "依你的資質與際遇，此生宜穩中求進，持續修習並保有彈性。",
+        traits: ["穩中求進", "持續修習", "柔韌應變"],
+        locale: "zh-Hant",
+      }, "/quiz/cultivation-destiny");
+      const longLayout = planQuizShareLayout(long, estimateShareText);
+      assert.ok(longLayout.description, "cultivation description should render");
+      const desc = longLayout.description.fitted.lines.join("");
+      assert.match(desc, /彈性/);
+      assert.doesNotMatch(desc, /…/);
+      assert.ok(longLayout.description.fitted.lines.every((line) => !/^[。．.、，,;；:：!！?？]+$/.test(line)), `orphan punctuation in ${JSON.stringify(longLayout.description.fitted.lines)}`);
     }
     const lastTrait = layout.boxes.find((box) => box.id === `trait-${layout.traits.length - 1}`);
     const mark = layout.boxes.find((box) => box.id === "mark");

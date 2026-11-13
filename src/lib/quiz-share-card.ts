@@ -284,14 +284,15 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
   const available = Math.max(0, middleBottom - middleTop);
   const sealBox = sealBounds();
 
-  const layoutFor = (resultSize: number, resultWidth: number, gaps: MiddleGaps) => {
-    const result = fitWrapped(measure, model.resultLabel || " ", resultWidth, 3, resultSize, 36, `700 {size}px ${SERIF}`);
+  const RESULT_MIN_SIZE = 80;
+  const layoutFor = (resultSize: number, resultWidth: number, gaps: MiddleGaps, descSize = 50, traitSize = 44) => {
+    const result = fitWrapped(measure, model.resultLabel || " ", resultWidth, 3, resultSize, Math.min(36, resultSize), `700 {size}px ${SERIF}`);
     const description = model.description
-      ? fitWrapped(measure, model.description, CONTENT_WIDTH, 4, 50, 32, `400 {size}px ${SANS}`)
+      ? fitWrapped(measure, model.description, CONTENT_WIDTH, 4, descSize, 32, `400 {size}px ${SANS}`)
       : null;
     const chipHeight = model.chips.length ? 56 : 0;
     const traits = model.traits.map((trait) => {
-      const fitted = fitWrapped(measure, trait, CONTENT_WIDTH - 48, 2, 44, 28, `600 {size}px ${SANS}`);
+      const fitted = fitWrapped(measure, trait, CONTENT_WIDTH - 48, 2, traitSize, 28, `600 {size}px ${SANS}`);
       const height = Math.ceil(fitted.height + 6);
       return { trait, fitted, height };
     });
@@ -309,18 +310,34 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
   };
 
   let resultSize = 132;
+  let descSize = 50;
+  let traitSize = 44;
   let resultWidth = CONTENT_WIDTH;
   let gaps: MiddleGaps = { afterResult: 28, afterRule: 24, beforeChips: 28, beforeTraits: 24, trait: 6 };
-  let planned = layoutFor(resultSize, resultWidth, gaps);
+  const refit = () => layoutFor(resultSize, resultWidth, gaps, descSize, traitSize);
+  let planned = refit();
   const minGaps: MiddleGaps = { afterResult: 20, afterRule: 18, beforeChips: 20, beforeTraits: 18, trait: 4 };
 
-  while (planned.natural > available && resultSize > 32) {
-    resultSize -= 4;
-    planned = layoutFor(resultSize, resultWidth, gaps);
+  // Shrink body and traits first so the result headline stays large.
+  while (planned.natural > available && descSize > 40) {
+    descSize -= 2;
+    planned = refit();
+  }
+  while (planned.natural > available && traitSize > 28) {
+    traitSize -= 2;
+    planned = refit();
   }
   if (planned.natural > available) {
     gaps = minGaps;
-    planned = layoutFor(resultSize, resultWidth, gaps);
+    planned = refit();
+  }
+  while (planned.natural > available && resultSize > RESULT_MIN_SIZE) {
+    resultSize -= 4;
+    planned = refit();
+  }
+  while (planned.natural > available && descSize > 32) {
+    descSize -= 2;
+    planned = refit();
   }
 
   let leftover = Math.max(0, available - planned.natural);
@@ -328,17 +345,21 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
   const resultTopCandidate = middleTop + topPad;
   if (resultTopCandidate < sealBox.y + sealBox.h + 16) {
     resultWidth = TITLE_WIDTH;
-    planned = layoutFor(resultSize, resultWidth, gaps);
+    planned = refit();
     leftover = Math.max(0, available - planned.natural);
     topPad = leftover * 0.34;
   } else {
     resultWidth = CONTENT_WIDTH;
   }
 
-  // Re-fit at the chosen width/size after any width change, then distribute leftover.
-  while (planned.natural > available && resultSize > 32) {
+  // Re-fit after any width change. Only drop below RESULT_MIN_SIZE for overflowing long titles.
+  while (planned.natural > available && resultSize > RESULT_MIN_SIZE) {
     resultSize -= 4;
-    planned = layoutFor(resultSize, resultWidth, gaps);
+    planned = refit();
+  }
+  while (planned.natural > available && resultSize > 48) {
+    resultSize -= 4;
+    planned = refit();
   }
   leftover = Math.max(0, available - planned.natural);
   topPad = leftover * 0.42;
@@ -721,9 +742,11 @@ function fitWrapped(
   return { lines, size, lineHeight, ascent, descent, height, font };
 }
 
+const LINE_PUNCT = /^[。．.、，,;；:：!！?？)）\]】」』…—–-]+$/;
+
 function wrapLines(measure: MeasureFn, font: string, text: string, maxWidth: number, allowGlyphSplit = false): string[] {
   const source = String(text || "").trim() || " ";
-  const tokens = source.split(/(\s+|[×·•|｜/／—])/).filter((token) => token !== "");
+  const tokens = source.split(/(\s+|[×·•|｜/／—]|[，、。；：])/).filter((token) => token !== "");
   const lines: string[] = [];
   let line = "";
   const widthOf = (value: string) => measure(font, value).width;
@@ -736,7 +759,7 @@ function wrapLines(measure: MeasureFn, font: string, text: string, maxWidth: num
     let piece = "";
     for (const char of [...chunk]) {
       const trial = piece + char;
-      if (piece && widthOf(trial) > maxWidth) {
+      if (piece && widthOf(trial) > maxWidth && !LINE_PUNCT.test(char)) {
         lines.push(piece);
         piece = char;
       } else piece = trial;
@@ -744,6 +767,23 @@ function wrapLines(measure: MeasureFn, font: string, text: string, maxWidth: num
     line = piece;
   };
   for (const token of tokens) {
+    if (LINE_PUNCT.test(token)) {
+      const withPunct = line + token;
+      if (line && widthOf(withPunct) > maxWidth) {
+        const chars = [...line];
+        const last = chars.pop() || "";
+        const previous = chars.join("").replace(/\s+$/g, "");
+        if (previous) {
+          lines.push(previous);
+          line = last + token;
+        } else {
+          line = withPunct;
+        }
+      } else {
+        line += token;
+      }
+      continue;
+    }
     if (!line) {
       const start = token.trimStart();
       if (widthOf(start) > maxWidth && allowGlyphSplit) appendWide(start);
@@ -762,7 +802,16 @@ function wrapLines(measure: MeasureFn, font: string, text: string, maxWidth: num
     }
   }
   commit();
-  return lines.filter(Boolean);
+  return mergeOrphanPunctuation(lines.filter(Boolean));
+}
+
+function mergeOrphanPunctuation(lines: string[]): string[] {
+  const merged: string[] = [];
+  for (const line of lines) {
+    if (merged.length && LINE_PUNCT.test(line)) merged[merged.length - 1] += line;
+    else merged.push(line);
+  }
+  return merged;
 }
 
 function truncateLines(measure: MeasureFn, font: string, lines: string[], maxWidth: number, forceEllipsis = false): string[] {
