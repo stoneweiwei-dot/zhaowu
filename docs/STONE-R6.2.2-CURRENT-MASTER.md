@@ -112,3 +112,35 @@ Rules:
 - the production supplement may clarify 宮位、虛實、賓主／體用、合沖與應期, but cannot replace the CURRENT Zi Ping mainline;
 - synthetic cases test rule consistency only; they do not count as EVP evidence;
 - a case that conflicts with CURRENT, P2 or P3 must fail or be downgraded rather than silently rewrite the master.
+
+
+## 10. Four-classic integration layer｜四經互證
+
+Owner material《四經合一：命理經典的融貫與現代適用體系構建》is classified as `OWNER_MATERIAL + MODERN_INTERPRETATION`. It supplies a bounded crosswalk for four classical lenses; it is not a verified passage collection and does not create a second final-judgement hierarchy.
+
+### 10.1 Lens assignment
+
+- **《淵海子平》／格局鏡頭**：support month-command, structure candidate, social-function and rescue/damage analysis. Every named structure still passes GF-13 and must be stated as 候選格／成格／成而有病／破格／假格或變格.
+- **《窮通寶鑑》／調候鏡頭**：support cold/heat/dryness/dampness and urgent climate-function analysis. A monthly prescription is not automatically the final useful function; root, ODL, FC, CAPACITY and structural side effects remain mandatory.
+- **《滴天髓》／氣機鏡頭**：support clear/turbid, source/outlet, control/transformation and flow analysis. “有氣／有路” maps first to ODL; effective action requires FC; real-world landing still requires CAPACITY.
+- **《三命通會》／廣度與交叉核驗鏡頭**：support chain inspection, 體用, concrete imagery and alternative checks. 神煞、納音 and broad象法 remain low-weight auxiliary material and cannot overrule the Zi Ping mainline.
+
+### 10.2 Conflict rule
+
+Do not encode `調候 > 勢 > 格局` as a universal fixed ranking. The three methods answer different questions:
+
+- 調候：whether climate creates an urgent functional problem;
+- 氣勢／旺衰：where force comes from, where it goes and what can carry it;
+- 格局：whether the month-command structure is established, damaged or rescued.
+
+When they disagree, first check whether a method has answered outside its scope. Then return to the canonical mainline:
+
+`special-pattern gate → month command → climate → roots/exposure → structure state → pathology/remedy → ODL → FC → CAPACITY`.
+
+If the hierarchy still cannot reconcile the candidates, lower confidence or mark `UNRESOLVED`; never print multiple equally authoritative final useful-god answers.
+
+### 10.3 Mutual reinforcement boundary
+
+The four classics deepen observation within existing steps. R6.2.2 supplies order, negative evidence, UNKNOWN handling, validation class and customer-output discipline. Together they strengthen interpretation without changing deterministic chart truth, creating a new score, or promoting secondary summaries to classical quotations.
+
+Customer-facing output continues to be answer-first and relevance-gated. The four-classic crosswalk may explain why a conclusion was reached, but the report must not dump the internal method list or present metaphysical effectiveness as scientific validation.
