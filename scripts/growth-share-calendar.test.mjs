@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
-import { buildQuizShareModel, QUIZ_SHARE_PALETTE, QUIZ_SHARE_SIZE } from "../src/lib/quiz-share-card.ts";
+import { buildCta, buildQuizShareModel, deriveElementChips, quizSharePath, sanitizeResultLabel, QUIZ_SHARE_PALETTE, QUIZ_SHARE_SIZE } from "../src/lib/quiz-share-card.ts";
 
 test("quiz share model keeps a light 1080x1350 card, short description and route", () => {
   assert.deepEqual(QUIZ_SHARE_SIZE, { width: 1080, height: 1350 });
@@ -16,6 +16,29 @@ test("quiz share model keeps a light 1080x1350 card, short description and route
   const inline = buildQuizShareModel({ quizId: "animal", quizName: "內在動物", resultLabel: "虎", description: "短述", locale: "zh-Hant" }, "/fun-tests?test=animal");
   assert.equal(new URL(inline.shareUrl).pathname, "/fun-tests");
   assert.equal(new URL(inline.shareUrl).search, "?test=animal");
+});
+
+test("share cards drop option letters, fill traits/chips, and keep quiz paths in the CTA", () => {
+  assert.equal(sanitizeResultLabel("A · 天道習氣"), "天道習氣");
+  assert.equal(sanitizeResultLabel("A · 天道習氣 · B · 人道習氣"), "天道習氣 · 人道習氣");
+  assert.equal(sanitizeResultLabel("玄豹 · 單點突破者", "animal"), "玄豹");
+  const six = buildQuizShareModel({ quizId: "six-realms", quizName: "六道習氣測驗", resultLabel: "A · 天道習氣", description: "你較容易帶著『本來就會順』『我還有餘裕』的感受，對小事不太執著。", locale: "zh-Hant" }, "/quiz/six-realms");
+  assert.equal(six.resultLabel, "天道習氣");
+  assert.ok(six.traits.length >= 2 && six.traits.length <= 3);
+  assert.equal(six.cta.path, "zhao-wu.com/quiz/six-realms");
+  assert.match(six.cta.lead, /哪一道/);
+  const english = buildQuizShareModel({ quizId: "six-realms", quizName: "Six Realms Habit Test With An Extra Long English Title For Wrapping", resultLabel: "A · Heaven-realm habit", description: "You often move from a sense that life will work out and that you have enough room to breathe.", locale: "en" }, "/en/quiz/six-realms");
+  assert.equal(english.resultLabel, "Heaven-realm habit");
+  assert.equal(english.cta.path, "zhao-wu.com/quiz/six-realms");
+  assert.match(english.cta.lead, /path/i);
+  assert.equal(quizSharePath("animal", "/en/fun-tests?test=animal"), "/fun-tests?test=animal");
+  assert.equal(buildCta("zh-Hans", "divine-affinity", "/quiz/divine-affinity").lead, "免费测测你的本缘");
+  const chips = deriveElementChips("five-element-overdrive", "木｜生發型", "zh-Hant");
+  assert.equal(chips.length, 1);
+  assert.equal(chips[0].label, "木");
+  const animal = buildQuizShareModel({ quizId: "animal", quizName: "內在動物", resultLabel: "玄豹", description: "掌控節奏與有效成果", traits: ["單點突破者", "專注", "膽識"], locale: "zh-Hant" }, "/fun-tests?test=animal");
+  assert.deepEqual(animal.traits, ["單點突破者", "專注", "膽識"]);
+  assert.equal(animal.cta.path, "zhao-wu.com/fun-tests?test=animal");
 });
 
 test("build outputs a Sydney-based all-day ICS window and valid RSS items", () => {

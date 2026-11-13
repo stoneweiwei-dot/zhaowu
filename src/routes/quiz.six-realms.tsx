@@ -188,7 +188,7 @@ function SixRealmsQuiz() {
             <Link to="/" className="grid min-h-12 place-items-center rounded-full bg-cinnabar px-5 py-3 text-sm text-cream">{copy.formal}</Link>
           </div>
           <p className="text-center text-xs leading-6 text-ink-mute">{copy.formalNote}</p>
-          <QuizShareButton quizId="six-realms" quizName={copy.title} resultLabel={sacredTitle} description={finalScore.primary.map((key) => results[key].summary).join(" · ")} />
+          <QuizShareButton quizId="six-realms" quizName={copy.title} resultLabel={finalScore.primary.map((key) => results[key].name).join(" · ")} description={finalScore.primary.map((key) => results[key].summary).join(" · ")} />
         </section>
       )}
 

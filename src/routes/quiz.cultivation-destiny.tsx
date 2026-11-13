@@ -470,7 +470,7 @@ function CultivationDestinyQuiz() {
             <button type="button" onClick={() => void savePng()} className="mt-4 min-h-12 w-full rounded-full bg-cinnabar px-5 py-3 text-sm text-cream">{copy.save}</button>
             {exportError ? <p role="alert" className="mt-3 text-xs leading-6 text-cinnabar">{exportError}</p> : null}
           </article>
-          <QuizShareButton quizId="cultivation-destiny" quizName={locale === "en" ? "Cultivation Destiny Dossier" : "修仙命格靈測"} resultLabel={result.rootName} description={result.finalReading} />
+          <QuizShareButton quizId="cultivation-destiny" quizName={locale === "en" ? "Cultivation Destiny Dossier" : "修仙命格靈測"} resultLabel={result.rootName} description={result.finalReading} traits={[result.identity, result.peak, result.dao].filter(Boolean).slice(0, 3)} />
 
           <div className="grid gap-3 sm:grid-cols-2">
             <button type="button" onClick={() => { setGenerated(false); setExportError(""); }} className="min-h-12 rounded-full border border-line bg-cream px-5 py-3 text-sm text-ink">{copy.retry}</button>

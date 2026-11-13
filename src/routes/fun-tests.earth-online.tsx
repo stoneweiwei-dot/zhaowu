@@ -284,7 +284,7 @@ function EarthOnlineQuiz() {
 
       {result && mainBook && sideBook ? (
         <section className="earth-online-result-wrap" aria-live="polite">
-          <QuizShareButton quizId="earth-online" quizName={copy.title} resultLabel={result.mains.map((key) => books[key].title).join(" × ")} description={result.mains.map((key) => books[key].use).join(" / ")} />
+          <QuizShareButton quizId="earth-online" quizName={copy.title} resultLabel={result.mains.map((key) => books[key].title).join(" × ")} description={result.mains.map((key) => books[key].use).join(" / ")} traits={result.mains.map((key) => books[key].use).slice(0, 3)} />
           <p className="earth-online-drop-label">{copy.resultKicker}</p>
           <article className="earth-online-loot-card">
             <div className="earth-online-loot-shine" aria-hidden="true" />
