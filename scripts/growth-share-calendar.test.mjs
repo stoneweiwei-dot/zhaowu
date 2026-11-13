@@ -2,7 +2,29 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
-import { buildCta, buildQuizShareModel, deriveElementChips, estimateShareText, planQuizShareLayout, quizSharePath, sanitizeResultLabel, shareLayoutViolations, QUIZ_SHARE_PALETTE, QUIZ_SHARE_SIZE } from "../src/lib/quiz-share-card.ts";
+import { buildCta, buildQuizShareModel, deriveElementChips, estimateShareText, planQuizShareLayout, quizSharePath, sanitizeResultLabel, shareLayoutViolations, QUIZ_SHARE_PALETTE, QUIZ_SHARE_SIZE, resolveQuizShareTerm, QUIZ_SHARE_CROP_FOCUS_Y } from "../src/lib/quiz-share-card.ts";
+import { SOLAR_TERMS_24 } from "../src/lib/seasonal-skins.ts";
+
+test("quiz share art and label follow the pinned Sydney solar term", () => {
+  const lidong = resolveQuizShareTerm(new Date("2026-11-14T12:00:00+11:00"));
+  assert.equal(lidong.term.zh, "立冬");
+  assert.equal(lidong.term.en, "Start of Winter");
+  assert.equal(lidong.term.skinId, "solar-start-winter");
+  assert.match(lidong.artPath, /earth-begins-freezing\.webp$/);
+  assert.equal(resolveQuizShareTerm(new Date("2026-04-10T12:00:00+10:00")).term.zh, "清明");
+  assert.equal(resolveQuizShareTerm(new Date("2026-11-22T00:02:00+11:00")).term.zh, "小雪");
+  const model = buildQuizShareModel({ quizId: "six-realms", quizName: "六道習氣測驗", resultLabel: "人道", description: "安定從容", locale: "zh-Hant" });
+  const zhLayout = planQuizShareLayout(model, estimateShareText, lidong);
+  assert.equal(zhLayout.term.text, "立冬");
+  assert.ok(zhLayout.boxes.some((box) => box.id === "termName"));
+  const en = buildQuizShareModel({ quizId: "six-realms", quizName: "Six Realms", resultLabel: "Human realm", description: "Steady and calm", locale: "en" });
+  assert.equal(planQuizShareLayout(en, estimateShareText, lidong).term.text, "Start of Winter");
+  for (const term of SOLAR_TERMS_24) {
+    const pinned = resolveQuizShareTerm(new Date("2026-11-14T12:00:00+11:00"), { skinId: term.skinId });
+    assert.ok(pinned.artPath.startsWith(`/theme-skins/${term.skinId}/`), `${term.skinId}: ${pinned.artPath}`);
+    assert.ok(Object.hasOwn(QUIZ_SHARE_CROP_FOCUS_Y, term.skinId), `${term.skinId} uses the documented default crop when absent from theme skins`);
+  }
+});
 
 test("quiz share model keeps a light 1080x1920 card, short description and route", () => {
   assert.deepEqual(QUIZ_SHARE_SIZE, { width: 1080, height: 1920 });

@@ -1,4 +1,5 @@
 import type { Locale } from "@/lib/i18n";
+import { FROST_PHASES, FROST_SKIN_ID, seasonalPackForSkin, seasonalState, SOLAR_TERMS_24, type SolarTermSpec } from "@/lib/seasonal-skins";
 
 export const QUIZ_SHARE_SIZE = { width: 1080, height: 1920 } as const;
 export const QUIZ_SHARE_PALETTE = {
@@ -56,8 +57,43 @@ const CONTENT_WIDTH = CONTENT_RIGHT - CONTENT_LEFT;
 const TITLE_WIDTH = 640;
 const SEAL = { x: 900, y: 515, size: 148, rotate: (13 * Math.PI) / 180 };
 const BOTTOM_SAFE = 1790;
-const LANDSCAPE_IMAGE = typeof Image === "undefined" ? null : new Image();
-if (LANDSCAPE_IMAGE) LANDSCAPE_IMAGE.src = "/theme-skins/solar-start-winter/earth-begins-freezing.webp";
+export type QuizShareTerm = { term: SolarTermSpec; houIndex: number; artPath: string; name: { "zh-Hant": string; "zh-Hans": string; en: string } };
+export function resolveQuizShareTerm(now = new Date(), override: { skinId?: string; houIndex?: number } = {}): QuizShareTerm {
+  const live = seasonalState(now);
+  const term = override.skinId ? SOLAR_TERMS_24.find((item) => item.skinId === override.skinId) : live.term;
+  if (!term) throw new Error(`Unknown solar term skin: ${override.skinId}`);
+  const houIndex = Math.max(0, Math.min(2, Math.trunc(override.houIndex ?? (override.skinId ? 0 : live.houIndex))));
+  const pack = seasonalPackForSkin(term.skinId);
+  const artPath = pack?.[houIndex]?.art ?? (term.skinId === FROST_SKIN_ID ? FROST_PHASES[houIndex].art : undefined) ?? pack?.[0]?.art ?? `/theme-skins/${term.skinId}/1.webp`;
+  return { term, houIndex, artPath, name: { "zh-Hant": term.zh, "zh-Hans": term.hans, en: term.en } };
+}
+
+const defaultQuizShareTerm = resolveQuizShareTerm();
+const shareArtCache = new Map<string, HTMLImageElement>();
+export function preloadQuizShareArt(src: string): Promise<HTMLImageElement> {
+  if (typeof Image === "undefined") return Promise.reject(new Error("Images are unavailable"));
+  let image = shareArtCache.get(src);
+  if (!image) {
+    image = new Image();
+    image.src = src;
+    shareArtCache.set(src, image);
+  }
+  if (image.complete && image.naturalWidth) return Promise.resolve(image);
+  return image.decode().then(() => image!);
+}
+if (typeof Image !== "undefined") void preloadQuizShareArt(defaultQuizShareTerm.artPath).catch(() => undefined);
+
+/** Cover-fit focal point in the 1080×760 band (0 = top, 1 = bottom). Default 0.5 keeps a mid-subject window; a few terms are shifted so the 候 subject is in frame. */
+export const QUIZ_SHARE_CROP_FOCUS_Y: Record<string, number> = Object.fromEntries(
+  SOLAR_TERMS_24.map((term) => [term.skinId, 0.5]),
+);
+Object.assign(QUIZ_SHARE_CROP_FOCUS_Y, {
+  "solar-minor-cold": 0.32,
+  "solar-start-summer": 0.58,
+  "solar-start-autumn": 0.34,
+  "solar-frost-descent": 0.62,
+  "solar-minor-snow": 0.76,
+});
 
 export type QuizShareChip = { label: string; color: string };
 export type QuizShareInput = {
@@ -222,14 +258,14 @@ function isRedundantPhrase(trait: string, resultLabel: string): boolean {
   return false;
 }
 
-export function renderQuizShareCard(model: QuizShareModel): HTMLCanvasElement {
+export function renderQuizShareCard(model: QuizShareModel, term = defaultQuizShareTerm): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   canvas.width = QUIZ_SHARE_SIZE.width;
   canvas.height = QUIZ_SHARE_SIZE.height;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas unavailable");
-  const layout = planQuizShareLayout(model, measureWithContext(ctx));
-  paintQuizShareCard(ctx, model, layout);
+  const layout = planQuizShareLayout(model, measureWithContext(ctx), term);
+  paintQuizShareCard(ctx, model, layout, term);
   return canvas;
 }
 
@@ -259,10 +295,13 @@ export function estimateShareText(font: string, text: string): FontMetrics {
   return { width, ascent: size * 0.88, descent: size * 0.24 };
 }
 
-export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
+export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn, term = defaultQuizShareTerm) {
   const kickerFont = `500 28px ${SERIF}`;
   const markFont = `700 24px ${SANS}`;
   const kicker = measure(kickerFont, model.locale === "en" ? "A NOTE FROM ZHAOWU" : "昭梧 · 測驗箋記");
+  const termFont = `500 26px ${SERIF}`;
+  const termText = term.name[model.locale];
+  const termMetrics = measure(termFont, termText);
   const markMetrics = measure(markFont, model.marks.original);
   const markHeight = Math.ceil(markMetrics.ascent + markMetrics.descent);
 
@@ -400,6 +439,7 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
   });
 
   const headerBox: ShareBox = { id: "header", x: CONTENT_LEFT, y: headerTop, w: Math.ceil(kicker.width), h: headerBottom - headerTop, role: "content" };
+  const termBox: ShareBox = { id: "termName", x: CONTENT_RIGHT - Math.ceil(termMetrics.width), y: headerTop, w: Math.ceil(termMetrics.width), h: Math.ceil(termMetrics.ascent + termMetrics.descent), role: "content" };
   const titleBox: ShareBox = { id: "quizTitle", x: CONTENT_LEFT, y: titleTop, w: TITLE_WIDTH, h: title.height, role: "content" };
   const markBox: ShareBox = { id: "mark", x: CONTENT_LEFT, y: markTop, w: Math.ceil(markMetrics.width + 8), h: markHeight, role: "content" };
   const ctaBox: ShareBox = { id: "cta", x: 108, y: ctaTop, w: 864, h: ctaHeight, role: "content" };
@@ -410,7 +450,7 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
     { id: "corner-br", x: 1002 - CORNER, y: 1842 - CORNER, w: CORNER, h: CORNER, role: "chrome" },
   ];
 
-  const boxes: ShareBox[] = [headerBox, titleBox, resultBox, markBox, ctaBox, sealBox, ...corners];
+  const boxes: ShareBox[] = [headerBox, termBox, titleBox, resultBox, markBox, ctaBox, sealBox, ...corners];
   if (descriptionBox) boxes.push(descriptionBox);
   if (chipsBox) boxes.push(chipsBox);
   for (const box of traitBoxes) boxes.push({ id: box.id, x: box.x, y: box.y, w: box.w, h: box.h, role: "content" });
@@ -418,6 +458,7 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
   return {
     boxes,
     header: { box: headerBox, font: kickerFont, metrics: kicker },
+    term: { box: termBox, text: termText, font: termFont, metrics: termMetrics },
     title: { box: titleBox, fitted: title },
     result: { box: resultBox, fitted: result },
     description: planned.description && descriptionBox ? { box: descriptionBox, fitted: planned.description } : null,
@@ -468,11 +509,11 @@ export function shareLayoutViolations(boxes: ShareBox[]): string[] {
   return violations;
 }
 
-function paintQuizShareCard(ctx: CanvasRenderingContext2D, model: QuizShareModel, layout: ReturnType<typeof planQuizShareLayout>) {
+function paintQuizShareCard(ctx: CanvasRenderingContext2D, model: QuizShareModel, layout: ReturnType<typeof planQuizShareLayout>, term: QuizShareTerm) {
   const { paper, jade, indigo, vermilion, gold, ink } = QUIZ_SHARE_PALETTE;
   ctx.fillStyle = paper;
   ctx.fillRect(0, 0, QUIZ_SHARE_SIZE.width, QUIZ_SHARE_SIZE.height);
-  drawLandscape(ctx);
+  drawLandscape(ctx, term);
   drawLowerPaperPanel(ctx);
   drawRiceTexture(ctx);
   ctx.strokeStyle = "#D7C8AE";
@@ -489,6 +530,11 @@ function paintQuizShareCard(ctx: CanvasRenderingContext2D, model: QuizShareModel
   ctx.fillStyle = jade;
   ctx.font = layout.header.font;
   ctx.fillText(model.locale === "en" ? "A NOTE FROM ZHAOWU" : "昭梧 · 測驗箋記", layout.header.box.x, layout.header.box.y + layout.header.metrics.ascent);
+  ctx.textAlign = "right";
+  ctx.fillStyle = gold;
+  ctx.font = layout.term.font;
+  ctx.fillText(layout.term.text, layout.term.box.x + layout.term.box.w, layout.term.box.y + layout.term.metrics.ascent);
+  ctx.textAlign = "left";
   ctx.fillStyle = vermilion;
   ctx.fillRect(CONTENT_LEFT, layout.header.box.y + layout.header.box.h + 12, 86, 6);
 
@@ -584,11 +630,12 @@ function drawRiceTexture(ctx: CanvasRenderingContext2D) {
   ctx.restore();
 }
 
-function drawLandscape(ctx: CanvasRenderingContext2D) {
-  if (LANDSCAPE_IMAGE?.complete && LANDSCAPE_IMAGE.naturalWidth) paintLandscapeImage(ctx, LANDSCAPE_IMAGE);
+function drawLandscape(ctx: CanvasRenderingContext2D, term: QuizShareTerm) {
+  const image = shareArtCache.get(term.artPath);
+  if (image?.complete && image.naturalWidth) paintLandscapeImage(ctx, image, QUIZ_SHARE_CROP_FOCUS_Y[term.term.skinId] ?? 0.44);
 }
 
-function paintLandscapeImage(ctx: CanvasRenderingContext2D, image: HTMLImageElement) {
+function paintLandscapeImage(ctx: CanvasRenderingContext2D, image: HTMLImageElement, focusY: number) {
   ctx.save();
   const imageHeight = 760;
   const scale = Math.max(QUIZ_SHARE_SIZE.width / image.naturalWidth, imageHeight / image.naturalHeight);
@@ -597,7 +644,8 @@ function paintLandscapeImage(ctx: CanvasRenderingContext2D, image: HTMLImageElem
   ctx.beginPath();
   ctx.rect(0, 0, QUIZ_SHARE_SIZE.width, imageHeight);
   ctx.clip();
-  const cropY = (imageHeight - height) / 2 - 38;
+  const excess = Math.max(0, height - imageHeight);
+  const cropY = -Math.max(0, Math.min(excess, focusY * height - imageHeight * 0.44)) - 38;
   ctx.drawImage(image, (QUIZ_SHARE_SIZE.width - width) / 2, cropY, width, height);
   ctx.fillStyle = "rgba(250,247,237,.08)";
   ctx.fillRect(0, 0, QUIZ_SHARE_SIZE.width, imageHeight);
