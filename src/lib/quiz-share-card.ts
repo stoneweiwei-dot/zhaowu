@@ -278,7 +278,7 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
   const pathLine = fitWrapped(measure, model.cta.path, 808, 2, 30, 26, `500 {size}px ${SANS}`);
   const ctaHeight = Math.ceil(lead.height + 12 + pathLine.height + 32);
   const ctaTop = BOTTOM_SAFE - ctaHeight;
-  const markTop = ctaTop - 16 - markHeight;
+  const markTop = ctaTop - QUIZ_SHARE_MIN_GAP - markHeight;
   const middleBottom = markTop - QUIZ_SHARE_MIN_GAP;
   const middleTop = titleBottom + QUIZ_SHARE_MIN_GAP;
   const available = Math.max(0, middleBottom - middleTop);
@@ -291,7 +291,7 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
       : null;
     const chipHeight = model.chips.length ? 56 : 0;
     const traits = model.traits.map((trait) => {
-      const fitted = fitWrapped(measure, clipPhrase(trait, 18, 19), CONTENT_WIDTH - 48, 1, 56, 32, `600 {size}px ${SANS}`);
+      const fitted = fitWrapped(measure, trait, CONTENT_WIDTH - 48, 2, 44, 28, `600 {size}px ${SANS}`);
       const height = Math.ceil(fitted.height + 6);
       return { trait, fitted, height };
     });

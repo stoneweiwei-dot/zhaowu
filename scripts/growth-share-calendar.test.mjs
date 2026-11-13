@@ -127,7 +127,16 @@ test("share card layout keeps measured gaps and does not overlap boxes", () => {
     assert.ok(model.traits.length >= 3, `${fixture.quizId} ${fixture.locale} has fewer than three traits`);
     const layout = planQuizShareLayout(model, estimateShareText);
     assert.ok(layout.header.box.y >= 780, `${fixture.quizId} ${fixture.locale}: kicker must sit in the paper panel`);
-    assert.ok(layout.traits.every((trait) => trait.fitted.lines.length <= 1), `${fixture.quizId} ${fixture.locale}: trait lines must remain compact`);
+    assert.ok(layout.traits.every((trait) => trait.fitted.lines.length <= 2), `${fixture.quizId} ${fixture.locale}: traits must fit within two lines`);
+    if (fixture.quizId === "six-realms" && fixture.locale === "en") {
+      assert.deepEqual(layout.traits.map((trait) => trait.fitted.lines.join(" ")), fixture.traits);
+      assert.ok(layout.traits.every((trait) => !trait.fitted.lines.join("").endsWith("…")));
+    }
+    const lastTrait = layout.boxes.find((box) => box.id === `trait-${layout.traits.length - 1}`);
+    const mark = layout.boxes.find((box) => box.id === "mark");
+    const cta = layout.boxes.find((box) => box.id === "cta");
+    if (lastTrait && mark) assert.ok(mark.y - (lastTrait.y + lastTrait.h) >= 32 - 0.5, `${fixture.quizId} ${fixture.locale}: last trait must have 32px clearance before mark`);
+    if (mark && cta) assert.ok(cta.y - (mark.y + mark.h) >= 32 - 0.5, `${fixture.quizId} ${fixture.locale}: mark must have 32px clearance before CTA`);
     const violations = shareLayoutViolations(layout.boxes);
     assert.deepEqual(violations, [], `${fixture.quizId} ${fixture.locale}: ${violations.join("; ")}`);
   }
