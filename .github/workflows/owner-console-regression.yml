@@ -40,6 +40,8 @@ jobs:
       - name: Music playlist, loop, owner list and mobile utility regression
         run: |
           node --test scripts/music-playlist-choice.test.mjs scripts/r149-music-player-controls.test.mjs scripts/r157-dragon-assistant-music.test.mjs scripts/r156-owner-bulk-actions.test.mjs
+      - name: WeChat offline draft and server-only API contract
+        run: node --import tsx --test scripts/wechat-draft.test.mjs scripts/wechat-draft-api.test.mjs
       - name: Generate routes, build and typecheck
         run: |
           # Vite's TanStack Router plugin regenerates routeTree.gen.ts. Typechecking
