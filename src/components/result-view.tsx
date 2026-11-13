@@ -68,10 +68,44 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
   useEffect(() => {
     if (oncePerSession(`answer-shown:${result.id ?? ""}`)) trackConversion("zhaowu_answer_shown", { system: "bazi" });
+    if (oncePerSession(`chart-completed:${result.id ?? ""}`)) trackConversion("chart_completed", { system: "bazi", locale });
+  }, [result.id]);
+
+  useEffect(() => {
+    let visible = false; let bottom = false; let longDwell = false; let sent = false;
+    let longTimer: number | undefined; let bottomTimer: number | undefined;
+    const maybeSend = () => {
+      if (sent || !visible) return;
+      if (longDwell || (bottom && bottomTimer === -1)) {
+        sent = true;
+        if (oncePerSession(`report-viewed:${result.id ?? ""}`)) trackConversion("report_viewed", { system: "bazi" });
+      }
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible && longTimer === undefined) longTimer = window.setTimeout(() => { longTimer = -1; longDwell = true; maybeSend(); }, 30_000);
+      if (!visible && longTimer !== undefined && longTimer >= 0) { clearTimeout(longTimer); longTimer = undefined; }
+      maybeSend();
+    });
+    const root = document.getElementById("result"); if (root) observer.observe(root);
+    const onScroll = () => {
+      bottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 16;
+      if (bottom && visible && bottomTimer === undefined) bottomTimer = window.setTimeout(() => { bottomTimer = -1; maybeSend(); }, 1000);
+      if (!bottom && bottomTimer !== undefined && bottomTimer >= 0) { clearTimeout(bottomTimer); bottomTimer = undefined; }
+      maybeSend();
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      observer.disconnect();
+      if (longTimer !== undefined && longTimer >= 0) clearTimeout(longTimer);
+      if (bottomTimer !== undefined && bottomTimer >= 0) clearTimeout(bottomTimer);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, [result.id]);
 
   async function handleUnlock(product: ReportAccessProduct) {
     if (!consent.require()) return;
+    trackConversion("unlock_clicked", { system: "bazi", product: product });
     setPurchasing(product);
     setPurchaseError(null);
     try {

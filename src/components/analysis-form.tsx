@@ -329,6 +329,7 @@ export function AnalysisForm() {
     setBusy(true);
     try {
       const payload: AnalyzeInput = { ...rememberedRecord, question: question.trim(), locale };
+      trackConversion("chart_started", { system: "bazi", locale });
       trackConversion("zhaowu_birth_submitted", { system: "bazi" });
       const result = await analyzeLife({ data: payload });
       setCurrent(result);

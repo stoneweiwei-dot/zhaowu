@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { QuizShareButton } from "@/components/quiz-share-button";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
 
@@ -188,6 +189,7 @@ function FiveElementOverdriveQuiz() {
               <Link to="/knowledge" className="inline-flex min-h-11 items-center rounded-full border border-line bg-cream px-5 py-2 text-sm text-ink">{copy.article} →</Link>
               <Link to="/" className="inline-flex min-h-11 items-center rounded-full border border-line bg-paper px-5 py-2 text-sm text-ink">{copy.home}</Link>
             </div>
+            <div className="mt-4 grid gap-3">{scored.leaders.map((key) => { const result = RESULTS[locale][key]; return <QuizShareButton key={`share-${key}`} quizId="five-element-overdrive" quizName={copy.title} resultLabel={`${result.name}｜${result.title}`} description={result.strength} traits={[result.title]} />; })}</div>
           </div>
         )}
       </section>

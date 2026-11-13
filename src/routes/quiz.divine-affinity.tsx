@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { pickDivineArt } from "@/lib/quiz-result-art";
+import { QuizShareButton } from "@/components/quiz-share-button";
 
 export const Route = createFileRoute("/quiz/divine-affinity")({ component: DivineAffinityQuiz });
 
@@ -371,6 +372,7 @@ function DivineAffinityQuiz() {
             <button type="button" onClick={reset} className="min-h-12 rounded-full border border-line bg-cream px-5 py-3 text-sm text-ink">{copy.restart}</button>
             <Link to="/" className="grid min-h-12 place-items-center rounded-full bg-cinnabar px-5 py-3 text-sm text-cream">{copy.home}</Link>
           </div>
+          <QuizShareButton quizId="divine-affinity" quizName={copy.title} resultLabel={primary.name} description={primary.essence} />
         </section>
       )}
     </main>

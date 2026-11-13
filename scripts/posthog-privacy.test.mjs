@@ -225,3 +225,16 @@ test("error type and length bucket stay coarse", () => {
   assert.equal(questionLengthBucket(400), "121-400");
   assert.equal(questionLengthBucket(401), "401+");
 });
+
+test("new growth funnel events use the same sanitized capture path and omit private quiz data", () => {
+  const events = ["chart_started", "chart_completed", "report_viewed", "unlock_clicked", "unlock_paid", "quiz_shared", "calendar_subscribe_clicked"];
+  const payloads = captured(() => {
+    for (const event of events) trackConversion(event, { system: "bazi", quiz_id: "six-realms", locale: "zh-Hant", birthData: "must-not-be-sent", access_key: "secret" });
+  });
+  assert.deepEqual(payloads.map((item) => item.event), events);
+  for (const payload of payloads) {
+    assert.equal(payload.properties.$current_url, "/");
+    assert.equal(Object.hasOwn(payload.properties, "birthData"), false);
+    assert.equal(Object.hasOwn(payload.properties, "access_key"), false);
+  }
+});
