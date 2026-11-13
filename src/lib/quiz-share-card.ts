@@ -45,7 +45,7 @@ const CTA_FALLBACK: Record<Locale, string> = {
   en: "Take the free quiz",
 };
 
-const SERIF = '"Cormorant Garamond", "Noto Serif CJK TC", "Noto Serif CJK SC", "Noto Serif TC", "Source Han Serif TC", serif';
+const SERIF = '"Chiron Sung HK", "Songti TC", "Songti SC", "Noto Serif CJK TC", "Noto Serif TC", "STSong", "Cormorant Garamond", "Playfair Display", serif';
 const SANS = '"Noto Sans CJK TC", "Noto Sans CJK SC", "Noto Sans TC", "Noto Sans", system-ui, sans-serif';
 
 const FRAME = { left: 57, top: 57, right: 1023, bottom: 1863 };
@@ -54,10 +54,10 @@ const CONTENT_LEFT = 120;
 const CONTENT_RIGHT = 960;
 const CONTENT_WIDTH = CONTENT_RIGHT - CONTENT_LEFT;
 const TITLE_WIDTH = 640;
-const SEAL = { x: 900, y: 224, size: 148, rotate: (13 * Math.PI) / 180 };
+const SEAL = { x: 900, y: 540, size: 148, rotate: (13 * Math.PI) / 180 };
 const BOTTOM_SAFE = 1790;
 const LANDSCAPE_IMAGE = typeof Image === "undefined" ? null : new Image();
-if (LANDSCAPE_IMAGE) LANDSCAPE_IMAGE.src = "/hero-gallery/misty-mountains-lake.webp";
+if (LANDSCAPE_IMAGE) LANDSCAPE_IMAGE.src = "/theme-skins/solar-start-winter/earth-begins-freezing.webp";
 
 export type QuizShareChip = { label: string; color: string };
 export type QuizShareInput = {
@@ -178,7 +178,7 @@ export function buildQuizShareModel(input: QuizShareInput & { locale: Locale }, 
     shareUrl: `${origin}${sharePath}`,
     quizPath,
     cta: buildCta(input.locale, input.quizId, quizPath),
-    marks: { site: "zhao-wu.com", original: input.locale === "en" ? "© STONE" : "STONE 原創" },
+    marks: { site: "zhao-wu.com", original: "STONE 原創" },
   };
 }
 
@@ -266,7 +266,7 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
   const markMetrics = measure(markFont, model.marks.original);
   const markHeight = Math.ceil(markMetrics.ascent + markMetrics.descent);
 
-  const headerTop = 118;
+  const headerTop = 670;
   const headerBottom = headerTop + kicker.ascent + kicker.descent;
   const ruleTop = headerBottom + 12;
   const ruleBottom = ruleTop + 6;
@@ -274,9 +274,9 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
   const title = fitWrapped(measure, model.quizName, TITLE_WIDTH, 2, 54, 34, `500 {size}px ${SERIF}`);
   const titleBottom = titleTop + title.height;
 
-  const lead = fitWrapped(measure, model.cta.lead, 800, 2, 36, 26, `500 {size}px ${SERIF}`);
-  const pathLine = fitWrapped(measure, `→ ${model.cta.path}`, 800, 2, 26, 20, `400 {size}px ${SERIF}`);
-  const ctaHeight = Math.ceil(lead.height + 18 + pathLine.height + 26);
+  const lead = fitWrapped(measure, model.cta.lead, 808, 2, 36, 28, `600 {size}px ${SERIF}`);
+  const pathLine = fitWrapped(measure, model.cta.path, 808, 2, 30, 26, `500 {size}px ${SANS}`);
+  const ctaHeight = Math.ceil(lead.height + 12 + pathLine.height + 32);
   const ctaTop = BOTTOM_SAFE - ctaHeight;
   const markTop = ctaTop - 16 - markHeight;
   const middleBottom = markTop - QUIZ_SHARE_MIN_GAP;
@@ -287,12 +287,12 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
   const layoutFor = (resultSize: number, resultWidth: number, gaps: MiddleGaps) => {
     const result = fitWrapped(measure, model.resultLabel || " ", resultWidth, 3, resultSize, 36, `700 {size}px ${SERIF}`);
     const description = model.description
-      ? fitWrapped(measure, model.description, CONTENT_WIDTH, 3, 36, 26, `400 {size}px ${SANS}`)
+      ? fitWrapped(measure, model.description, CONTENT_WIDTH, 4, 50, 38, `400 {size}px ${SANS}`)
       : null;
     const chipHeight = model.chips.length ? 56 : 0;
     const traits = model.traits.map((trait) => {
-      const fitted = fitWrapped(measure, trait, CONTENT_WIDTH - 48, 2, 34, 24, `600 {size}px ${SANS}`);
-      const height = Math.ceil(fitted.height + 22);
+      const fitted = fitWrapped(measure, trait, CONTENT_WIDTH - 48, 2, 56, 40, `600 {size}px ${SANS}`);
+      const height = Math.ceil(fitted.height + 6);
       return { trait, fitted, height };
     });
     const traitStack = traits.reduce((sum, item, index) => sum + item.height + (index ? gaps.trait : 0), 0);
@@ -310,9 +310,9 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
 
   let resultSize = 132;
   let resultWidth = CONTENT_WIDTH;
-  let gaps: MiddleGaps = { afterResult: 28, afterRule: 24, beforeChips: 28, beforeTraits: 24, trait: 16 };
+  let gaps: MiddleGaps = { afterResult: 28, afterRule: 24, beforeChips: 28, beforeTraits: 24, trait: 6 };
   let planned = layoutFor(resultSize, resultWidth, gaps);
-  const minGaps: MiddleGaps = { afterResult: 20, afterRule: 18, beforeChips: 20, beforeTraits: 18, trait: 12 };
+  const minGaps: MiddleGaps = { afterResult: 20, afterRule: 18, beforeChips: 20, beforeTraits: 18, trait: 4 };
 
   while (planned.natural > available && resultSize > 36) {
     resultSize -= 4;
@@ -452,6 +452,7 @@ function paintQuizShareCard(ctx: CanvasRenderingContext2D, model: QuizShareModel
   ctx.fillStyle = paper;
   ctx.fillRect(0, 0, QUIZ_SHARE_SIZE.width, QUIZ_SHARE_SIZE.height);
   drawLandscape(ctx);
+  drawLowerPaperPanel(ctx);
   drawRiceTexture(ctx);
   ctx.strokeStyle = "#D7C8AE";
   ctx.lineWidth = 3;
@@ -498,15 +499,12 @@ function paintQuizShareCard(ctx: CanvasRenderingContext2D, model: QuizShareModel
   ctx.fillText(model.marks.original, layout.mark.box.x, layout.mark.box.y + layout.mark.metrics.ascent);
 
   const cta = layout.cta.box;
-  ctx.strokeStyle = "rgba(150,83,66,.65)";
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(cta.x + 8, cta.y + 5);
-  ctx.lineTo(cta.x + cta.w - 8, cta.y + 5);
-  ctx.stroke();
+  roundRect(ctx, cta.x, cta.y, cta.w, cta.h, 8);
+  ctx.fillStyle = jade;
+  ctx.fill();
   const ctaTextTop = cta.y + (cta.h - (layout.cta.lead.height + 10 + layout.cta.pathLine.height)) / 2;
-  drawFitted(ctx, layout.cta.lead, cta.x + 28, ctaTextTop, vermilion);
-  drawFitted(ctx, layout.cta.pathLine, cta.x + 28, ctaTextTop + layout.cta.lead.height + 10, jade);
+  drawFitted(ctx, layout.cta.lead, cta.x + 36, ctaTextTop, "#fffdf8");
+  drawFitted(ctx, layout.cta.pathLine, cta.x + 36, ctaTextTop + layout.cta.lead.height + 10, "#fffdf8");
 }
 
 function uniquePhrases(values: string[]): string[] {
@@ -571,15 +569,27 @@ function drawLandscape(ctx: CanvasRenderingContext2D) {
 
 function paintLandscapeImage(ctx: CanvasRenderingContext2D, image: HTMLImageElement) {
   ctx.save();
-  const scale = Math.max(QUIZ_SHARE_SIZE.width / image.naturalWidth, QUIZ_SHARE_SIZE.height / image.naturalHeight);
+  const imageHeight = 760;
+  const scale = Math.max(QUIZ_SHARE_SIZE.width / image.naturalWidth, imageHeight / image.naturalHeight);
   const width = image.naturalWidth * scale;
   const height = image.naturalHeight * scale;
-  ctx.globalAlpha = 0.56;
-  ctx.drawImage(image, (QUIZ_SHARE_SIZE.width - width) / 2, (QUIZ_SHARE_SIZE.height - height) / 2, width, height);
-  ctx.globalAlpha = 0.58;
-  ctx.fillStyle = QUIZ_SHARE_PALETTE.paper;
-  ctx.fillRect(0, 0, QUIZ_SHARE_SIZE.width, QUIZ_SHARE_SIZE.height);
+  ctx.beginPath();
+  ctx.rect(0, 0, QUIZ_SHARE_SIZE.width, imageHeight);
+  ctx.clip();
+  ctx.drawImage(image, (QUIZ_SHARE_SIZE.width - width) / 2, (imageHeight - height) / 2, width, height);
+  ctx.fillStyle = "rgba(250,247,237,.08)";
+  ctx.fillRect(0, 0, QUIZ_SHARE_SIZE.width, imageHeight);
   ctx.restore();
+}
+
+function drawLowerPaperPanel(ctx: CanvasRenderingContext2D) {
+  const start = 700;
+  const gradient = ctx.createLinearGradient(0, start, 0, 860);
+  gradient.addColorStop(0, "rgba(250,247,237,0)");
+  gradient.addColorStop(.42, "rgba(250,247,237,.88)");
+  gradient.addColorStop(1, "rgba(250,247,237,.92)");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, start, QUIZ_SHARE_SIZE.width, QUIZ_SHARE_SIZE.height - start);
 }
 
 function drawCornerMarks(ctx: CanvasRenderingContext2D, gold: string, vermilion: string) {
