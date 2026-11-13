@@ -54,7 +54,7 @@ const CONTENT_LEFT = 120;
 const CONTENT_RIGHT = 960;
 const CONTENT_WIDTH = CONTENT_RIGHT - CONTENT_LEFT;
 const TITLE_WIDTH = 640;
-const SEAL = { x: 900, y: 540, size: 148, rotate: (13 * Math.PI) / 180 };
+const SEAL = { x: 900, y: 515, size: 148, rotate: (13 * Math.PI) / 180 };
 const BOTTOM_SAFE = 1790;
 const LANDSCAPE_IMAGE = typeof Image === "undefined" ? null : new Image();
 if (LANDSCAPE_IMAGE) LANDSCAPE_IMAGE.src = "/theme-skins/solar-start-winter/earth-begins-freezing.webp";
@@ -266,7 +266,7 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
   const markMetrics = measure(markFont, model.marks.original);
   const markHeight = Math.ceil(markMetrics.ascent + markMetrics.descent);
 
-  const headerTop = 670;
+  const headerTop = 800;
   const headerBottom = headerTop + kicker.ascent + kicker.descent;
   const ruleTop = headerBottom + 12;
   const ruleBottom = ruleTop + 6;
@@ -287,11 +287,11 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
   const layoutFor = (resultSize: number, resultWidth: number, gaps: MiddleGaps) => {
     const result = fitWrapped(measure, model.resultLabel || " ", resultWidth, 3, resultSize, 36, `700 {size}px ${SERIF}`);
     const description = model.description
-      ? fitWrapped(measure, model.description, CONTENT_WIDTH, 4, 50, 38, `400 {size}px ${SANS}`)
+      ? fitWrapped(measure, model.description, CONTENT_WIDTH, 4, 50, 32, `400 {size}px ${SANS}`)
       : null;
     const chipHeight = model.chips.length ? 56 : 0;
     const traits = model.traits.map((trait) => {
-      const fitted = fitWrapped(measure, trait, CONTENT_WIDTH - 48, 2, 56, 40, `600 {size}px ${SANS}`);
+      const fitted = fitWrapped(measure, clipPhrase(trait, 18, 19), CONTENT_WIDTH - 48, 1, 56, 32, `600 {size}px ${SANS}`);
       const height = Math.ceil(fitted.height + 6);
       return { trait, fitted, height };
     });
@@ -314,7 +314,7 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
   let planned = layoutFor(resultSize, resultWidth, gaps);
   const minGaps: MiddleGaps = { afterResult: 20, afterRule: 18, beforeChips: 20, beforeTraits: 18, trait: 4 };
 
-  while (planned.natural > available && resultSize > 36) {
+  while (planned.natural > available && resultSize > 32) {
     resultSize -= 4;
     planned = layoutFor(resultSize, resultWidth, gaps);
   }
@@ -336,7 +336,7 @@ export function planQuizShareLayout(model: QuizShareModel, measure: MeasureFn) {
   }
 
   // Re-fit at the chosen width/size after any width change, then distribute leftover.
-  while (planned.natural > available && resultSize > 36) {
+  while (planned.natural > available && resultSize > 32) {
     resultSize -= 4;
     planned = layoutFor(resultSize, resultWidth, gaps);
   }
@@ -576,7 +576,8 @@ function paintLandscapeImage(ctx: CanvasRenderingContext2D, image: HTMLImageElem
   ctx.beginPath();
   ctx.rect(0, 0, QUIZ_SHARE_SIZE.width, imageHeight);
   ctx.clip();
-  ctx.drawImage(image, (QUIZ_SHARE_SIZE.width - width) / 2, (imageHeight - height) / 2, width, height);
+  const cropY = (imageHeight - height) / 2 - 38;
+  ctx.drawImage(image, (QUIZ_SHARE_SIZE.width - width) / 2, cropY, width, height);
   ctx.fillStyle = "rgba(250,247,237,.08)";
   ctx.fillRect(0, 0, QUIZ_SHARE_SIZE.width, imageHeight);
   ctx.restore();
@@ -584,7 +585,7 @@ function paintLandscapeImage(ctx: CanvasRenderingContext2D, image: HTMLImageElem
 
 function drawLowerPaperPanel(ctx: CanvasRenderingContext2D) {
   const start = 700;
-  const gradient = ctx.createLinearGradient(0, start, 0, 860);
+  const gradient = ctx.createLinearGradient(0, start, 0, 772);
   gradient.addColorStop(0, "rgba(250,247,237,0)");
   gradient.addColorStop(.42, "rgba(250,247,237,.88)");
   gradient.addColorStop(1, "rgba(250,247,237,.92)");
@@ -615,8 +616,8 @@ function drawCornerMarks(ctx: CanvasRenderingContext2D, gold: string, vermilion:
   };
   draw(78, 78, 1, 1);
   draw(1002, 78, -1, 1);
-  draw(78, 1842, 1, -1);
-  draw(1002, 1842, -1, -1);
+  draw(78, 1874, 1, -1);
+  draw(1002, 1874, -1, -1);
 }
 
 function drawSeal(ctx: CanvasRenderingContext2D, x: number, y: number) {
@@ -710,6 +711,9 @@ function fitWrapped(
       break;
     }
     size -= 2;
+  }
+  if (lines.length > maxLines) {
+    lines = truncateLines(measure, font, lines.slice(0, maxLines), maxWidth, true);
   }
   font = fontTemplate.replace("{size}", String(size));
   const lineHeight = Math.ceil(Math.max(size * 1.2, ascent + descent + 4));

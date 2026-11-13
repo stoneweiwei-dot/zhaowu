@@ -126,6 +126,8 @@ test("share card layout keeps measured gaps and does not overlap boxes", () => {
     const model = buildQuizShareModel({ ...fixture, locale: fixture.locale }, "");
     assert.ok(model.traits.length >= 3, `${fixture.quizId} ${fixture.locale} has fewer than three traits`);
     const layout = planQuizShareLayout(model, estimateShareText);
+    assert.ok(layout.header.box.y >= 780, `${fixture.quizId} ${fixture.locale}: kicker must sit in the paper panel`);
+    assert.ok(layout.traits.every((trait) => trait.fitted.lines.length <= 1), `${fixture.quizId} ${fixture.locale}: trait lines must remain compact`);
     const violations = shareLayoutViolations(layout.boxes);
     assert.deepEqual(violations, [], `${fixture.quizId} ${fixture.locale}: ${violations.join("; ")}`);
   }
