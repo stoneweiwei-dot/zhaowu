@@ -10,7 +10,6 @@ import { PaintedHome } from "@/components/painted-home";
 import { DeepReadingHeroCard } from "@/components/deep-reading-hero-card";
 import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt";
 import { HomeSectionBoundary } from "@/components/home-section-boundary";
-import { ResultView } from "@/components/result-view";
 import { useI18n } from "@/lib/i18n";
 import { readLocalReports } from "@/lib/local-report-history";
 import { clearSharedBirthRecord, writeSharedBirthRecord } from "@/lib/shared-birth";
@@ -175,6 +174,9 @@ const LazySkyEventsHomeSection = lazy(() =>
 );
 const LazyLifeViewHomeSection = lazy(() =>
   import("@/components/life-view-home-section").then((mod) => ({ default: mod.LifeViewHomeSection })),
+);
+const LazyResultView = lazy(() =>
+  import("@/components/result-view").then((mod) => ({ default: mod.ResultView })),
 );
 const LazyScentFiveElementTest = lazy(() =>
   import("@/components/scent-five-element-test").then((mod) => ({ default: mod.ScentFiveElementTest })),
@@ -391,7 +393,9 @@ function Home() {
               >
                 <div id="report" className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--result">
                   <ReportSaveStatus />
-                  <ResultView result={current} />
+                  <Suspense fallback={<div role="status">{locale === "en" ? "Loading your report…" : locale === "zh-Hans" ? "正在载入报告…" : "正在載入報告…"}</div>}>
+                    <LazyResultView result={current} />
+                  </Suspense>
                 </div>
               </HomeSectionBoundary>
               <HomeSectionBoundary id="hero" locale={locale}>
