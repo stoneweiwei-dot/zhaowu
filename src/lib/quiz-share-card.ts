@@ -6,11 +6,12 @@ export const QUIZ_SHARE_PALETTE = { paper: "#F3EBDD", jade: "#286653", indigo: "
 export type QuizShareInput = { quizId: string; quizName: string; resultLabel: string; description: string };
 export type QuizShareModel = QuizShareInput & { locale: Locale; description: string; shareUrl: string; marks: { site: string; original: string } };
 
-export function buildQuizShareModel(input: QuizShareInput & { locale: Locale }, pathname = typeof window === "undefined" ? "/" : window.location.pathname): QuizShareModel {
+export function buildQuizShareModel(input: QuizShareInput & { locale: Locale }, href = typeof window === "undefined" ? "/" : `${window.location.pathname}${window.location.search}`): QuizShareModel {
   const description = [...String(input.description ?? "")].slice(0, 40).join("");
-  const path = pathname.split(/[?#]/)[0] || "/";
+  const path = href.split("#")[0] || "/";
   const origin = typeof window === "undefined" ? "https://zhao-wu.com" : window.location.origin;
-  return { ...input, description, shareUrl: `${origin}${path}`, marks: { site: "zhao-wu.com", original: input.locale === "en" ? "© STONE" : "STONE 原創" } };
+  const sharePath = path.startsWith("/") ? path : `/${path}`;
+  return { ...input, description, shareUrl: `${origin}${sharePath}`, marks: { site: "zhao-wu.com", original: input.locale === "en" ? "© STONE" : "STONE 原創" } };
 }
 
 export function renderQuizShareCard(model: QuizShareModel): HTMLCanvasElement {

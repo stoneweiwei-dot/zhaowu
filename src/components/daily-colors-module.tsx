@@ -83,13 +83,16 @@ export function DailyColorsModule({ variant, date }: { variant: Variant; date?: 
   const correspondence = fiveElementCorrespondence(active.element, locale);
   const subscribeUrl = `${typeof window === "undefined" ? "https://zhao-wu.com" : window.location.origin}/calendar.ics`;
   const subscribe = async () => {
-    trackConversion("calendar_subscribe_clicked", { locale, method: "webcal" });
-    if (variant === "page" && typeof window !== "undefined" && window.location.hostname !== "localhost") window.location.href = subscribeUrl.replace(/^https:/, "webcal:");
-    else {
-      trackConversion("calendar_subscribe_clicked", { locale, method: "copy" });
-      try { await navigator.clipboard.writeText(subscribeUrl); setSubscribeMessage(locale === "en" ? "Calendar URL copied." : locale === "zh-Hans" ? "已複製日曆連結。" : "已複製日曆連結。"); }
-      catch { setSubscribeMessage(subscribeUrl); }
+    const host = typeof window === "undefined" ? "" : window.location.hostname;
+    const isLocal = host === "localhost" || host === "127.0.0.1" || host === "[::1]";
+    if (variant === "page" && typeof window !== "undefined" && !isLocal) {
+      trackConversion("calendar_subscribe_clicked", { locale, method: "webcal" });
+      window.location.href = subscribeUrl.replace(/^https:/, "webcal:");
+      return;
     }
+    trackConversion("calendar_subscribe_clicked", { locale, method: "copy" });
+    try { await navigator.clipboard.writeText(subscribeUrl); setSubscribeMessage(locale === "en" ? "Calendar URL copied." : locale === "zh-Hans" ? "已複製日曆連結。" : "已複製日曆連結。"); }
+    catch { setSubscribeMessage(subscribeUrl); }
   };
 
   const choices = (
@@ -244,9 +247,9 @@ export function DailyColorsModule({ variant, date }: { variant: Variant; date?: 
       {compact ? null : <p>{page.boundary}</p>}
       {variant === "page" ? (
         <div className="grid gap-3 rounded-xl border border-line bg-paper p-4">
-          <button type="button" onClick={() => void subscribe()} className="min-h-12 rounded-full bg-jade px-5 py-3 text-sm font-semibold text-cream">{locale === "en" ? "Subscribe to phone calendar" : locale === "zh-Hans" ? "订阅到手机日历" : "訂閱到手機日曆"}</button>
+          <button type="button" onClick={() => void subscribe()} className="min-h-12 rounded-full bg-wood px-5 py-3 text-sm font-semibold text-cream">{locale === "en" ? "Subscribe to phone calendar" : locale === "zh-Hans" ? "订阅到手机日历" : "訂閱到手機日曆"}</button>
           <p className="text-sm leading-6 text-ink-soft">{locale === "en" ? "iPhone: open this link in Safari, or Settings → Calendar → Add Subscription Calendar." : locale === "zh-Hans" ? "iPhone：可在 Safari 打开订阅链接，或前往「设置 → 日历 → 添加订阅日历」。" : "iPhone：可在 Safari 開啟訂閱連結，或前往「設定 → 行事曆 → 加入訂閱行事曆」。"}</p>
-          {subscribeMessage ? <p role="status" className="break-all text-xs text-jade">{subscribeMessage}</p> : null}
+          {subscribeMessage ? <p role="status" className="break-all text-xs text-wood">{subscribeMessage}</p> : null}
           <p><Link to="/">{page.back}</Link></p>
         </div>
       ) : null}

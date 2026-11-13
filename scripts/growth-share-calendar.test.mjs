@@ -13,6 +13,9 @@ test("quiz share model keeps a light 1080x1350 card, short description and route
   assert.equal(model.marks.original, "STONE 原創");
   assert.equal(new URL(model.shareUrl).pathname, "/en/quiz/six-realms");
   assert.notEqual(new URL(model.shareUrl).pathname, "/");
+  const inline = buildQuizShareModel({ quizId: "animal", quizName: "內在動物", resultLabel: "虎", description: "短述", locale: "zh-Hant" }, "/fun-tests?test=animal");
+  assert.equal(new URL(inline.shareUrl).pathname, "/fun-tests");
+  assert.equal(new URL(inline.shareUrl).search, "?test=animal");
 });
 
 test("build outputs a Sydney-based all-day ICS window and valid RSS items", () => {

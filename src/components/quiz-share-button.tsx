@@ -29,5 +29,5 @@ export function QuizShareButton(props: QuizShareInput) {
     } catch (error) { if (!(error instanceof DOMException && error.name === "AbortError")) setMessage(copy.failed); }
     finally { setBusy(false); }
   }
-  return <div className="grid gap-2"><button type="button" onClick={() => void share()} disabled={busy} className="min-h-12 rounded-full bg-jade px-5 py-3 text-sm font-semibold text-cream disabled:opacity-60">{busy ? "…" : copy.share}</button>{message ? <p role="status" className="text-center text-sm text-jade">{message}</p> : null}</div>;
+  return <div className="grid gap-2"><button type="button" onClick={() => void share()} disabled={busy} className="min-h-12 rounded-full bg-wood px-5 py-3 text-sm font-semibold text-cream disabled:opacity-60">{busy ? "…" : copy.share}</button>{message ? <p role="status" className="text-center text-sm text-wood">{message}</p> : null}</div>;
 }
