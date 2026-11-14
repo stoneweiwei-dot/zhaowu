@@ -33,15 +33,22 @@ test("Sydney 3 November snapshot includes three languages, rise/set and sourced 
 
 test("Sydney 11 November 2026 snapshot preserves prior records, matches trilingual verified numbers, and marks unverified S/A events as data unavailable", () => {
   const src = read("src/components/daily-sky-observation.tsx");
-  const allDates = [
-    "2026-10-31", "2026-11-01", "2026-11-02", "2026-11-03", "2026-11-04",
-    "2026-11-05", "2026-11-06", "2026-11-07", "2026-11-08", "2026-11-09", "2026-11-10", "2026-11-11"
-  ];
-  for (const historicalDate of allDates) {
-    assert.ok(src.includes(`date: "${historicalDate}"`), `missing snapshot ${historicalDate}`);
-  }
   const foundDates = [...src.matchAll(/date:\s*"([^"]+)"/g)].map((m) => m[1]);
-  assert.deepEqual(foundDates, allDates, "Snapshots must maintain continuous ascending chronological order without gaps");
+  const uniqueDates = [...new Set(foundDates)];
+  assert.equal(uniqueDates.length, foundDates.length, "Snapshot dates must be unique");
+  assert.deepEqual(foundDates, [...foundDates].sort(), "Snapshot dates must be strictly ascending");
+  for (const historicalDate of [
+    "2026-10-31", "2026-11-01", "2026-11-02", "2026-11-03", "2026-11-04",
+    "2026-11-05", "2026-11-06", "2026-11-07", "2026-11-08", "2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12"
+  ]) {
+    assert.ok(uniqueDates.includes(historicalDate), `missing historical snapshot ${historicalDate}`);
+  }
+  const dayMs = 24 * 60 * 60 * 1000;
+  for (let i = 1; i < foundDates.length; i += 1) {
+    const previous = Date.parse(`${foundDates[i - 1]}T00:00:00Z`);
+    const current = Date.parse(`${foundDates[i]}T00:00:00Z`);
+    assert.equal(current - previous, dayMs, `snapshot series has a gap between ${foundDates[i - 1]} and ${foundDates[i]}`);
+  }
   for (const datum of ["06:29", "21:36", "14:01", "3.4%", "02:00", "02:02", "04:23", "04:11", "16–26°C", "50%"]) {
     assert.ok(src.includes(datum), `missing 2026-11-11 datum ${datum}`);
   }
