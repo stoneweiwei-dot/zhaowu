@@ -1,3 +1,4 @@
+import { FOLKLORE_ARTICLE, FOLKLORE_SOURCES } from "@/lib/life-view-long-form/cai-sheng-zhe-ge-20261116";
 import { useDisplayLanguage, intlTagFor } from "@/lib/display-language";
 import { customerChrome, translateCustomerChrome, translateChromeObject } from "@/lib/customer-chrome";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
@@ -76,6 +77,7 @@ const RESTORED_ORPHAN_ARTICLES = [
 ].filter((article) => RESTORED_ORPHAN_IDS.has(article.id));
 
 const LONG_ARTICLES: IllustratedArticle[] = [
+  FOLKLORE_ARTICLE,
   EMOTIONAL_INTELLIGENCE_FOUR_PRACTICES_ARTICLE,
   SEVEN_CULTURAL_ATLASES_20261023,
   ABHIDHAMMA_THIRTY_ONE_PLANES,
@@ -390,6 +392,14 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                       </Fragment>
                     );
                   })}
+                  {article.id === FOLKLORE_ARTICLE.id ? (
+                    <section className="mt-6 border-t border-line/70 pt-4" aria-label={locale === "en" ? "Sources" : locale === "zh-Hans" ? "资料来源" : "資料來源"}>
+                      <h3 className="font-semibold">{locale === "en" ? "Sources" : locale === "zh-Hans" ? "资料来源" : "資料來源"}</h3>
+                      <ul className="mt-2 list-disc pl-5">
+                        {FOLKLORE_SOURCES.map((source) => <li key={source.href}><a href={source.href} target="_blank" rel="noopener noreferrer" className="break-words text-cinnabar underline underline-offset-4">{source.label}</a></li>)}
+                      </ul>
+                    </section>
+                  ) : null}
                   {article.id === "strength-overdrive-five-elements" ? (
                     <Link to="/quiz/five-element-overdrive" className="mt-6 inline-flex min-h-11 items-center rounded-full border border-cinnabar/30 bg-cream px-5 py-2 text-sm font-medium text-cinnabar">
                       {copy.quizCta} →
