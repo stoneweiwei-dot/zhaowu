@@ -56,6 +56,7 @@ function useCopy(locale: string) {
         { href: "/quiz/six-realms",            title: "Six Realms Habit Test",          hint: "which everyday habit pattern is strongest now" },
         { href: "/quiz/five-element-overdrive", title: "Five-Element Overuse Test",     hint: "10 everyday situations: which strength you overuse into friction" },
         { href: "/mythic-atlas", title: "Chronicle of the Yellow Springs", hint: "Explore twelve original plates, eight lineages and four connected chronicles" },
+        { href: "/bajinggong", title: "Nine Visions of Bajinggong", hint: "Nine original 9:16 landscapes with cultural source notes" },
       ],
     };
   }
@@ -88,6 +89,7 @@ function useCopy(locale: string) {
         { href: "/quiz/six-realms",            title: "六道习气测验",        hint: "看目前最明显的日常惯性" },
         { href: "/quiz/five-element-overdrive", title: "五行优势内耗测验",    hint: "10 个日常情境，看你最容易把哪一种优势用成内耗" },
         { href: "/mythic-atlas", title: "幽明万象录 · 原创设定集", hint: "十二幅原创图、八大支系与四条相连故事线" },
+        { href: "/bajinggong", title: "八景宫 · 九景图志", hint: "九幅原创仙境画与来源辨识" },
       ],
     };
   }
@@ -120,6 +122,7 @@ function useCopy(locale: string) {
       { href: "/quiz/six-realms",            title: "六道習氣測驗",        hint: "看目前最明顯的日常慣性" },
       { href: "/quiz/five-element-overdrive", title: "五行優勢內耗測驗",    hint: "10 個日常情境，看你最容易把哪一種優勢用成內耗" },
       { href: "/mythic-atlas", title: "幽明萬象錄 · 原創設定集", hint: "十二幅原創圖、八大支系與四條相連故事線" },
+        { href: "/bajinggong", title: "八景宮 · 九景圖志", hint: "九幅原創仙境畫與來源辨識" },
     ],
   };
 }

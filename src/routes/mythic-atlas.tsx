@@ -56,7 +56,7 @@ function MythicAtlasPage() {
     </header>
 
     <nav className="hq-toc" aria-label={tr(COPY.contents, locale)}>
-      <span>{tr(COPY.contents, locale)}</span><a href="#world">{tr(COPY.world, locale)}</a><a href="#atlas">{tr(COPY.atlas, locale)}</a><a href="#chronicle">{tr(COPY.chronicle, locale)}</a><a href="#huangquan-film">{tr(l("《幽明萬象錄》原版影片","《幽明万象录》原版影片","Original Chronicle Film"),locale)}</a><Link to="/guaili-luanshen">{tr(l("《三界異聞錄》分組書目", "《三界异闻录》分组书目", "Tales of the Three Realms · Series Index"), locale)}</Link><a href="#guaili">{tr(l("三界異聞錄・七卷", "三界异闻录・七卷", "Tales of the Three Realms · Seven Volumes"), locale)}</a><a href="#guaili-zodiac">{tr(l("十二地支四態", "十二地支四态", "Twelve Branches"), locale)}</a><a href="#guaili-ending">{tr(l("十年災異終局", "十年灾异终局", "Final Chronicle"), locale)}</a><a href="#paintings">{tr(COPY.paintings, locale)}</a><a href="#borrow-star">{locale === "en" ? "Borrowed Star" : locale === "zh-Hans" ? "借星" : "借星"}</a><a href="#observation">{tr(COPY.observation, locale)}</a><a href="#sources">{tr(COPY.sources, locale)}</a>
+      <span>{tr(COPY.contents, locale)}</span><a href="#world">{tr(COPY.world, locale)}</a><a href="#atlas">{tr(COPY.atlas, locale)}</a><a href="#chronicle">{tr(COPY.chronicle, locale)}</a><a href="#huangquan-film">{tr(l("《幽明萬象錄》原版影片","《幽明万象录》原版影片","Original Chronicle Film"),locale)}</a><Link to="/guaili-luanshen">{tr(l("《三界異聞錄》分組書目", "《三界异闻录》分组书目", "Tales of the Three Realms · Series Index"), locale)}</Link><a href="#guaili">{tr(l("三界異聞錄・七卷", "三界异闻录・七卷", "Tales of the Three Realms · Seven Volumes"), locale)}</a><a href="#guaili-zodiac">{tr(l("十二地支四態", "十二地支四态", "Twelve Branches"), locale)}</a><a href="#guaili-ending">{tr(l("十年災異終局", "十年灾异终局", "Final Chronicle"), locale)}</a><a href="#paintings">{tr(COPY.paintings, locale)}</a><a href="/bajinggong">{tr(l("八景宮九景圖志", "八景宫九景图志", "Nine Visions of Bajinggong"), locale)}</a><a href="#borrow-star">{locale === "en" ? "Borrowed Star" : locale === "zh-Hans" ? "借星" : "借星"}</a><a href="#observation">{tr(COPY.observation, locale)}</a><a href="#sources">{tr(COPY.sources, locale)}</a>
     </nav>
 
     <section className="hq-section" id="world">
@@ -110,6 +110,13 @@ function MythicAtlasPage() {
       <div className="hq-thumbnails" aria-label={tr(COPY.selectPlate, locale)}>{ARTWORKS.map((art, index) => <button key={art.file} type="button" className={selectedPlate === index ? "is-active" : ""} aria-pressed={selectedPlate === index} onClick={() => setSelectedPlate(index)}><img src={mythicWebThumb("originals", art.file)} alt="" width={94} height={167} loading="lazy" /><span>{String(index + 1).padStart(2, "0")}</span></button>)}</div>
     </section>
 
+    <section className="hq-section" id="bajinggong">
+      <div className="hq-section-heading"><span>{tr(l("昭梧原創 · 九景特輯","昭梧原创 · 九景特辑","ZHAOWU ORIGINAL · NINE VISIONS"),locale)}</span><h2>{tr(l("八景宮 · 九景圖志","八景宫 · 九景图志","Nine Visions of Bajinggong"),locale)}</h2><p>{tr(l("九幅9:16原創仙境畫作，九種不同畫風；附景物解說與古籍來源辨識。","九幅9:16原创仙境画作，九种不同画风；附景物解说与古籍来源辨识。","Nine original portrait landscapes, each with its own visual language and source notes."),locale)}</p></div>
+      <a href="/bajinggong" className="hq-gallery-feature" style={{display:"block",maxWidth:"550px",margin:"0 auto",textAlign:"center"}}>
+        <img src="/bajinggong/01-hanhai-cangming.webp" alt={tr(l("瀚海滄溟 · 八景宮九景圖志","瀚海沧溟 · 八景宫九景图志","Boundless Azure Sea · Nine Visions"),locale)} width={941} height={1672} loading="lazy" style={{display:"block",width:"100%",height:"auto"}} />
+        <strong style={{display:"block",marginTop:"16px"}}>{tr(l("閱覽完整九景畫卷","阅览完整九景画卷","Explore all nine paintings"),locale)}</strong>
+      </a>
+    </section>
     <BorrowStarInterlude locale={locale} />
 
     <section className="hq-section" id="observation">
