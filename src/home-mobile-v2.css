@@ -588,3 +588,51 @@ html[data-zws]:not([data-zws^="solar-"]):not([data-zws^="southern-"]):not([data-
   color: var(--zws-ink) !important;
   -webkit-text-fill-color: var(--zws-ink) !important;
 }
+
+/* ── 昭梧生辰案台首頁第一屏樣式 ── */
+.zw-home-birth-desk-container {
+  width: 100%;
+  max-width: 580px;
+  margin: 1.25rem auto 1rem;
+  text-align: left;
+}
+
+.zw-home-birth-desk-container .zhaowu-home-stage--primary {
+  margin: 0;
+  padding: 1.25rem 1rem;
+  background: var(--zw-v2-paper, #faf9f5);
+  border: 1px solid var(--zw-v2-line, #dadcd3);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(39, 59, 52, 0.05);
+}
+
+.zhaowu-gender-capsules {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.zhaowu-gender-capsule {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 8px;
+  border: 1px solid var(--zw-v2-line, #dadcd3);
+  background: #ffffff;
+  color: var(--zw-v2-ink, #273b34);
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.zhaowu-gender-capsule.is-active {
+  background: var(--ph-accent, #345e50);
+  color: #ffffff;
+  border-color: var(--ph-accent, #345e50);
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(52, 94, 80, 0.25);
+}
