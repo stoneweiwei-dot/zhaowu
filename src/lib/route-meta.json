@@ -421,6 +421,48 @@
         "description": "Bakit nananatili ang Four Pillars at buwan ayon sa solar term, paano nakaaapekto ang daylight saving at paano ginagamit ang lokal na panahon bilang konteksto."
       }
     },
+    "/bajinggong": {
+      "zh-Hant": {
+        "title": "八景宮九景圖志｜九幅原創仙境畫與古籍來源辨識｜昭梧",
+        "description": "九幅獨立9:16仙境原創畫作：瀚海滄溟至混沌鴻蒙。每景不同畫風與繁體介紹，明確區分《封神演義》相關意象與現代九景演繹。"
+      },
+      "zh-Hans": {
+        "title": "八景宫九景图志｜九幅原创仙境画与古籍来源辨识｜昭梧",
+        "description": "九幅独立9:16仙境原创画作：瀚海沧溟至混沌鸿蒙。每景不同画风与简体介绍，明确区分《封神演义》相关意象与现代九景演绎。"
+      },
+      "en": {
+        "title": "Nine Visions of Bajinggong | Original Art Atlas | ZHAOWU",
+        "description": "Nine original portrait paintings from the Boundless Sea to Primordial Chaos, with trilingual descriptions and clear distinctions between classical references and modern interpretations."
+      },
+      "ja": {
+        "title": "八景宮の九景・原創仙境図鑑 | ZHAOWU",
+        "description": "海から混沌まで九枚の縦長オリジナル仙境画。古典の言及と現代の創作設定を区別して紹介します。"
+      },
+      "ko": {
+        "title": "팔경궁 아홉 풍경·창작 신선 세계 화첩 | ZHAOWU",
+        "description": "바다에서 태초의 혼돈까지 아홉 점의 세로형 창작 그림. 고전적 모티프와 현대 창작 설정을 구분합니다."
+      },
+      "hi": {
+        "title": "बाजिंगगोंग के नौ कल्पित दृश्य | ZHAOWU",
+        "description": "समुद्र से आदिम अराजकता तक नौ मौलिक चित्र। शास्त्रीय संदर्भ और आधुनिक कल्पना अलग रखी गई है।"
+      },
+      "th": {
+        "title": "เก้าภาพแดนเซียนแห่งตำหนักแปดทิวทัศน์ | ZHAOWU",
+        "description": "ภาพต้นฉบับแนวตั้งเก้าภาพจากทะเลกว้างถึงความโกลาหลแรกเริ่ม แยกแหล่งคลาสสิกจากการตีความร่วมสมัย"
+      },
+      "id": {
+        "title": "Sembilan Visi Istana Delapan Panorama | ZHAOWU",
+        "description": "Sembilan lukisan asli dari lautan luas hingga kekacauan purba, membedakan rujukan klasik dan tafsir modern."
+      },
+      "vi": {
+        "title": "Chín cảnh tiên giới của Bát Cảnh Cung | ZHAOWU",
+        "description": "Chín tranh gốc từ biển rộng đến hỗn mang nguyên sơ, phân biệt nguồn cổ điển và diễn giải hiện đại."
+      },
+      "fil": {
+        "title": "Siyam na Tanawin ng Palasyo ng Walong Tagpo | ZHAOWU",
+        "description": "Siyam na orihinal na larawan mula sa dagat hanggang sa unang kaguluhan, na naghihiwalay sa klasikong sanggunian at modernong paglikha."
+      }
+    },
     "/mythic-atlas": {
       "zh-Hant": {
         "title": "幽明萬象錄・三界異聞錄七卷｜十二地支四態・大裂隙災異編年｜昭梧",
