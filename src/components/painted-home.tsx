@@ -9,6 +9,7 @@ import { BrandIcon } from '@/components/brand-icon';
 import { HomeTree } from '@/components/home-tree';
 import { CuratedVideoShelf } from '@/components/curated-video-shelf';
 import '@/home-mobile-v2.css';
+import '@/home-bajinggong-feature.css';
 
 type Section = 'form' | 'today' | 'quiz' | 'notes';
 /** Skins whose painting is clean enough to show at full strength behind the home title. */
@@ -97,6 +98,17 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
       <a className="zw-v2-discover" href="#home-guide">{t('往下探索昭梧', '继续探索昭梧', 'Discover more of ZHAOWU')} <span aria-hidden="true">↓</span></a>
     </section>
     <HomeTree t={t} onOpen={onOpen} />
+    <section className="zw-bajinggong-feature" aria-label={t('昭梧原創畫卷','昭梧原创画卷','Original ZHAOWU art')}>
+      <Link to="/bajinggong" className="zw-bajinggong-feature-link">
+        <img src="/bajinggong/01-hanhai-cangming.webp" width={941} height={1672} loading="lazy" alt={t('瀚海滄溟原創畫作','瀚海沧溟原创画作','Original painting of the Boundless Azure Sea')} />
+        <span className="zw-bajinggong-feature-copy">
+          <small>{t('九景 · 九種筆意','九景 · 九种笔意','NINE VISIONS · NINE STYLES')}</small>
+          <strong>{t('八景宮 · 九景圖志','八景宫 · 九景图志','Nine Visions of Bajinggong')}</strong>
+          <span>{t('九幅仙境原畫與來源辨識','九幅仙境原画与来源辨识','Nine original paintings with source notes')}</span>
+          <em>{t('閱覽畫卷','阅览画卷','Explore the gallery')} ›</em>
+        </span>
+      </Link>
+    </section>
     {(seasonalAuto || frostOnly) && <p className="zw-season-context" data-seasonal-note data-solar-hou={seasonalAuto ? seasonalAuto.houIndex + 1 : undefined}>{t('節氣為中國傳統名稱；畫作依粗略半球位置調整，位置不明沿用原畫，並非當地天氣預報。', '节气为中国传统名称；画作依粗略半球位置调整，位置不明沿用原画，并非当地天气预报。', 'Traditional Chinese seasonal names; existing artwork follows approximate hemisphere when available, not local weather.')}{seasonalAuto && (locale === 'en' ? ` Pentad ${houNumber} / 72 · Sydney calendar schedule.` : ` 第 ${houNumber} / 72 候 · 悉尼節氣日程。`)}</p>}
     <CuratedVideoShelf placement="home" />
     <nav className="ph-bottom-nav" aria-label={t('頁面導覽','页面导航','Page navigation')}><Link to="/" aria-current="page"><BrandIcon name="home"/><span>{t('首頁','首页','Home')}</span></Link><button onClick={() => onOpen('form')}><BrandIcon name="reports"/><span>{t('命盤','命盘','Chart')}</span></button><button onClick={() => onOpen('today')}><BrandIcon name="calendar"/><span>{t('指引','指引','Today')}</span></button><Link to="/history"><BrandIcon name="account"/><span>{t('我的','我的','Account')}</span></Link></nav>
