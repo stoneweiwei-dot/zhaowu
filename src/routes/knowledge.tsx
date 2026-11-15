@@ -61,6 +61,12 @@ function KnowledgePage() {
         </div>
 
         <LifeViewHomeSection archiveMode />
+        <article className="seal-border rounded-xl bg-cream p-5 sm:p-7">
+          <p className="text-xs tracking-[0.2em] text-cinnabar">{tr(locale,"文化考據 · 原創圖志","文化考据 · 原创图志","CULTURAL SOURCES · ORIGINAL ART")}</p>
+          <h3 className="mt-2 font-display text-2xl text-ink">{tr(locale,"八景宮九景：古典仙境與當代藝術演繹","八景宫九景：古典仙境与当代艺术演绎","Nine Visions of Bajinggong")}</h3>
+          <p className="mt-3 text-sm leading-7 text-ink-soft">{tr(locale,"九幅9:16原畫，逐景介紹畫風與意象，並區分古籍記載與現代整理。","九幅9:16原画，逐景介绍画风与意象，并区分古籍记载与现代整理。","Nine portrait paintings with descriptions and clear distinctions between classical sources and modern interpretations.")}</p>
+          <a className="mt-3 inline-block underline underline-offset-4" href="/bajinggong">{tr(locale,"閱讀完整九景圖志","阅读完整九景图志","Explore the illustrated feature")}</a>
+        </article>
       </section>
 
       <RealityPatchSection />
