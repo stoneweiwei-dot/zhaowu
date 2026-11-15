@@ -231,6 +231,46 @@
       "permanent": false
     },
     {
+      "source": "/bazi",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/bazi/",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/color",
+      "destination": "/daily-colors",
+      "permanent": true
+    },
+    {
+      "source": "/color/",
+      "destination": "/daily-colors",
+      "permanent": true
+    },
+    {
+      "source": "/zh-Hans",
+      "destination": "/zh-hans",
+      "permanent": true
+    },
+    {
+      "source": "/zh-Hans/:path*",
+      "destination": "/zh-hans/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/zh-Hant",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/zh-Hant/:path*",
+      "destination": "/:path*",
+      "permanent": true
+    },
+    {
       "source": "/",
       "has": [
         {
