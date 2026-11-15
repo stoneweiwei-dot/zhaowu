@@ -451,6 +451,35 @@ export function AnalysisForm() {
             </div>
             {dateError ? <p role="alert" className="mt-2 text-sm text-cinnabar">{t("errDate")}</p> : null}
 
+            <div className="zhaowu-birth-select-grid">
+              <label htmlFor="birth-gender">
+                <span>{t("gender")}</span>
+                <div className="zhaowu-gender-capsules" role="radiogroup" aria-label={t("gender")}>
+                  <button
+                    type="button"
+                    className={`zhaowu-gender-capsule ${gender === "male" ? "is-active" : ""}`}
+                    onClick={() => setGender("male")}
+                  >
+                    {locale === "en" ? "Male (Qian)" : locale === "zh-Hans" ? "乾造 (男)" : "乾造 (男)"}
+                  </button>
+                  <button
+                    type="button"
+                    className={`zhaowu-gender-capsule ${gender === "female" ? "is-active" : ""}`}
+                    onClick={() => setGender("female")}
+                  >
+                    {locale === "en" ? "Female (Kun)" : locale === "zh-Hans" ? "坤造 (女)" : "坤造 (女)"}
+                  </button>
+                </div>
+                <select id="birth-gender" required value={gender} onChange={(event) => setGender(event.target.value as AnalyzeInput["gender"])} className="sr-only">
+                  <option value="" disabled>{locale === "en" ? "Choose an option" : locale === "zh-Hans" ? "请选择" : "請選擇"}</option>
+                  <option value="male">{t("male")}</option>
+                  <option value="female">{t("female")}</option>
+                  <option value="unspecified">{t("unset")}</option>
+                </select>
+                <small>{locale === "en" ? "Used for traditional luck-cycle direction and certain family readings. Basic Four Pillars remain available." : locale === "zh-Hans" ? "用于传统大运顺逆及部分六亲判断。基本四柱仍可排出。" : "用於傳統大運順逆及部分六親判斷。基本四柱仍可排出。"}</small>
+              </label>
+            </div>
+
             <div className="zhaowu-birth-time-block">
               <div className="zhaowu-birth-time-line">
                 <span>{t("time")}</span>
@@ -473,20 +502,6 @@ export function AnalysisForm() {
                   </select>
                 </label>
               )}
-            </div>
-
-            <div className="zhaowu-birth-select-grid">
-              <label htmlFor="birth-gender">
-                <span>{t("gender")}</span>
-                <select id="birth-gender" required value={gender} onChange={(event) => setGender(event.target.value as AnalyzeInput["gender"])}>
-                  <option value="" disabled>{locale === "en" ? "Choose an option" : locale === "zh-Hans" ? "请选择" : "請選擇"}</option>
-                  <option value="unspecified">{t("unset")}</option>
-                  <option value="male">{t("male")}</option>
-                  <option value="female">{t("female")}</option>
-                </select>
-                <small>{locale === "en" ? "Used for traditional luck-cycle direction and certain family readings. You may choose not to specify; the basic Four Pillars remain available. Relationship preference is separate." : locale === "zh-Hans" ? "用于传统大运顺逆及部分六亲判断。可以选择不提供，基本四柱仍可排出；伴侣偏好另行选择。" : "用於傳統大運順逆及部分六親判斷。可以選擇不提供，基本四柱仍可排出；伴侶偏好另行選擇。"}</small>
-              </label>
-
             </div>
 
             <div className="zhaowu-birth-cities">

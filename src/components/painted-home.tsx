@@ -8,6 +8,7 @@ import { useI18n } from '@/lib/i18n';
 import { BrandIcon } from '@/components/brand-icon';
 import { HomeTree } from '@/components/home-tree';
 import { CuratedVideoShelf } from '@/components/curated-video-shelf';
+import { AnalysisForm } from '@/components/analysis-form';
 import '@/home-mobile-v2.css';
 import '@/home-bajinggong-feature.css';
 
@@ -85,11 +86,14 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
           '从一份生辰开始，无需登录即可排盘，先阅读免费的核心解读；再慢慢探索昭梧的文章、原创图鉴与每日指引。',
           'Start with your birth details to create a chart without signing in and read your free core insights. Then explore ZHAOWU’s essays, original art collections and daily guide.'
         )}</p>
+        {/* ── 昭梧生辰案台（第一屏實體直接呈現） ── */}
+        <section className="zw-home-birth-desk-container" data-home-birth-entry aria-label={t('昭梧生辰案台', '昭梧生辰案台', 'ZHAOWU Birth Desk')}>
+          <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--primary relative">
+            <AnalysisForm />
+          </div>
+        </section>
+
         <div className="zw-v2-actions">
-          <button type="button" className="zw-v2-primary" data-home-birth-entry onClick={() => onOpen('form')}>
-            {t('開始免費排盤', '开始免费排盘', 'Start my free chart')} <span aria-hidden="true">→</span>
-          </button>
-          <p className="zw-v2-free-note">{t('免費 · 免登入 · 約 1 分鐘開始', '免费 · 免登录 · 约 1 分钟开始', 'Free · no sign-in · begin in about 1 minute')}</p>
           <Link className="zw-v2-sample" to="/sample-report">{t('先看公開命書示例', '先看公开命书示例', 'View a sample report')} <span aria-hidden="true">›</span></Link>
         </div>
       </div>
