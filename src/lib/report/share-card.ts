@@ -163,80 +163,83 @@ export async function renderShareCardPng(model: ShareCardModel): Promise<Blob> {
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas is unavailable");
 
-  const serif = '\"Songti TC\", \"Songti SC\", \"STSong\", \"Noto Serif CJK TC\", serif';
+  const serif = '\"Noto Serif TC\", \"Songti TC\", \"Songti SC\", \"Noto Serif CJK TC\", PMingLiU, serif';
   const artwork = await loadArtwork(model.artwork, model.artworkFallback);
 
-  ctx.fillStyle = "#f4ead7";
+  ctx.fillStyle = "#fffaf0";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   ctx.save();
-  ctx.globalAlpha = 0.08;
-  ctx.fillStyle = "#725b3f";
-  for (let y = 40; y < 1920; y += 54) {
-    for (let x = 30 + ((y / 54) % 2) * 22; x < 1080; x += 72) ctx.fillRect(x, y, 1, 18);
+  ctx.globalAlpha = 0.045;
+  ctx.fillStyle = "#315e50";
+  for (let y = 36; y < 1920; y += 64) {
+    for (let x = 28 + ((y / 64) % 2) * 20; x < 1080; x += 86) ctx.fillRect(x, y, 1, 14);
   }
   ctx.restore();
 
-  ctx.fillStyle = "#8d6a3c";
+  ctx.fillStyle = "#315e50";
   ctx.font = `700 25px ${serif}`;
   ctx.fillText(model.brand, 88, 106);
 
   ctx.fillStyle = "#27241f";
-  ctx.font = `600 72px ${serif}`;
+  ctx.font = `650 72px ${serif}`;
   ctx.fillText(model.title, 88, 206);
 
-  ctx.fillStyle = "#8c714f";
+  ctx.fillStyle = "#5a554c";
   ctx.font = `500 28px ${serif}`;
   ctx.fillText(model.subtitle, 88, 257);
 
-  roundedRect(ctx, 70, 318, 940, 650, 34);
+  ctx.beginPath();
+  ctx.rect(70, 318, 940, 650);
   ctx.save();
   ctx.clip();
   if (artwork) {
     drawCoverImage(ctx, artwork.image, 70, 318, 940, 650, artwork.asset);
   } else {
     const gradient = ctx.createLinearGradient(70, 318, 1010, 968);
-    gradient.addColorStop(0, "#e7dcc6");
-    gradient.addColorStop(1, "#cdd7d2");
+    gradient.addColorStop(0, "#f4ead9");
+    gradient.addColorStop(1, "#d8c7a4");
     ctx.fillStyle = gradient;
     ctx.fillRect(70, 318, 940, 650);
   }
   const veil = ctx.createLinearGradient(0, 318, 0, 968);
-  veil.addColorStop(0, "rgba(244,234,215,0.05)");
-  veil.addColorStop(1, "rgba(35,32,27,0.19)");
+  veil.addColorStop(0, "rgba(255,250,240,0.02)");
+  veil.addColorStop(1, "rgba(11,47,38,0.24)");
   ctx.fillStyle = veil;
   ctx.fillRect(70, 318, 940, 650);
   ctx.restore();
-  ctx.strokeStyle = "rgba(141,106,60,0.42)";
+  ctx.strokeStyle = "rgba(216,199,164,0.9)";
   ctx.lineWidth = 2;
-  roundedRect(ctx, 70, 318, 940, 650, 34);
+  ctx.beginPath();
+  ctx.rect(70, 318, 940, 650);
   ctx.stroke();
 
-  ctx.fillStyle = "#373129";
-  ctx.font = `400 36px ${serif}`;
+  ctx.fillStyle = "#27241f";
+  ctx.font = `400 37px ${serif}`;
   let cursorY = drawWrappedText(ctx, model.summary, 88, 1058, 904, 59, 5);
   cursorY += 26;
 
   let tagX = 88;
-  ctx.font = `600 26px ${serif}`;
+  ctx.font = `500 25px ${serif}`;
   for (const keyword of model.keywords) {
     const width = Math.min(250, ctx.measureText(keyword).width + 62);
     if (tagX + width > 992) {
       tagX = 88;
       cursorY += 68;
     }
-    roundedRect(ctx, tagX, cursorY, width, 50, 25);
-    ctx.fillStyle = "#eadcc1";
+    ctx.beginPath();
+    ctx.rect(tagX, cursorY, width, 50);
+    ctx.fillStyle = "#f6f1e6";
     ctx.fill();
-    ctx.strokeStyle = "rgba(141,106,60,0.30)";
+    ctx.strokeStyle = "rgba(49,94,80,0.24)";
     ctx.stroke();
-    ctx.fillStyle = "#4f4437";
+    ctx.fillStyle = "#315e50";
     ctx.fillText(keyword, tagX + 31, cursorY + 34);
     tagX += width + 16;
   }
   cursorY += 103;
 
-  ctx.strokeStyle = "rgba(141,106,60,0.26)";
+  ctx.strokeStyle = "rgba(39,36,31,0.18)";
   ctx.beginPath();
   ctx.moveTo(88, cursorY);
   ctx.lineTo(992, cursorY);
@@ -246,10 +249,10 @@ export async function renderShareCardPng(model: ShareCardModel): Promise<Blob> {
   const factWidth = 286;
   model.facts.slice(0, 3).forEach((fact, index) => {
     const x = 88 + index * 300;
-    ctx.fillStyle = "#8c7455";
+    ctx.fillStyle = "#5a554c";
     ctx.font = `500 21px ${serif}`;
     ctx.fillText(fact.label, x, cursorY);
-    ctx.fillStyle = "#302c26";
+    ctx.fillStyle = "#27241f";
     ctx.font = `600 31px ${serif}`;
     const value = fact.value.length > 10 ? `${fact.value.slice(0, 10)}…` : fact.value;
     ctx.fillText(value, x, cursorY + 48, factWidth);
