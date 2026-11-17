@@ -93,11 +93,25 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
 
   useEffect(() => {
     if (!preview) return;
+    const body = document.body.style;
+    const previous = { overflow: body.overflow, position: body.position, top: body.top, width: body.width };
+    const scrollY = window.scrollY;
+    body.overflow = "hidden";
+    body.position = "fixed";
+    body.top = `-${scrollY}px`;
+    body.width = "100%";
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") setPreview(null);
     };
     window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
+    return () => {
+      window.removeEventListener("keydown", closeOnEscape);
+      body.overflow = previous.overflow;
+      body.position = previous.position;
+      body.top = previous.top;
+      body.width = previous.width;
+      window.scrollTo(0, scrollY);
+    };
   }, [preview]);
 
   const choose = async (next: string) => {
@@ -197,7 +211,7 @@ export function OwnerThemeSkinsManager({ locale }: { locale: Locale }) {
       </div>
 
       {preview ? (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-3 sm:p-6" onClick={() => setPreview(null)}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80" style={{ padding: "max(.75rem, env(safe-area-inset-top, 0px)) max(.75rem, env(safe-area-inset-right, 0px)) max(.75rem, env(safe-area-inset-bottom, 0px)) max(.75rem, env(safe-area-inset-left, 0px))" }} onClick={() => setPreview(null)}>
           <section role="dialog" aria-modal="true" aria-label={preview.alt} onClick={(event) => event.stopPropagation()} className="flex max-h-full w-full max-w-5xl flex-col overflow-hidden rounded-xl bg-cream shadow-2xl">
             <div className="flex min-h-14 items-center justify-between gap-3 border-b border-line px-4 py-2">
               <p className="min-w-0 truncate text-sm font-medium text-ink">{preview.alt}</p>
