@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AstrologyRouteImport } from './routes/astrology'
 import { Route as AuspiciousAtlasRouteImport } from './routes/auspicious-atlas'
+import { Route as BajinggongRouteImport } from './routes/bajinggong'
 import { Route as CopyrightRouteImport } from './routes/copyright'
 import { Route as DailyColorsRouteImport } from './routes/daily-colors'
 import { Route as FunTestsRouteImport } from './routes/fun-tests'
@@ -41,11 +42,22 @@ import { Route as YizhangjingRouteImport } from './routes/yizhangjing'
 import { Route as ZiweiRouteImport } from './routes/ziwei'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as FunTestsEarthOnlineRouteImport } from './routes/fun-tests.earth-online'
+import { Route as KnowledgeAfterMiraclesPracticeRouteImport } from './routes/knowledge.after-miracles-practice'
+import { Route as KnowledgeAnnualCycleReadingWithCareRouteImport } from './routes/knowledge.annual-cycle-reading-with-care'
+import { Route as KnowledgeEmotionalIntelligenceFourPracticesRouteImport } from './routes/knowledge.emotional-intelligence-four-practices'
 import { Route as KnowledgeFiveElementsToneQiRouteImport } from './routes/knowledge.five-elements-tone-qi'
+import { Route as KnowledgeInnerFengshuiMindSpeechActionRouteImport } from './routes/knowledge.inner-fengshui-mind-speech-action'
+import { Route as KnowledgeLoveRevealsTheUnfinishedSelfRouteImport } from './routes/knowledge.love-reveals-the-unfinished-self'
+import { Route as KnowledgeMoneyNeedsOrderNotAnxietyRouteImport } from './routes/knowledge.money-needs-order-not-anxiety'
 import { Route as KnowledgeNineHeavensLampsRouteImport } from './routes/knowledge.nine-heavens-lamps'
+import { Route as KnowledgeSevenKillingsTigerRouteImport } from './routes/knowledge.seven-killings-tiger'
 import { Route as KnowledgeShushuBoundaryRouteImport } from './routes/knowledge.shushu-boundary'
+import { Route as KnowledgeShushuEndsInChoiceRouteImport } from './routes/knowledge.shushu-ends-in-choice'
 import { Route as KnowledgeSouthernHemisphereBaziRouteImport } from './routes/knowledge.southern-hemisphere-bazi'
+import { Route as KnowledgeSouthernHemisphereBaziReadingRouteImport } from './routes/knowledge.southern-hemisphere-bazi-reading'
+import { Route as KnowledgeStrengthOverdriveFiveElementsRouteImport } from './routes/knowledge.strength-overdrive-five-elements'
 import { Route as KnowledgeSystemMapRouteImport } from './routes/knowledge.system-map'
+import { Route as KnowledgeTenGodsRelationshipFrictionRouteImport } from './routes/knowledge.ten-gods-relationship-friction'
 import { Route as KnowledgeTrueSolarTimeRouteImport } from './routes/knowledge.true-solar-time'
 import { Route as QuizCultivationDestinyRouteImport } from './routes/quiz.cultivation-destiny'
 import { Route as QuizDivineAffinityRouteImport } from './routes/quiz.divine-affinity'
@@ -75,6 +87,11 @@ const AstrologyRoute = AstrologyRouteImport.update({
 const AuspiciousAtlasRoute = AuspiciousAtlasRouteImport.update({
   id: '/auspicious-atlas',
   path: '/auspicious-atlas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BajinggongRoute = BajinggongRouteImport.update({
+  id: '/bajinggong',
+  path: '/bajinggong',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CopyrightRoute = CopyrightRouteImport.update({
@@ -212,10 +229,46 @@ const FunTestsEarthOnlineRoute = FunTestsEarthOnlineRouteImport.update({
   path: '/earth-online',
   getParentRoute: () => FunTestsRoute,
 } as any)
+const KnowledgeAfterMiraclesPracticeRoute =
+  KnowledgeAfterMiraclesPracticeRouteImport.update({
+    id: '/after-miracles-practice',
+    path: '/after-miracles-practice',
+    getParentRoute: () => KnowledgeRoute,
+  } as any)
+const KnowledgeAnnualCycleReadingWithCareRoute =
+  KnowledgeAnnualCycleReadingWithCareRouteImport.update({
+    id: '/annual-cycle-reading-with-care',
+    path: '/annual-cycle-reading-with-care',
+    getParentRoute: () => KnowledgeRoute,
+  } as any)
+const KnowledgeEmotionalIntelligenceFourPracticesRoute =
+  KnowledgeEmotionalIntelligenceFourPracticesRouteImport.update({
+    id: '/emotional-intelligence-four-practices',
+    path: '/emotional-intelligence-four-practices',
+    getParentRoute: () => KnowledgeRoute,
+  } as any)
 const KnowledgeFiveElementsToneQiRoute =
   KnowledgeFiveElementsToneQiRouteImport.update({
     id: '/five-elements-tone-qi',
     path: '/five-elements-tone-qi',
+    getParentRoute: () => KnowledgeRoute,
+  } as any)
+const KnowledgeInnerFengshuiMindSpeechActionRoute =
+  KnowledgeInnerFengshuiMindSpeechActionRouteImport.update({
+    id: '/inner-fengshui-mind-speech-action',
+    path: '/inner-fengshui-mind-speech-action',
+    getParentRoute: () => KnowledgeRoute,
+  } as any)
+const KnowledgeLoveRevealsTheUnfinishedSelfRoute =
+  KnowledgeLoveRevealsTheUnfinishedSelfRouteImport.update({
+    id: '/love-reveals-the-unfinished-self',
+    path: '/love-reveals-the-unfinished-self',
+    getParentRoute: () => KnowledgeRoute,
+  } as any)
+const KnowledgeMoneyNeedsOrderNotAnxietyRoute =
+  KnowledgeMoneyNeedsOrderNotAnxietyRouteImport.update({
+    id: '/money-needs-order-not-anxiety',
+    path: '/money-needs-order-not-anxiety',
     getParentRoute: () => KnowledgeRoute,
   } as any)
 const KnowledgeNineHeavensLampsRoute =
@@ -224,15 +277,39 @@ const KnowledgeNineHeavensLampsRoute =
     path: '/nine-heavens-lamps',
     getParentRoute: () => KnowledgeRoute,
   } as any)
+const KnowledgeSevenKillingsTigerRoute =
+  KnowledgeSevenKillingsTigerRouteImport.update({
+    id: '/seven-killings-tiger',
+    path: '/seven-killings-tiger',
+    getParentRoute: () => KnowledgeRoute,
+  } as any)
 const KnowledgeShushuBoundaryRoute = KnowledgeShushuBoundaryRouteImport.update({
   id: '/shushu-boundary',
   path: '/shushu-boundary',
   getParentRoute: () => KnowledgeRoute,
 } as any)
+const KnowledgeShushuEndsInChoiceRoute =
+  KnowledgeShushuEndsInChoiceRouteImport.update({
+    id: '/shushu-ends-in-choice',
+    path: '/shushu-ends-in-choice',
+    getParentRoute: () => KnowledgeRoute,
+  } as any)
 const KnowledgeSouthernHemisphereBaziRoute =
   KnowledgeSouthernHemisphereBaziRouteImport.update({
     id: '/southern-hemisphere-bazi',
     path: '/southern-hemisphere-bazi',
+    getParentRoute: () => KnowledgeRoute,
+  } as any)
+const KnowledgeSouthernHemisphereBaziReadingRoute =
+  KnowledgeSouthernHemisphereBaziReadingRouteImport.update({
+    id: '/southern-hemisphere-bazi-reading',
+    path: '/southern-hemisphere-bazi-reading',
+    getParentRoute: () => KnowledgeRoute,
+  } as any)
+const KnowledgeStrengthOverdriveFiveElementsRoute =
+  KnowledgeStrengthOverdriveFiveElementsRouteImport.update({
+    id: '/strength-overdrive-five-elements',
+    path: '/strength-overdrive-five-elements',
     getParentRoute: () => KnowledgeRoute,
   } as any)
 const KnowledgeSystemMapRoute = KnowledgeSystemMapRouteImport.update({
@@ -240,6 +317,12 @@ const KnowledgeSystemMapRoute = KnowledgeSystemMapRouteImport.update({
   path: '/system-map',
   getParentRoute: () => KnowledgeRoute,
 } as any)
+const KnowledgeTenGodsRelationshipFrictionRoute =
+  KnowledgeTenGodsRelationshipFrictionRouteImport.update({
+    id: '/ten-gods-relationship-friction',
+    path: '/ten-gods-relationship-friction',
+    getParentRoute: () => KnowledgeRoute,
+  } as any)
 const KnowledgeTrueSolarTimeRoute = KnowledgeTrueSolarTimeRouteImport.update({
   id: '/true-solar-time',
   path: '/true-solar-time',
@@ -273,6 +356,7 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/astrology': typeof AstrologyRoute
   '/auspicious-atlas': typeof AuspiciousAtlasRoute
+  '/bajinggong': typeof BajinggongRoute
   '/copyright': typeof CopyrightRoute
   '/daily-colors': typeof DailyColorsRoute
   '/fun-tests': typeof FunTestsRouteWithChildren
@@ -300,11 +384,22 @@ export interface FileRoutesByFullPath {
   '/ziwei': typeof ZiweiRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
+  '/knowledge/after-miracles-practice': typeof KnowledgeAfterMiraclesPracticeRoute
+  '/knowledge/annual-cycle-reading-with-care': typeof KnowledgeAnnualCycleReadingWithCareRoute
+  '/knowledge/emotional-intelligence-four-practices': typeof KnowledgeEmotionalIntelligenceFourPracticesRoute
   '/knowledge/five-elements-tone-qi': typeof KnowledgeFiveElementsToneQiRoute
+  '/knowledge/inner-fengshui-mind-speech-action': typeof KnowledgeInnerFengshuiMindSpeechActionRoute
+  '/knowledge/love-reveals-the-unfinished-self': typeof KnowledgeLoveRevealsTheUnfinishedSelfRoute
+  '/knowledge/money-needs-order-not-anxiety': typeof KnowledgeMoneyNeedsOrderNotAnxietyRoute
   '/knowledge/nine-heavens-lamps': typeof KnowledgeNineHeavensLampsRoute
+  '/knowledge/seven-killings-tiger': typeof KnowledgeSevenKillingsTigerRoute
   '/knowledge/shushu-boundary': typeof KnowledgeShushuBoundaryRoute
+  '/knowledge/shushu-ends-in-choice': typeof KnowledgeShushuEndsInChoiceRoute
   '/knowledge/southern-hemisphere-bazi': typeof KnowledgeSouthernHemisphereBaziRoute
+  '/knowledge/southern-hemisphere-bazi-reading': typeof KnowledgeSouthernHemisphereBaziReadingRoute
+  '/knowledge/strength-overdrive-five-elements': typeof KnowledgeStrengthOverdriveFiveElementsRoute
   '/knowledge/system-map': typeof KnowledgeSystemMapRoute
+  '/knowledge/ten-gods-relationship-friction': typeof KnowledgeTenGodsRelationshipFrictionRoute
   '/knowledge/true-solar-time': typeof KnowledgeTrueSolarTimeRoute
   '/quiz/cultivation-destiny': typeof QuizCultivationDestinyRoute
   '/quiz/divine-affinity': typeof QuizDivineAffinityRoute
@@ -317,6 +412,7 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/astrology': typeof AstrologyRoute
   '/auspicious-atlas': typeof AuspiciousAtlasRoute
+  '/bajinggong': typeof BajinggongRoute
   '/copyright': typeof CopyrightRoute
   '/daily-colors': typeof DailyColorsRoute
   '/fun-tests': typeof FunTestsRouteWithChildren
@@ -344,11 +440,22 @@ export interface FileRoutesByTo {
   '/ziwei': typeof ZiweiRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
+  '/knowledge/after-miracles-practice': typeof KnowledgeAfterMiraclesPracticeRoute
+  '/knowledge/annual-cycle-reading-with-care': typeof KnowledgeAnnualCycleReadingWithCareRoute
+  '/knowledge/emotional-intelligence-four-practices': typeof KnowledgeEmotionalIntelligenceFourPracticesRoute
   '/knowledge/five-elements-tone-qi': typeof KnowledgeFiveElementsToneQiRoute
+  '/knowledge/inner-fengshui-mind-speech-action': typeof KnowledgeInnerFengshuiMindSpeechActionRoute
+  '/knowledge/love-reveals-the-unfinished-self': typeof KnowledgeLoveRevealsTheUnfinishedSelfRoute
+  '/knowledge/money-needs-order-not-anxiety': typeof KnowledgeMoneyNeedsOrderNotAnxietyRoute
   '/knowledge/nine-heavens-lamps': typeof KnowledgeNineHeavensLampsRoute
+  '/knowledge/seven-killings-tiger': typeof KnowledgeSevenKillingsTigerRoute
   '/knowledge/shushu-boundary': typeof KnowledgeShushuBoundaryRoute
+  '/knowledge/shushu-ends-in-choice': typeof KnowledgeShushuEndsInChoiceRoute
   '/knowledge/southern-hemisphere-bazi': typeof KnowledgeSouthernHemisphereBaziRoute
+  '/knowledge/southern-hemisphere-bazi-reading': typeof KnowledgeSouthernHemisphereBaziReadingRoute
+  '/knowledge/strength-overdrive-five-elements': typeof KnowledgeStrengthOverdriveFiveElementsRoute
   '/knowledge/system-map': typeof KnowledgeSystemMapRoute
+  '/knowledge/ten-gods-relationship-friction': typeof KnowledgeTenGodsRelationshipFrictionRoute
   '/knowledge/true-solar-time': typeof KnowledgeTrueSolarTimeRoute
   '/quiz/cultivation-destiny': typeof QuizCultivationDestinyRoute
   '/quiz/divine-affinity': typeof QuizDivineAffinityRoute
@@ -362,6 +469,7 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/astrology': typeof AstrologyRoute
   '/auspicious-atlas': typeof AuspiciousAtlasRoute
+  '/bajinggong': typeof BajinggongRoute
   '/copyright': typeof CopyrightRoute
   '/daily-colors': typeof DailyColorsRoute
   '/fun-tests': typeof FunTestsRouteWithChildren
@@ -389,11 +497,22 @@ export interface FileRoutesById {
   '/ziwei': typeof ZiweiRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
+  '/knowledge/after-miracles-practice': typeof KnowledgeAfterMiraclesPracticeRoute
+  '/knowledge/annual-cycle-reading-with-care': typeof KnowledgeAnnualCycleReadingWithCareRoute
+  '/knowledge/emotional-intelligence-four-practices': typeof KnowledgeEmotionalIntelligenceFourPracticesRoute
   '/knowledge/five-elements-tone-qi': typeof KnowledgeFiveElementsToneQiRoute
+  '/knowledge/inner-fengshui-mind-speech-action': typeof KnowledgeInnerFengshuiMindSpeechActionRoute
+  '/knowledge/love-reveals-the-unfinished-self': typeof KnowledgeLoveRevealsTheUnfinishedSelfRoute
+  '/knowledge/money-needs-order-not-anxiety': typeof KnowledgeMoneyNeedsOrderNotAnxietyRoute
   '/knowledge/nine-heavens-lamps': typeof KnowledgeNineHeavensLampsRoute
+  '/knowledge/seven-killings-tiger': typeof KnowledgeSevenKillingsTigerRoute
   '/knowledge/shushu-boundary': typeof KnowledgeShushuBoundaryRoute
+  '/knowledge/shushu-ends-in-choice': typeof KnowledgeShushuEndsInChoiceRoute
   '/knowledge/southern-hemisphere-bazi': typeof KnowledgeSouthernHemisphereBaziRoute
+  '/knowledge/southern-hemisphere-bazi-reading': typeof KnowledgeSouthernHemisphereBaziReadingRoute
+  '/knowledge/strength-overdrive-five-elements': typeof KnowledgeStrengthOverdriveFiveElementsRoute
   '/knowledge/system-map': typeof KnowledgeSystemMapRoute
+  '/knowledge/ten-gods-relationship-friction': typeof KnowledgeTenGodsRelationshipFrictionRoute
   '/knowledge/true-solar-time': typeof KnowledgeTrueSolarTimeRoute
   '/quiz/cultivation-destiny': typeof QuizCultivationDestinyRoute
   '/quiz/divine-affinity': typeof QuizDivineAffinityRoute
@@ -408,6 +527,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/astrology'
     | '/auspicious-atlas'
+    | '/bajinggong'
     | '/copyright'
     | '/daily-colors'
     | '/fun-tests'
@@ -435,11 +555,22 @@ export interface FileRouteTypes {
     | '/ziwei'
     | '/auth/callback'
     | '/fun-tests/earth-online'
+    | '/knowledge/after-miracles-practice'
+    | '/knowledge/annual-cycle-reading-with-care'
+    | '/knowledge/emotional-intelligence-four-practices'
     | '/knowledge/five-elements-tone-qi'
+    | '/knowledge/inner-fengshui-mind-speech-action'
+    | '/knowledge/love-reveals-the-unfinished-self'
+    | '/knowledge/money-needs-order-not-anxiety'
     | '/knowledge/nine-heavens-lamps'
+    | '/knowledge/seven-killings-tiger'
     | '/knowledge/shushu-boundary'
+    | '/knowledge/shushu-ends-in-choice'
     | '/knowledge/southern-hemisphere-bazi'
+    | '/knowledge/southern-hemisphere-bazi-reading'
+    | '/knowledge/strength-overdrive-five-elements'
     | '/knowledge/system-map'
+    | '/knowledge/ten-gods-relationship-friction'
     | '/knowledge/true-solar-time'
     | '/quiz/cultivation-destiny'
     | '/quiz/divine-affinity'
@@ -452,6 +583,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/astrology'
     | '/auspicious-atlas'
+    | '/bajinggong'
     | '/copyright'
     | '/daily-colors'
     | '/fun-tests'
@@ -479,11 +611,22 @@ export interface FileRouteTypes {
     | '/ziwei'
     | '/auth/callback'
     | '/fun-tests/earth-online'
+    | '/knowledge/after-miracles-practice'
+    | '/knowledge/annual-cycle-reading-with-care'
+    | '/knowledge/emotional-intelligence-four-practices'
     | '/knowledge/five-elements-tone-qi'
+    | '/knowledge/inner-fengshui-mind-speech-action'
+    | '/knowledge/love-reveals-the-unfinished-self'
+    | '/knowledge/money-needs-order-not-anxiety'
     | '/knowledge/nine-heavens-lamps'
+    | '/knowledge/seven-killings-tiger'
     | '/knowledge/shushu-boundary'
+    | '/knowledge/shushu-ends-in-choice'
     | '/knowledge/southern-hemisphere-bazi'
+    | '/knowledge/southern-hemisphere-bazi-reading'
+    | '/knowledge/strength-overdrive-five-elements'
     | '/knowledge/system-map'
+    | '/knowledge/ten-gods-relationship-friction'
     | '/knowledge/true-solar-time'
     | '/quiz/cultivation-destiny'
     | '/quiz/divine-affinity'
@@ -496,6 +639,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/astrology'
     | '/auspicious-atlas'
+    | '/bajinggong'
     | '/copyright'
     | '/daily-colors'
     | '/fun-tests'
@@ -523,11 +667,22 @@ export interface FileRouteTypes {
     | '/ziwei'
     | '/auth/callback'
     | '/fun-tests/earth-online'
+    | '/knowledge/after-miracles-practice'
+    | '/knowledge/annual-cycle-reading-with-care'
+    | '/knowledge/emotional-intelligence-four-practices'
     | '/knowledge/five-elements-tone-qi'
+    | '/knowledge/inner-fengshui-mind-speech-action'
+    | '/knowledge/love-reveals-the-unfinished-self'
+    | '/knowledge/money-needs-order-not-anxiety'
     | '/knowledge/nine-heavens-lamps'
+    | '/knowledge/seven-killings-tiger'
     | '/knowledge/shushu-boundary'
+    | '/knowledge/shushu-ends-in-choice'
     | '/knowledge/southern-hemisphere-bazi'
+    | '/knowledge/southern-hemisphere-bazi-reading'
+    | '/knowledge/strength-overdrive-five-elements'
     | '/knowledge/system-map'
+    | '/knowledge/ten-gods-relationship-friction'
     | '/knowledge/true-solar-time'
     | '/quiz/cultivation-destiny'
     | '/quiz/divine-affinity'
@@ -541,6 +696,7 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   AstrologyRoute: typeof AstrologyRoute
   AuspiciousAtlasRoute: typeof AuspiciousAtlasRoute
+  BajinggongRoute: typeof BajinggongRoute
   CopyrightRoute: typeof CopyrightRoute
   DailyColorsRoute: typeof DailyColorsRoute
   FunTestsRoute: typeof FunTestsRouteWithChildren
@@ -608,6 +764,13 @@ declare module '@tanstack/react-router' {
       path: '/auspicious-atlas'
       fullPath: '/auspicious-atlas'
       preLoaderRoute: typeof AuspiciousAtlasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bajinggong': {
+      id: '/bajinggong'
+      path: '/bajinggong'
+      fullPath: '/bajinggong'
+      preLoaderRoute: typeof BajinggongRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/copyright': {
@@ -799,11 +962,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FunTestsEarthOnlineRouteImport
       parentRoute: typeof FunTestsRoute
     }
+    '/knowledge/after-miracles-practice': {
+      id: '/knowledge/after-miracles-practice'
+      path: '/after-miracles-practice'
+      fullPath: '/knowledge/after-miracles-practice'
+      preLoaderRoute: typeof KnowledgeAfterMiraclesPracticeRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
+    '/knowledge/annual-cycle-reading-with-care': {
+      id: '/knowledge/annual-cycle-reading-with-care'
+      path: '/annual-cycle-reading-with-care'
+      fullPath: '/knowledge/annual-cycle-reading-with-care'
+      preLoaderRoute: typeof KnowledgeAnnualCycleReadingWithCareRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
+    '/knowledge/emotional-intelligence-four-practices': {
+      id: '/knowledge/emotional-intelligence-four-practices'
+      path: '/emotional-intelligence-four-practices'
+      fullPath: '/knowledge/emotional-intelligence-four-practices'
+      preLoaderRoute: typeof KnowledgeEmotionalIntelligenceFourPracticesRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
     '/knowledge/five-elements-tone-qi': {
       id: '/knowledge/five-elements-tone-qi'
       path: '/five-elements-tone-qi'
       fullPath: '/knowledge/five-elements-tone-qi'
       preLoaderRoute: typeof KnowledgeFiveElementsToneQiRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
+    '/knowledge/inner-fengshui-mind-speech-action': {
+      id: '/knowledge/inner-fengshui-mind-speech-action'
+      path: '/inner-fengshui-mind-speech-action'
+      fullPath: '/knowledge/inner-fengshui-mind-speech-action'
+      preLoaderRoute: typeof KnowledgeInnerFengshuiMindSpeechActionRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
+    '/knowledge/love-reveals-the-unfinished-self': {
+      id: '/knowledge/love-reveals-the-unfinished-self'
+      path: '/love-reveals-the-unfinished-self'
+      fullPath: '/knowledge/love-reveals-the-unfinished-self'
+      preLoaderRoute: typeof KnowledgeLoveRevealsTheUnfinishedSelfRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
+    '/knowledge/money-needs-order-not-anxiety': {
+      id: '/knowledge/money-needs-order-not-anxiety'
+      path: '/money-needs-order-not-anxiety'
+      fullPath: '/knowledge/money-needs-order-not-anxiety'
+      preLoaderRoute: typeof KnowledgeMoneyNeedsOrderNotAnxietyRouteImport
       parentRoute: typeof KnowledgeRoute
     }
     '/knowledge/nine-heavens-lamps': {
@@ -813,11 +1018,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KnowledgeNineHeavensLampsRouteImport
       parentRoute: typeof KnowledgeRoute
     }
+    '/knowledge/seven-killings-tiger': {
+      id: '/knowledge/seven-killings-tiger'
+      path: '/seven-killings-tiger'
+      fullPath: '/knowledge/seven-killings-tiger'
+      preLoaderRoute: typeof KnowledgeSevenKillingsTigerRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
     '/knowledge/shushu-boundary': {
       id: '/knowledge/shushu-boundary'
       path: '/shushu-boundary'
       fullPath: '/knowledge/shushu-boundary'
       preLoaderRoute: typeof KnowledgeShushuBoundaryRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
+    '/knowledge/shushu-ends-in-choice': {
+      id: '/knowledge/shushu-ends-in-choice'
+      path: '/shushu-ends-in-choice'
+      fullPath: '/knowledge/shushu-ends-in-choice'
+      preLoaderRoute: typeof KnowledgeShushuEndsInChoiceRouteImport
       parentRoute: typeof KnowledgeRoute
     }
     '/knowledge/southern-hemisphere-bazi': {
@@ -827,11 +1046,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KnowledgeSouthernHemisphereBaziRouteImport
       parentRoute: typeof KnowledgeRoute
     }
+    '/knowledge/southern-hemisphere-bazi-reading': {
+      id: '/knowledge/southern-hemisphere-bazi-reading'
+      path: '/southern-hemisphere-bazi-reading'
+      fullPath: '/knowledge/southern-hemisphere-bazi-reading'
+      preLoaderRoute: typeof KnowledgeSouthernHemisphereBaziReadingRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
+    '/knowledge/strength-overdrive-five-elements': {
+      id: '/knowledge/strength-overdrive-five-elements'
+      path: '/strength-overdrive-five-elements'
+      fullPath: '/knowledge/strength-overdrive-five-elements'
+      preLoaderRoute: typeof KnowledgeStrengthOverdriveFiveElementsRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
     '/knowledge/system-map': {
       id: '/knowledge/system-map'
       path: '/system-map'
       fullPath: '/knowledge/system-map'
       preLoaderRoute: typeof KnowledgeSystemMapRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
+    '/knowledge/ten-gods-relationship-friction': {
+      id: '/knowledge/ten-gods-relationship-friction'
+      path: '/ten-gods-relationship-friction'
+      fullPath: '/knowledge/ten-gods-relationship-friction'
+      preLoaderRoute: typeof KnowledgeTenGodsRelationshipFrictionRouteImport
       parentRoute: typeof KnowledgeRoute
     }
     '/knowledge/true-solar-time': {
@@ -885,20 +1125,50 @@ const FunTestsRouteWithChildren = FunTestsRoute._addFileChildren(
 )
 
 interface KnowledgeRouteChildren {
+  KnowledgeAfterMiraclesPracticeRoute: typeof KnowledgeAfterMiraclesPracticeRoute
+  KnowledgeAnnualCycleReadingWithCareRoute: typeof KnowledgeAnnualCycleReadingWithCareRoute
+  KnowledgeEmotionalIntelligenceFourPracticesRoute: typeof KnowledgeEmotionalIntelligenceFourPracticesRoute
   KnowledgeFiveElementsToneQiRoute: typeof KnowledgeFiveElementsToneQiRoute
+  KnowledgeInnerFengshuiMindSpeechActionRoute: typeof KnowledgeInnerFengshuiMindSpeechActionRoute
+  KnowledgeLoveRevealsTheUnfinishedSelfRoute: typeof KnowledgeLoveRevealsTheUnfinishedSelfRoute
+  KnowledgeMoneyNeedsOrderNotAnxietyRoute: typeof KnowledgeMoneyNeedsOrderNotAnxietyRoute
   KnowledgeNineHeavensLampsRoute: typeof KnowledgeNineHeavensLampsRoute
+  KnowledgeSevenKillingsTigerRoute: typeof KnowledgeSevenKillingsTigerRoute
   KnowledgeShushuBoundaryRoute: typeof KnowledgeShushuBoundaryRoute
+  KnowledgeShushuEndsInChoiceRoute: typeof KnowledgeShushuEndsInChoiceRoute
   KnowledgeSouthernHemisphereBaziRoute: typeof KnowledgeSouthernHemisphereBaziRoute
+  KnowledgeSouthernHemisphereBaziReadingRoute: typeof KnowledgeSouthernHemisphereBaziReadingRoute
+  KnowledgeStrengthOverdriveFiveElementsRoute: typeof KnowledgeStrengthOverdriveFiveElementsRoute
   KnowledgeSystemMapRoute: typeof KnowledgeSystemMapRoute
+  KnowledgeTenGodsRelationshipFrictionRoute: typeof KnowledgeTenGodsRelationshipFrictionRoute
   KnowledgeTrueSolarTimeRoute: typeof KnowledgeTrueSolarTimeRoute
 }
 
 const KnowledgeRouteChildren: KnowledgeRouteChildren = {
+  KnowledgeAfterMiraclesPracticeRoute: KnowledgeAfterMiraclesPracticeRoute,
+  KnowledgeAnnualCycleReadingWithCareRoute:
+    KnowledgeAnnualCycleReadingWithCareRoute,
+  KnowledgeEmotionalIntelligenceFourPracticesRoute:
+    KnowledgeEmotionalIntelligenceFourPracticesRoute,
   KnowledgeFiveElementsToneQiRoute: KnowledgeFiveElementsToneQiRoute,
+  KnowledgeInnerFengshuiMindSpeechActionRoute:
+    KnowledgeInnerFengshuiMindSpeechActionRoute,
+  KnowledgeLoveRevealsTheUnfinishedSelfRoute:
+    KnowledgeLoveRevealsTheUnfinishedSelfRoute,
+  KnowledgeMoneyNeedsOrderNotAnxietyRoute:
+    KnowledgeMoneyNeedsOrderNotAnxietyRoute,
   KnowledgeNineHeavensLampsRoute: KnowledgeNineHeavensLampsRoute,
+  KnowledgeSevenKillingsTigerRoute: KnowledgeSevenKillingsTigerRoute,
   KnowledgeShushuBoundaryRoute: KnowledgeShushuBoundaryRoute,
+  KnowledgeShushuEndsInChoiceRoute: KnowledgeShushuEndsInChoiceRoute,
   KnowledgeSouthernHemisphereBaziRoute: KnowledgeSouthernHemisphereBaziRoute,
+  KnowledgeSouthernHemisphereBaziReadingRoute:
+    KnowledgeSouthernHemisphereBaziReadingRoute,
+  KnowledgeStrengthOverdriveFiveElementsRoute:
+    KnowledgeStrengthOverdriveFiveElementsRoute,
   KnowledgeSystemMapRoute: KnowledgeSystemMapRoute,
+  KnowledgeTenGodsRelationshipFrictionRoute:
+    KnowledgeTenGodsRelationshipFrictionRoute,
   KnowledgeTrueSolarTimeRoute: KnowledgeTrueSolarTimeRoute,
 }
 
@@ -912,6 +1182,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRoute,
   AstrologyRoute: AstrologyRoute,
   AuspiciousAtlasRoute: AuspiciousAtlasRoute,
+  BajinggongRoute: BajinggongRoute,
   CopyrightRoute: CopyrightRoute,
   DailyColorsRoute: DailyColorsRoute,
   FunTestsRoute: FunTestsRouteWithChildren,

@@ -1428,6 +1428,468 @@
         "title": "Pagsusulit sa Anim na Daigdig·Kalagayan ng Isip Ngayon | ZHAOWU",
         "description": "Anim na tagpo upang pagmasdan ang nangingibabaw na kalagayan ng isip. Balangkas ng pagtingin ang mga daigdig, hindi hatol sa kabilang buhay."
       }
+    },
+    "/knowledge/southern-hemisphere-bazi-reading": {
+      "zh-Hant": {
+        "title": "南半球排八字，節氣能不能直接反過來看？",
+        "description": "南半球排八字，節氣能不能直接反過來看？｜昭梧觀世錄長篇文章。"
+      },
+      "zh-Hans": {
+        "title": "南半球排八字，节气能不能直接反過來看？",
+        "description": "南半球排八字，节气能不能直接反过来看？｜昭梧观世录长篇文章。"
+      },
+      "en": {
+        "title": "Southernhemispherebazireading",
+        "description": "Southern Hemisphere BaZi: Should the Solar Terms Be Reversed?. A long-form ZHAOWU essay."
+      },
+      "ja": {
+        "title": "知識庫・論考と用語案内",
+        "description": "命理の論考と研究ノート、方法と用語の解説を収録。根拠の種類と解釈の境界を分けて示します。"
+      },
+      "ko": {
+        "title": "지식 자료실·글과 용어 안내",
+        "description": "명리 관점과 연구를 담은 글, 방법과 용어를 설명하는 참고 자료를 근거의 종류와 구분해 제공합니다."
+      },
+      "hi": {
+        "title": "ज्ञान केंद्र·लेख और संदर्भ",
+        "description": "विचार और शोध पर लेख पढ़ें तथा विधियों, शब्दों और व्याख्या के नियमों को उनके प्रमाण के स्तर से अलग समझें।"
+      },
+      "th": {
+        "title": "คลังความรู้·บทความและคำอธิบาย",
+        "description": "อ่านบทความและบันทึกวิจัย พร้อมข้อมูลวิธีการ คำศัพท์และกฎการตีความ โดยแยกประเภทหลักฐานอย่างชัดเจน"
+      },
+      "id": {
+        "title": "Pusat Pengetahuan·Esai dan Referensi",
+        "description": "Esai dan catatan tentang sudut pandang dan riset, serta panduan metode, istilah dan aturan membaca dengan jenis bukti yang dibedakan."
+      },
+      "vi": {
+        "title": "Thư viện kiến thức·Bài viết và tham khảo",
+        "description": "Bài luận, ghi chép nghiên cứu và thẻ tham khảo về phương pháp, thuật ngữ, quy tắc luận giải với các loại chứng cứ được phân biệt."
+      },
+      "fil": {
+        "title": "Aklatan ng Kaalaman·Mga Sanaysay at Sanggunian",
+        "description": "Mga sanaysay at tala sa pananaw at pananaliksik, kasama ang paliwanag ng pamamaraan, mga termino at tuntunin na may malinaw na uri ng ebidensiya."
+      }
+    },
+    "/knowledge/shushu-ends-in-choice": {
+      "zh-Hant": {
+        "title": "術數的最後，不是問天，而是決於人",
+        "description": "術數的最後，不是問天，而是決於人｜昭梧觀世錄長篇文章。"
+      },
+      "zh-Hans": {
+        "title": "術數的最後，不是問天，而是決於人",
+        "description": "术数的最后，不是问天，而是决于人｜昭梧观世录长篇文章。"
+      },
+      "en": {
+        "title": "Shushuendsinchoice",
+        "description": "Divination Ultimately Returns to Human Choice. A long-form ZHAOWU essay."
+      },
+      "ja": {
+        "title": "知識庫・論考と用語案内",
+        "description": "命理の論考と研究ノート、方法と用語の解説を収録。根拠の種類と解釈の境界を分けて示します。"
+      },
+      "ko": {
+        "title": "지식 자료실·글과 용어 안내",
+        "description": "명리 관점과 연구를 담은 글, 방법과 용어를 설명하는 참고 자료를 근거의 종류와 구분해 제공합니다."
+      },
+      "hi": {
+        "title": "ज्ञान केंद्र·लेख और संदर्भ",
+        "description": "विचार और शोध पर लेख पढ़ें तथा विधियों, शब्दों और व्याख्या के नियमों को उनके प्रमाण के स्तर से अलग समझें।"
+      },
+      "th": {
+        "title": "คลังความรู้·บทความและคำอธิบาย",
+        "description": "อ่านบทความและบันทึกวิจัย พร้อมข้อมูลวิธีการ คำศัพท์และกฎการตีความ โดยแยกประเภทหลักฐานอย่างชัดเจน"
+      },
+      "id": {
+        "title": "Pusat Pengetahuan·Esai dan Referensi",
+        "description": "Esai dan catatan tentang sudut pandang dan riset, serta panduan metode, istilah dan aturan membaca dengan jenis bukti yang dibedakan."
+      },
+      "vi": {
+        "title": "Thư viện kiến thức·Bài viết và tham khảo",
+        "description": "Bài luận, ghi chép nghiên cứu và thẻ tham khảo về phương pháp, thuật ngữ, quy tắc luận giải với các loại chứng cứ được phân biệt."
+      },
+      "fil": {
+        "title": "Aklatan ng Kaalaman·Mga Sanaysay at Sanggunian",
+        "description": "Mga sanaysay at tala sa pananaw at pananaliksik, kasama ang paliwanag ng pamamaraan, mga termino at tuntunin na may malinaw na uri ng ebidensiya."
+      }
+    },
+    "/knowledge/seven-killings-tiger": {
+      "zh-Hant": {
+        "title": "七殺不是凶星：壓力，怎麼變成可用的力量",
+        "description": "七殺不是凶星：壓力，怎麼變成可用的力量｜昭梧觀世錄長篇文章。"
+      },
+      "zh-Hans": {
+        "title": "七殺不是凶星：压力，怎么变成可用的力量",
+        "description": "七杀不是凶星：压力，怎么变成可用的力量｜昭梧观世录长篇文章。"
+      },
+      "en": {
+        "title": "Sevenkillingstiger",
+        "description": "Seven Killings Is Not an Evil Star: Turning Pressure into Strength. A long-form ZHAOWU essay."
+      },
+      "ja": {
+        "title": "知識庫・論考と用語案内",
+        "description": "命理の論考と研究ノート、方法と用語の解説を収録。根拠の種類と解釈の境界を分けて示します。"
+      },
+      "ko": {
+        "title": "지식 자료실·글과 용어 안내",
+        "description": "명리 관점과 연구를 담은 글, 방법과 용어를 설명하는 참고 자료를 근거의 종류와 구분해 제공합니다."
+      },
+      "hi": {
+        "title": "ज्ञान केंद्र·लेख और संदर्भ",
+        "description": "विचार और शोध पर लेख पढ़ें तथा विधियों, शब्दों और व्याख्या के नियमों को उनके प्रमाण के स्तर से अलग समझें।"
+      },
+      "th": {
+        "title": "คลังความรู้·บทความและคำอธิบาย",
+        "description": "อ่านบทความและบันทึกวิจัย พร้อมข้อมูลวิธีการ คำศัพท์และกฎการตีความ โดยแยกประเภทหลักฐานอย่างชัดเจน"
+      },
+      "id": {
+        "title": "Pusat Pengetahuan·Esai dan Referensi",
+        "description": "Esai dan catatan tentang sudut pandang dan riset, serta panduan metode, istilah dan aturan membaca dengan jenis bukti yang dibedakan."
+      },
+      "vi": {
+        "title": "Thư viện kiến thức·Bài viết và tham khảo",
+        "description": "Bài luận, ghi chép nghiên cứu và thẻ tham khảo về phương pháp, thuật ngữ, quy tắc luận giải với các loại chứng cứ được phân biệt."
+      },
+      "fil": {
+        "title": "Aklatan ng Kaalaman·Mga Sanaysay at Sanggunian",
+        "description": "Mga sanaysay at tala sa pananaw at pananaliksik, kasama ang paliwanag ng pamamaraan, mga termino at tuntunin na may malinaw na uri ng ebidensiya."
+      }
+    },
+    "/knowledge/strength-overdrive-five-elements": {
+      "zh-Hant": {
+        "title": "你不是缺什麼，是力量還沒用對地方",
+        "description": "你不是缺什麼，是力量還沒用對地方｜昭梧觀世錄長篇文章。"
+      },
+      "zh-Hans": {
+        "title": "你不是缺什么，是力量还没用對地方",
+        "description": "你不是缺什么，是力量还没用对地方｜昭梧观世录长篇文章。"
+      },
+      "en": {
+        "title": "Strengthoverdrivefiveelements",
+        "description": "You May Not Lack Anything; Your Strength May Be Misapplied. A long-form ZHAOWU essay."
+      },
+      "ja": {
+        "title": "知識庫・論考と用語案内",
+        "description": "命理の論考と研究ノート、方法と用語の解説を収録。根拠の種類と解釈の境界を分けて示します。"
+      },
+      "ko": {
+        "title": "지식 자료실·글과 용어 안내",
+        "description": "명리 관점과 연구를 담은 글, 방법과 용어를 설명하는 참고 자료를 근거의 종류와 구분해 제공합니다."
+      },
+      "hi": {
+        "title": "ज्ञान केंद्र·लेख और संदर्भ",
+        "description": "विचार और शोध पर लेख पढ़ें तथा विधियों, शब्दों और व्याख्या के नियमों को उनके प्रमाण के स्तर से अलग समझें।"
+      },
+      "th": {
+        "title": "คลังความรู้·บทความและคำอธิบาย",
+        "description": "อ่านบทความและบันทึกวิจัย พร้อมข้อมูลวิธีการ คำศัพท์และกฎการตีความ โดยแยกประเภทหลักฐานอย่างชัดเจน"
+      },
+      "id": {
+        "title": "Pusat Pengetahuan·Esai dan Referensi",
+        "description": "Esai dan catatan tentang sudut pandang dan riset, serta panduan metode, istilah dan aturan membaca dengan jenis bukti yang dibedakan."
+      },
+      "vi": {
+        "title": "Thư viện kiến thức·Bài viết và tham khảo",
+        "description": "Bài luận, ghi chép nghiên cứu và thẻ tham khảo về phương pháp, thuật ngữ, quy tắc luận giải với các loại chứng cứ được phân biệt."
+      },
+      "fil": {
+        "title": "Aklatan ng Kaalaman·Mga Sanaysay at Sanggunian",
+        "description": "Mga sanaysay at tala sa pananaw at pananaliksik, kasama ang paliwanag ng pamamaraan, mga termino at tuntunin na may malinaw na uri ng ebidensiya."
+      }
+    },
+    "/knowledge/ten-gods-relationship-friction": {
+      "zh-Hant": {
+        "title": "十神看關係：先看結構，再談合不合",
+        "description": "十神看關係：先看結構，再談合不合｜昭梧觀世錄長篇文章。"
+      },
+      "zh-Hans": {
+        "title": "十神看关系：先看結構，再谈合不合",
+        "description": "十神看关系：先看结构，再谈合不合｜昭梧观世录长篇文章。"
+      },
+      "en": {
+        "title": "Tengodsrelationshipfriction",
+        "description": "Ten Gods and Relationships: Read the Structure First. A long-form ZHAOWU essay."
+      },
+      "ja": {
+        "title": "知識庫・論考と用語案内",
+        "description": "命理の論考と研究ノート、方法と用語の解説を収録。根拠の種類と解釈の境界を分けて示します。"
+      },
+      "ko": {
+        "title": "지식 자료실·글과 용어 안내",
+        "description": "명리 관점과 연구를 담은 글, 방법과 용어를 설명하는 참고 자료를 근거의 종류와 구분해 제공합니다."
+      },
+      "hi": {
+        "title": "ज्ञान केंद्र·लेख और संदर्भ",
+        "description": "विचार और शोध पर लेख पढ़ें तथा विधियों, शब्दों और व्याख्या के नियमों को उनके प्रमाण के स्तर से अलग समझें।"
+      },
+      "th": {
+        "title": "คลังความรู้·บทความและคำอธิบาย",
+        "description": "อ่านบทความและบันทึกวิจัย พร้อมข้อมูลวิธีการ คำศัพท์และกฎการตีความ โดยแยกประเภทหลักฐานอย่างชัดเจน"
+      },
+      "id": {
+        "title": "Pusat Pengetahuan·Esai dan Referensi",
+        "description": "Esai dan catatan tentang sudut pandang dan riset, serta panduan metode, istilah dan aturan membaca dengan jenis bukti yang dibedakan."
+      },
+      "vi": {
+        "title": "Thư viện kiến thức·Bài viết và tham khảo",
+        "description": "Bài luận, ghi chép nghiên cứu và thẻ tham khảo về phương pháp, thuật ngữ, quy tắc luận giải với các loại chứng cứ được phân biệt."
+      },
+      "fil": {
+        "title": "Aklatan ng Kaalaman·Mga Sanaysay at Sanggunian",
+        "description": "Mga sanaysay at tala sa pananaw at pananaliksik, kasama ang paliwanag ng pamamaraan, mga termino at tuntunin na may malinaw na uri ng ebidensiya."
+      }
+    },
+    "/knowledge/money-needs-order-not-anxiety": {
+      "zh-Hant": {
+        "title": "求財先分三層：命局、環境、現金流",
+        "description": "求財先分三層：命局、環境、現金流｜昭梧觀世錄長篇文章。"
+      },
+      "zh-Hans": {
+        "title": "求財先分三層：命局、環境、现金流",
+        "description": "求财先分三层：命局、环境、现金流｜昭梧观世录长篇文章。"
+      },
+      "en": {
+        "title": "Moneyneedsordernotanxiety",
+        "description": "Wealth Needs Three Layers: Chart, Environment and Cash Flow. A long-form ZHAOWU essay."
+      },
+      "ja": {
+        "title": "知識庫・論考と用語案内",
+        "description": "命理の論考と研究ノート、方法と用語の解説を収録。根拠の種類と解釈の境界を分けて示します。"
+      },
+      "ko": {
+        "title": "지식 자료실·글과 용어 안내",
+        "description": "명리 관점과 연구를 담은 글, 방법과 용어를 설명하는 참고 자료를 근거의 종류와 구분해 제공합니다."
+      },
+      "hi": {
+        "title": "ज्ञान केंद्र·लेख और संदर्भ",
+        "description": "विचार और शोध पर लेख पढ़ें तथा विधियों, शब्दों और व्याख्या के नियमों को उनके प्रमाण के स्तर से अलग समझें।"
+      },
+      "th": {
+        "title": "คลังความรู้·บทความและคำอธิบาย",
+        "description": "อ่านบทความและบันทึกวิจัย พร้อมข้อมูลวิธีการ คำศัพท์และกฎการตีความ โดยแยกประเภทหลักฐานอย่างชัดเจน"
+      },
+      "id": {
+        "title": "Pusat Pengetahuan·Esai dan Referensi",
+        "description": "Esai dan catatan tentang sudut pandang dan riset, serta panduan metode, istilah dan aturan membaca dengan jenis bukti yang dibedakan."
+      },
+      "vi": {
+        "title": "Thư viện kiến thức·Bài viết và tham khảo",
+        "description": "Bài luận, ghi chép nghiên cứu và thẻ tham khảo về phương pháp, thuật ngữ, quy tắc luận giải với các loại chứng cứ được phân biệt."
+      },
+      "fil": {
+        "title": "Aklatan ng Kaalaman·Mga Sanaysay at Sanggunian",
+        "description": "Mga sanaysay at tala sa pananaw at pananaliksik, kasama ang paliwanag ng pamamaraan, mga termino at tuntunin na may malinaw na uri ng ebidensiya."
+      }
+    },
+    "/knowledge/annual-cycle-reading-with-care": {
+      "zh-Hant": {
+        "title": "流年怎麼讀：先分開規則和傳聞",
+        "description": "流年怎麼讀：先分開規則和傳聞｜昭梧觀世錄長篇文章。"
+      },
+      "zh-Hans": {
+        "title": "流年怎么读：先分開規則和傳闻",
+        "description": "流年怎么读：先分开规则和传闻｜昭梧观世录长篇文章。"
+      },
+      "en": {
+        "title": "Annualcyclereadingwithcare",
+        "description": "Reading Annual Cycles: Separate Rules from Rumours. A long-form ZHAOWU essay."
+      },
+      "ja": {
+        "title": "知識庫・論考と用語案内",
+        "description": "命理の論考と研究ノート、方法と用語の解説を収録。根拠の種類と解釈の境界を分けて示します。"
+      },
+      "ko": {
+        "title": "지식 자료실·글과 용어 안내",
+        "description": "명리 관점과 연구를 담은 글, 방법과 용어를 설명하는 참고 자료를 근거의 종류와 구분해 제공합니다."
+      },
+      "hi": {
+        "title": "ज्ञान केंद्र·लेख और संदर्भ",
+        "description": "विचार और शोध पर लेख पढ़ें तथा विधियों, शब्दों और व्याख्या के नियमों को उनके प्रमाण के स्तर से अलग समझें।"
+      },
+      "th": {
+        "title": "คลังความรู้·บทความและคำอธิบาย",
+        "description": "อ่านบทความและบันทึกวิจัย พร้อมข้อมูลวิธีการ คำศัพท์และกฎการตีความ โดยแยกประเภทหลักฐานอย่างชัดเจน"
+      },
+      "id": {
+        "title": "Pusat Pengetahuan·Esai dan Referensi",
+        "description": "Esai dan catatan tentang sudut pandang dan riset, serta panduan metode, istilah dan aturan membaca dengan jenis bukti yang dibedakan."
+      },
+      "vi": {
+        "title": "Thư viện kiến thức·Bài viết và tham khảo",
+        "description": "Bài luận, ghi chép nghiên cứu và thẻ tham khảo về phương pháp, thuật ngữ, quy tắc luận giải với các loại chứng cứ được phân biệt."
+      },
+      "fil": {
+        "title": "Aklatan ng Kaalaman·Mga Sanaysay at Sanggunian",
+        "description": "Mga sanaysay at tala sa pananaw at pananaliksik, kasama ang paliwanag ng pamamaraan, mga termino at tuntunin na may malinaw na uri ng ebidensiya."
+      }
+    },
+    "/knowledge/inner-fengshui-mind-speech-action": {
+      "zh-Hant": {
+        "title": "真正的風水，先在自己身上",
+        "description": "真正的風水，先在自己身上｜昭梧觀世錄長篇文章。"
+      },
+      "zh-Hans": {
+        "title": "真正的风水，先在自己身上",
+        "description": "真正的风水，先在自己身上｜昭梧观世录长篇文章。"
+      },
+      "en": {
+        "title": "Innerfengshuimindspeechaction",
+        "description": "The First Feng Shui Is Within Yourself. A long-form ZHAOWU essay."
+      },
+      "ja": {
+        "title": "知識庫・論考と用語案内",
+        "description": "命理の論考と研究ノート、方法と用語の解説を収録。根拠の種類と解釈の境界を分けて示します。"
+      },
+      "ko": {
+        "title": "지식 자료실·글과 용어 안내",
+        "description": "명리 관점과 연구를 담은 글, 방법과 용어를 설명하는 참고 자료를 근거의 종류와 구분해 제공합니다."
+      },
+      "hi": {
+        "title": "ज्ञान केंद्र·लेख और संदर्भ",
+        "description": "विचार और शोध पर लेख पढ़ें तथा विधियों, शब्दों और व्याख्या के नियमों को उनके प्रमाण के स्तर से अलग समझें।"
+      },
+      "th": {
+        "title": "คลังความรู้·บทความและคำอธิบาย",
+        "description": "อ่านบทความและบันทึกวิจัย พร้อมข้อมูลวิธีการ คำศัพท์และกฎการตีความ โดยแยกประเภทหลักฐานอย่างชัดเจน"
+      },
+      "id": {
+        "title": "Pusat Pengetahuan·Esai dan Referensi",
+        "description": "Esai dan catatan tentang sudut pandang dan riset, serta panduan metode, istilah dan aturan membaca dengan jenis bukti yang dibedakan."
+      },
+      "vi": {
+        "title": "Thư viện kiến thức·Bài viết và tham khảo",
+        "description": "Bài luận, ghi chép nghiên cứu và thẻ tham khảo về phương pháp, thuật ngữ, quy tắc luận giải với các loại chứng cứ được phân biệt."
+      },
+      "fil": {
+        "title": "Aklatan ng Kaalaman·Mga Sanaysay at Sanggunian",
+        "description": "Mga sanaysay at tala sa pananaw at pananaliksik, kasama ang paliwanag ng pamamaraan, mga termino at tuntunin na may malinaw na uri ng ebidensiya."
+      }
+    },
+    "/knowledge/emotional-intelligence-four-practices": {
+      "zh-Hant": {
+        "title": "情緒有度：升起之後，還有第二個選擇",
+        "description": "情緒有度：升起之後，還有第二個選擇｜昭梧觀世錄長篇文章。"
+      },
+      "zh-Hans": {
+        "title": "情緒有度：升起之後，还有第二个选择",
+        "description": "情绪有度：升起之后，还有第二个选择｜昭梧观世录长篇文章。"
+      },
+      "en": {
+        "title": "Emotionalintelligencefourpractices",
+        "description": "Emotional Balance: A Second Choice After Feelings Arise. A long-form ZHAOWU essay."
+      },
+      "ja": {
+        "title": "知識庫・論考と用語案内",
+        "description": "命理の論考と研究ノート、方法と用語の解説を収録。根拠の種類と解釈の境界を分けて示します。"
+      },
+      "ko": {
+        "title": "지식 자료실·글과 용어 안내",
+        "description": "명리 관점과 연구를 담은 글, 방법과 용어를 설명하는 참고 자료를 근거의 종류와 구분해 제공합니다."
+      },
+      "hi": {
+        "title": "ज्ञान केंद्र·लेख और संदर्भ",
+        "description": "विचार और शोध पर लेख पढ़ें तथा विधियों, शब्दों और व्याख्या के नियमों को उनके प्रमाण के स्तर से अलग समझें।"
+      },
+      "th": {
+        "title": "คลังความรู้·บทความและคำอธิบาย",
+        "description": "อ่านบทความและบันทึกวิจัย พร้อมข้อมูลวิธีการ คำศัพท์และกฎการตีความ โดยแยกประเภทหลักฐานอย่างชัดเจน"
+      },
+      "id": {
+        "title": "Pusat Pengetahuan·Esai dan Referensi",
+        "description": "Esai dan catatan tentang sudut pandang dan riset, serta panduan metode, istilah dan aturan membaca dengan jenis bukti yang dibedakan."
+      },
+      "vi": {
+        "title": "Thư viện kiến thức·Bài viết và tham khảo",
+        "description": "Bài luận, ghi chép nghiên cứu và thẻ tham khảo về phương pháp, thuật ngữ, quy tắc luận giải với các loại chứng cứ được phân biệt."
+      },
+      "fil": {
+        "title": "Aklatan ng Kaalaman·Mga Sanaysay at Sanggunian",
+        "description": "Mga sanaysay at tala sa pananaw at pananaliksik, kasama ang paliwanag ng pamamaraan, mga termino at tuntunin na may malinaw na uri ng ebidensiya."
+      }
+    },
+    "/knowledge/love-reveals-the-unfinished-self": {
+      "zh-Hant": {
+        "title": "愛會照人：關係裡，怎麼不把自己弄丟",
+        "description": "愛會照人：關係裡，怎麼不把自己弄丟｜昭梧觀世錄長篇文章。"
+      },
+      "zh-Hans": {
+        "title": "愛會照人：关系里，怎么不把自己弄丟",
+        "description": "爱会照人：关系里，怎么不把自己弄丢｜昭梧观世录长篇文章。"
+      },
+      "en": {
+        "title": "Loverevealstheunfinishedself",
+        "description": "Love Reveals Us: Staying Yourself in Relationships. A long-form ZHAOWU essay."
+      },
+      "ja": {
+        "title": "知識庫・論考と用語案内",
+        "description": "命理の論考と研究ノート、方法と用語の解説を収録。根拠の種類と解釈の境界を分けて示します。"
+      },
+      "ko": {
+        "title": "지식 자료실·글과 용어 안내",
+        "description": "명리 관점과 연구를 담은 글, 방법과 용어를 설명하는 참고 자료를 근거의 종류와 구분해 제공합니다."
+      },
+      "hi": {
+        "title": "ज्ञान केंद्र·लेख और संदर्भ",
+        "description": "विचार और शोध पर लेख पढ़ें तथा विधियों, शब्दों और व्याख्या के नियमों को उनके प्रमाण के स्तर से अलग समझें।"
+      },
+      "th": {
+        "title": "คลังความรู้·บทความและคำอธิบาย",
+        "description": "อ่านบทความและบันทึกวิจัย พร้อมข้อมูลวิธีการ คำศัพท์และกฎการตีความ โดยแยกประเภทหลักฐานอย่างชัดเจน"
+      },
+      "id": {
+        "title": "Pusat Pengetahuan·Esai dan Referensi",
+        "description": "Esai dan catatan tentang sudut pandang dan riset, serta panduan metode, istilah dan aturan membaca dengan jenis bukti yang dibedakan."
+      },
+      "vi": {
+        "title": "Thư viện kiến thức·Bài viết và tham khảo",
+        "description": "Bài luận, ghi chép nghiên cứu và thẻ tham khảo về phương pháp, thuật ngữ, quy tắc luận giải với các loại chứng cứ được phân biệt."
+      },
+      "fil": {
+        "title": "Aklatan ng Kaalaman·Mga Sanaysay at Sanggunian",
+        "description": "Mga sanaysay at tala sa pananaw at pananaliksik, kasama ang paliwanag ng pamamaraan, mga termino at tuntunin na may malinaw na uri ng ebidensiya."
+      }
+    },
+    "/knowledge/after-miracles-practice": {
+      "zh-Hant": {
+        "title": "沒有神蹟之後，人怎麼修行",
+        "description": "沒有神蹟之後，人怎麼修行｜昭梧觀世錄長篇文章。"
+      },
+      "zh-Hans": {
+        "title": "没有神迹之後，人怎么修行",
+        "description": "没有神迹之后，人怎么修行｜昭梧观世录长篇文章。"
+      },
+      "en": {
+        "title": "Aftermiraclespractice",
+        "description": "Practice After Miracles: How Do We Live?. A long-form ZHAOWU essay."
+      },
+      "ja": {
+        "title": "知識庫・論考と用語案内",
+        "description": "命理の論考と研究ノート、方法と用語の解説を収録。根拠の種類と解釈の境界を分けて示します。"
+      },
+      "ko": {
+        "title": "지식 자료실·글과 용어 안내",
+        "description": "명리 관점과 연구를 담은 글, 방법과 용어를 설명하는 참고 자료를 근거의 종류와 구분해 제공합니다."
+      },
+      "hi": {
+        "title": "ज्ञान केंद्र·लेख और संदर्भ",
+        "description": "विचार और शोध पर लेख पढ़ें तथा विधियों, शब्दों और व्याख्या के नियमों को उनके प्रमाण के स्तर से अलग समझें।"
+      },
+      "th": {
+        "title": "คลังความรู้·บทความและคำอธิบาย",
+        "description": "อ่านบทความและบันทึกวิจัย พร้อมข้อมูลวิธีการ คำศัพท์และกฎการตีความ โดยแยกประเภทหลักฐานอย่างชัดเจน"
+      },
+      "id": {
+        "title": "Pusat Pengetahuan·Esai dan Referensi",
+        "description": "Esai dan catatan tentang sudut pandang dan riset, serta panduan metode, istilah dan aturan membaca dengan jenis bukti yang dibedakan."
+      },
+      "vi": {
+        "title": "Thư viện kiến thức·Bài viết và tham khảo",
+        "description": "Bài luận, ghi chép nghiên cứu và thẻ tham khảo về phương pháp, thuật ngữ, quy tắc luận giải với các loại chứng cứ được phân biệt."
+      },
+      "fil": {
+        "title": "Aklatan ng Kaalaman·Mga Sanaysay at Sanggunian",
+        "description": "Mga sanaysay at tala sa pananaw at pananaliksik, kasama ang paliwanag ng pamamaraan, mga termino at tuntunin na may malinaw na uri ng ebidensiya."
+      }
     }
   }
 }

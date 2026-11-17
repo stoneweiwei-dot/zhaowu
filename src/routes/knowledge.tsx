@@ -8,6 +8,8 @@ import { LifeViewHomeSection } from "@/components/life-view-home-section";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { CuratedVideoShelf } from "@/components/curated-video-shelf";
 import { RealityPatchSection } from "@/components/2012-reality-patch-section";
+import { useEffect } from "react";
+import { articleHashRedirect } from "@/lib/article-hash-redirect";
 
 export const Route = createFileRoute("/knowledge")({ component: KnowledgePage });
 
@@ -19,6 +21,10 @@ function KnowledgePage() {
   const { locale } = useI18n();
   useDisplayLanguage((state) => state.language);
   const pathname = useRouterState({ select: (state) => state.location.pathname });
+  useEffect(() => {
+    const destination = articleHashRedirect(window.location.hash, window.location.pathname);
+    if (destination) window.location.replace(destination);
+  }, []);
   if (pathname.startsWith("/knowledge/")) return <Outlet />;
 
   return (
