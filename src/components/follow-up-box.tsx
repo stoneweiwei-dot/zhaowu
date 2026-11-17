@@ -3,6 +3,7 @@ import type { AnalysisResult } from "@/lib/bazi/types";
 import { followUpLife } from "@/lib/actions";
 import { useAppStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
+import { trackConversion } from "@/lib/observability/conversion-telemetry";
 
 export function FollowUpBox({ result }: { result: AnalysisResult }) {
   const { t } = useI18n();
@@ -17,9 +18,11 @@ export function FollowUpBox({ result }: { result: AnalysisResult }) {
     if (!q) return;
     setBusy(true);
     setError(null);
+    trackConversion("follow_up_submitted", { system: "bazi", question_length_band: q.length <= 80 ? "short" : q.length <= 200 ? "medium" : "long" });
     try {
       const next = await followUpLife({ data: { question: q, base: result } });
       setCurrent(next);
+      trackConversion("follow_up_answer_shown", { system: "bazi" });
       setQuestion("");
       window.setTimeout(() => document.getElementById("result")?.scrollIntoView({ behavior: "smooth", block: "start" }), 30);
     } catch (err) {

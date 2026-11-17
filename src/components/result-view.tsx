@@ -11,6 +11,7 @@ import { DataGradeFooter } from "@/components/data-grade-footer";
 import { MobileReadingGuide } from "@/components/mobile-reading-guide";
 import { FocusedReportSections } from "@/components/paid-report-pages";
 import { FollowUpBox } from "@/components/follow-up-box";
+import { ReportCompletionPanel } from "@/components/report-completion-panel";
 import { CharacterPanel } from "@/components/character-panel";
 import { BaziChart } from "@/components/bazi-chart";
 import { FreeStemBranchAtlas } from "@/components/free-stem-branch-atlas";
@@ -425,6 +426,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
       {msg ? <p className="zhaowu-result-message text-sm text-cinnabar mt-2">{msg}</p> : null}
       {unlocked && reportSections ? <FocusedReportSections sections={reportSections} result={result} showChartArtwork={false} showReadingGuide={false} /> : null}
+      {unlocked && !ownerAccess ? <ReportCompletionPanel system="bazi" locale={locale} /> : null}
       <p className="text-xs leading-6 text-ink-mute mt-4">{t("disclaimer")}</p>
     </section>
   );

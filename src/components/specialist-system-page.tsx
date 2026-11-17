@@ -25,6 +25,7 @@ import {
   type SpecialistReading,
 } from "@/lib/specialist-reading";
 import "@/specialist-system.css";
+import { Link } from "@tanstack/react-router";
 
 const D60_BIRTH_EVENT = "zhaowu:d60-birth";
 
@@ -153,8 +154,8 @@ export function SpecialistSystemPage({ id }: { id: SpecialistId }) {
         {reading?.warning ? <p className="zhaowu-specialist-warning">{reading.warning}</p> : null}
 
         <div className="zhaowu-specialist-actions">
-          <a href="/#bazi" className="is-secondary">{birth ? copy.edit : copy.add}</a>
-          <a href="/#analysis-reports" className="is-secondary">{copy.back}</a>
+          <Link to="/" hash="bazi" className="is-secondary">{birth ? copy.edit : copy.add}</Link>
+          <Link to="/" hash="analysis-reports" className="is-secondary">{copy.back}</Link>
         </div>
 
         {reading?.chart ? <SpecialistChart chart={reading.chart} locale={locale} /> : null}

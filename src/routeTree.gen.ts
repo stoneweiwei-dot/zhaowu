@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AstrologyRouteImport } from './routes/astrology'
 import { Route as AuspiciousAtlasRouteImport } from './routes/auspicious-atlas'
+import { Route as BajinggongRouteImport } from './routes/bajinggong'
 import { Route as CopyrightRouteImport } from './routes/copyright'
 import { Route as DailyColorsRouteImport } from './routes/daily-colors'
 import { Route as FunTestsRouteImport } from './routes/fun-tests'
@@ -75,6 +76,11 @@ const AstrologyRoute = AstrologyRouteImport.update({
 const AuspiciousAtlasRoute = AuspiciousAtlasRouteImport.update({
   id: '/auspicious-atlas',
   path: '/auspicious-atlas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BajinggongRoute = BajinggongRouteImport.update({
+  id: '/bajinggong',
+  path: '/bajinggong',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CopyrightRoute = CopyrightRouteImport.update({
@@ -273,6 +279,7 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/astrology': typeof AstrologyRoute
   '/auspicious-atlas': typeof AuspiciousAtlasRoute
+  '/bajinggong': typeof BajinggongRoute
   '/copyright': typeof CopyrightRoute
   '/daily-colors': typeof DailyColorsRoute
   '/fun-tests': typeof FunTestsRouteWithChildren
@@ -317,6 +324,7 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/astrology': typeof AstrologyRoute
   '/auspicious-atlas': typeof AuspiciousAtlasRoute
+  '/bajinggong': typeof BajinggongRoute
   '/copyright': typeof CopyrightRoute
   '/daily-colors': typeof DailyColorsRoute
   '/fun-tests': typeof FunTestsRouteWithChildren
@@ -362,6 +370,7 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/astrology': typeof AstrologyRoute
   '/auspicious-atlas': typeof AuspiciousAtlasRoute
+  '/bajinggong': typeof BajinggongRoute
   '/copyright': typeof CopyrightRoute
   '/daily-colors': typeof DailyColorsRoute
   '/fun-tests': typeof FunTestsRouteWithChildren
@@ -408,6 +417,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/astrology'
     | '/auspicious-atlas'
+    | '/bajinggong'
     | '/copyright'
     | '/daily-colors'
     | '/fun-tests'
@@ -452,6 +462,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/astrology'
     | '/auspicious-atlas'
+    | '/bajinggong'
     | '/copyright'
     | '/daily-colors'
     | '/fun-tests'
@@ -496,6 +507,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/astrology'
     | '/auspicious-atlas'
+    | '/bajinggong'
     | '/copyright'
     | '/daily-colors'
     | '/fun-tests'
@@ -541,6 +553,7 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   AstrologyRoute: typeof AstrologyRoute
   AuspiciousAtlasRoute: typeof AuspiciousAtlasRoute
+  BajinggongRoute: typeof BajinggongRoute
   CopyrightRoute: typeof CopyrightRoute
   DailyColorsRoute: typeof DailyColorsRoute
   FunTestsRoute: typeof FunTestsRouteWithChildren
@@ -608,6 +621,13 @@ declare module '@tanstack/react-router' {
       path: '/auspicious-atlas'
       fullPath: '/auspicious-atlas'
       preLoaderRoute: typeof AuspiciousAtlasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bajinggong': {
+      id: '/bajinggong'
+      path: '/bajinggong'
+      fullPath: '/bajinggong'
+      preLoaderRoute: typeof BajinggongRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/copyright': {
@@ -912,6 +932,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRoute,
   AstrologyRoute: AstrologyRoute,
   AuspiciousAtlasRoute: AuspiciousAtlasRoute,
+  BajinggongRoute: BajinggongRoute,
   CopyrightRoute: CopyrightRoute,
   DailyColorsRoute: DailyColorsRoute,
   FunTestsRoute: FunTestsRouteWithChildren,

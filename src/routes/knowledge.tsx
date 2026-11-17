@@ -8,6 +8,7 @@ import { LifeViewHomeSection } from "@/components/life-view-home-section";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { CuratedVideoShelf } from "@/components/curated-video-shelf";
 import { RealityPatchSection } from "@/components/2012-reality-patch-section";
+import { trackConversion } from "@/lib/observability/conversion-telemetry";
 
 export const Route = createFileRoute("/knowledge")({ component: KnowledgePage });
 
@@ -94,7 +95,7 @@ function KnowledgePage() {
         <span className="mt-2 block text-sm leading-6 text-ink-soft">{tr(locale,"公式、悉尼／台北／北京實例、對命盤的影響與誤差限制。","公式、悉尼／台北／北京实例、对命盘的影响与误差限制。","The formula, Sydney / Taipei / Beijing examples, what it changes in a chart, and its error limits.")}</span>
       </Link>
 
-      <a href="/#birth-form" className="seal-border flex min-h-14 items-center justify-between rounded-2xl bg-cream px-5 py-4 text-sm text-ink">
+      <a href="/#birth-form" onClick={() => trackConversion("content_cta_clicked", { source: "knowledge", destination: "birth_form" })} className="seal-border flex min-h-14 items-center justify-between rounded-2xl bg-cream px-5 py-4 text-sm text-ink">
         <span>{tr(locale,"產生完整命盤","产生完整命盘","Create complete chart")}</span>
         <span className="text-cinnabar">→</span>
       </a>

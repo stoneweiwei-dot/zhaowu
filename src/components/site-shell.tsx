@@ -33,6 +33,7 @@ import { routeMetaFor, routeMetaForLanguage, ROUTE_META_PATHS } from "@/lib/rout
 import { applyBrandTheme, hydrateBrandTheme, NIGHT_MODE_ENABLED, useBrandTheme } from "@/lib/brand-theme";
 import { applySkin, readSkinId, hydrateSkin, refreshSharedSkin } from "@/lib/theme-skins";
 import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
+import { trackConversion } from "@/lib/observability/conversion-telemetry";
 import "@/legal-pages.css";
 import "@/brand-watermark.css";
 
@@ -553,6 +554,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
             </div>
           </details>
         ) : null}
+        <p className="text-sm leading-7"><Link to="/" hash="birth-form" className="inline-flex min-h-11 items-center rounded-full bg-pine px-5 font-medium text-white" onClick={() => trackConversion("content_cta_clicked", { source: "site_footer", destination: "birth_form" })}>{displayShellText(language, "免費排盤，先看核心解讀", "免费排盘，先看核心解读", "Create my free chart", "無料で命盤を作る", "무료 명반 만들기", "मुफ़्त चार्ट बनाएँ")}</Link></p>
         <ul className="zhaowu-footer-legal" aria-label={displayShellText(language, "法律資訊", "法律信息", "Legal", "法的情報", "법적 고지", "कानूनी")}>
           <li><Link to="/privacy">{displayShellText(language, "隱私權政策", "隐私权政策", "Privacy", "プライバシー", "개인정보", "गोपनीयता")}</Link></li>
           <li><Link to="/terms">{displayShellText(language, "服務條款", "服务条款", "Terms", "利用規約", "이용약관", "शर्तें")}</Link></li>
