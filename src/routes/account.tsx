@@ -159,6 +159,7 @@ function AccountPage() {
     refreshing: tr(locale, "刷新中…", "刷新中…", "Refreshing…"),
     refreshOne: tr(locale, "刷新這筆", "刷新这笔", "Refresh"),
     customerReports: tr(locale, "所有已上傳的報告", "所有已上传的报告", "All uploaded reports"),
+    visitorChart: tr(locale, "訪客命盤", "访客命盘", "Visitor chart"),
     search: tr(locale, "搜尋 Email / 問題", "搜索 Email / 问题", "Search email / question"),
     empty: tr(locale, "目前沒有已上傳的報告。本機保存的內容請到「我的報告」查看。", "目前没有已上传的报告。本机保存的内容请到“我的报告”查看。", "No uploaded reports yet. Open My reports for results saved on this device."),
     open: tr(locale, "閱讀完整報告", "阅读完整报告", "Read full report"),
@@ -449,7 +450,7 @@ function AccountPage() {
                 <div className="pl-16 text-left">
                   <h3 className="font-display text-lg font-semibold break-words">{row.alias || String(row.context?.question ?? c.reportFallback)}</h3>
                   <p className="truncate text-xs text-cinnabar">{row.user_email || c.noEmail}</p>
-                  <p className="mt-1 text-xs text-ink-mute">{new Date(row.created_at).toLocaleString(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW")} · {reportLevel(row, locale)}</p>
+                  <p className="mt-1 text-xs text-ink-mute">{new Date(row.created_at).toLocaleString(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW")} · {row.record_kind === "visitor_chart" ? c.visitorChart : reportLevel(row, locale)}</p>
                   <p className="mt-1 text-[11px] text-ink-mute">{c.updated} {new Date(row.updated_at).toLocaleString(locale === "en" ? "en-AU" : locale === "zh-Hans" ? "zh-CN" : "zh-TW")}</p>
                 </div>
 
@@ -477,6 +478,7 @@ function AccountPage() {
                             <p className="text-xs tracking-[0.18em] text-cinnabar">{c.chartSummary}</p>
                             <p className="mt-2">{c.dayMaster} {snapshot.chart.dayMaster}{snapshot.chart.dayMasterElement} · {c.monthCommand} {snapshot.chart.monthBranch}</p>
                             <p>{snapshot.chart.pillars.map((p) => p.ganZhi).join("　")}</p>
+                            {detail.context?.source === "visitor-chart" ? <p className="mt-2 break-words">{tr(locale, "出生資料", "出生资料", "Birth details")}: {String(detail.context.birth_datetime ?? "")} · {String(detail.context.gender ?? "")} · {String(detail.context.birthplace ?? "")}<br />{tr(locale, "真太陽時", "真太阳时", "True solar time")}: {String(detail.context.true_solar_time ?? "—")} · {tr(locale, "語言", "语言", "Language")}: {String(detail.context.language ?? "")}</p> : null}
                             {displayAnswer ? <p className="mt-3 font-medium text-ink">{displayAnswer}</p> : null}
                           </div>
                         ) : displayAnswer ? <p className="mb-4 font-medium text-ink">{displayAnswer}</p> : null}
