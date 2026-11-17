@@ -62,6 +62,7 @@ export function BaziChartContent({ chart, locale, showHeader = true, expandDetai
           : '出生地未能確認；本盤暫按北京標準時間（UTC+8）計算，未校正真太陽時。之後確認城市時，請重新生成命盤。',
       };
   const ready = (p: Pillar) => p.ready && !(chart.timeUnknown && p.key === 'time');
+  const elementColor: Record<string, string> = { 木: "#315e50", 火: "#a7352b", 土: "#9b7745", 金: "#756f64", 水: "#1d3550" };
   const review = chart.birthTimeReview;
 
   return (
@@ -92,7 +93,14 @@ export function BaziChartContent({ chart, locale, showHeader = true, expandDetai
             <h3>{pillarName(p.key, locale)}</h3>
             {ready(p) ? (
               <>
-                <strong>{ganzhiLabel(p.ganZhi, locale)}</strong>
+                {locale === 'en' ? (
+                  <strong>{ganzhiLabel(p.ganZhi, locale)}</strong>
+                ) : (
+                  <strong aria-label={ganzhiLabel(p.ganZhi, locale)}>
+                    <span data-ganzhi-part="stem" data-element={p.ganElement} style={{ color: elementColor[p.ganElement] }}>{p.gan}</span>
+                    <span data-ganzhi-part="branch" data-element={p.zhiElement} style={{ color: elementColor[p.zhiElement] }}>{p.zhi}</span>
+                  </strong>
+                )}
                 <small>{chartTerm(p.shiShenGan, locale)}</small>
               </>
             ) : (

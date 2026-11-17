@@ -1115,6 +1115,8 @@ html[data-zw-theme="night"] .zhaowu-specialist-node { border-top-color: rgba(236
 .zhaowu-result-flow .zhaowu-pillar-grid > section > small {
   color: var(--zws-soft, #5a554c) !important;
   font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .02em;
   line-height: 1.5;
 }
 .zhaowu-result-flow .zhaowu-chart-details { margin-top: 13px; border-top: 1px solid var(--zws-divider, #d8d2c3); }

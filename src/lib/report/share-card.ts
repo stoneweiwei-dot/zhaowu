@@ -3,7 +3,6 @@ import type { Locale } from "@/lib/i18n";
 import { buildReportVisualModel } from "@/lib/report/report-visual-model";
 import { getReportVisualAsset, type ReportVisualAsset } from "@/lib/report/report-visual-assets";
 import { customerCopy } from "@/lib/report/customer-copy";
-import { buildDecisionReportModel } from "@/lib/report/decision-report-model";
 
 export type ShareCardModel = {
   brand: string;
@@ -23,7 +22,10 @@ function compactSummary(text: string): string {
 
 export function buildShareCardModel(result: AnalysisResult, locale: Locale): ShareCardModel {
   const visual = buildReportVisualModel(result.chart, locale);
-  const summary = compactSummary(buildDecisionReportModel(result).directAnswer || visual.dayMaster.summary);
+  const chartSummary = locale === "en"
+    ? `${result.chart.dayMaster} (${result.chart.dayMasterElement}) day master. ${visual.dayMaster.summary}`
+    : `日主${result.chart.dayMaster}${result.chart.dayMasterElement}。${visual.dayMaster.summary}`;
+  const summary = compactSummary(chartSummary);
   const artwork = getReportVisualAsset("day-master", visual.dayMaster.visualKey);
 
   if (locale === "en") {
@@ -258,17 +260,10 @@ export async function renderShareCardPng(model: ShareCardModel): Promise<Blob> {
     ctx.fillText(value, x, cursorY + 48, factWidth);
   });
 
-  ctx.save();
-  ctx.globalAlpha = 0.34;
-  ctx.fillStyle = "#6f5a3f";
-  ctx.font = `700 30px ${serif}`;
+  ctx.fillStyle = "#5a554c";
+  ctx.font = `600 24px ${serif}`;
   ctx.textAlign = "right";
   ctx.fillText(model.watermark, 984, 1810);
-  ctx.globalAlpha = 0.11;
-  ctx.font = `700 20px ${serif}`;
-  ctx.textAlign = "center";
-  ctx.fillText(model.watermark, 540, 1658);
-  ctx.restore();
 
   return canvasBlob(canvas);
 }
