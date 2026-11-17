@@ -6,7 +6,7 @@
   max-width: none;
   max-height: none;
   margin: 0;
-  padding: max(5rem, calc(env(safe-area-inset-top) + 4rem)) 1rem max(1rem, env(safe-area-inset-bottom));
+  padding: max(5rem, calc(env(safe-area-inset-top, 0px) + 4rem)) 1rem max(1rem, env(safe-area-inset-bottom, 0px));
   border: 0;
   background: #f5f0e5;
   overflow: auto;
@@ -17,8 +17,9 @@
 .hq-image-viewer-close {
   position: fixed;
   z-index: 1;
-  top: max(.75rem, env(safe-area-inset-top));
-  right: max(.75rem, env(safe-area-inset-right));
+  top: max(.75rem, calc(env(safe-area-inset-top, 0px) + .5rem));
+  right: max(.75rem, calc(env(safe-area-inset-right, 0px) + .5rem));
+  min-width: 44px;
   min-height: 44px;
   padding: .55rem 1rem;
   border: 1px solid #224b43;

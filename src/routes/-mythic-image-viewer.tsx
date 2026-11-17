@@ -17,7 +17,7 @@ export function MythicImageViewer({ src, label, locale, children, className }: {
       dialog.current.showModal();
     }}>{children}</a>
     <dialog ref={dialog} className="hq-image-viewer" aria-label={label} onClose={() => setOpen(false)} onClick={(event) => {
-      if (event.target === event.currentTarget) event.currentTarget.close();
+      if (event.target === event.currentTarget) dialog.current?.close();
     }}>
       <button type="button" className="hq-image-viewer-close" onClick={() => dialog.current?.close()} autoFocus>{closeText} <span aria-hidden="true">×</span></button>
       {open && <img src={src} alt={label} />}

@@ -21,6 +21,16 @@ import './painted-home.css';
 // Language switcher: new classes (zw-langpick*) only; independent of the legacy .site-lang-* cascade.
 import './language-switcher.css';
 
+// Vercel Web Analytics is only served by the official Vercel hostname. Keep
+// Cloudflare Pages previews and local development free of analytics requests.
+if (typeof window !== 'undefined' && window.location.hostname === 'zhao-wu.com') {
+  const analytics = document.createElement('script');
+  analytics.defer = true;
+  analytics.src = '/_vercel/insights/script.js';
+  analytics.onerror = () => analytics.remove();
+  document.head.appendChild(analytics);
+}
+
 
 const router = createRouter({ rewrite: createLanguageRewrite(() => parseLanguagePath(window.location.pathname).language), routeTree, scrollRestoration: true, defaultPreload: "viewport" });
 router.subscribe('onBeforeLoad', () => syncDisplayLanguageFromUrl());

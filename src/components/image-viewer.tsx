@@ -35,6 +35,8 @@ export function ImageViewer({ items, index, onClose, onIndexChange }: Props) {
   const [ty, setTy] = useState(0);
   const start = useRef({ x: 0, y: 0, tx: 0, ty: 0, dist: 0, scale: 1, pinched: false, pointers: new Map<number, { x: number; y: number }>() });
   const closeRef = useRef<HTMLButtonElement>(null);
+  const closeHandlerRef = useRef(onClose);
+  closeHandlerRef.current = onClose;
 
   useEffect(() => {
     setSrc(item?.fullImageUrl ?? "");
@@ -46,18 +48,19 @@ export function ImageViewer({ items, index, onClose, onIndexChange }: Props) {
   }, [item?.id, item?.fullImageUrl]);
 
   useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    const previousPosition = document.body.style.position;
-    const previousTop = document.body.style.top;
-    const previousWidth = document.body.style.width;
+    const bodyStyle = document.body.style;
+    const previousOverflow = bodyStyle.overflow;
+    const previousPosition = bodyStyle.position;
+    const previousTop = bodyStyle.top;
+    const previousWidth = bodyStyle.width;
     const scrollY = window.scrollY;
-    document.body.style.overflow = "hidden";
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.width = "100%";
+    bodyStyle.overflow = "hidden";
+    bodyStyle.position = "fixed";
+    bodyStyle.top = `-${scrollY}px`;
+    bodyStyle.width = "100%";
     closeRef.current?.focus();
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") closeHandlerRef.current();
       if (event.key === "ArrowLeft" && items.length > 1) onIndexChange((index - 1 + items.length) % items.length);
       if (event.key === "ArrowRight" && items.length > 1) onIndexChange((index + 1) % items.length);
       if (event.key === "Tab") {
@@ -65,16 +68,21 @@ export function ImageViewer({ items, index, onClose, onIndexChange }: Props) {
         closeRef.current?.focus();
       }
     };
+    const onPopState = () => closeHandlerRef.current();
     window.addEventListener("keydown", onKey);
+    window.addEventListener("popstate", onPopState);
     return () => {
-      document.body.style.overflow = previousOverflow;
-      document.body.style.position = previousPosition;
-      document.body.style.top = previousTop;
-      document.body.style.width = previousWidth;
-      window.scrollTo(0, scrollY);
+      bodyStyle.overflow = previousOverflow;
+      bodyStyle.position = previousPosition;
+      bodyStyle.top = previousTop;
+      bodyStyle.width = previousWidth;
+      window.removeEventListener("popstate", onPopState);
       window.removeEventListener("keydown", onKey);
+      // Route changes and iOS Safari viewport transitions can unmount a portal
+      // after styles have been restored. Restore the page's original position.
+      window.scrollTo(0, scrollY);
     };
-  }, [index, items.length, onClose, onIndexChange]);
+  }, [index, items.length, onIndexChange]);
 
   if (!item || typeof document === "undefined") return null;
 
