@@ -59,6 +59,17 @@ export function ImageViewer({ items, index, onClose, onIndexChange }: Props) {
     bodyStyle.top = `-${scrollY}px`;
     bodyStyle.width = "100%";
     closeRef.current?.focus();
+    return () => {
+      bodyStyle.overflow = previousOverflow;
+      bodyStyle.position = previousPosition;
+      bodyStyle.top = previousTop;
+      bodyStyle.width = previousWidth;
+      // Route changes and iOS Safari viewport transitions must restore the page.
+      window.scrollTo(0, scrollY);
+    };
+  }, []);
+
+  useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") closeHandlerRef.current();
       if (event.key === "ArrowLeft" && items.length > 1) onIndexChange((index - 1 + items.length) % items.length);
@@ -72,15 +83,8 @@ export function ImageViewer({ items, index, onClose, onIndexChange }: Props) {
     window.addEventListener("keydown", onKey);
     window.addEventListener("popstate", onPopState);
     return () => {
-      bodyStyle.overflow = previousOverflow;
-      bodyStyle.position = previousPosition;
-      bodyStyle.top = previousTop;
-      bodyStyle.width = previousWidth;
       window.removeEventListener("popstate", onPopState);
       window.removeEventListener("keydown", onKey);
-      // Route changes and iOS Safari viewport transitions can unmount a portal
-      // after styles have been restored. Restore the page's original position.
-      window.scrollTo(0, scrollY);
     };
   }, [index, items.length, onIndexChange]);
 
