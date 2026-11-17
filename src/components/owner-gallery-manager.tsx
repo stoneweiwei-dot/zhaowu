@@ -36,6 +36,27 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
   const [open, setOpen] = useState(true);
   const [shown, setShown] = useState(PAGE_SIZE);
   const [preview, setPreview] = useState<GalleryAsset | null>(null);
+
+  useEffect(() => {
+    if (!preview) return;
+    const body = document.body.style;
+    const previous = { overflow: body.overflow, position: body.position, top: body.top, width: body.width };
+    const scrollY = window.scrollY;
+    body.overflow = "hidden";
+    body.position = "fixed";
+    body.top = `-${scrollY}px`;
+    body.width = "100%";
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setPreview(null); };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      window.removeEventListener("keydown", closeOnEscape);
+      body.overflow = previous.overflow;
+      body.position = previous.position;
+      body.top = previous.top;
+      body.width = previous.width;
+      window.scrollTo(0, scrollY);
+    };
+  }, [preview]);
   const [backgroundBusyId, setBackgroundBusyId] = useState<string | null>(null);
 
   const copy = useMemo(() => ({
@@ -250,11 +271,11 @@ export function OwnerGalleryManager({ session, locale }: { session: SupabaseSess
       ) : null}
 
       {preview ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/55 px-4" role="dialog" aria-modal="true" aria-label={copy.preview} onClick={() => setPreview(null)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/55" style={{ padding: "max(1rem, env(safe-area-inset-top, 0px)) max(1rem, env(safe-area-inset-right, 0px)) max(1rem, env(safe-area-inset-bottom, 0px)) max(1rem, env(safe-area-inset-left, 0px))" }} role="dialog" aria-modal="true" aria-label={copy.preview} onClick={() => setPreview(null)}>
           <div className="max-h-[86vh] w-full max-w-lg overflow-hidden rounded-2xl border border-line bg-cream p-4" onClick={(event) => event.stopPropagation()}>
             <div className="flex items-center justify-between gap-3">
               <p className="truncate font-display text-lg">{preview.title}</p>
-              <button type="button" className="rounded-full border border-line px-3 py-1 text-xs" onClick={() => setPreview(null)}>{copy.closePreview}</button>
+              <button type="button" className="min-h-11 min-w-11 rounded-full border border-line px-3 py-2 text-xs" onClick={() => setPreview(null)}>{copy.closePreview}</button>
             </div>
             <div className="mt-3 overflow-hidden rounded-xl bg-paper">
               <img className="max-h-[70vh] w-full object-contain" src={assetSrc(preview)} alt={preview.title} />

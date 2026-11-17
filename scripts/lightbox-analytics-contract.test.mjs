@@ -25,3 +25,18 @@ test('Vercel analytics is limited to the official host', async () => {
   assert.match(main, /_vercel\/insights\/script\.js/);
   assert.match(main, /analytics\.onerror/);
 });
+
+test('owner image previews can be closed with Escape and restore locked page scroll', async () => {
+  const [gallery, themes] = await Promise.all([
+    read('../src/components/owner-gallery-manager.tsx'),
+    read('../src/components/owner-theme-skins-manager.tsx'),
+  ]);
+  for (const source of [gallery, themes]) {
+    assert.match(source, /event\.key === "Escape"/);
+    assert.match(source, /body\.position = "fixed"/);
+    assert.match(source, /body\.position = previous\.position/);
+    assert.match(source, /window\.scrollTo\(0, scrollY\)/);
+    assert.match(source, /safe-area-inset-top/);
+  }
+  assert.match(gallery, /min-h-11 min-w-11/);
+});
