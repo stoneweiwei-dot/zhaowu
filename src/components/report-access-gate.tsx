@@ -30,6 +30,7 @@ type Copy = {
   system: string;
   systemBody: string;
   buy: string;
+  payments: string;
   unlocked: string;
   pending: string;
   unavailable: string;
@@ -56,6 +57,7 @@ function copyFor(locale: Locale): Copy {
     system: "Full system",
     systemBody: "Every section of this system, plus the personal profile written from your own chart",
       buy: "Unlock",
+    payments: "Pay by card, Apple Pay, Google Pay, Alipay or WeChat Pay (availability depends on your region and device). One-time purchase, no auto-renewal.",
     unlocked: "Unlocked",
     pending: "Checking payment status. If this takes longer, refresh this page before trying to pay again.",
     unavailable: "Checkout is not active yet. The prices and free/paid boundary are already fixed.",
@@ -87,6 +89,7 @@ function copyFor(locale: Locale): Copy {
     system: "完整单盘",
     systemBody: "本系统的全部段落，加上依你这张盘写成的个人命格专页",
     buy: "解锁",
+    payments: "支持信用卡、Apple Pay、Google Pay、支付宝及微信支付（视买家所在地与设备而定）。单次购买，不自动续费。",
     unlocked: "已解锁",
     pending: "正在确认付款状态。如等待较久，请先刷新本页，避免重复付款。",
     unavailable: "付款通道尚未启用；价格与免费／付费边界已经固定。",
@@ -118,6 +121,7 @@ function copyFor(locale: Locale): Copy {
     system: "完整單盤",
     systemBody: "本系統的全部段落，加上依你這張盤寫成的個人命格專頁",
     buy: "解鎖",
+    payments: "支援信用卡、Apple Pay、Google Pay、支付寶及微信支付（視買家所在地與裝置而定）。單次購買，不自動續費。",
     unlocked: "已解鎖",
     pending: "正在確認付款狀態。如等待較久，請先重新整理本頁，避免重複付款。",
     unavailable: "付款通道尚未啟用；價格與免費／付費邊界已經固定。",
@@ -263,6 +267,7 @@ export function ReportAccessGate({
           </article>
         ))}
       </div>
+      <p className="zhaowu-report-payments" data-report-payments>{copy.payments}</p>
       <div className="zhaowu-report-promo" data-report-promo>
         {!promoOpen ? (
           <button type="button" className="zhaowu-report-promo-toggle" onClick={() => setPromoOpen(true)}>{copy.promoToggle}</button>
