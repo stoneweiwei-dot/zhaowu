@@ -1,0 +1,75 @@
+name: Daily Sydney Sky Observation Update
+
+on:
+  schedule:
+    # 18:15 UTC = 05:15 AEDT (UTC+11) / 04:15 AEST (UTC+10), before 06:00 Sydney time
+    - cron: '15 18 * * *'
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Optional Sydney date (YYYY-MM-DD); defaults to current Sydney date'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: daily-sky-observation-update
+  cancel-in-progress: false
+
+jobs:
+  update-sky-snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Generate Sydney daily sky observation (idempotent, preserves history on failure)
+        env:
+          TARGET_DATE: ${{ github.event.inputs.date }}
+        run: |
+          if [ -n "$TARGET_DATE" ]; then
+            node scripts/generate-daily-sky-observation.mjs --date="$TARGET_DATE"
+          else
+            node scripts/generate-daily-sky-observation.mjs
+          fi
+
+      - name: Verify sky snapshot contract and build
+        run: |
+          node --test scripts/sky-snapshot-contract.test.mjs scripts/daily-sky-date.test.mjs
+          npm run build
+
+      - name: Commit and update PR if snapshot changed
+        run: |
+          if git diff --quiet -- src/components/daily-sky-observation.tsx; then
+            echo "No changes to src/components/daily-sky-observation.tsx; keeping existing verified snapshot."
+            exit 0
+          fi
+          SYDNEY_DAY=$(node -e 'import("./scripts/generate-daily-sky-observation.mjs").then(m => console.log(process.env.TARGET_DATE || m.sydneyDateString()))')
+          BRANCH="automation/daily-sky-${SYDNEY_DAY}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$BRANCH"
+          git add src/components/daily-sky-observation.tsx
+          git commit -m "chore(sky): update Sydney daily observation snapshot for ${SYDNEY_DAY}"
+          git push -u origin "$BRANCH" --force-with-lease
+          gh pr create --title "chore(sky): Sydney daily sky snapshot ${SYDNEY_DAY}" \
+                       --body "Automated pre-06:00 Sydney sky observation snapshot generated via approved self-hosted astronomy-engine. Unverified S/A events and weather layers remain marked as data unavailable." \
+                       --head "$BRANCH" --base main || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_DATE: ${{ github.event.inputs.date }}

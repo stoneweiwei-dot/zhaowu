@@ -15,6 +15,7 @@ const COPY: Record<Locale, {
   remake: string;
   previewAlt: string;
   fallback: string;
+  guideTip: string;
   failed: string;
 }> = {
   "zh-Hant": {
@@ -27,6 +28,7 @@ const COPY: Record<Locale, {
     remake: "重新製作",
     previewAlt: "昭梧個人命象分享圖預覽",
     fallback: "若手機不支援系統分享，會改為下載 PNG。",
+    guideTip: "提示：在 iPhone Safari 可點「分享／儲存」後選「儲存影像」；若於微信等內建瀏覽器無法直接下載，可點預覽圖放大後長按儲存。",
     failed: "分享圖製作失敗，原報告不受影響。",
   },
   "zh-Hans": {
@@ -39,6 +41,7 @@ const COPY: Record<Locale, {
     remake: "重新制作",
     previewAlt: "昭梧个人命象分享图预览",
     fallback: "若手机不支持系统分享，会改为下载 PNG。",
+    guideTip: "提示：在 iPhone Safari 可点“分享／保存”后选“存储图像”；若在微信等内置浏览器无法直接下载，可点预览图放大后长按保存。",
     failed: "分享图制作失败，原报告不受影响。",
   },
   en: {
@@ -51,6 +54,7 @@ const COPY: Record<Locale, {
     remake: "Recreate",
     previewAlt: "Zhaowu personal share-card preview",
     fallback: "If system sharing is unavailable, the PNG will download instead.",
+    guideTip: "Tip: In iPhone Safari, tap 'Share / save' then choose 'Save Image'; in WeChat or other in-app browsers, tap the preview to open full screen and long-press to save.",
     failed: "The share image could not be created. Your report is unaffected.",
   },
 };
@@ -158,6 +162,7 @@ export function ReportShareCard({ result }: { result: AnalysisResult }) {
       </div>
 
       <p className="zhaowu-share-fallback">{error ? copy.failed : copy.fallback}</p>
+      <p className="zhaowu-share-guide-tip" data-share-guide-tip>{copy.guideTip}</p>
       {openPreview && previewUrl ? (
         <ImageViewer
           items={[{ id: "share-card", alt: copy.previewAlt, thumbnailUrl: previewUrl, fullImageUrl: previewUrl }]}

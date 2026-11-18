@@ -1,3 +1,4 @@
+import { MobileScrollContainer } from "@/components/mobile-scroll-container";
 import { useMemo, useState } from "react";
 import type { Chart } from "@/lib/bazi/types";
 import { useI18n } from "@/lib/i18n";
@@ -146,8 +147,9 @@ export function ReportTimingGuide({ chart, unlocked }: Props) {
       {/* 流月：付費顯示十二月，免費僅當月 */}
       <div className="mt-5" data-timing-months>
         <h4 className="text-sm font-semibold text-ink">{s(t.months)}（{guide.monthsYear}）</h4>
-        <div className="mt-2 overflow-x-auto">
-          <table className="w-full min-w-[34rem] border-collapse text-left text-xs leading-5 text-ink-soft">
+        <MobileScrollContainer hint="months" ariaLabel={s(t.months)}>
+          <div className="mt-2 overflow-x-auto">
+            <table className="w-full min-w-[34rem] border-collapse text-left text-xs leading-5 text-ink-soft">
             <thead>
               <tr className="border-b border-line/60 text-ink-mute">
                 <th className="py-1 pr-2 font-medium">{s(t.month)}</th>
@@ -168,6 +170,7 @@ export function ReportTimingGuide({ chart, unlocked }: Props) {
             </tbody>
           </table>
         </div>
+        </MobileScrollContainer>
       </div>
 
       {!unlocked ? (

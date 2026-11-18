@@ -18,7 +18,7 @@ test("Past & Present collects minute-level time and birthplace without owning D6
 });
 
 test("D60 lives on Classical Indian astrology behind the reliability gate", () => {
-  assert.match(indian, /SpecialistSystemPage id="indian"/);
+  assert.match(indian, /component: IndianAstrologyPage/);
   assert.match(page, /D60ReliabilityGate/);
   assert.match(page, /id === "indian"/);
   assert.match(d60, /zhaowu:d60-birth/);

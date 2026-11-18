@@ -12,9 +12,9 @@ test("homepage starts with the owner-selected theme and one guided accordion ent
   const shell = await source("src/components/site-shell.tsx");
   assert.doesNotMatch(home, /HERO_PAINTINGS|zw-hero-gallery|visibleHeroIndexes/);
   assert.match(home, /<PaintedHome/);
-  assert.match(painted, /ph-guide-start/);
+  assert.match(painted, /data-home-birth-entry/);
   assert.match(painted, /<HomeTree/);
-  assert.match(tree, /useState<HomeSection \| null>\('form'\)/);
+  assert.match(tree, /useState<HomeSection \| null>\(null\)/);
   assert.match(shell, /--zhaowu-shell-wallpaper/);
 });
 
@@ -68,7 +68,7 @@ test("custom domain is canonical and uses the same-origin Supabase proxy", async
 test("the legacy Vercel alias redirects to the canonical custom domain", async () => {
   const vercel = JSON.parse(await source("vercel.json"));
   const redirect = vercel.redirects?.find((item) =>
-    item.has?.some((condition) => condition.type === "host" && condition.value === "stone-zhaowu-official.vercel.app"),
+    item.source === "/:path*" && item.has?.some((condition) => condition.type === "host" && condition.value === "stone-zhaowu-official.vercel.app"),
   );
   assert.equal(redirect?.destination, "https://zhao-wu.com/:path*");
   assert.equal(redirect?.permanent, true);

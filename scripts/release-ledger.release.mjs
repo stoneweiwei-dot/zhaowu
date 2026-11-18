@@ -23,14 +23,15 @@ test("public footer always exposes current release and cumulative update count",
   assert.equal(Number(version[2]), Number(updateNumber[1]), "rN in version must equal updateNumber");
   assert.ok(verification.includes(`ZHAOWU_RELEASE = "${version[1]}"`), "lib/zhaowu-verification.js must match site-stats.ts");
   assert.match(shell, /data-site-release/);
-  assert.match(shell, /累計更新/);
+  assert.match(shell, /正式版本序號/);
   assert.match(shell, /data-latest-change-report/);
 });
 
 test("fresh static shell defaults to Traditional Chinese before hydration", () => {
   assert.match(indexHtml, /<html lang="zh-Hant">/);
-  assert.match(indexHtml, /<title>昭梧｜昭於未見，梧於有歸<\/title>/);
-  assert.match(indexHtml, /name="description" content="看見命運的節奏，選擇屬於你的道路"/);
+  assert.match(indexHtml, /<title>昭梧｜八字排盤・子平八字・真太陽時・流年運勢｜免登入免費<\/title>/);
+  assert.match(indexHtml, /property="og:title" content="昭梧｜昭於未見，梧於有歸"/);
+  assert.match(indexHtml, /name="description" content="免登入免費八字排盤：依子平八字與真太陽時校正，整理五行旺衰、大運與流年運勢、今日提示。"/);
   assert.match(indexHtml, /property="og:locale" content="zh_TW"/);
   assert.match(indexHtml, /localStorage\.getItem\("zhaowu\.display-language"\)/);
   assert.match(manifest, /"lang":\s*"zh-TW"/);

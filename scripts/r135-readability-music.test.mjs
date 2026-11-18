@@ -79,7 +79,7 @@ test("owner music keeps public reads dependency-light and routes mutations throu
   assert.doesNotMatch(api, /supabase-bootstrap/);
   assert.match(git, /saveOwnerMusicChunk/);
   assert.match(git, /SCRATCH_DIR/);
-  assert.equal(vercel.functions["api/owner-music.js"].maxDuration, 10);
+  assert.equal(vercel.functions["api/owner-music.js"].maxDuration, 30);
   assert.equal(vercel.functions["api/owner-music-write.js"].maxDuration, 60);
   assert.match(manager, /12MB/);
   assert.match(manager, /分段上傳/);

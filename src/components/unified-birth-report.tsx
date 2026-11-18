@@ -6,6 +6,7 @@ import { comicStemTeaser, SongComicReportInsert, SongComicShareCard } from "@/co
 import { specialistHeadline } from "@/lib/specialist-headline";
 import "@/report-hub.css";
 import type { ReportSystemId } from "@/lib/report-access";
+import { Link } from "@tanstack/react-router";
 import {
   buildIndianReading,
   buildPalmReading,
@@ -436,7 +437,7 @@ function SpecialistHub({ birth, locale, copy }: { birth: SharedBirthRecord; loca
               </div>
               <h5>{entry.title}</h5>
               {preview ? <p>{preview}</p> : null}
-              <a className="zhaowu-specialist-free-link" href={entry.route}>{copy.openLabels[entry.id] ?? copy.freeChart} →</a>
+              <Link className="zhaowu-specialist-free-link" to={entry.route}>{copy.openLabels[entry.id] ?? copy.freeChart} →</Link>
             </article>
           );
         })}

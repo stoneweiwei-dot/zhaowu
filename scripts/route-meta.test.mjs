@@ -1,3 +1,4 @@
+import { LANGUAGES, parseLanguagePath } from "../src/lib/language-routing.js";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { readFileSync } from "node:fs";
@@ -9,7 +10,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (p) => readFileSync(join(ROOT, p), "utf8");
 const AMP = "\u0026";
 
-test("route-meta.json is well-formed with 3 languages per route", () => {
+test("route-meta.json is well-formed with 10 languages per route", () => {
   const { origin, routes } = readRouteMeta();
   assert.equal(origin, "https://zhao-wu.com");
   const paths = Object.keys(routes);
@@ -18,7 +19,7 @@ test("route-meta.json is well-formed with 3 languages per route", () => {
   for (const path of paths) {
     assert.ok(path === "/" || path.startsWith("/"), `route key ${path} must be absolute`);
     assert.ok(!/\/$/.test(path) || path === "/", `route key ${path} must not end with a slash`);
-    for (const language of ["zh-Hant", "zh-Hans", "en"]) {
+    for (const language of LANGUAGES) {
       const entry = routes[path][language];
       assert.ok(entry, `${path} missing ${language}`);
       assert.ok(entry.title && entry.title.length >= 4, `${path} ${language} title too short`);
@@ -30,7 +31,7 @@ test("route-meta.json is well-formed with 3 languages per route", () => {
 test("every sitemap URL has a route-meta entry (and vice versa)", () => {
   const { routes } = readRouteMeta();
   const sitemap = read("public/sitemap.xml");
-  const locs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1].replace("https://zhao-wu.com", "") || "/");
+  const locs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => parseLanguagePath(m[1].replace("https://zhao-wu.com", "") || "/").rest);
   for (const loc of locs) assert.ok(routes[loc], `sitemap URL ${loc} has no route-meta entry`);
   for (const path of Object.keys(routes)) assert.ok(locs.includes(path), `route-meta entry ${path} is not in the sitemap`);
 });

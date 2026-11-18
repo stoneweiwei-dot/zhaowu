@@ -1,0 +1,336 @@
+{
+  "series": "Zhaowu Stem & Branch 22",
+  "source": "22 separately generated 9:16 originals; public assets contain cropped paired scenes, not unverified source typography",
+  "assets": [
+    {
+      "id": "stems/jia",
+      "file": "report-visuals/atlas/stems/jia.webp",
+      "sha256": "32d12931dc4a716a59644160e1aae9fab40765a620542d4c8f0cfcb6d1f3a70b",
+      "bytes": 150060,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "c4f4a4b20a8f7fadc24b571ae3c90ec590bec12c61e10af12f08a874ea9e0634",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "stems/yi",
+      "file": "report-visuals/atlas/stems/yi.webp",
+      "sha256": "21b10c98a0a8cca1a9fd9d3ba7a5fb46fc85386742d60083f3df3c42149e0a4d",
+      "bytes": 143584,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "a89e15b46eaf6aa1bfdf4fabf7d08e24bbd9084123417fb4ce42a209aad27e58",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "stems/bing",
+      "file": "report-visuals/atlas/stems/bing.webp",
+      "sha256": "6515341532645787f6ae0cb2b0b0a8c05da8e60a005792d8353704f9a675c984",
+      "bytes": 143336,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "6e92f0ea6636339aab1506ed3393c9e58e0dc1f7cee33e978a633d9600b6216c",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "stems/ding",
+      "file": "report-visuals/atlas/stems/ding.webp",
+      "sha256": "c9701bdce40c1682289fdf13592e73005c432ac9f4de35bd247ad10e28313b6c",
+      "bytes": 144632,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "18c9d7288f20d116dd6d9bffe25a4a580ed27a1395b01ecf410d716fcd0189dd",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "stems/wu",
+      "file": "report-visuals/atlas/stems/wu.webp",
+      "sha256": "c9bbd179a59cf553ec1ecd4306c6c0cc13655427407d86cc76b4d659f28eefb4",
+      "bytes": 145100,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "76dd4a5257a661ce0abbab9746e54a1d5858a588879f30bf58d8affb91611c0a",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "stems/ji",
+      "file": "report-visuals/atlas/stems/ji.webp",
+      "sha256": "2a52a1c5b526a13f5ef32c2a6d055bcf1ae6dad1de37ad0290eb427af101b232",
+      "bytes": 150820,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "a6d3b17d4253eeef7fb1a24ec40c4fc2d5f04055a7892b6eda0026575e60886c",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "stems/geng",
+      "file": "report-visuals/atlas/stems/geng.webp",
+      "sha256": "4940b22799dccbb1de19d8a68d2431666fee2061dad32af58d74937982272a5d",
+      "bytes": 144262,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "2bc47f8e3e39e00cb65d366a7fbea1bf399515261ddb21b2eeb2eb964a39337d",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "stems/xin",
+      "file": "report-visuals/atlas/stems/xin.webp",
+      "sha256": "e45c0ab054a697b38cffb4595a3a14667a3f3793ca77a8d7a60b1a0ca0060f1f",
+      "bytes": 140132,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "32eaab8846af851265f8ff58c8ba5839c2fa9ebcc4e83c1bea7fe0119e80e4d7",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "stems/ren",
+      "file": "report-visuals/atlas/stems/ren.webp",
+      "sha256": "08a9baad0c31a9f9a1b0a653e4af7a85ca9c0aa77fc7dff4d74f81222017c45a",
+      "bytes": 157754,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "5d9551b346ac1795b78decf4a4d0e024b07c9b26c7f8d92ab52127ce4b83b213",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "stems/gui",
+      "file": "report-visuals/atlas/stems/gui.webp",
+      "sha256": "e6efce5283e57f59e3992097bc41e212ed2a7df6ce3277cdab8d6e31482c42c4",
+      "bytes": 146572,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "01d2a03dbce846c455dd3115ed0a021af07bcebd7e63b26470f23b7e4d8a2fa6",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "branches/zi",
+      "file": "report-visuals/atlas/branches/zi.webp",
+      "sha256": "12ea5da5c41c3a32cc15a9c16ce94c859b17bf055512fa24fef57a14e452e855",
+      "bytes": 159122,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "3bdbc979d601454347f481f8ab26caadceb1382225f9aeecd3250de5592a699c",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "branches/chou",
+      "file": "report-visuals/atlas/branches/chou.webp",
+      "sha256": "c72549a4433db43f7bb57adc4d15a9ab5bebe0e98113377c46f296054169143b",
+      "bytes": 157212,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "8145a72ce3898253d5c394053534be06110f19d4b31b772fb110a73f1ab1818f",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "branches/yin",
+      "file": "report-visuals/atlas/branches/yin.webp",
+      "sha256": "1c053a978f4d90793749b6f3814bbd506331c187d819751fe6489e6533afb7dc",
+      "bytes": 156380,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "fda106c1c3b1cf5032207cac5c80c89c079b108fffc7e1af1a7ee0b2463e2067",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "branches/mao",
+      "file": "report-visuals/atlas/branches/mao.webp",
+      "sha256": "d55161665abc814ef51f5844a4a284a96c4f46fbcec40a424c0b875a076cf726",
+      "bytes": 148566,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "04917f6e7efc300a95c40e9361f642dad20cb5751ad104c1f07cd0b60c43fd6a",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "branches/chen",
+      "file": "report-visuals/atlas/branches/chen.webp",
+      "sha256": "943fd101e31746bf679d72394fe68ba3969cfd9560209baa57e798ebb17a38de",
+      "bytes": 154324,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "efb99b58ca47b75a8a3838d8e9053d4f9bfbd344043317ffda7e109b3b46c002",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "branches/si",
+      "file": "report-visuals/atlas/branches/si.webp",
+      "sha256": "3d330622a5bed6bcd52fc899dfce98e2368d315fa3c056f159a288ff6f0a380b",
+      "bytes": 155992,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "35c9b51e0231de97c4d011fd0e8cbc8d5f916349c809f55db23c2c17cc92099e",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "branches/wu",
+      "file": "report-visuals/atlas/branches/wu.webp",
+      "sha256": "52db564bf468df9cd73721ebbb85aeaa00a75d685540fcdf09662bb755c999ec",
+      "bytes": 163988,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "e4e1b205c3eff8430ff01094faf74c64b71635a902094895f83c2a81f7543369",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "branches/wei",
+      "file": "report-visuals/atlas/branches/wei.webp",
+      "sha256": "adf1e8937b6eadd771dcc264bf918d328eadb5f595184ec3954e3e03c658f0f3",
+      "bytes": 151380,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "122b8b5a7a326fff79a109cfd0114d6550d6ed518e02b7d9f30024a1ee6c9834",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "branches/shen",
+      "file": "report-visuals/atlas/branches/shen.webp",
+      "sha256": "c9134c0d684523f47f2ec11fb83ec2777fd7b7c1c2f4b5bb14c838b5a633a1a5",
+      "bytes": 163760,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "5c5521c641d92c295ee2192a537ae0c7fbebc5285a0777c102193136323199f6",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "branches/you",
+      "file": "report-visuals/atlas/branches/you.webp",
+      "sha256": "dc7dc1ece62ab6f1e1fc22ace76025554015f5ba80e42912166dd851ee0f91bb",
+      "bytes": 149032,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "39157063eb934c1a930ee068bbc93f61cd237296dec9e2caeadb07d91beed75c",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "branches/xu",
+      "file": "report-visuals/atlas/branches/xu.webp",
+      "sha256": "6dd27bce0ffb6a837c7b96fdd3dfffed7ffb3b6c29feefba2b31ab4e5abc3c18",
+      "bytes": 158702,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "faf97e8f57c5d48a85204448354f0ad013b65990983a9188300b5bfdf9770e7c",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    },
+    {
+      "id": "branches/hai",
+      "file": "report-visuals/atlas/branches/hai.webp",
+      "sha256": "baa52638fad62cdb1ba7b7786149f06e8c9dfc684cd66b4b0f69183d4e385011",
+      "bytes": 162542,
+      "width": 720,
+      "height": 536,
+      "originalSha256": "dfb30dff602401693608f1697e30b3a101b295feefb31d18201c04526139826a",
+      "cropOriginal": [
+        0,
+        0,
+        941,
+        700
+      ]
+    }
+  ]
+}

@@ -1,0 +1,194 @@
+[
+  {
+    "width": 320,
+    "home": "PASS",
+    "boxes": [
+      {
+        "text": "繁體",
+        "lang": "zh-Hant",
+        "x": 21,
+        "y": 69,
+        "width": 92,
+        "height": 44,
+        "scrollWidth": 92,
+        "clientWidth": 92
+      },
+      {
+        "text": "简体",
+        "lang": "zh-Hans",
+        "x": 116,
+        "y": 69,
+        "width": 92,
+        "height": 44,
+        "scrollWidth": 92,
+        "clientWidth": 92
+      },
+      {
+        "text": "English",
+        "lang": "en",
+        "x": 211,
+        "y": 69,
+        "width": 92,
+        "height": 44,
+        "scrollWidth": 92,
+        "clientWidth": 92
+      },
+      {
+        "text": "日本語",
+        "lang": "ja",
+        "x": 21,
+        "y": 116,
+        "width": 92,
+        "height": 44,
+        "scrollWidth": 92,
+        "clientWidth": 92
+      },
+      {
+        "text": "한국어",
+        "lang": "ko",
+        "x": 116,
+        "y": 116,
+        "width": 92,
+        "height": 44,
+        "scrollWidth": 92,
+        "clientWidth": 92
+      },
+      {
+        "text": "हिन्दी",
+        "lang": "hi",
+        "x": 211,
+        "y": 116,
+        "width": 92,
+        "height": 44,
+        "scrollWidth": 92,
+        "clientWidth": 92
+      },
+      {
+        "text": "ไทย",
+        "lang": "th",
+        "x": 21,
+        "y": 163,
+        "width": 92,
+        "height": 44,
+        "scrollWidth": 92,
+        "clientWidth": 92
+      },
+      {
+        "text": "Bahasa Indonesia",
+        "lang": "id",
+        "x": 116,
+        "y": 163,
+        "width": 187,
+        "height": 44,
+        "scrollWidth": 187,
+        "clientWidth": 187
+      },
+      {
+        "text": "Tiếng Việt",
+        "lang": "vi",
+        "x": 21,
+        "y": 210,
+        "width": 92,
+        "height": 44,
+        "scrollWidth": 92,
+        "clientWidth": 92
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "home": "PASS",
+    "boxes": [
+      {
+        "text": "繁體",
+        "lang": "zh-Hant",
+        "x": 49,
+        "y": 71,
+        "width": 104.65625,
+        "height": 44,
+        "scrollWidth": 105,
+        "clientWidth": 105
+      },
+      {
+        "text": "简体",
+        "lang": "zh-Hans",
+        "x": 157.65625,
+        "y": 71,
+        "width": 104.671875,
+        "height": 44,
+        "scrollWidth": 105,
+        "clientWidth": 105
+      },
+      {
+        "text": "English",
+        "lang": "en",
+        "x": 266.328125,
+        "y": 71,
+        "width": 104.65625,
+        "height": 44,
+        "scrollWidth": 105,
+        "clientWidth": 105
+      },
+      {
+        "text": "日本語",
+        "lang": "ja",
+        "x": 49,
+        "y": 119,
+        "width": 104.65625,
+        "height": 44,
+        "scrollWidth": 105,
+        "clientWidth": 105
+      },
+      {
+        "text": "한국어",
+        "lang": "ko",
+        "x": 157.65625,
+        "y": 119,
+        "width": 104.671875,
+        "height": 44,
+        "scrollWidth": 105,
+        "clientWidth": 105
+      },
+      {
+        "text": "हिन्दी",
+        "lang": "hi",
+        "x": 266.328125,
+        "y": 119,
+        "width": 104.65625,
+        "height": 44,
+        "scrollWidth": 105,
+        "clientWidth": 105
+      },
+      {
+        "text": "ไทย",
+        "lang": "th",
+        "x": 49,
+        "y": 167,
+        "width": 104.65625,
+        "height": 44,
+        "scrollWidth": 105,
+        "clientWidth": 105
+      },
+      {
+        "text": "Bahasa Indonesia",
+        "lang": "id",
+        "x": 157.65625,
+        "y": 167,
+        "width": 213.328125,
+        "height": 44,
+        "scrollWidth": 213,
+        "clientWidth": 213
+      },
+      {
+        "text": "Tiếng Việt",
+        "lang": "vi",
+        "x": 49,
+        "y": 215,
+        "width": 104.65625,
+        "height": 44,
+        "scrollWidth": 105,
+        "clientWidth": 105
+      }
+    ]
+  }
+]

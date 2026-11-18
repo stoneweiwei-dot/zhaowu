@@ -2,6 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 import { SKY_EVENT_CATEGORIES, getArchivedSkyEvents, getFeaturedSkyEvent, getTodaySkyUpdatedDate } from "@/lib/sky-events";
 import { TodaySkyCards } from "@/components/today-sky-cards";
+import { DailySkyObservation } from "@/components/daily-sky-observation";
+import { SkyUniverse } from "@/components/sky-universe";
+import { SkyObservationBrief } from "@/components/sky-observation-brief";
 import { isSkyReportArchived } from "@/lib/sky-week-presentation";
 import "@/sky-events.css";
 import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
@@ -122,18 +125,11 @@ function SkyEventsPage() {
   const archive = getArchivedSkyEvents();
   const showCurrentWeek = !isSkyReportArchived(getTodaySkyUpdatedDate());
   const isSaturn = event.id === "saturn-opposition-2026";
-  const isSunNodeTrine = event.id === "sun-trine-north-node-2026-10-20";
-  const illustrationAlt = locale === "en"
-    ? "A geocentric diagram showing the Sun and calculated North Node about 120 degrees apart; the Node is not a visible body."
-    : locale === "zh-Hans"
-      ? "地心示意图：太阳与计算得出的北交点相隔约 120°；交点不是可见天体。"
-      : "地心示意圖：太陽與計算所得的北交點相隔約 120°；交點不是可見天體。";
-  const glyph = isSunNodeTrine ? "☉△☊" : isSaturn ? "♄" : event.id === "venus-scorpio-2026" ? "♀" : event.id.startsWith("mars-") ? "♂" : "✦";
   const ui = locale === "en"
-    ? { title: "Recent Sky Events", lead: "Astronomical reality × symbolic astrology", back: "Home", science: "Astronomy layer · verifiable", symbolic: "Astrology layer · symbolic", houses: "Where this sign falls in your natal chart", sources: "Sources & verification", watch: "What this desk will publish first", archive: "Earlier sky events", note: "Astronomy and astrology are not presented as the same kind of knowledge. Measurable celestial motion is factual; personal meaning is a symbolic interpretive tradition." }
+    ? { title: "The Sky Now", lead: "Astronomical reality × symbolic astrology", back: "Home", science: "Astronomy layer · verifiable", symbolic: "Astrology layer · symbolic", houses: "Where this sign falls in your natal chart", sources: "Sources & verification", watch: "What this desk will publish first", archive: "Earlier sky events", note: "Astronomy and astrology are not presented as the same kind of knowledge. Measurable celestial motion is factual; personal meaning is a symbolic interpretive tradition." }
     : locale === "zh-Hans"
-      ? { title: "近日天象", lead: "天文实况 × 星象解读", back: "返回首页", science: "天文层｜可验证事实", symbolic: "占星层｜象征性解读", houses: "本次星座落入本命不同宫位", sources: "资料来源与核验", watch: "本专栏第一时间发布", archive: "早前天象", note: "本站不会把天文学与占星解释混成同一种证据。可测量的天体运动属于事实层；个人意义属于传统占星的象征解释层。" }
-      : { title: "近日天象", lead: "天文實況 × 星象解讀", back: "返回首頁", science: "天文層｜可驗證事實", symbolic: "占星層｜象徵性解讀", houses: "本次星座落入本命不同宮位", sources: "資料來源與核驗", watch: "本專欄第一時間發布", archive: "早前天象", note: "本站不會把天文學與占星解讀混成同一種證據。可測量的天體運動屬於事實層；個人意義屬於傳統占星的象徵解讀層。" };
+      ? { title: "此时天象", lead: "天文实况 × 星象解读", back: "返回首页", science: "天文层｜可验证事实", symbolic: "占星层｜象征性解读", houses: "本次星座落入本命不同宫位", sources: "资料来源与核验", watch: "本专栏第一时间发布", archive: "早前天象", note: "本站不会把天文学与占星解释混成同一种证据。可测量的天体运动属于事实层；个人意义属于传统占星的象征解释层。" }
+      : { title: "此時天象", lead: "天文實況 × 星象解讀", back: "返回首頁", science: "天文層｜可驗證事實", symbolic: "占星層｜象徵性解讀", houses: "本次星座落入本命不同宮位", sources: "資料來源與核驗", watch: "本專欄第一時間發布", archive: "早前天象", note: "本站不會把天文學與占星解讀混成同一種證據。可測量的天體運動屬於事實層；個人意義屬於傳統占星的象徵解讀層。" };
 
   const labels = locale === "en"
     ? { navigation: "On this page", feature: "Featured event", week: "This week", archive: "Earlier events", expand: "Open section", eventDetails: "What is fact, and what is interpretation?", longRead: "Read the full interpretation", sourceDetails: "Sources and verification", featureKinds: ["Astronomy facts", "Astrological symbolism"] }
@@ -141,6 +137,53 @@ function SkyEventsPage() {
       ? { navigation: "本页导览", feature: "本期焦点", week: "本周速览", archive: "过往天象", expand: "展开内容", eventDetails: "天文事实与占星解读", longRead: "阅读完整解读", sourceDetails: "资料来源与核验", featureKinds: ["天文事实", "占星象征"] }
       : { navigation: "本頁導覽", feature: "本期焦點", week: "本週速覽", archive: "過往天象", expand: "展開內容", eventDetails: "天文事實與占星解讀", longRead: "閱讀完整解讀", sourceDetails: "資料來源與核驗", featureKinds: ["天文事實", "占星象徵"] };
 
+  const guide = lang === "en"
+    ? {
+        impactTitle: "What could happen in daily life",
+        impactIntro: "The themes most worth noticing in the coming weeks, interpreted through traditional astrology — not guaranteed events.",
+        headlines: [
+          "Late October–13 November: Messages, arrangements and money terms may need repeated checks. Revisit what was agreed before making a new commitment.",
+          "14–29 November: Paused conversations and negotiations may move again. Confirm what has actually changed rather than assuming all delays have cleared.",
+          "Late November–early December: Work and group dynamics may move more quickly. Keep room in plans for unexpected changes.",
+          "December–early January: Longer-term responsibilities, budgets and priorities may need reordering. Check the practical details of year-end decisions."
+        ],
+        more: "Read the full astrological interpretation",
+        timeline: "Explore the dated sky-event timeline",
+        observation: "View Sydney observations and historical records",
+        method: "Open astronomical facts and calculations",
+        context: "Interpretive tradition · Not a personal forecast"
+      }
+    : lang === "zh-Hans"
+      ? {
+          impactTitle: "这段时间，生活中最值得注意什么",
+          impactIntro: "先看生活层面的重点；以下属于传统占星象征，并非必然发生的事件。",
+          headlines: [
+            "10月下旬至11月13日：消息、安排、付款与合作条件可能反复修改。重要约定先核对，避免凭印象做决定。",
+            "11月14日至29日：停滞的沟通与协商可能重新推进。重谈条件时，先确认变化，再决定是否执行。",
+            "11月底至12月初：工作与人际节奏可能加快。行程和项目预留调整空间，不把临时变化直接当成危机。",
+            "12月至明年1月初：长期责任、预算与优先顺序可能需要重排。年末文件、承诺和支出尤其值得复核。"
+          ],
+          more: "展开完整占星解读",
+          timeline: "展开天象日期与重要事件",
+          observation: "展开悉尼观测与历史记录",
+          method: "查看天文数据与计算依据",
+          context: "传统占星象征｜非个人预测"
+        }
+      : {
+          impactTitle: "這段時間，生活中最值得注意什麼",
+          impactIntro: "先看生活層面的重點；以下屬於傳統占星象徵，並非必然發生的事件。",
+          headlines: [
+            "10月下旬至11月13日：消息、安排、付款與合作條件可能反覆修改。重要約定先核對，避免憑印象做決定。",
+            "11月14日至29日：停滯的溝通與協商可能重新推進。重談條件時，先確認變化，再決定是否執行。",
+            "11月底至12月初：工作與人際節奏可能加快。行程和專案預留調整空間，不把臨時變化直接當成危機。",
+            "12月至明年1月初：長期責任、預算與優先順序可能需要重排。年末文件、承諾和支出尤其值得複核。"
+          ],
+          more: "展開完整占星解讀",
+          timeline: "展開天象日期與重要事件",
+          observation: "展開悉尼觀測與歷史紀錄",
+          method: "查看天文數據與計算依據",
+          context: "傳統占星象徵｜非個人預測"
+        };
   return (
     <main className="sky-events-page">
       <nav className="sky-events-nav"><Link to="/">← {ui.back}</Link><span>昭梧 · SKY DESK</span></nav>
@@ -148,66 +191,73 @@ function SkyEventsPage() {
         <span className="sky-events-kicker">CELESTIAL WATCH</span>
         <h1>{ui.title}</h1>
         <p>{ui.lead}</p>
-        <div className="sky-events-truth-note">{ui.note}</div>
       </header>
+
+      <SkyUniverse lang={lang} />
 
       <nav className="sky-events-shortcuts" aria-label={labels.navigation}>
         <a href="#sky-featured">{labels.feature}</a>
-        {showCurrentWeek ? <a href="#sky-week">{labels.week}</a> : null}
+        <a href="#sky-observation-record">{labels.week}</a>
         <a href="#sky-archive">{labels.archive}</a>
       </nav>
 
-      {showCurrentWeek ? (
-        <section className="sky-week-public" id="sky-week" aria-label={labels.week}>
-          <TodaySkyCards />
+      <article className="sky-event-article">
+        <section className="sky-event-impact" id="sky-featured" aria-labelledby="sky-impact-heading">
+          <span className="sky-layer-tag">INTERPRETIVE · {ui.symbolic}</span>
+          <h2 id="sky-impact-heading">{guide.impactTitle}</h2>
+          <p className="sky-impact-intro">{guide.impactIntro}</p>
+          <ol className="sky-impact-points">{(event.id === "zhaowu-sky-quarter-2026-10-04-2027-01-04" ? guide.headlines : event.interpretation[lang]).map((text, index) => (
+            <li key={index}>{text}</li>
+          ))}</ol>
+          {event.id === "zhaowu-sky-quarter-2026-10-04-2027-01-04" ? (
+            <details className="sky-impact-more">
+              <summary>{guide.more}</summary>
+              <ul>{event.interpretation[lang].map((text, index) => <li key={index}>{text}</li>)}</ul>
+            </details>
+          ) : null}
+          <p className="sky-impact-context">{guide.context}</p>
         </section>
-      ) : null}
 
-      <article className="sky-event-article" id="sky-featured">
         <div className="sky-event-kind-tags" aria-label={labels.featureKinds.join(" / ")}>
           {labels.featureKinds.map((label, index) => <span key={label} className={index === 0 ? "is-fact" : "is-symbol"}>{label}</span>)}
         </div>
         <header className="sky-event-title">
-          <div className={`sky-event-orbit ${isSaturn ? "is-saturn" : ""}`} aria-hidden="true"><span>{glyph}</span></div>
+          <figure className="sky-event-art">
+            <img src="/mythic-atlas/originals/12-stars-and-constellations.webp"
+              width={320} height={400} loading="lazy" decoding="async"
+              alt={lang === "en" ? "Traditional celestial constellation painting; editorial artwork, not a live astronomical image."
+                : lang === "zh-Hans" ? "传统星宿绘画，用作栏目配图，并非实时天文影像。"
+                : "傳統星宿繪畫，作為欄目配圖，並非即時天文影像。"} />
+            <figcaption>{lang === "en" ? "Archived celestial artwork" : lang === "zh-Hans" ? "既有星宿画作" : "既有星宿畫作"}</figcaption>
+          </figure>
           <div><span className="sky-events-kicker">{event.published}</span><h2>{event.title[lang]}</h2><p>{event.subtitle[lang]}</p></div>
         </header>
 
-        {isSunNodeTrine ? (
-          <figure className="sky-event-illustration">
-            <img src="/articles/sun-trine-north-node-2026.svg" alt={illustrationAlt} loading="lazy" />
-            <figcaption>{locale === "en"
-              ? "A geometric guide to the 120° tropical-zodiac aspect; the North Node is a calculated orbital point."
-              : locale === "zh-Hans"
-                ? "120° 热带黄道相位示意；北交点是计算出的轨道交点。"
-                : "120° 熱帶黃道相位示意；北交點是計算出的軌道交點。"}</figcaption>
-          </figure>
-        ) : null}
-
-        <details className="sky-section-disclosure sky-event-details" open={event.id === "zhaowu-sky-quarter-2026-10-04-2027-01-04"}>
-          <summary><strong>{labels.eventDetails}</strong><span>{labels.expand}</span></summary>
+        <details className="sky-section-disclosure sky-event-details">
+          <summary><strong>{guide.timeline}</strong><span>{labels.expand}</span></summary>
           <div className="sky-event-disclosure-body">
-        <div className="sky-event-timeline">
-          {event.facts.map((fact) => <div key={fact.date}><time>{fact.date}</time><span>{fact.label[lang]}</span></div>)}
-        </div>
-
-        <div className="sky-event-two-layers">
-          <section className="sky-event-layer science">
-            <span className="sky-layer-tag">OBSERVABLE</span><h3>{ui.science}</h3>
-            <ul>{event.science[lang].map((x) => <li key={x}>{x}</li>)}</ul>
-          </section>
-          <section className="sky-event-layer symbolic">
-            <span className="sky-layer-tag">INTERPRETIVE</span><h3>{ui.symbolic}</h3>
-            <ul>{event.interpretation[lang].map((x) => <li key={x}>{x}</li>)}</ul>
-          </section>
+            <div className="sky-event-timeline">
+              {event.facts.map((fact) => <div key={fact.date}><time>{fact.date}</time><span>{fact.label[lang]}</span></div>)}
+            </div>
           </div>
+        </details>
+
+        <details className="sky-section-disclosure sky-science-details">
+          <summary><strong>{guide.method}</strong><span>{labels.expand}</span></summary>
+          <div className="sky-event-disclosure-body">
+            <section className="sky-event-layer science">
+              <span className="sky-layer-tag">OBSERVABLE</span><h3>{ui.science}</h3>
+              <ul>{event.science[lang].map((x) => <li key={x}>{x}</li>)}</ul>
+            </section>
+            <p className="sky-science-disclaimer">{ui.note}</p>
           </div>
         </details>
 
         {isSaturn ? <details className="sky-section-disclosure sky-long-read"><summary><strong>{labels.longRead}</strong><span>{labels.expand}</span></summary><SaturnEssay lang={lang} /></details> : event.houses.length > 0 ? (
-          <section className="sky-event-houses">
-            <h3>{ui.houses}</h3>
+          <details className="sky-section-disclosure sky-event-houses">
+            <summary><strong>{ui.houses}</strong><span>{labels.expand}</span></summary>
             <div>{event.houses.map((x) => <article key={x.house}><b>{x.house}</b><span>{x[lang]}</span></article>)}</div>
-          </section>
+          </details>
         ) : null}
 
         <details className="sky-section-disclosure sky-source-details">
@@ -219,6 +269,19 @@ function SkyEventsPage() {
         </details>
       </article>
 
+
+      <details className="sky-section-disclosure sky-observation-disclosure" id="sky-observation-record">
+        <summary><strong>{guide.observation}</strong><span>{labels.expand}</span></summary>
+        <div className="sky-observation-disclosure-body">
+          <SkyObservationBrief />
+          {showCurrentWeek ? (
+            <section className="sky-week-public" id="sky-week" aria-label={labels.week}>
+              <TodaySkyCards />
+            </section>
+          ) : null}
+          <DailySkyObservation />
+        </div>
+      </details>
 
       <details className="sky-section-disclosure sky-watch-disclosure">
         <summary><strong>{ui.watch}</strong><span>{SKY_EVENT_CATEGORIES.length}</span></summary>

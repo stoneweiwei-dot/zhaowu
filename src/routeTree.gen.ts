@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AstrologyRouteImport } from './routes/astrology'
 import { Route as AuspiciousAtlasRouteImport } from './routes/auspicious-atlas'
+import { Route as BajinggongRouteImport } from './routes/bajinggong'
 import { Route as CopyrightRouteImport } from './routes/copyright'
 import { Route as DailyColorsRouteImport } from './routes/daily-colors'
 import { Route as FunTestsRouteImport } from './routes/fun-tests'
@@ -42,7 +43,9 @@ import { Route as ZiweiRouteImport } from './routes/ziwei'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as FunTestsEarthOnlineRouteImport } from './routes/fun-tests.earth-online'
 import { Route as KnowledgeFiveElementsToneQiRouteImport } from './routes/knowledge.five-elements-tone-qi'
+import { Route as KnowledgeNineHeavensLampsRouteImport } from './routes/knowledge.nine-heavens-lamps'
 import { Route as KnowledgeShushuBoundaryRouteImport } from './routes/knowledge.shushu-boundary'
+import { Route as KnowledgeSouthernHemisphereBaziRouteImport } from './routes/knowledge.southern-hemisphere-bazi'
 import { Route as KnowledgeSystemMapRouteImport } from './routes/knowledge.system-map'
 import { Route as KnowledgeTrueSolarTimeRouteImport } from './routes/knowledge.true-solar-time'
 import { Route as QuizCultivationDestinyRouteImport } from './routes/quiz.cultivation-destiny'
@@ -73,6 +76,11 @@ const AstrologyRoute = AstrologyRouteImport.update({
 const AuspiciousAtlasRoute = AuspiciousAtlasRouteImport.update({
   id: '/auspicious-atlas',
   path: '/auspicious-atlas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BajinggongRoute = BajinggongRouteImport.update({
+  id: '/bajinggong',
+  path: '/bajinggong',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CopyrightRoute = CopyrightRouteImport.update({
@@ -216,11 +224,23 @@ const KnowledgeFiveElementsToneQiRoute =
     path: '/five-elements-tone-qi',
     getParentRoute: () => KnowledgeRoute,
   } as any)
+const KnowledgeNineHeavensLampsRoute =
+  KnowledgeNineHeavensLampsRouteImport.update({
+    id: '/nine-heavens-lamps',
+    path: '/nine-heavens-lamps',
+    getParentRoute: () => KnowledgeRoute,
+  } as any)
 const KnowledgeShushuBoundaryRoute = KnowledgeShushuBoundaryRouteImport.update({
   id: '/shushu-boundary',
   path: '/shushu-boundary',
   getParentRoute: () => KnowledgeRoute,
 } as any)
+const KnowledgeSouthernHemisphereBaziRoute =
+  KnowledgeSouthernHemisphereBaziRouteImport.update({
+    id: '/southern-hemisphere-bazi',
+    path: '/southern-hemisphere-bazi',
+    getParentRoute: () => KnowledgeRoute,
+  } as any)
 const KnowledgeSystemMapRoute = KnowledgeSystemMapRouteImport.update({
   id: '/system-map',
   path: '/system-map',
@@ -259,6 +279,7 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/astrology': typeof AstrologyRoute
   '/auspicious-atlas': typeof AuspiciousAtlasRoute
+  '/bajinggong': typeof BajinggongRoute
   '/copyright': typeof CopyrightRoute
   '/daily-colors': typeof DailyColorsRoute
   '/fun-tests': typeof FunTestsRouteWithChildren
@@ -287,7 +308,9 @@ export interface FileRoutesByFullPath {
   '/auth/callback': typeof AuthCallbackRoute
   '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
   '/knowledge/five-elements-tone-qi': typeof KnowledgeFiveElementsToneQiRoute
+  '/knowledge/nine-heavens-lamps': typeof KnowledgeNineHeavensLampsRoute
   '/knowledge/shushu-boundary': typeof KnowledgeShushuBoundaryRoute
+  '/knowledge/southern-hemisphere-bazi': typeof KnowledgeSouthernHemisphereBaziRoute
   '/knowledge/system-map': typeof KnowledgeSystemMapRoute
   '/knowledge/true-solar-time': typeof KnowledgeTrueSolarTimeRoute
   '/quiz/cultivation-destiny': typeof QuizCultivationDestinyRoute
@@ -301,6 +324,7 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/astrology': typeof AstrologyRoute
   '/auspicious-atlas': typeof AuspiciousAtlasRoute
+  '/bajinggong': typeof BajinggongRoute
   '/copyright': typeof CopyrightRoute
   '/daily-colors': typeof DailyColorsRoute
   '/fun-tests': typeof FunTestsRouteWithChildren
@@ -329,7 +353,9 @@ export interface FileRoutesByTo {
   '/auth/callback': typeof AuthCallbackRoute
   '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
   '/knowledge/five-elements-tone-qi': typeof KnowledgeFiveElementsToneQiRoute
+  '/knowledge/nine-heavens-lamps': typeof KnowledgeNineHeavensLampsRoute
   '/knowledge/shushu-boundary': typeof KnowledgeShushuBoundaryRoute
+  '/knowledge/southern-hemisphere-bazi': typeof KnowledgeSouthernHemisphereBaziRoute
   '/knowledge/system-map': typeof KnowledgeSystemMapRoute
   '/knowledge/true-solar-time': typeof KnowledgeTrueSolarTimeRoute
   '/quiz/cultivation-destiny': typeof QuizCultivationDestinyRoute
@@ -344,6 +370,7 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/astrology': typeof AstrologyRoute
   '/auspicious-atlas': typeof AuspiciousAtlasRoute
+  '/bajinggong': typeof BajinggongRoute
   '/copyright': typeof CopyrightRoute
   '/daily-colors': typeof DailyColorsRoute
   '/fun-tests': typeof FunTestsRouteWithChildren
@@ -372,7 +399,9 @@ export interface FileRoutesById {
   '/auth/callback': typeof AuthCallbackRoute
   '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
   '/knowledge/five-elements-tone-qi': typeof KnowledgeFiveElementsToneQiRoute
+  '/knowledge/nine-heavens-lamps': typeof KnowledgeNineHeavensLampsRoute
   '/knowledge/shushu-boundary': typeof KnowledgeShushuBoundaryRoute
+  '/knowledge/southern-hemisphere-bazi': typeof KnowledgeSouthernHemisphereBaziRoute
   '/knowledge/system-map': typeof KnowledgeSystemMapRoute
   '/knowledge/true-solar-time': typeof KnowledgeTrueSolarTimeRoute
   '/quiz/cultivation-destiny': typeof QuizCultivationDestinyRoute
@@ -388,6 +417,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/astrology'
     | '/auspicious-atlas'
+    | '/bajinggong'
     | '/copyright'
     | '/daily-colors'
     | '/fun-tests'
@@ -416,7 +446,9 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/fun-tests/earth-online'
     | '/knowledge/five-elements-tone-qi'
+    | '/knowledge/nine-heavens-lamps'
     | '/knowledge/shushu-boundary'
+    | '/knowledge/southern-hemisphere-bazi'
     | '/knowledge/system-map'
     | '/knowledge/true-solar-time'
     | '/quiz/cultivation-destiny'
@@ -430,6 +462,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/astrology'
     | '/auspicious-atlas'
+    | '/bajinggong'
     | '/copyright'
     | '/daily-colors'
     | '/fun-tests'
@@ -458,7 +491,9 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/fun-tests/earth-online'
     | '/knowledge/five-elements-tone-qi'
+    | '/knowledge/nine-heavens-lamps'
     | '/knowledge/shushu-boundary'
+    | '/knowledge/southern-hemisphere-bazi'
     | '/knowledge/system-map'
     | '/knowledge/true-solar-time'
     | '/quiz/cultivation-destiny'
@@ -472,6 +507,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/astrology'
     | '/auspicious-atlas'
+    | '/bajinggong'
     | '/copyright'
     | '/daily-colors'
     | '/fun-tests'
@@ -500,7 +536,9 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/fun-tests/earth-online'
     | '/knowledge/five-elements-tone-qi'
+    | '/knowledge/nine-heavens-lamps'
     | '/knowledge/shushu-boundary'
+    | '/knowledge/southern-hemisphere-bazi'
     | '/knowledge/system-map'
     | '/knowledge/true-solar-time'
     | '/quiz/cultivation-destiny'
@@ -515,6 +553,7 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   AstrologyRoute: typeof AstrologyRoute
   AuspiciousAtlasRoute: typeof AuspiciousAtlasRoute
+  BajinggongRoute: typeof BajinggongRoute
   CopyrightRoute: typeof CopyrightRoute
   DailyColorsRoute: typeof DailyColorsRoute
   FunTestsRoute: typeof FunTestsRouteWithChildren
@@ -582,6 +621,13 @@ declare module '@tanstack/react-router' {
       path: '/auspicious-atlas'
       fullPath: '/auspicious-atlas'
       preLoaderRoute: typeof AuspiciousAtlasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bajinggong': {
+      id: '/bajinggong'
+      path: '/bajinggong'
+      fullPath: '/bajinggong'
+      preLoaderRoute: typeof BajinggongRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/copyright': {
@@ -780,11 +826,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KnowledgeFiveElementsToneQiRouteImport
       parentRoute: typeof KnowledgeRoute
     }
+    '/knowledge/nine-heavens-lamps': {
+      id: '/knowledge/nine-heavens-lamps'
+      path: '/nine-heavens-lamps'
+      fullPath: '/knowledge/nine-heavens-lamps'
+      preLoaderRoute: typeof KnowledgeNineHeavensLampsRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
     '/knowledge/shushu-boundary': {
       id: '/knowledge/shushu-boundary'
       path: '/shushu-boundary'
       fullPath: '/knowledge/shushu-boundary'
       preLoaderRoute: typeof KnowledgeShushuBoundaryRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
+    '/knowledge/southern-hemisphere-bazi': {
+      id: '/knowledge/southern-hemisphere-bazi'
+      path: '/southern-hemisphere-bazi'
+      fullPath: '/knowledge/southern-hemisphere-bazi'
+      preLoaderRoute: typeof KnowledgeSouthernHemisphereBaziRouteImport
       parentRoute: typeof KnowledgeRoute
     }
     '/knowledge/system-map': {
@@ -846,14 +906,18 @@ const FunTestsRouteWithChildren = FunTestsRoute._addFileChildren(
 
 interface KnowledgeRouteChildren {
   KnowledgeFiveElementsToneQiRoute: typeof KnowledgeFiveElementsToneQiRoute
+  KnowledgeNineHeavensLampsRoute: typeof KnowledgeNineHeavensLampsRoute
   KnowledgeShushuBoundaryRoute: typeof KnowledgeShushuBoundaryRoute
+  KnowledgeSouthernHemisphereBaziRoute: typeof KnowledgeSouthernHemisphereBaziRoute
   KnowledgeSystemMapRoute: typeof KnowledgeSystemMapRoute
   KnowledgeTrueSolarTimeRoute: typeof KnowledgeTrueSolarTimeRoute
 }
 
 const KnowledgeRouteChildren: KnowledgeRouteChildren = {
   KnowledgeFiveElementsToneQiRoute: KnowledgeFiveElementsToneQiRoute,
+  KnowledgeNineHeavensLampsRoute: KnowledgeNineHeavensLampsRoute,
   KnowledgeShushuBoundaryRoute: KnowledgeShushuBoundaryRoute,
+  KnowledgeSouthernHemisphereBaziRoute: KnowledgeSouthernHemisphereBaziRoute,
   KnowledgeSystemMapRoute: KnowledgeSystemMapRoute,
   KnowledgeTrueSolarTimeRoute: KnowledgeTrueSolarTimeRoute,
 }
@@ -868,6 +932,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRoute,
   AstrologyRoute: AstrologyRoute,
   AuspiciousAtlasRoute: AuspiciousAtlasRoute,
+  BajinggongRoute: BajinggongRoute,
   CopyrightRoute: CopyrightRoute,
   DailyColorsRoute: DailyColorsRoute,
   FunTestsRoute: FunTestsRouteWithChildren,

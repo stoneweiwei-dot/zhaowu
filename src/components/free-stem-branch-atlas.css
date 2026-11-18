@@ -1,0 +1,22 @@
+.zw-free-atlas{margin:18px 0 22px;border:1px solid #ded5c1;border-radius:16px;padding:16px;background:#f8f4eb;color:#302c25;overflow:hidden}
+.zw-free-atlas__header h3{font-size:1.25rem;line-height:1.4;margin:6px 0;font-weight:650}
+.zw-free-atlas__header p{font-size:14px;line-height:1.65;margin:6px 0}
+.zw-free-atlas__kicker{font-size:11px;letter-spacing:.12em;color:#806d4c}
+.zw-free-atlas__gender{border-inline-start:3px solid #7e977e;padding-inline-start:10px;color:#3b4b40}
+.zw-free-atlas__list{display:grid;gap:10px;margin-top:16px}
+.zw-free-atlas__item{min-width:0;border-radius:12px;border:1px solid #d9cbb0;background:#fffdf9;overflow:hidden}
+.zw-free-atlas__item summary{cursor:pointer;display:flex;flex-wrap:wrap;align-items:center;gap:10px;min-height:52px;padding:9px 12px;font-size:13px}
+.zw-free-atlas__item summary span:first-child{font-size:25px;font-weight:700}
+.zw-free-atlas__item summary span:nth-child(2){font-weight:600;flex:1;min-width:120px}
+.zw-free-atlas__item summary span:last-child{color:#6c675e}
+.zw-free-atlas__body{display:grid;grid-template-columns:minmax(0,1fr);padding:0 12px 14px;gap:12px}
+.zw-free-atlas__art{position:relative;overflow:hidden;min-width:0;aspect-ratio:720/536;border-radius:9px;background:#eee8dc}
+.zw-free-atlas__art img{display:block;width:100%;height:100%;object-fit:cover;object-position:center center}
+.zw-free-atlas__art.is-fallback{aspect-ratio:1/1}
+.zw-free-atlas__art.is-fallback img{object-fit:contain;object-position:center center}
+.zw-free-atlas__art.is-poster::after{content:"";position:absolute;inset:0;pointer-events:none;border:1px solid #e4d7be;border-radius:inherit}
+.zw-free-atlas__words{font-size:16px;line-height:1.8}
+.zw-free-atlas__words strong{display:block;font-size:16px}
+.zw-free-atlas__words p{margin:5px 0}
+.zw-free-atlas__footnote{font-size:12px;line-height:1.6;margin:12px 2px 0;color:#6c665d}
+@media (min-width:700px){.zw-free-atlas__body{grid-template-columns:minmax(0,220px) minmax(0,1fr);align-items:start}.zw-free-atlas__art{align-self:start}}

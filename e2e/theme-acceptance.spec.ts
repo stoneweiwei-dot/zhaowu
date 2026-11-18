@@ -1,3 +1,4 @@
+import { languagePath } from '../src/lib/language-routing.js';
 import { test, expect, type Page } from '@playwright/test';
 import { mkdir } from 'node:fs/promises';
 import { SKINS } from '../src/lib/theme-skins';
@@ -144,7 +145,9 @@ for (const skin of SKINS) {
     }, { language });
 
     async function open(path: string, ready: string) {
-      await page.goto(path, { waitUntil: 'domcontentloaded' });
+      const url = new URL(path, 'http://127.0.0.1:4173');
+      url.pathname = languagePath(url.pathname, language);
+      await page.goto(url.href, { waitUntil: 'domcontentloaded' });
       // A newly loaded route can briefly expose only the static shell while
       // the application bundle hydrates, especially under parallel screenshots.
       await expect(page.locator(ready).first()).toBeVisible({ timeout: 15_000 });
@@ -172,7 +175,7 @@ for (const skin of SKINS) {
     // Unlike the legacy header pill, it must retain a painted surface and 44px target.
     const guestOwnerEntry = page.locator('[data-footer-status-strip] [data-owner-login-entry]');
     await expect(guestOwnerEntry).toBeVisible();
-    await expect(guestOwnerEntry).toHaveAttribute('href', '/login');
+    await expect(guestOwnerEntry).toHaveAttribute('href', languagePath('/login', language));
     const ownerEntryVisual = await guestOwnerEntry.evaluate(el => {
       const style = getComputedStyle(el);
       return {

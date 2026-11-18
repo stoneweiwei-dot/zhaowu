@@ -167,9 +167,8 @@ export default async function handler(req, res) {
     if (!requestIsSameOrigin(req)) return json(res, 403, { ok: false, error: "ORIGIN_REJECTED" });
     const owner = await authenticateOwner(req);
     if (!owner) return json(res, 401, { ok: false, error: "OWNER_REQUIRED" });
-    // Music writes stay on a password session. A passkey session cannot publish audio.
-    if (owner.kind !== "secret") return json(res, 403, { ok: false, error: "OWNER_PASSWORD_REQUIRED" });
-    const secret = owner.secret;
+    // Every mutation accepts a verified owner password or a non-revoked device.
+    // authenticateOwner already validates the sealed session and device status.
 
     if (method === "POST") {
       const declaredType = headerValue(req, "content-type").split(";")[0].trim().toLowerCase();
@@ -182,7 +181,7 @@ export default async function handler(req, res) {
       const chunkIndex = headerValue(req, "x-zhaowu-music-chunk-index").trim();
       const chunkTotal = headerValue(req, "x-zhaowu-music-chunk-total").trim();
       if (uploadId || chunkIndex || chunkTotal) {
-        const saved = await saveOwnerMusicChunk(secret, {
+        const saved = await saveOwnerMusicChunk(owner, {
           name: parsed.name,
           ext: parsed.ext,
           contentType: parsed.contentType,
@@ -195,7 +194,7 @@ export default async function handler(req, res) {
         return json(res, 200, { ...publicPayload(saved), uploaded: true });
       }
       if (buffer.length > MAX_BYTES) return json(res, 413, { ok: false, error: "AUDIO_TOO_LARGE" });
-      const manifest = await saveOwnerMusicTrack(secret, {
+      const manifest = await saveOwnerMusicTrack(owner, {
         name: parsed.name,
         ext: parsed.ext,
         contentType: parsed.contentType,
@@ -212,21 +211,21 @@ export default async function handler(req, res) {
       if (action === "rename" || Object.prototype.hasOwnProperty.call(body || {}, "name")) {
         const name = String(body?.name ?? "").trim();
         if (!name) return json(res, 400, { ok: false, error: "TRACK_NAME_REQUIRED" });
-        const manifest = await renameOwnerMusicTrack(secret, id, name);
+        const manifest = await renameOwnerMusicTrack(owner, id, name);
         return json(res, 200, { ...publicPayload(manifest), renamed: true });
       }
-      const manifest = await activateOwnerMusicTrack(secret, id);
+      const manifest = await activateOwnerMusicTrack(owner, id);
       return json(res, 200, { ...publicPayload(manifest), changed: true });
     }
 
     if (method === "DELETE") {
       const ids = Array.isArray(body?.ids) ? body.ids.map((value) => String(value ?? "").trim()).filter(Boolean) : [];
       if (ids.length) {
-        const manifest = await deleteOwnerMusicTracks(secret, ids);
+        const manifest = await deleteOwnerMusicTracks(owner, ids);
         return json(res, 200, { ...publicPayload(manifest), deleted: ids.length });
       }
       if (!id) return json(res, 400, { ok: false, error: "TRACK_REQUIRED" });
-      const manifest = await deleteOwnerMusicTrack(secret, id);
+      const manifest = await deleteOwnerMusicTrack(owner, id);
       return json(res, 200, { ...publicPayload(manifest), deleted: true });
     }
 

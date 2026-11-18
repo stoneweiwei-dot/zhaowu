@@ -1,3 +1,5 @@
+import { useDisplayLanguage } from "@/lib/display-language";
+import { customerChrome, translateChromeObject } from "@/lib/customer-chrome";
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
@@ -14,6 +16,7 @@ import {
   fiveElementCorrespondence,
 } from "@/lib/five-element-correspondences";
 import { useI18n } from "@/lib/i18n";
+import { trackConversion } from "@/lib/observability/conversion-telemetry";
 
 
 type ChakraLocale = "zh-Hant" | "zh-Hans" | "en";
@@ -57,7 +60,8 @@ type Variant = "home" | "page" | "embed";
 
 export function DailyColorsModule({ variant, date }: { variant: Variant; date?: Date }) {
   const { locale } = useI18n();
-  const page = DAILY_COLOR_PAGE[locale];
+  const { language } = useDisplayLanguage();
+  const page = translateChromeObject(language, DAILY_COLOR_PAGE[locale]);
   const [localNow, setLocalNow] = useState(() => new Date());
   useEffect(() => {
     if (date) return;
@@ -73,9 +77,23 @@ export function DailyColorsModule({ variant, date }: { variant: Variant; date?: 
   const copy = active.copy[locale];
   const recommended = dailyColorById(almanac.recommendedId).copy[locale];
   const isUserOverride = selectedId !== null && selectedId !== almanac.recommendedId;
+  const [subscribeMessage, setSubscribeMessage] = useState("");
   const compact = variant === "embed";
   const guide = FIVE_ELEMENT_GUIDE_COPY[locale];
   const correspondence = fiveElementCorrespondence(active.element, locale);
+  const subscribeUrl = `${typeof window === "undefined" ? "https://zhao-wu.com" : window.location.origin}/calendar.ics`;
+  const subscribe = async () => {
+    const host = typeof window === "undefined" ? "" : window.location.hostname;
+    const isLocal = host === "localhost" || host === "127.0.0.1" || host === "[::1]";
+    if (variant === "page" && typeof window !== "undefined" && !isLocal) {
+      trackConversion("calendar_subscribe_clicked", { locale, method: "webcal" });
+      window.location.href = subscribeUrl.replace(/^https:/, "webcal:");
+      return;
+    }
+    trackConversion("calendar_subscribe_clicked", { locale, method: "copy" });
+    try { await navigator.clipboard.writeText(subscribeUrl); setSubscribeMessage(locale === "en" ? "Calendar URL copied." : locale === "zh-Hans" ? "已複製日曆連結。" : "已複製日曆連結。"); }
+    catch { setSubscribeMessage(subscribeUrl); }
+  };
 
   const choices = (
     <div role="list" data-daily-colors-choices>
@@ -116,7 +134,7 @@ export function DailyColorsModule({ variant, date }: { variant: Variant; date?: 
     >
       <header>
         <p data-daily-colors-date>{formatDailyColorDate(almanac.date, locale)}</p>
-        <h2>{compact ? (locale === "en" ? "Today's dress colour" : locale === "zh-Hans" ? "今日穿衣" : "今日穿衣") : page.title}</h2>
+        <h2>{compact ? customerChrome("今日穿衣", "今日穿衣", "Today's dress colour") : page.title}</h2>
         <p>{compact ? `${page.todaySuit}：${recommended.name} · ${recommended.colorsLabel}` : page.subtitle}</p>
       </header>
 
@@ -168,7 +186,7 @@ export function DailyColorsModule({ variant, date }: { variant: Variant; date?: 
 
       {compact ? (
         <details data-daily-colour-choices-fold>
-          <summary>{locale === "en" ? "Choose a different five-element colour" : locale === "zh-Hans" ? "选择其他五行配色" : "選擇其他五行配色"}<span aria-hidden="true">＋</span></summary>
+          <summary>{customerChrome("選擇其他五行配色", "选择其他五行配色", "Choose a different five-element colour")}<span aria-hidden="true">＋</span></summary>
           {choices}
           <article data-five-element-correspondence-compact aria-live="polite">
             <small>{guide.compactTitle}</small>
@@ -228,9 +246,12 @@ export function DailyColorsModule({ variant, date }: { variant: Variant; date?: 
       {compact ? null : <ChakraColourIdeas locale={locale} />}
       {compact ? null : <p>{page.boundary}</p>}
       {variant === "page" ? (
-        <p>
-          <Link to="/">{page.back}</Link>
-        </p>
+        <div className="grid gap-3 rounded-xl border border-line bg-paper p-4">
+          <button type="button" onClick={() => void subscribe()} className="min-h-12 rounded-full bg-wood px-5 py-3 text-sm font-semibold text-cream">{locale === "en" ? "Subscribe to phone calendar" : locale === "zh-Hans" ? "订阅到手机日历" : "訂閱到手機日曆"}</button>
+          <p className="text-sm leading-6 text-ink-soft">{locale === "en" ? "iPhone: open this link in Safari, or Settings → Calendar → Add Subscription Calendar." : locale === "zh-Hans" ? "iPhone：可在 Safari 打开订阅链接，或前往「设置 → 日历 → 添加订阅日历」。" : "iPhone：可在 Safari 開啟訂閱連結，或前往「設定 → 行事曆 → 加入訂閱行事曆」。"}</p>
+          {subscribeMessage ? <p role="status" className="break-all text-xs text-wood">{subscribeMessage}</p> : null}
+          <p><Link to="/">{page.back}</Link></p>
+        </div>
       ) : null}
     </section>
   );

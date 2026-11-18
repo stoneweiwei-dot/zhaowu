@@ -417,6 +417,33 @@ export async function createEngineReportRecord(args: {
   return rows[0] ?? ({ ...row, public_code: null, mother_draft: null, paid_report: null, visual_profile: null, image_path: null, image_error: null, created_at: result.createdAt, updated_at: result.createdAt } as ReportRecord);
 }
 
+/** Best-effort server persistence for completed visitor charts. No table credentials or direct table writes are used. */
+export async function saveVisitorChart(args: { result: AnalysisResult; birth: import("@/lib/bazi/types").AnalyzeInput }) {
+  const { result, birth } = args;
+  const city = birth.city;
+  const birthDateTime = `${birth.year}-${String(birth.month).padStart(2, "0")}-${String(birth.day).padStart(2, "0")}T${String(birth.timeUnknown ? 12 : birth.hour).padStart(2, "0")}:${String(birth.timeUnknown ? 0 : birth.minute).padStart(2, "0")}:00`;
+  const safeBirth = {
+    locale: birth.locale ?? result.locale ?? "zh-Hant",
+    year: birth.year, month: birth.month, day: birth.day, hour: birth.hour, minute: birth.minute,
+    gender: birth.gender, city,
+    ziPolicy: birth.ziPolicy, useTrueSolar: birth.useTrueSolar, timeSource: birth.timeSource ?? "unknown",
+  };
+  const res = await fetch(`${SUPABASE_DIRECT_URL}/functions/v1/visitor-chart-save`, {
+    method: "POST",
+    headers: headers(null),
+    body: JSON.stringify({
+      birthDateTime,
+      gender: birth.gender,
+      birthplace: city.display.slice(0, 160),
+      trueSolarTime: result.chart.trueSolarStamp ?? null,
+      summary: `${result.chart.dayMaster}${result.chart.dayMasterElement} · ${result.chart.pillars.map((p) => p.ganZhi).join(" ")}`,
+      language: result.locale ?? "zh-Hant",
+      snapshot: { ...result, birth: safeBirth },
+    }),
+  });
+  await jsonOrError<{ ok: true }>(res);
+}
+
 export async function patchReportRecord(args: {
   session: SupabaseSession;
   profile: UserProfile | null;

@@ -56,7 +56,7 @@ test("a work-habits question gives an on-topic step without repeating job-fit ad
   assert.ok((model.directAnswer.match(/。/g) ?? []).length <= 3);
   const summary = composeFocusedReport(result).find((s) => s.key === "summary").body;
   assert.doesNotMatch(summary.join("\n"), /補充｜|選工作時優先比較四件事/);
-  assert.match(buildShareCardModel(result, "zh-Hant").summary, /^改善工作習慣/);
+  assert.match(buildShareCardModel(result, "zh-Hant").summary, /^日主/);
 });
 
 test("common boundary questions answer their actual decision without inventing certainty", async () => {

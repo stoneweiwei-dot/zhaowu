@@ -44,10 +44,10 @@ test("manifest language mapping: Chinese variants map to themselves, everything 
 test("index.html points the manifest at the visitor's language before React boots", async () => {
   const html = await read("index.html");
   assert.match(html, /<link rel="manifest" href="\/manifest\.webmanifest" \/>/);
-  assert.match(html, /savedLanguage === "zh-Hans" \? "\/manifest\.zh-Hans\.webmanifest" : savedLanguage === "en" \? "\/manifest\.en\.webmanifest" : "\/manifest\.webmanifest"/);
-  assert.match(html, /apple-mobile-web-app-title[\s\S]{0,200}savedLanguage === "en" \? "ZHAOWU" : "昭梧"/);
-  // The bootstrap script must set the manifest only after savedLanguage is resolved.
-  assert.ok(html.indexOf("savedLanguage = /-cn|-sg|hans/") < html.indexOf('savedLanguage === "zh-Hans" ? "/manifest.zh-Hans.webmanifest"'));
+  assert.match(html, /savedLanguage === "zh-Hans" \? "\/manifest\.zh-Hans\.webmanifest" : savedLanguage === "zh-Hant" \? "\/manifest\.webmanifest" : "\/manifest\.en\.webmanifest"/);
+  assert.match(html, /savedLanguage === "zh-Hant" \|\| savedLanguage === "zh-Hans" \? "昭梧" : "ZHAOWU"/);
+  assert.ok(html.indexOf('var prefix = window.location.pathname') < html.indexOf('document.documentElement.lang = savedLanguage'));
+
 });
 
 test("localized manifests are never edge-cached and satisfy the CSP", async () => {

@@ -1,13 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
-import { FROST_PHASES, FROST_END, FROST_SECTIONS, SOLAR_TERMS_24, seasonalState, solarTermsForYear, solarTermInstant, frostEdition, seasonalSkinId } from '../src/lib/seasonal-skins.ts';
+import { FROST_PHASES, FROST_END, FROST_SECTIONS, START_WINTER_PHASES, SOLAR_TERMS_24, seasonalPackForSkin, seasonalState, solarTermsForYear, solarTermInstant, frostEdition, seasonalSkinId } from '../src/lib/seasonal-skins.ts';
 import { SITE_SKIN_IDS } from '../lib/owner-site-skin-public.js';
+import { southernAutoArt } from '../src/lib/theme-skins.ts';
 
 test('auto spans all seasons, and Sydney civil 00:01 switch is timezone independent', () => {
-  assert.equal(seasonalSkinId(new Date('2026-10-22T13:00:59.999Z')), 'pine-ink');
+  assert.equal(seasonalSkinId(new Date('2026-10-22T13:00:59.999Z')), 'solar-cold-dew');
   assert.equal(seasonalSkinId(new Date('2026-10-22T13:01:00Z')), 'solar-frost-descent');
-  assert.equal(seasonalSkinId(new Date('2027-01-01T00:00Z')), 'day-flute');
+  assert.equal(seasonalSkinId(new Date('2027-01-01T00:00Z')), 'solar-winter-solstice');
 });
 test('each of the three scenes changes on its exact scheduled boundary', () => {
   FROST_PHASES.forEach((p, i) => {
@@ -17,6 +18,24 @@ test('each of the three scenes changes on its exact scheduled boundary', () => {
     for (const locale of ['zh-Hant','zh-Hans','en']) assert.ok(p.name[locale] && p.quote[locale]);
   });
   assert.equal(frostEdition(new Date(FROST_END)).current, false);
+});
+test('Start of Winter has distinct real paintings and changes on Sydney pentad boundaries', () => {
+  assert.equal(new Set(START_WINTER_PHASES.map(p => p.art)).size, 3);
+  const instants = ['2026-11-06T13:01:00Z', '2026-11-11T13:01:00Z', '2026-11-16T13:01:00Z'];
+  for (const [i, instant] of instants.entries()) {
+    const state = seasonalState(new Date(instant));
+    assert.equal(state.term.zh, '立冬');
+    assert.equal(state.houIndex, i);
+    for (const locale of ['zh-Hant', 'zh-Hans', 'en']) {
+      assert.ok(START_WINTER_PHASES[i].name[locale]);
+      assert.ok(START_WINTER_PHASES[i].quote[locale]);
+    }
+    const bytes = readFileSync(`public${START_WINTER_PHASES[i].art}`);
+    assert.equal(bytes.toString('ascii', 0, 4), 'RIFF');
+    assert.equal(bytes.toString('ascii', 8, 12), 'WEBP');
+  }
+  assert.equal(seasonalState(new Date('2026-11-11T13:00:59Z')).houIndex, 0);
+  assert.equal(seasonalState(new Date('2026-11-16T13:00:59Z')).houIndex, 1);
 });
 test('every scheduled painting and section is a real local WebP, not a placeholder', () => {
   for (const file of [...FROST_PHASES.map(p => `public${p.art}`), ...FROST_SECTIONS.map(s => `public/theme-skins/solar-frost-descent/${s}.webp`)]) {
@@ -92,14 +111,77 @@ test('all 72 pentads switch at the scheduled Sydney dates, no gaps or repeated i
   }
  }
 });
-test('homepage and theme manager display the pentad instead of pretending all 72 artworks are bespoke',()=>{
+test('homepage and theme manager display the individual pentad artworks',()=>{
   const home=readFileSync('src/components/painted-home.tsx','utf8');
   const themes=readFileSync('src/components/owner-theme-skins-manager.tsx','utf8');
   const resolver=readFileSync('src/lib/theme-skins.ts','utf8');
   assert.match(home,/data-solar-hou/);
   assert.match(home,/seasonalAuto\.hou\[locale\]/);
-  assert.match(themes,/data-seasonal-72-list/);
-  assert.match(themes,/existing complete themes|沿用/);
+  assert.match(themes,/data-phenology-auto/);
+  assert.match(themes,/data-phenology-rule/);
+  assert.match(themes,/data-sydney-seasons/);
+  assert.match(themes,/藍花楹/);
+  assert.doesNotMatch(themes,/data-seasonal-72-list/);
+  assert.doesNotMatch(themes,/SEASONAL_SKINS/);
+  assert.doesNotMatch(themes,/藍花榆/);
   assert.match(resolver,/window\.setInterval\(refreshAutoSkinIfDue, 30_000\)/);
   assert.match(resolver,/visibilitychange/);
+});
+
+test('all 72 pentads have distinct real artwork and trilingual copy', () => {
+  const paths = [];
+  for (const term of SOLAR_TERMS_24) {
+    const phases = term.skinId === 'solar-frost-descent' ? FROST_PHASES : seasonalPackForSkin(term.skinId);
+    assert.equal(phases?.length, 3, term.zh);
+    for (const phase of phases) {
+      for (const locale of ['zh-Hant', 'zh-Hans', 'en']) {
+        assert.ok(phase.name[locale]?.trim(), `${term.zh} ${locale} name`);
+        assert.ok(phase.quote[locale]?.trim(), `${term.zh} ${locale} quote`);
+      }
+      const bytes = readFileSync(`public${phase.art}`);
+      assert.equal(bytes.toString('ascii', 0, 4), 'RIFF', phase.art);
+      assert.equal(bytes.toString('ascii', 8, 12), 'WEBP', phase.art);
+      assert.ok(bytes.length > 10_000, phase.art);
+      paths.push(phase.art);
+    }
+  }
+  assert.equal(paths.length, 72);
+  assert.equal(new Set(paths).size, 72);
+});
+
+test('solar-auto uses the accepted southern Start of Winter original during the 2026 term only', () => {
+  const art = '/theme-skins/southern/start-winter-2026.webp';
+  const southArtBytes = readFileSync(`public${art}`);
+  assert.equal(southArtBytes.toString('ascii', 0, 4), 'RIFF');
+  assert.equal(southArtBytes.toString('ascii', 8, 12), 'WEBP');
+  assert.equal(southArtBytes.readUInt32LE(4) + 8, southArtBytes.length);
+
+  for (const [i, instant] of [
+    '2026-11-06T13:01:00Z',
+    '2026-11-11T13:01:00Z',
+    '2026-11-16T13:01:00Z',
+  ].entries()) {
+    const now = new Date(instant);
+    const state = seasonalState(now);
+    assert.equal(state.term.skinId, 'solar-start-winter');
+    assert.equal(state.houIndex, i);
+    assert.equal(southernAutoArt(state.term, 'south', now), art);
+    assert.equal(southernAutoArt(state.term, 'north', now), null);
+    assert.equal(southernAutoArt(state.term, 'unknown', now), null);
+  }
+
+  const before = new Date('2026-11-06T13:00:59Z');
+  assert.notEqual(seasonalState(before).term.skinId, 'solar-start-winter');
+  assert.equal(southernAutoArt(seasonalState(before).term, 'south', before), null);
+
+  const nextTerm = new Date('2026-11-21T13:01:00Z');
+  assert.notEqual(seasonalState(nextTerm).term.skinId, 'solar-start-winter');
+  assert.equal(southernAutoArt(seasonalState(nextTerm).term, 'south', nextTerm), null);
+
+  const nextYear = new Date('2027-11-07T13:01:00Z');
+  assert.equal(seasonalState(nextYear).term.skinId, 'solar-start-winter');
+  assert.equal(southernAutoArt(seasonalState(nextYear).term, 'south', nextYear), null);
+
+  const themeSource = readFileSync('src/lib/theme-skins.ts', 'utf8');
+  assert.match(themeSource, /southernAutoArt\(auto\.term, visitorHemisphere, new Date\(\)\)/);
 });

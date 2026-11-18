@@ -211,6 +211,67 @@
 .zhaowu-report-promo-note.is-success { color: var(--zw-jade-deep, #203d34) !important; }
 .zhaowu-report-promo-note.is-error { color: #7c3733 !important; }
 
+.zhaowu-report-completion {
+  margin: 28px 0 8px;
+  border-top: 1px solid rgba(49, 84, 79, .42);
+  border-bottom: 1px solid rgba(83, 69, 48, .16);
+  padding: 20px 0;
+}
+.zhaowu-report-completion__kicker {
+  margin: 0 0 6px !important;
+  color: var(--zw-cinnabar, #963b32) !important;
+  font-size: 11px !important;
+  font-weight: 700;
+  letter-spacing: .15em;
+}
+.zhaowu-report-completion h2 {
+  margin: 0;
+  color: var(--zw-ink, #29251f);
+  font-family: var(--font-display, serif);
+  font-size: clamp(20px, 5vw, 26px);
+  line-height: 1.35;
+}
+.zhaowu-report-completion > p:not(.zhaowu-report-completion__kicker) {
+  margin: 10px 0 0 !important;
+  color: var(--zw-muted, #74695d) !important;
+  font-size: 13px !important;
+  line-height: 1.75 !important;
+}
+.zhaowu-report-completion__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+.zhaowu-report-completion__actions a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--zw-jade, #294b3f);
+  border-radius: 7px;
+  padding: 9px 15px;
+  color: #fffaf1;
+  background: var(--zw-jade, #294b3f);
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+}
+.zhaowu-report-completion__actions a.is-secondary {
+  color: var(--zw-jade-deep, #203d34);
+  background: transparent;
+}
+.zhaowu-report-completion .zhaowu-report-completion__boundary {
+  border-left: 2px solid rgba(150, 59, 50, .42);
+  padding-left: 10px;
+  font-size: 12px !important;
+}
+
+@media (max-width: 420px) {
+  .zhaowu-report-completion__actions { flex-direction: column; }
+  .zhaowu-report-completion__actions a { width: 100%; }
+}
+
 /* Paid five-tone gift — one continuous Song-style listening folio, not a card wall. */
 .zhaowu-five-tone-gift {
   position: relative;

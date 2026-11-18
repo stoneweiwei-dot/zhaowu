@@ -1,7 +1,10 @@
+import { LanguageAnchorBridge } from './components/language-anchor-bridge';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { KoHiLocalizationBridge } from './components/ko-hi-localization-bridge';
+import { createLanguageRewrite, parseLanguagePath } from './lib/language-routing.js';
+import { syncDisplayLanguageFromUrl } from './lib/display-language';
 import { routeTree } from './routeTree.gen';
 import './styles.css';
 import './zhaowu-layered-styles.css';
@@ -18,8 +21,19 @@ import './painted-home.css';
 // Language switcher: new classes (zw-langpick*) only; independent of the legacy .site-lang-* cascade.
 import './language-switcher.css';
 
+// Vercel Web Analytics is only served by the official Vercel hostname. Keep
+// Cloudflare Pages previews and local development free of analytics requests.
+if (typeof window !== 'undefined' && window.location.hostname === 'zhao-wu.com') {
+  const analytics = document.createElement('script');
+  analytics.defer = true;
+  analytics.src = '/_vercel/insights/script.js';
+  analytics.onerror = () => analytics.remove();
+  document.head.appendChild(analytics);
+}
 
-const router = createRouter({ routeTree, scrollRestoration: true, defaultPreload: "viewport" });
+
+const router = createRouter({ rewrite: createLanguageRewrite(() => parseLanguagePath(window.location.pathname).language), routeTree, scrollRestoration: true, defaultPreload: "viewport" });
+router.subscribe('onBeforeLoad', () => syncDisplayLanguageFromUrl());
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }
 declare const __ZHAOWU_RELEASE_ID__: string;
 const root = document.getElementById('root');
@@ -326,4 +340,4 @@ if ('serviceWorker' in navigator) {
   }, 60_000);
 }
 
-createRoot(root).render(<StrictMode><RouterProvider router={router} /><KoHiLocalizationBridge /></StrictMode>);
+createRoot(root).render(<StrictMode><RouterProvider router={router} /><KoHiLocalizationBridge /><LanguageAnchorBridge /></StrictMode>);

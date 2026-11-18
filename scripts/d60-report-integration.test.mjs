@@ -43,7 +43,7 @@ test("every Indian classical astrology result card can reveal a plain-language e
 test("D60 lives in its own Indian grouping and is no longer injected into Past & Present", () => {
   assert.match(route, /PalmStandalone/);
   assert.doesNotMatch(route, /D60KarmaSection/);
-  assert.match(indian, /SpecialistSystemPage id="indian"/);
+  assert.match(indian, /component: IndianAstrologyPage/);
   assert.match(specialist, /D60ReliabilityGate/);
   assert.match(specialist, /id === "indian"/);
   assert.match(palm, /export function PalmStandalone/);

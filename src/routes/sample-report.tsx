@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
+import { trackConversion } from "@/lib/observability/conversion-telemetry";
 
 export const Route = createFileRoute("/sample-report")({ component: SampleReportPage });
 
@@ -224,7 +225,7 @@ function SampleReportPage() {
         <h2 className="font-display text-2xl leading-9 text-ink">{copy.ctaTitle}</h2>
         <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-ink-soft">{copy.ctaBody}</p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-          <a href="/#birth-form" className="inline-flex min-h-12 items-center justify-center bg-[#315e50] px-6 py-3 text-sm font-semibold text-[#fffaf1]">{copy.cta}<span className="ml-2" aria-hidden>→</span></a>
+          <a href="/#birth-form" onClick={() => trackConversion("content_cta_clicked", { source: "sample_report", destination: "birth_form" })} className="inline-flex min-h-12 items-center justify-center bg-[#315e50] px-6 py-3 text-sm font-semibold text-[#fffaf1]">{copy.cta}<span className="ml-2" aria-hidden>→</span></a>
           <Link to="/" className="inline-flex min-h-12 items-center justify-center border border-earth/35 bg-paper px-6 py-3 text-sm text-ink">{copy.back}</Link>
         </div>
       </footer>

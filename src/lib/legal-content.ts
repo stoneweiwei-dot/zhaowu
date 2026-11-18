@@ -37,8 +37,8 @@ export const LEGAL_DOCS: Record<LegalDocKey, Record<LegalLocale, LegalDoc>> = {
         {
           "h": "3. 你的出生資料與提問存放在哪裡",
           "p": [
-            "預設情況下，排盤與報告在你的瀏覽器內計算與保存，我們不要求你註冊帳號。",
-            "在下列情況，你的提問文字或報告紀錄可能離開你的裝置：(a) 啟用 AI 文字增強時，你的問題與排盤摘要會傳送給 OpenAI 以改寫答案；(b) 付費或圖像類服務產生報告紀錄時，紀錄可能保存在我們的雲端資料庫（Supabase），僅網站管理者可存取；(c) 你主動使用分享、下載功能。",
+            "完成的命盤會儲存在我們的伺服器，包括出生日期與時間、性別、出生地、真太陽時及盤面摘要。我們用這些資料提供並改善命盤服務；僅管理員可查看。你可來信要求刪除。",
+            "啟用 AI 文字增強時，問題與命盤摘要會傳送給 OpenAI 改寫答案；付費或圖像類服務也可能在 Supabase 建立其他報告紀錄，僅網站管理者可存取。你可來信要求刪除。",
             "請避免在提問中填寫身分證號、住址、電話、病歷或其他不必要的敏感資料。若你輸入他人的出生資料，請先取得對方同意。"
           ]
         },
@@ -137,8 +137,8 @@ export const LEGAL_DOCS: Record<LegalDocKey, Record<LegalLocale, LegalDoc>> = {
         {
           "h": "3. 你的出生数据与提问存放在哪里",
           "p": [
-            "缺省情况下，排盘与报告在你的浏览器内计算与保存，我们不要求你注册帐号。",
-            "在下列情况，你的提问文本或报告纪录可能离开你的设备：(a) 激活 AI 文本增强时，你的问题与排盘摘要会发送给 OpenAI 以改写答案；(b) 付费或图像类服务产生报告纪录时，纪录可能保存在我们的云端数据库（Supabase），仅网站管理者可访问；(c) 你主动使用分享、下载功能。",
+            "完成的命盘会储存在我们的服务器，包括出生日期与时间、性别、出生地、真太阳时及盘面摘要。我们用这些资料提供和改善命盘服务；仅管理员可查看。你可来信申请删除。",
+            "激活 AI 文本增强时，问题和命盘摘要会发送给 OpenAI 改写答案；付费或图像类服务也可能在 Supabase 建立其他报告纪录，仅网站管理者可访问。你可来信申请删除。",
             "请避免在提问中填写身分证号、住址、电话、病历或其他不必要的敏感数据。若你输入他人的出生数据，请先取得对方同意。"
           ]
         },
@@ -237,8 +237,8 @@ export const LEGAL_DOCS: Record<LegalDocKey, Record<LegalLocale, LegalDoc>> = {
         {
           "h": "3. Where your birth details and questions go",
           "p": [
-            "By default, charts and reports are calculated and stored in your own browser, and no account is required.",
-            "Your question text or report record may leave your device in these cases: (a) when AI text enhancement is switched on, your question and a chart summary are sent to OpenAI to rewrite the answer; (b) when a paid or image-based service creates a report record, it may be stored in our cloud database (Supabase), accessible only to the site administrator; (c) when you choose to share or download something.",
+            "Completed charts are stored on our server, including birth date and time, gender, birthplace, true solar time and a chart snapshot. We use this data to provide and improve the chart service. Only administrators can view it. Email us to request deletion.",
+            "When AI text enhancement is switched on, your question and chart summary are sent to OpenAI to rewrite the answer. Paid or image-based services may create additional records in our cloud database (Supabase), accessible only to the site administrator. Email us to request deletion.",
             "Please avoid entering ID numbers, home addresses, phone numbers, medical records or other unnecessary sensitive details in your question. If you enter someone else's birth details, make sure you have their permission."
           ]
         },

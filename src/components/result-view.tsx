@@ -11,8 +11,10 @@ import { DataGradeFooter } from "@/components/data-grade-footer";
 import { MobileReadingGuide } from "@/components/mobile-reading-guide";
 import { FocusedReportSections } from "@/components/paid-report-pages";
 import { FollowUpBox } from "@/components/follow-up-box";
+import { ReportCompletionPanel } from "@/components/report-completion-panel";
 import { CharacterPanel } from "@/components/character-panel";
 import { BaziChart } from "@/components/bazi-chart";
+import { FreeStemBranchAtlas } from "@/components/free-stem-branch-atlas";
 import { ReportTimingGuide } from "@/components/report-timing-guide";
 import { customerCopy, customerParagraphs } from "@/lib/report/customer-copy";
 import { composeFocusedReport, renderFocusedReportText, type ReportSection } from "@/lib/report/focused-report";
@@ -67,10 +69,44 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
   useEffect(() => {
     if (oncePerSession(`answer-shown:${result.id ?? ""}`)) trackConversion("zhaowu_answer_shown", { system: "bazi" });
+    if (oncePerSession(`chart-completed:${result.id ?? ""}`)) trackConversion("chart_completed", { system: "bazi", locale });
+  }, [result.id]);
+
+  useEffect(() => {
+    let visible = false; let bottom = false; let longDwell = false; let sent = false;
+    let longTimer: number | undefined; let bottomTimer: number | undefined;
+    const maybeSend = () => {
+      if (sent || !visible) return;
+      if (longDwell || (bottom && bottomTimer === -1)) {
+        sent = true;
+        if (oncePerSession(`report-viewed:${result.id ?? ""}`)) trackConversion("report_viewed", { system: "bazi" });
+      }
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible && longTimer === undefined) longTimer = window.setTimeout(() => { longTimer = -1; longDwell = true; maybeSend(); }, 30_000);
+      if (!visible && longTimer !== undefined && longTimer >= 0) { clearTimeout(longTimer); longTimer = undefined; }
+      maybeSend();
+    });
+    const root = document.getElementById("result"); if (root) observer.observe(root);
+    const onScroll = () => {
+      bottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 16;
+      if (bottom && visible && bottomTimer === undefined) bottomTimer = window.setTimeout(() => { bottomTimer = -1; maybeSend(); }, 1000);
+      if (!bottom && bottomTimer !== undefined && bottomTimer >= 0) { clearTimeout(bottomTimer); bottomTimer = undefined; }
+      maybeSend();
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      observer.disconnect();
+      if (longTimer !== undefined && longTimer >= 0) clearTimeout(longTimer);
+      if (bottomTimer !== undefined && bottomTimer >= 0) clearTimeout(bottomTimer);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, [result.id]);
 
   async function handleUnlock(product: ReportAccessProduct) {
     if (!consent.require()) return;
+    trackConversion("unlock_clicked", { system: "bazi", product: product });
     setPurchasing(product);
     setPurchaseError(null);
     try {
@@ -269,6 +305,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         </div>
       </details>
 
+      <FreeStemBranchAtlas chart={chart} />
       {unlocked ? <ReportTimingGuide chart={chart} unlocked /> : null}
       {unlocked ? <DataGradeFooter grade={result.dataGrade} locale={locale} /> : null}
 
@@ -312,7 +349,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           </li>
           <li className="flex items-start gap-2">
             <span className="text-cinnabar">✦</span>
-            <span>{locale === "en" ? "Ten-Stem portrait and the branch scenery found in your chart" : locale === "zh-Hans" ? toSimplifiedCustomerText("十天干日主圖與命盤中實際出現的地支景色") : "十天干日主圖與命盤中實際出現的地支景色"}</span>
+            <span>{locale === "en" ? "Full, paid interpretation of the stems and branches in your chart" : locale === "zh-Hans" ? toSimplifiedCustomerText("八字天干地支的完整付費解讀") : "八字天干地支的完整付費解讀"}</span>
           </li>
         </ul>
 
@@ -389,6 +426,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
       {msg ? <p className="zhaowu-result-message text-sm text-cinnabar mt-2">{msg}</p> : null}
       {unlocked && reportSections ? <FocusedReportSections sections={reportSections} result={result} showChartArtwork={false} showReadingGuide={false} /> : null}
+      {unlocked && !ownerAccess ? <ReportCompletionPanel system="bazi" locale={locale} /> : null}
       <p className="text-xs leading-6 text-ink-mute mt-4">{t("disclaimer")}</p>
     </section>
   );

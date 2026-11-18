@@ -1,3 +1,4 @@
+import { MobileScrollContainer } from "@/components/mobile-scroll-container";
 import type { Chart, Pillar } from '@/lib/bazi/types';
 import { useI18n, type Locale } from '@/lib/i18n';
 import { chartTerm, emptyBranches, ganzhiLabel, pillarName, UNKNOWN_TIME_COPY } from '@/lib/bazi/presentation';
@@ -61,6 +62,7 @@ export function BaziChartContent({ chart, locale, showHeader = true, expandDetai
           : '出生地未能確認；本盤暫按北京標準時間（UTC+8）計算，未校正真太陽時。之後確認城市時，請重新生成命盤。',
       };
   const ready = (p: Pillar) => p.ready && !(chart.timeUnknown && p.key === 'time');
+  const elementColor: Record<string, string> = { 木: "#315e50", 火: "#a7352b", 土: "#9b7745", 金: "#756f64", 水: "#1d3550" };
   const review = chart.birthTimeReview;
 
   return (
@@ -84,13 +86,21 @@ export function BaziChartContent({ chart, locale, showHeader = true, expandDetai
           <small>{c.verifyNote}</small>
         </aside>
       ) : null}
-      <div className="zhaowu-pillar-grid">
+      <MobileScrollContainer hint="chart" ariaLabel={c.title}>
+        <div className="zhaowu-pillar-grid">
         {chart.pillars.map((p) => (
           <section key={p.key} data-pillar={p.key} aria-label={pillarName(p.key, locale)}>
             <h3>{pillarName(p.key, locale)}</h3>
             {ready(p) ? (
               <>
-                <strong>{ganzhiLabel(p.ganZhi, locale)}</strong>
+                {locale === 'en' ? (
+                  <strong>{ganzhiLabel(p.ganZhi, locale)}</strong>
+                ) : (
+                  <strong aria-label={ganzhiLabel(p.ganZhi, locale)}>
+                    <span data-ganzhi-part="stem" data-element={p.ganElement} style={{ color: elementColor[p.ganElement] }}>{p.gan}</span>
+                    <span data-ganzhi-part="branch" data-element={p.zhiElement} style={{ color: elementColor[p.zhiElement] }}>{p.zhi}</span>
+                  </strong>
+                )}
                 <small>{chartTerm(p.shiShenGan, locale)}</small>
               </>
             ) : (
@@ -98,10 +108,12 @@ export function BaziChartContent({ chart, locale, showHeader = true, expandDetai
             )}
           </section>
         ))}
-      </div>
+        </div>
+      </MobileScrollContainer>
       <details className="zhaowu-chart-details" open={expandDetails || undefined}>
         <summary>{c.more}</summary>
-        <div className="zhaowu-pillar-detail-grid">
+        <MobileScrollContainer hint="chart" ariaLabel={c.more}>
+          <div className="zhaowu-pillar-detail-grid">
           {chart.pillars.map((p) => (
             <section key={p.key}>
               <h3>{pillarName(p.key, locale)}</h3>
@@ -126,21 +138,24 @@ export function BaziChartContent({ chart, locale, showHeader = true, expandDetai
               </dl>
             </section>
           ))}
-        </div>
+          </div>
+        </MobileScrollContainer>
         <p>
           {c.life}：{chart.timeUnknown ? '—' : ganzhiLabel(chart.minggong, locale)}
         </p>
         <p className="text-sm">{c.note}</p>
         <h3>{c.cycles}</h3>
         {!chart.timeUnknown && chart.dayun.length ? (
-          <ol className="zhaowu-cycle-list">
+          <MobileScrollContainer hint="cycles" ariaLabel={c.cycles}>
+            <ol className="zhaowu-cycle-list">
             {chart.dayun.map((period) => (
               <li key={period.startYear}>
                 <strong>{ganzhiLabel(period.ganZhi, locale)}</strong>
                 <span>{period.startYear}–{period.endYear}</span>
               </li>
             ))}
-          </ol>
+            </ol>
+          </MobileScrollContainer>
         ) : (
           <p>{c.noCycles}</p>
         )}

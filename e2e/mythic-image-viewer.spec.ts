@@ -21,6 +21,7 @@ test('original artwork opens in place and can be closed without losing the page'
   await expect(link).toBeFocused();
   await page.locator('#paintings .hq-full-plate').click();
   await expect(page.locator('dialog.hq-image-viewer[open]')).toBeVisible();
-  await page.locator('dialog.hq-image-viewer[open] button').click();
+  const backdropDialog = page.locator('dialog.hq-image-viewer[open]');
+  await backdropDialog.evaluate((node) => node.dispatchEvent(new MouseEvent('click', { bubbles: true })));
   await expect(page.locator('dialog.hq-image-viewer[open]')).toHaveCount(0);
 });

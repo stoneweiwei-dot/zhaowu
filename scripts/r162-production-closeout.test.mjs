@@ -40,7 +40,7 @@ test("public navigation keeps specialist charts inside the unified report flow",
   assert.match(specialistPage, /<ReportAccessGate/);
   assert.match(numerology, /<ReportAccessGate/);
   assert.match(palm, /<ReportAccessGate/);
-  assert.match(history, /entry\.kind === "fun-five-element"/);
+  assert.match(history, /(?:entry\.)?kind === "fun-five-element"/);
   assert.match(history, /to="\/" hash="birth-form"/);
   assert.doesNotMatch(dragon, /seven reading paths|七種分析|七种分析/);
 });

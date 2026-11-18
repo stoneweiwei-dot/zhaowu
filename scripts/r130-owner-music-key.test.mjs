@@ -25,7 +25,7 @@ test("owner music read and write APIs are physically split off the SPA rewrite",
   assert.match(git, /owner-music/);
   assert.match(git, /ZHAOWU_OWNER_MUSIC_GITHUB_TOKEN/);
   assert.doesNotMatch(git, /decryptOwnerSshKey|owner-music-ssh|ssh2|BEGIN OPENSSH PRIVATE KEY|aes-256-gcm|createDecipheriv/);
-  assert.equal(vercel.functions["api/owner-music.js"].maxDuration, 10);
+  assert.equal(vercel.functions["api/owner-music.js"].maxDuration, 30);
   assert.equal(vercel.functions["api/owner-music-write.js"].maxDuration, 60);
   assert.equal(vercel.functions["api/owner-music-write.js"].includeFiles, undefined);
   assert.equal(vercel.functions["api/owner-music.js"].includeFiles, undefined);
