@@ -10,6 +10,10 @@
 - **白澤**負責開 Issue、審查證據並回報 Stone。
 - 配合 Issue #1 既有角色：**Grok Bot** 在雲端電腦上用 `gh` 派工與驗收；**WorkBuddy、AI Studio** 登入 GitHub 後讀取 Issue 接任務。這些是接任／協調入口，不改變每項任務唯一修改者的原則。
 
+### 六代理與排隊
+
+六代理分工為：Grok＝調度、Codex＝程式、Antigravity＝QA、Meta Muse＝社群視覺素材（不直接發文）、智譜清言＝中文三語、WorkBuddy＝營運文件；Antigravity、Meta Muse、智譜清言、WorkBuddy 均標記「待接入」。任務結果貼回該任務 Issue 才算完成；同檔案已有 open PR 時，後續修改先排隊，待該 PR 完成後再接手。
+
 ### 開工與交付
 
 1. 開工前唯讀查看最新 `main`、`AGENTS.md`、[Issue #1](https://github.com/stoneweiwei-dot/zhaowu/issues/1) 及相關現有 open PR／Issue；依 `docs/AI-COORDINATION.md` 核對 task/file locks，避免重複或覆寫工作。
