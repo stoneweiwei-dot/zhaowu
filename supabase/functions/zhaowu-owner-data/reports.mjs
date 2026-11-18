@@ -11,7 +11,7 @@ export async function listReportPage(service, payload, select, isQaReport) {
   if (error) throw new Error('REPORT_LIST_FAILED');
   const rows = data ?? [];
   return { ok: true, items: rows.slice(0, limit).filter(row => !isQaReport(row)),
-    nextOffset: rows.length > limit ? offset + limit : null };
+    nextOffset: rows.length > limit ? offset + limit : null, total: Number(data?.length ?? 0) };
 }
 
 export function ownerReportRow(payload) {

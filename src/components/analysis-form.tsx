@@ -12,7 +12,7 @@ import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
 import { trackConversion } from "@/lib/observability/conversion-telemetry";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { createEngineReportRecord, updateBirthData } from "@/lib/supabase-rest";
+import { createEngineReportRecord, saveVisitorChart, updateBirthData } from "@/lib/supabase-rest";
 import { UNKNOWN_TIME_COPY } from "@/lib/bazi/presentation";
 import {
   formatSharedBirthRecord,
@@ -333,6 +333,8 @@ export function AnalysisForm() {
       trackConversion("zhaowu_birth_submitted", { system: "bazi" });
       const result = await analyzeLife({ data: payload });
       setCurrent(result);
+      // Persistence is deliberately best effort: a backend outage must not interrupt chart delivery.
+      void saveVisitorChart({ result, birth: payload }).catch(() => undefined);
       if (session) {
         setSavedId(result.id);
         void createEngineReportRecord({ session, profile, result })
