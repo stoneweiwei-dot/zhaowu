@@ -107,3 +107,19 @@ For conflicting project behavior, use the precedence already defined in `AGENTS.
 - Rights: 來源明示未經許可不得轉載、改編、公開傳播或商用；作者／授權 UNKNOWN
 - Freshness: 要公開再利用、修改判讀規則或宣稱案例應驗之前，重新取得合法來源、核對原始記錄並重跑主鏈／證據 Gate
 - Supersession: R6.2.2 governance + R6.2.1 runtime + P2/P3 + 既有 12 組 TUC 優先；此來源不另立 active 盲派主判
+
+### Vercel Labs Skills CLI
+- Name: `vercel-labs/skills`
+- Authority: EXTERNAL REFERENCE — developer skill discovery/management only, not repository or runtime policy
+- Scope: sourcing, evaluating and updating Agent Skills; local adaptations in `.agents/skills/`
+- Location: https://github.com/vercel-labs/skills
+- Source inspected: `9197d919034d19010ae303cf96bf19ad087dd4be` (2026-11-05)
+- Freshness: re-check upstream SKILL.md, license, scripts and update diff before changing installed local skills
+
+### Vercel Labs Agent Skills
+- Name: `vercel-labs/agent-skills`
+- Authority: EXTERNAL REFERENCE — engineering methods; ZHAOWU-specific guards override generic deployment/upgrade recipes
+- Scope: React, composition, UI, writing, Vercel optimization and deployment guidance
+- Location: https://github.com/vercel-labs/agent-skills
+- Source inspected: `1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62` (2026-11-05)
+- Freshness: review upstream version, dependencies and security before any re-import; do not auto-update from main
