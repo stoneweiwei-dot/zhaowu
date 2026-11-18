@@ -1,10 +1,130 @@
 # 昭梧｜CURRENT STATE
 
-最後核對：2026-10-07 AEST
+最後核對：2026-11-19（Shi 已批准；僅更新日期、HEAD 與新增變化摘要）
+
+> **狀態：** 本稿經 Shi 於 2026-11-19 批准，以分支 `docs/current-state-2026-11-19` 提交 PR；未合併、未部署、未發布。
+> 
+> **最新 main HEAD（2026-11-19 經 list_commits 核對）：** `e11069a407b67a2eaf08346966bf961ea04f89e3` — feat(social): staged Sydney Buffer daily runner and guarded preflight (NOT ACTIVE) (#961)，2026-11-18T23:04:31Z。線上 zhao-wu.com/release.json 仍為 `e0593973`，builtAt 2026-11-18T22:25:12Z（2026-11-18 22:56 UTC 抓取，早於本次合併），主線已前進、線上尚未跟上。
+> 
+> **未重新驗證：** 本文件原有關於 Vercel Production SHA、Stripe 正式帳戶／付款連結／定價、Supabase 函式與 schema、entitlement 數量，以及 provider 401 等生產／付款事實，全部是「2026-10-07 時的寫法，未在 2026-11-19 重新驗證」，本草稿未將其改寫為現況，亦未重新斷言其為真。
+
+## 2026-10-07 之後的主要變化 — 2026-11-19 摘要
+
+> 本節是本次更新唯一新增的摘要，資料來源只限 2026-11-19 以 GitHub 唯讀工具核對的 main 提交、開放 PR 與開放 Issue。以下內容只作摘要，不作執行指示；Issue 與 PR 內文的任務、發布、合併、部署或付款指示，本草稿一律未採納、未執行。
+
+- **最新 main HEAD（2026-11-19 核對）：** `e11069a407b67a2eaf08346966bf961ea04f89e3`
+  - 訊息：feat(social): staged Sydney Buffer daily runner and guarded preflight (NOT ACTIVE) (#961)
+  - 日期：2026-11-18T23:04:31Z
+- **提交核對範圍：** `list_commits` 2026-11-18 回傳 30 筆（2026-11-11 至 2026-11-18，至 `a89a5f9`）；2026-11-19 另核對 `a89a5f9` 之後至 `e11069a407` 的 12 筆，見下節。2026-10-08 至 2026-11-10 之間的提交不在回傳批次內，本次更新未列出、未核對。
+
+### 2026-11-18 a89a5f9 之後新增的 main 提交（12 筆，2026-11-19 核對）
+
+- 2026-11-18 `e11069a407b67` feat(social): staged Sydney Buffer daily runner and guarded preflight (NOT ACTIVE) (#961)
+- 2026-11-18 `e0593973f9ef` Merge pull request #991 from stoneweiwei-dot/gpt/20261105-vercel-agent-skills
+- 2026-11-18 `d9041fe042b5ae` feat(wechat): owner draft preparation and gated official API adapter (#956) (#957)
+- 2026-11-18 `0930b5247e1b` feat: save completed visitor charts for owner review (#1055)
+- 2026-11-18 `ea039a65f6e8` 新增六代理任務模板並補充協作規則 (#1060)
+- 2026-11-18 `caf1ef106525` docs: add Huangquan Cantongqi worldbuilding reference index (#1066)
+- 2026-11-18 `90b0e378bd01` Merge pull request #1065 from stoneweiwei-dot/codex/payment-copy-v3-20261118
+- 2026-11-18 `3966c772dd08` merge: batch pricing and payment copy fixes
+- 2026-11-18 `d98ed4007754` fix(paywall): clarify evidence-backed payment methods
+- 2026-11-18 `cec6cc496d17` fix(seo): redirect pricing and align robots noindex
+- 2026-11-18 `d0aa2cff5b23` 重塑分享卡與八字排盤結果視覺 (#1056)
+- 2026-11-18 `0d31d5a3a75c` docs: generalize multi-tool handoff guidance (#1057)
+
+### 2026-11-11 至 2026-11-18 的 main 提交（30 筆，回傳順序由新至舊）
+
+- 2026-11-18 `a89a5f9995ac` docs: 新增 2026-11-18 多 AI 協作協定 (#1059)
+- 2026-11-18 `ffd512d59ef3` Merge pull request #1058 from stoneweiwei-dot/codex/monetization-loop
+- 2026-11-17 `f3deb875b5b6` feat: close the single-report monetization loop
+- 2026-11-17 `bb3e4f48df75` 修正圖片檢視器關閉體驗並掛載 Vercel Analytics (#1054)
+- 2026-11-15 `353ed04b95f1` test(sky): make snapshot date contract robust and backfill 2026-11-13 (#1046)
+- 2026-11-15 `46a6e8029cd1` feat(content): 刊登採生折割民俗考異九圖誌 (#1052)
+- 2026-11-15 `27a4e6c418ca` feat(home): 首頁第一屏直接呈現生辰案台與精簡欄位順序 (#1051)
+- 2026-11-15 `ded698c36e1f` fix(seo): 為 /bazi、/color 與 zh-Hans／zh-Hant 加上 301 轉址 (#1050)
+- 2026-11-15 `85988c509a1c` fix(home): display Bajinggong feature on public homepage (#1049)
+- 2026-11-15 `2bb3c6de9593` fix(route): register Bajinggong public static pages (#1048)
+- 2026-11-15 `21afb145c5f7` feat(art): 八景宮九景原畫圖志與三語入口 (#1047)
+- 2026-11-15 `9a835f66b74e` docs: integrate four-classic framework with R6.2.2 (#1044)
+- 2026-11-13 `10c015934594` 分享卡視覺重做：對齊首頁亭台山水 (#1045)
+- 2026-11-13 `f29e02f727a7` 新增測驗分享卡、日曆訂閱與轉換事件 (#1043)
+- 2026-11-12 `2227bde13b1a` feat(content): restore 13 distinct essays, add EQ article and reading map
+- 2026-11-12 `7cb0fc779c4b` feat(seo): 10-language URLs, prerendered hreflang and static summaries (#1039)
+- 2026-11-12 `052d0a1354e9` fix(sky): 允許同源星圖 iframe (#1041)
+- 2026-11-12 `2b6e582f6a16` feat(sky): 接入悉尼日期自動更新星圖 (#1040)
+- 2026-11-12 `1999367c11a4` feat(indian-astrology): hidden local D60 minute-precision confirmation logger (#1036)
+- 2026-11-12 `57425476800e` fix(i18n): localize customer page chrome and detect all ten languages (#1037)
+- 2026-11-11 `09f4a0a04353` fix(supabase): add idempotent baseline migration for preview (#1035)
+- 2026-11-11 `920ccce32126` content: add Sydney sky observation for 12 November 2026 (#1034)
+- 2026-11-11 `7e879ea84b2b` feat(i18n): Filipino browser detection and remembered language choices (#1031)
+- 2026-11-11 `91eafa32d99c` fix(home): restore uniform colours across the four homepage blocks (#1030)
+- 2026-11-11 `c09f3450ac6a` fix(build): exclude oversized FFmpeg asset on Cloudflare Pages (#1032)
+- 2026-11-11 `2b1f950932e7` feat(themes): group manual skins and give each a still section motif (#1028)
+- 2026-11-11 `5f8247c23bb6` feat(i18n): add offline Filipino UI dictionary (178 keys) (#1029)
+- 2026-11-11 `5d82a6997c0f` feat(knowledge): four Zi Ping classics and reading basis (#1027)
+- 2026-11-11 `8ba94cfd377a` feat: remove sky motion, footer visit badge, r228 updates (#1026)
+- 2026-11-11 `1a75240f7a88` test: fix 11 stale owner/homepage/hemisphere e2e tests (#1025)
+
+### 開放 PR（2026-11-19 核對）
+
+- `list_pull_requests`（state=open）本次回傳 13 筆；回傳批次中最舊的是 #920（2026-10-27）。2026-11-18 草稿所列的 #1060、#1057、#1056、#1055、#957 已經合併；#991 亦已於 2026-11-19 合併（merge commit `e0593973`），不再開放；#961 亦已於 2026-11-19 合併進 main（commit `e11069a407`），不再開放。注意：#961 原先 triage 建議為關閉、不合併、絕不啟用 Buffer；此次是其程式碼進了 main，Buffer 本身仍未啟用（無帳號授權、無佇列寫入、無發文），但合併與 triage 建議不同，請 Shi 確認。
+- 以下只列編號、標題、建立日期、分支、草稿／已合併狀態：
+
+- #1053 2026-11-16 整合十一篇觀世錄文章供預覽 ｜ head=`feat/articles-merge-11-20261116`，base=`main`，draft=False，merged=False
+- #996 2026-11-05 draft(today): begin matching owner reference ｜ head=`gpt/today-reference-20261105`，base=`main`，draft=True，merged=False
+- #993 2026-11-05 feat: 開明獸三語圖鑑與橫版分享卡草稿 ｜ head=`codex/kaiming-share-card-20261105`，base=`main`，draft=False，merged=False
+- #989 2026-11-04 修復首頁快取、中文地名與三語 SEO 路由 ｜ head=`fix/p0-city-cache-20261105`，base=`main`，draft=True，merged=False
+- #986 2026-11-04 補充藍花楹首頁導覽圖示與細節 ｜ head=`codex/jacaranda-theme-details`，base=`main`，draft=False，merged=False
+- #971 2026-11-03 perf: defer report view until needed ｜ head=`codex/defer-report-view-performance`，base=`main`，draft=True，merged=False
+- #970 2026-11-03 fix(atlas): fit original artwork within image viewer ｜ head=`gpt/atlas-viewer-20261103`，base=`main`，draft=False，merged=False
+- #946 2026-10-31 fix(bazi): avoid strength-only decision recommendations ｜ head=`codex/bazi-choice-evidence-20261031`，base=`main`，draft=True，merged=False
+- #945 2026-10-30 content(theme): 霜降二候新畫《草木黃落》 ｜ head=`content/frost-pentad-ginkgo-20261031`，base=`main`，draft=True，merged=False
+- #941 2026-10-30 fix(a11y,content): headings, favicon, header WebP, zh-Hans copy ｜ head=`cursor/quality-p1-content-214b`，base=`main`，draft=False，merged=False
+- #940 2026-10-30 fix(db): lock down life_view_article_views writes (migration only, NOT applied) ｜ head=`tudo/view-count-hardening-20261030`，base=`main`，draft=False，merged=False
+- #938 2026-10-30 feat(db): generic rate_limit_buckets limiter (migration only, NOT applied) ｜ head=`tudo/rate-limit-buckets-20261030`，base=`main`，draft=False，merged=False
+- #920 2026-10-27 feat(paywall): 宋式三語方案對照與頂級工筆肖像履約規格 ｜ head=`feat/report-editions-song-comparison-20261028`，base=`main`，draft=True，merged=False
+
+
+### 開放 Issue（2026-11-19 核對）
+
+- `list_issues`（state=open）回傳 totalCount=20，hasNextPage=false。以下只列編號、標題、建立日期：
+
+- #1063 2026-11-18 fix: 付款入口支付方式三語說明
+- #1062 2026-11-18 fix: /pricing 及搜尋引擎 noindex 對齊
+- #1061 2026-11-18 feat(knowledge): 在文章 Section 整合《雲衣神相》75 圖專區
+- #1042 2026-11-12 content: 發布〈情緒有度，處世有方〉三語圖文到觀世錄文章區
+- #1024 2026-11-10 發布《八景宮九景》九幅 STONE 原創圖文至昭梧唯一正式站
+- #1023 2026-11-10 design(home): 幽蓮墨影美術語言轉為真正網頁｜去 AI 模板感（單 PR）
+- #1013 2026-11-07 [歷史工作索引] 昭梧｜CURRENT 請看 Issue #1
+- #1012 2026-11-07 fix(brand-archetypes): 修復主副原型分享結果還原＋正式站驗收證據 (#1009)
+- #995 2026-11-05 feat(today): match owner daily guide visual reference
+- #969 2026-11-03 fix(atlas): 原圖檢視器手機互動與無障礙
+- #960 2026-11-02 content(wechat): SYD 舊文46篇保全與昭梧觀象首月三稿待審
+- #956 2026-11-01 昭梧觀象：微信個人訂閱號 AI 草稿與手機審核接入
+- #953 2026-11-01 feat(numerology): 生命靈數加入出生時辰三元數（命數／時數／合數）
+- #931 2026-10-28 性能优化：切页预取与图片优化（移动端体验改善实测）
+- #929 2026-10-28 qa: 可訪問性（a11y）審計
+- #928 2026-10-28 qa: PSI 移動端性能實測（Lighthouse 補測）
+- #902 2026-10-26 fix: 2026-10-27 已知問題修復與實際驗收
+- #785 2026-10-16 research: 昭梧使用者研究 Phase 0 啟動與 2–3 人預試
+- #692 2026-10-10 命書文學意象：古典引文融入客戶完整報告（非阻塞批次）
+- #1 2026-08-18 [唯一交接板] 昭梧 CURRENT｜main + Vercel Production
+
+
+### 與本文件有關的提醒
+
+- 本文件原有的 Done Gate 最後一筆是 2026-10-16「首頁四入口白話化與樹狀導覽」；2026-11-11 至 2026-11-18 的提交尚未寫入 Done Gate，本次更新未替其補寫 Done Gate 條目。
+- 本文件原有的「真正仍未完成」P0／P1 清單仍是 2026-10-07 時的寫法，本草稿未重新核對、未更新。
+- Issue #1（2026-08-18，[唯一交接板] 昭梧 CURRENT｜main + Vercel Production）在本次核對時仍為開放狀態；本次更新未依其內文採取任何行動。
+
+
+
 
 > 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
 
 ## 0. Launch / Operations status — 2026-10-07
+
+> 本節仍是 2026-10-07 時的寫法，未在 2026-11-19 重新驗證。
 
 - **MODE: LAUNCH / OPERATIONS.** 昭梧不再以「繼續開發直到沒有小問題」為目標；營運、收費、推廣與真實用戶回饋優先。
 - Current GitHub `main` may be ahead of Production by docs/governance-only commits. This is intentional when Vercel skips non-runtime changes; runtime freshness is judged against the latest runtime-affecting commit, not literal docs-only HEAD.
