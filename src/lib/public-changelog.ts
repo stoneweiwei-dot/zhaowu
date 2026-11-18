@@ -15,6 +15,13 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-11-18-share-chart-visual-r2",
+    date: "2026-11-18",
+    zhHant: { title: "命象分享卡與四柱排盤顯示整理", summary: "分享卡改用已計算的日主與命象摘要，移除淡色重複浮水印；四柱天干、地支依既有五行資料著色，十神標籤調整為次要層級。命盤計算不變。" },
+    zhHans: { title: "命象分享卡与四柱排盘显示整理", summary: "分享卡改用已计算的日主与命象摘要，移除淡色重复水印；四柱天干、地支依既有五行资料着色，十神标签调整为次要层级。命盘计算不变。" },
+    en: { title: "Share card and Four Pillars display refinements", summary: "The share card now uses the computed day master and chart summary and removes its faint duplicate watermark. Four Pillars stems and branches use their existing element values for colour, with Ten-God labels visually secondary. Chart calculations are unchanged." },
+  },
+  {
     id: "2026-11-11-sky-visits-updates",
     date: "2026-11-11",
     zhHant: {
