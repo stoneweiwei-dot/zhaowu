@@ -3,6 +3,7 @@ import { FiveToneGift } from "@/components/five-tone-gift";
 import { PremiumPoeticAfterword, type PremiumPoeticContext } from "@/components/premium-poetic-afterword";
 import { PurchaseConsent, usePurchaseConsent } from "@/components/purchase-consent";
 import { DataGradeFooter } from "@/components/data-grade-footer";
+import { ReportCompletionPanel } from "@/components/report-completion-panel";
 import { assessBirthRecord } from "@/lib/bazi/data-grade";
 import type { Locale } from "@/lib/i18n";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
@@ -196,6 +197,7 @@ export function ReportAccessGate({
 
   async function purchase(product: ReportAccessProduct) {
     if (!consent.require()) return;
+    trackConversion("unlock_clicked", { system, product });
     setBusy(product);
     setError("");
     try {
@@ -232,7 +234,7 @@ export function ReportAccessGate({
   }
 
   if (checking) return <div className="zhaowu-report-access-loading" aria-live="polite">{locale === "en" ? "Checking access…" : locale === "zh-Hans" ? "正在确认读取权限……" : "正在確認讀取權限……"}</div>;
-  if (level === "system") return <section className="zhaowu-report-access-content" data-report-access={level}><p className="zhaowu-report-access-status">{owner ? (locale === "en" ? "Owner access · Full report, no payment" : locale === "zh-Hans" ? "站主权限 · 完整报告免费阅读" : "站主權限 · 完整報告免費閱讀") : copy.unlocked}</p>{personal}{full}<FiveToneGift birth={birth} locale={locale} level={level} /><DataGradeFooter grade={grade} locale={locale} />{poeticContext ? <PremiumPoeticAfterword locale={locale} context={poeticContext} /> : null}</section>;
+  if (level === "system") return <section className="zhaowu-report-access-content" data-report-access={level}><p className="zhaowu-report-access-status">{owner ? (locale === "en" ? "Owner access · Full report, no payment" : locale === "zh-Hans" ? "站主权限 · 完整报告免费阅读" : "站主權限 · 完整報告免費閱讀") : copy.unlocked}</p>{personal}{full}<FiveToneGift birth={birth} locale={locale} level={level} /><DataGradeFooter grade={grade} locale={locale} />{poeticContext ? <PremiumPoeticAfterword locale={locale} context={poeticContext} /> : null}{!owner ? <ReportCompletionPanel system={system} locale={locale} /> : null}</section>;
 
   return (
     <section className="zhaowu-report-paywall" data-report-paywall={system}>

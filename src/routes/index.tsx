@@ -283,6 +283,9 @@ function Home() {
         setFormExpanded(true);
         setActiveSection("form");
         window.setTimeout(() => document.getElementById("bazi")?.scrollIntoView({ block: "start" }), 150);
+      } else if (hash === "#analysis-reports") {
+        setActiveSection("form");
+        window.setTimeout(() => document.getElementById("analysis-reports")?.scrollIntoView({ block: "start" }), 150);
       } else if (BIRTH_HASHES.includes(hash)) {
         openBirthBook({ focusYear: false });
       } else if (TODAY_HASHES.includes(hash)) {

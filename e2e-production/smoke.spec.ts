@@ -46,6 +46,7 @@ test.describe("production smoke (iPhone Safari)", () => {
     for (const entrance of ["form", "today", "quiz", "notes"]) {
       await expect(guide.locator('[data-home-card="' + entrance + '"]')).toHaveCount(1);
     }
+    await page.locator("[data-language-switcher] > button").click();
     await expect(page.getByRole("radio", { name: "English", exact: true })).toBeVisible();
     await expect(page.getByRole("radio", { name: "繁體中文", exact: true })).toBeVisible();
     await expect(page.getByRole("radio", { name: "简体中文", exact: true })).toBeVisible();
@@ -132,6 +133,9 @@ test.describe("production smoke (iPhone Safari)", () => {
       ["简体中文", "壹 · 坠星"],
       ["English", "I · Falling Star"],
     ] as const) {
+      if (!await page.getByRole("radio", { name, exact: true }).isVisible().catch(() => false)) {
+        await page.locator("[data-language-switcher] > button").click();
+      }
       await page.getByRole("radio", { name, exact: true }).click();
       await expect(section.getByText(text, { exact: true }).first()).toBeVisible();
     }

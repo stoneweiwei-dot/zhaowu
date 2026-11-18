@@ -66,6 +66,11 @@ export type ConversionEvent =
   | "report_viewed"
   | "unlock_clicked"
   | "unlock_paid"
+  | "content_cta_clicked"
+  | "report_completion_viewed"
+  | "report_next_system_clicked"
+  | "follow_up_submitted"
+  | "follow_up_answer_shown"
   | "quiz_shared"
   | "calendar_subscribe_clicked";
 
