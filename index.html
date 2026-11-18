@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#fffaf0" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -59,22 +59,15 @@
     <script>
       (function () {
         try {
-          var savedLanguage = localStorage.getItem("zhaowu.display-language");
-          if (["zh-Hant", "zh-Hans", "en"].indexOf(savedLanguage) === -1) {
-            savedLanguage = "en";
-            var tags = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
-            for (var i = 0; i < tags.length; i++) {
-              var tag = String(tags[i] || "").toLowerCase();
-              if (tag.indexOf("zh") !== 0) continue;
-              savedLanguage = /-cn|-sg|hans/.test(tag) ? "zh-Hans" : "zh-Hant";
-              break;
-            }
-          }
+          // URL language wins over browser and remembered preferences; never redirect the root.
+          var prefix = window.location.pathname.split("/")[1];
+          var savedLanguage = prefix === "zh-hans" ? "zh-Hans" :
+            ["en", "ja", "ko", "hi", "th", "id", "vi", "fil"].indexOf(prefix) !== -1 ? prefix : "zh-Hant";
           document.documentElement.lang = savedLanguage;
           var manifestLink = document.querySelector('link[rel="manifest"]');
-          if (manifestLink) manifestLink.setAttribute("href", savedLanguage === "zh-Hans" ? "/manifest.zh-Hans.webmanifest" : savedLanguage === "en" ? "/manifest.en.webmanifest" : "/manifest.webmanifest");
+          if (manifestLink) manifestLink.setAttribute("href", savedLanguage === "zh-Hans" ? "/manifest.zh-Hans.webmanifest" : savedLanguage === "zh-Hant" ? "/manifest.webmanifest" : "/manifest.en.webmanifest");
           var appTitleMeta = document.querySelector('meta[name="apple-mobile-web-app-title"]');
-          if (appTitleMeta) appTitleMeta.setAttribute("content", savedLanguage === "en" ? "ZHAOWU" : "昭梧");
+          if (appTitleMeta) appTitleMeta.setAttribute("content", savedLanguage === "zh-Hant" || savedLanguage === "zh-Hans" ? "昭梧" : "ZHAOWU");
           if (localStorage.getItem("zhaowu.theme.v1") === "night") localStorage.setItem("zhaowu.theme.v1", "day");
         } catch (e) {}
       })();
@@ -234,7 +227,7 @@
           <li>宋式畫卷美學：暖紙、礦物青綠、細墨線與留白，全站同一套視覺語言。</li>
           <li>二十四節氣與七十二候：節氣自動模式依悉尼日曆日更換整站畫境；七十二候是傳統文化意象，不是當地天氣預報，目前只有霜降三候有專屬畫作。</li>
           <li>今日指引：黃曆（農曆、干支、宜與忌、合沖刑害）、當地天氣與所在半球的季節、五行穿衣色彩、靈籤與近期天象。</li>
-          <li>南半球出生或居住只按當地季節與作息理解，不反轉四柱、月令與大運。</li>
+          <li>南半球出生或居住只按當地季節與作息理解，不反轉四柱、月令與大運。詳見<a href="/knowledge/southern-hemisphere-bazi">南半球八字與季節環境校正說明</a>。</li>
         </ul>
         <h2>常見問題</h2>
         <h3>昭梧的八字排盤需要註冊登入嗎？</h3>

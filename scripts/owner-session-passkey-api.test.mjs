@@ -6,6 +6,7 @@ import ownerData from "../api/owner-data.js";
 import ownerSession from "../api/owner-session.js";
 import { clearOwnerDeviceCache } from "../lib/owner-auth.js";
 import { passkeyRegistrationOptions, verifyPasskeyRegistration } from "../lib/owner-passkey.js";
+import { OWNER_PRODUCTION_SUPABASE_URL } from "../lib/owner-supabase-origin.js";
 
 const HOST = "zhaowu.test";
 const BRIDGE = "bridge-secret-for-tests-0123456789abcdef";
@@ -18,7 +19,7 @@ function fakeEdge() {
   const fetchImpl = async (_url, init) => {
     const body = JSON.parse(init.body);
     const headers = new Headers(init.headers);
-    calls.push({ action: body.action, headers });
+    calls.push({ action: body.action, headers, url: _url });
     assert.equal(headers.get("x-zhaowu-bridge-secret"), BRIDGE);
     const reply = (value, status = 200) => new Response(JSON.stringify(value), { status });
     switch (body.action) {
@@ -164,7 +165,7 @@ test("device and passkey actions refuse anonymous callers and cross-site request
   });
 });
 
-test("Passkey sessions reach owner-data through the device header, but music upload and promo/article actions need the password", async () => {
+test("Passkey sessions can manage promo codes and music; articles still require the password", async () => {
   await withEdge(async (edge) => {
     const { phone, row } = await enrol(edge);
     const { verified } = await signIn(edge, phone);
@@ -180,14 +181,49 @@ test("Passkey sessions reach owner-data through the device header, but music upl
     const skin = await call(ownerData, { cookie, body: { action: "site-skin.publish", skin: "lotus-boat" } });
     assert.equal(skin.status, 200);
     assert.equal(edge.calls.findLast((item) => item.action === "site-skin.publish").headers.get("x-zhaowu-owner-device"), row.id);
-    // Promo codes and articles live in separate Edge Functions that only know the password.
-    for (const action of ["promo.list", "article.list"]) {
-      const refused = await call(ownerData, { cookie, body: { action } });
-      assert.equal(refused.status, 403, action);
-      assert.equal(refused.body.error, "OWNER_PASSWORD_REQUIRED");
+    for (const action of ["promo.list", "promo.create", "promo.update", "promo.setActive"]) {
+      const allowed = await call(ownerData, { cookie, body: { action } });
+      assert.equal(allowed.status, 200, action);
+      const promoCall = edge.calls.findLast((item) => item.action === action);
+      assert.match(promoCall.url, /\/functions\/v1\/zhaowu-owner-promo$/);
+      assert.equal(promoCall.headers.get("x-zhaowu-owner-device"), row.id);
+      assert.equal((await call(ownerData, { body: { action } })).status, 401, action);
+      assert.equal((await call(ownerData, { cookie, body: { action }, headers: { origin: "https://evil.test" } })).status, 403, action);
     }
-    const music = await call(musicWrite, { cookie, body: Buffer.from("x"), headers: { "content-type": "audio/mpeg", "x-zhaowu-music-name": "a.mp3" } });
-    assert.equal(music.status, 403);
-    assert.equal(music.body.error, "OWNER_PASSWORD_REQUIRED");
+    const article = await call(ownerData, { cookie, body: { action: "article.list" } });
+    assert.equal(article.status, 403);
+    assert.equal(article.body.error, "OWNER_PASSWORD_REQUIRED");
+    const music = await call(musicWrite, { cookie, body: Buffer.from("x"), headers: { "content-type": "application/octet-stream", "x-zhaowu-music-name": "a.invalid" } });
+    assert.equal(music.status, 415);
+    assert.equal(music.body.error, "UNSUPPORTED_AUDIO");
+    // The device reaches the music writer; external GitHub behavior is tested separately.
+    const removal = await call(musicWrite, { cookie, method: "DELETE", body: { id: "test" } });
+    assert.notEqual(removal.status, 403);
+    assert.notEqual(removal.body.error, "OWNER_PASSWORD_REQUIRED");
+    edge.devices[0].revoked_at = "now";
+    clearOwnerDeviceCache();
+    assert.equal((await call(ownerData, { cookie, body: { action: "promo.list" } })).status, 401);
   });
+});
+
+test("production Face ID reaches zhaowu-core when SUPABASE_URL still names the deleted project", async () => {
+  const previous = { VERCEL_ENV: process.env.VERCEL_ENV, SUPABASE_URL: process.env.SUPABASE_URL };
+  process.env.VERCEL_ENV = "production";
+  process.env.SUPABASE_URL = "https://plgpxusmemnmzckbwtiv.supabase.co";
+  try {
+    await withEdge(async (edge) => {
+      const { phone } = await enrol(edge);
+      const { verified } = await signIn(edge, phone);
+      assert.equal(verified.status, 200, JSON.stringify(verified.body));
+      assert.ok(edge.calls.length > 0);
+      for (const call of edge.calls) {
+        assert.equal(call.url, `${OWNER_PRODUCTION_SUPABASE_URL}/functions/v1/zhaowu-owner-data`);
+      }
+    });
+  } finally {
+    if (previous.VERCEL_ENV === undefined) delete process.env.VERCEL_ENV;
+    else process.env.VERCEL_ENV = previous.VERCEL_ENV;
+    if (previous.SUPABASE_URL === undefined) delete process.env.SUPABASE_URL;
+    else process.env.SUPABASE_URL = previous.SUPABASE_URL;
+  }
 });

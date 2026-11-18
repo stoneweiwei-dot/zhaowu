@@ -1,3 +1,5 @@
+import { useDisplayLanguage } from "@/lib/display-language";
+import { customerChrome, translateChromeObject } from "@/lib/customer-chrome";
 import { Link } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
 import { lazy, Suspense, useState, useEffect } from "react";
@@ -47,6 +49,7 @@ function useCopy(locale: string) {
       cards: [
         { href: "/quiz/divine-affinity",       title: "Divine Affinity Scan",           hint: "16 questions across Soul Pattern, Celestial Mandate" },
         { href: "/quiz/cultivation-destiny",   title: "Cultivation Destiny Dossier",    hint: "spirit root, sect, paths + personal 9:16 dossier image" },
+        { href: "/brand-archetypes.html", title: "Twelve Brand Archetypes", hint: "12 brand scenarios reveal your primary and supporting archetypes" },
         { href: "/fun-tests/earth-online",     title: "Earth Online · Classics Guide",  hint: "8 questions to match your stuck point with a Chinese classic" },
         { href: "/fun-tests?test=animal",      title: "Inner Animal × Guardian Beast",  hint: "current personality strategy and instinctive response" },
         { href: "/fun-tests?test=element",     title: "Five-Element Function Test",     hint: "which function you currently want to strengthen" },
@@ -78,6 +81,7 @@ function useCopy(locale: string) {
       cards: [
         { href: "/quiz/divine-affinity",       title: "仙佛渊源本缘测试",   hint: "16 题从魂格、象征脉象、天命六层交叉判读" },
         { href: "/quiz/cultivation-destiny",   title: "修仙命格灵测",       hint: "推演灵根宗门道途并生成个人九比十六命测图" },
+        { href: "/brand-archetypes.html", title: "品牌十二原型 · 定位测评", hint: "序、寻、证、联四组动机，12 题探索品牌主副原型" },
         { href: "/fun-tests/earth-online",     title: "地球 Online · 古籍攻略", hint: "8 道题看你现在卡在哪一关，推荐古籍" },
         { href: "/fun-tests?test=animal",      title: "内在动物 × 命局瑞兽", hint: "看现在常用的人格策略与本能反应" },
         { href: "/fun-tests?test=element",     title: "五行功能测验",        hint: "看现在主观上最想加强哪一种功能" },
@@ -109,6 +113,7 @@ function useCopy(locale: string) {
     cards: [
       { href: "/quiz/divine-affinity",       title: "仙佛淵源本緣測試",   hint: "16 題從魂格、象徵脈象、天命六層交叉判讀" },
       { href: "/quiz/cultivation-destiny",   title: "修仙命格靈測",       hint: "推演靈根宗門道途並生成個人九比十六命測圖" },
+      { href: "/brand-archetypes.html", title: "品牌十二原型 · 定位測評", hint: "序、尋、證、聯四組動機，12 題探索你的品牌主副原型" },
       { href: "/fun-tests/earth-online",     title: "地球 Online · 古籍攻略", hint: "8 道題看你現在卡在哪一關，推薦古籍" },
       { href: "/fun-tests?test=animal",      title: "內在動物 × 命局瑞獸", hint: "看現在常用的人格策略與本能反應" },
       { href: "/fun-tests?test=element",     title: "五行功能測驗",        hint: "看現在主觀上最想加強哪一種功能" },
@@ -178,8 +183,12 @@ const LazyScentFiveElementTest = lazy(() =>
 /* ── Home ──────────────────────────────────────────────────── */
 function Home() {
   const { locale } = useI18n();
-  const copy = useCopy(locale);
-  const heroUi = heroUiCopy(locale);
+  const { language } = useDisplayLanguage();
+  const copy = translateChromeObject(language, useCopy(locale));
+  const heroUi = translateChromeObject(language, heroUiCopy(locale));
+  if (language !== "zh-Hant" && language !== "zh-Hans" && language !== "en") {
+    heroUi.painting = (index, total, title) => `${index} / ${total}: ${title}`;
+  }
   const { user } = useAuthState();
   const current = useAppStore((s) => s.current);
   const setCurrent = useAppStore((s) => s.setCurrent);
@@ -274,6 +283,9 @@ function Home() {
         setFormExpanded(true);
         setActiveSection("form");
         window.setTimeout(() => document.getElementById("bazi")?.scrollIntoView({ block: "start" }), 150);
+      } else if (hash === "#analysis-reports") {
+        setActiveSection("form");
+        window.setTimeout(() => document.getElementById("analysis-reports")?.scrollIntoView({ block: "start" }), 150);
       } else if (BIRTH_HASHES.includes(hash)) {
         openBirthBook({ focusYear: false });
       } else if (TODAY_HASHES.includes(hash)) {
@@ -335,7 +347,7 @@ function Home() {
           <section id="home-today-guide" className="zw-home-today-priority" aria-label={copy.navToday}>
             <Suspense
               fallback={
-                <div className="zw-home-today-skeleton" role="status" aria-label={locale === "en" ? "Loading Today Guide" : locale === "zh-Hans" ? "正在载入今日指引" : "正在載入今日指引"}>
+                <div className="zw-home-today-skeleton" role="status" aria-label={customerChrome("正在載入今日指引", "正在载入今日指引", "Loading Today Guide")}>
                   <span />
                   <strong />
                   <i />
@@ -353,13 +365,13 @@ function Home() {
       {activeSection === "form" && (
         <>
           {activeSection === "form" ? <section className="zw-report-wayfinding">
-            <h2>{locale === "en" ? (current ? "Your report is ready" : "Create your report") : locale === "zh-Hans" ? (current ? "你的报告已生成" : "开始排盘与提问") : (current ? "你的報告已生成" : "開始排盤與提問")}</h2>
-            <Link to="/history">{locale === "en" ? "My saved reports" : locale === "zh-Hans" ? "查看我的报告" : "查看我的報告"}</Link>
-            {current ? <a href="#report">{locale === "en" ? "Read this answer" : locale === "zh-Hans" ? "直接看本次答案" : "直接看本次答案"}</a> : null}
+            <h2>{current ? customerChrome("你的報告已生成", "你的报告已生成", "Your report is ready") : customerChrome("開始排盤與提問", "开始排盘与提问", "Create your report")}</h2>
+            <Link to="/history">{customerChrome("查看我的報告", "查看我的报告", "My saved reports")}</Link>
+            {current ? <a href="#report">{customerChrome("直接看本次答案", "直接看本次答案", "Read this answer")}</a> : null}
             {user?.isOwner ? <p className="zw-owner-access-note">{locale === "en" ? "Owner access: all report content is available without payment." : locale === "zh-Hans" ? "站主已登入：所有报告内容免费阅读，无需购买。" : "站主已登入：所有報告內容免費閱讀，無需購買。"}</p> : null}
           </section> : null}
           <details className="zw-report-edit" open={formExpanded} onToggle={event => setFormExpanded(event.currentTarget.open)}>
-            <summary hidden={!current}>{locale === "en" ? "Birth details and question" : locale === "zh-Hans" ? "出生资料与问题（点此修改）" : "出生資料與問題（點此修改）"}</summary>
+            <summary hidden={!current}>{customerChrome("出生資料與問題（點此修改）", "出生资料与问题（点此修改）", "Birth details and question")}</summary>
           <HomeSectionBoundary
             id="analysis"
             locale={locale}

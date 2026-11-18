@@ -15,6 +15,7 @@
  *   D. diff tripwire (--diff)   newly added empty-state copy in src/ fails unless the line carries
  *                               `empty-state-ok: <reason>`.
  */
+import { parseLanguagePath } from "../src/lib/language-routing.js";
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -81,7 +82,7 @@ export function checkAtlasAssets(root = ROOT) {
 
 export function sitemapPaths(root = ROOT) {
   const xml = read(root, "public/sitemap.xml");
-  return [...xml.matchAll(/<loc>https?:\/\/[^/]+(\/[^<]*)<\/loc>/g)].map((m) => (m[1].length > 1 ? m[1].replace(/\/+$/, "") : "/"));
+  return [...new Set([...xml.matchAll(/<loc>https?:\/\/[^/]+(\/[^<]*)<\/loc>/g)].map((m) => parseLanguagePath(m[1].length > 1 ? m[1].replace(/\/+$/, "") : "/").rest))];
 }
 
 export function routeFileFor(path) {

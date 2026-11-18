@@ -286,11 +286,40 @@ async function bestEffortRemoveObject(service: ReturnType<typeof createClient>, 
 }
 
 async function reportList(service: ReturnType<typeof createClient>, payload: Payload) {
-  return listReportPage(service, payload, REPORT_LIST_SELECT, isQaReport);
+  const page = await listReportPage(service, payload, REPORT_LIST_SELECT, isQaReport);
+  const limit = Math.min(50, Math.max(1, Math.trunc(Number(payload.limit) || 50)));
+  const offset = Math.max(0, Math.trunc(Number(payload.offset) || 0));
+  const { count: visitorTotal, error: visitorCountError } = await service.from("visitor_charts").select("id", { count: "exact", head: true });
+  if (visitorCountError) throw new OwnerDataError("VISITOR_CHART_LIST_FAILED", 502, visitorCountError.message);
+  const { data: visitors, error } = await service.from("visitor_charts")
+    .select("id,birth_datetime,gender,birthplace,true_solar_time,chart_summary,language,chart_snapshot,created_at")
+    .order("created_at", { ascending: false }).range(offset, offset + limit);
+  if (error) throw new OwnerDataError("VISITOR_CHART_LIST_FAILED", 502, error.message);
+  const mapped = (visitors ?? []).map((row) => ({
+    id: row.id, user_email: null, alias: `${row.birthplace} · ${row.chart_summary}`, record_kind: "visitor_chart",
+    status: "chart_ready", access_mode: "visitor", payment_tier: "free", payment_status: "not_required",
+    context: { source: "visitor-chart", birth_datetime: row.birth_datetime, gender: row.gender, birthplace: row.birthplace,
+      true_solar_time: row.true_solar_time, chart_summary: row.chart_summary, language: row.language },
+    created_at: row.created_at, updated_at: row.created_at,
+  }));
+  const items = [...page.items, ...mapped].sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at));
+  const total = page.total + Number(visitorTotal ?? 0);
+  return { ok: true, items: items.slice(0, limit), nextOffset: offset + limit < total ? offset + limit : null };
 }
 
 async function reportGet(service: ReturnType<typeof createClient>, payload: Payload) {
   const id = requireId(payload);
+  const { data: visitor, error: visitorError } = await service.from("visitor_charts").select("id,birth_datetime,gender,birthplace,true_solar_time,chart_summary,language,chart_snapshot,created_at").eq("id", id).maybeSingle();
+  if (visitorError) throw new OwnerDataError("REPORT_READ_FAILED", 502, visitorError.message);
+  if (visitor) return { ok: true, item: {
+    id: visitor.id, user_id: null, user_email: null, alias: `${visitor.birthplace} · ${visitor.chart_summary}`,
+    record_kind: "visitor_chart", status: "chart_ready", access_mode: "visitor", payment_tier: "free",
+    payment_status: "not_required", context: { source: "visitor-chart", birth_datetime: visitor.birth_datetime,
+      gender: visitor.gender, birthplace: visitor.birthplace, true_solar_time: visitor.true_solar_time,
+      chart_summary: visitor.chart_summary, language: visitor.language, question: "Visitor chart" },
+    engine_snapshot: visitor.chart_snapshot, mother_draft: null, paid_report: null, visual_profile: null,
+    image_path: null, image_error: null, created_at: visitor.created_at, updated_at: visitor.created_at,
+  } };
   const { data, error } = await service.from("report_requests").select(REPORT_DETAIL_SELECT).eq("id", id).maybeSingle();
   if (error) throw new OwnerDataError("REPORT_READ_FAILED", 502, error.message);
   return { ok: true, item: data ?? null };
@@ -298,6 +327,13 @@ async function reportGet(service: ReturnType<typeof createClient>, payload: Payl
 
 async function reportDelete(service: ReturnType<typeof createClient>, payload: Payload) {
   const id = requireId(payload);
+  const { data: visitor, error: visitorLookupError } = await service.from("visitor_charts").select("id").eq("id", id).maybeSingle();
+  if (visitorLookupError) throw new OwnerDataError("REPORT_DELETE_FAILED", 502, visitorLookupError.message);
+  if (visitor) {
+    const { error } = await service.from("visitor_charts").delete().eq("id", id);
+    if (error) throw new OwnerDataError("REPORT_DELETE_FAILED", 502, error.message);
+    return { ok: true };
+  }
   const { error } = await service.from("report_requests").delete().eq("id", id);
   if (error) throw new OwnerDataError("REPORT_DELETE_FAILED", 502, error.message);
   return { ok: true };

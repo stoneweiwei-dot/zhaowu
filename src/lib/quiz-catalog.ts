@@ -14,6 +14,15 @@ export type QuizEntry = {
 
 export const QUIZ_CATALOG: readonly QuizEntry[] = [
   {
+    id: "brand-archetypes",
+    href: "/brand-archetypes.html",
+    text: {
+      "zh-Hant": { title: "品牌十二原型 · 定位測評", hint: "序、尋、證、聯四組動機，12 題探索你的品牌主副原型" },
+      "zh-Hans": { title: "品牌十二原型 · 定位测评", hint: "序、寻、证、联四组动机，12 题探索品牌主副原型" },
+      en: { title: "Twelve Brand Archetypes", hint: "12 brand scenarios reveal your primary and supporting archetypes" },
+    },
+  },
+  {
     id: "divine-affinity",
     href: "/quiz/divine-affinity",
     text: {

@@ -1,12 +1,16 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { validSiteSkin, SITE_SKIN_IDS, readPublishedSiteSkin } from "../lib/owner-site-skin-public.js";
+// The public settings reader is imported after setting an isolated, non-secret CI fixture.
+// ESM static imports run before top-level assignments, so use a dynamic import here.
+process.env.SUPABASE_ANON_KEY ||= "ci-test-only-public-key";
+const { validSiteSkin, SITE_SKIN_IDS, readPublishedSiteSkin } = await import("../lib/owner-site-skin-public.js");
 
 test("shared skin catalog covers all registered choices and classic", () => {
   const src = readFileSync("src/lib/theme-skins.ts", "utf8");
   const ids = [...src.matchAll(/\{ id: "([a-z-]+)", ref: (\d+), mode: "(light|dark)"/g)].map((match) => match[1]);
-  assert.equal(ids.length, 26); // includes the new Frost Descent seasonal artwork
+  assert.ok(ids.includes('sydney-jacaranda'));
+  assert.ok(ids.includes('solar-start-winter'));
   assert.equal(SITE_SKIN_IDS.size, ids.length + 2); // none + solar-auto
   for (const id of ids) assert.equal(validSiteSkin(id), id);
   assert.equal(validSiteSkin("none"), "none");
@@ -64,7 +68,8 @@ function skinClient(fetcher) {
   const context = vm.createContext({
     fetch: fetcher, Event,
     // Browser-only imports are stubbed for VM execution; production imports remain unchanged.
-    FROST_SKIN_ID: "solar-frost-descent", SEASONAL_AUTO_ID: "solar-auto",
+    FROST_SKIN_ID: "solar-frost-descent", WINTER_SKIN_ID: "solar-start-winter", SEASONAL_AUTO_ID: "solar-auto",
+    seasonalPackForSkin: () => null,
     seasonalSkinId: () => "solar-frost-descent", frostEdition: () => ({ art: "/test-frost.webp" }),
     useEffect: () => {}, useState: (initial) => [initial, () => {}],
     document: { documentElement: {

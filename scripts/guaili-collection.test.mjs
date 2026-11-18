@@ -6,7 +6,7 @@ const index = read("src/routes/guaili-luanshen.tsx");
 const source = read("src/routes/-mythic-atlas-guaili-data.ts");
 const essay = read("src/routes/-mythic-atlas-zodiac-essay.ts");
 const body = read("src/routes/-mythic-atlas-guaili.tsx");
-const home = read("src/components/painted-home.tsx");
+const home = read("src/components/home-tree.tsx");
 const atlas = read("src/routes/mythic-atlas.tsx");
 const seo = JSON.parse(read("src/lib/route-meta.json"));
 const sitemap = read("public/sitemap.xml");
@@ -16,7 +16,7 @@ test("the separate Guaili group has one real canonical route and visible homepag
   assert.match(index, /createFileRoute\("\/guaili-luanshen"\)/);
   assert.match(index, /data-guaili-collection/);
   assert.match(home, /data-home-guaili-collection/);
-  assert.match(home, /to="\/guaili-luanshen"/);
+  assert.match(home, /href: '\/guaili-luanshen'/);
   assert.match(atlas, /to="\/guaili-luanshen"/);
   assert.match(index, /to="\/mythic-atlas" hash="guaili"/);
 });

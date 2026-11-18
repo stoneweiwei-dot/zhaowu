@@ -1,0 +1,198 @@
+[
+  {
+    "width": 320,
+    "boxes": [
+      {
+        "text": "繁體",
+        "x": 81.046875,
+        "y": 16,
+        "width": 72.984375,
+        "height": 44,
+        "scrollWidth": 73,
+        "clientWidth": 73
+      },
+      {
+        "text": "简体",
+        "x": 156.03125,
+        "y": 16,
+        "width": 72.984375,
+        "height": 44,
+        "scrollWidth": 73,
+        "clientWidth": 73
+      },
+      {
+        "text": "English",
+        "x": 231.015625,
+        "y": 16,
+        "width": 72.984375,
+        "height": 44,
+        "scrollWidth": 73,
+        "clientWidth": 73
+      },
+      {
+        "text": "日本語",
+        "x": 81.046875,
+        "y": 62,
+        "width": 72.984375,
+        "height": 44,
+        "scrollWidth": 73,
+        "clientWidth": 73
+      },
+      {
+        "text": "한국어",
+        "x": 156.03125,
+        "y": 62,
+        "width": 72.984375,
+        "height": 44,
+        "scrollWidth": 73,
+        "clientWidth": 73
+      },
+      {
+        "text": "हिन्दी",
+        "x": 231.015625,
+        "y": 62,
+        "width": 72.984375,
+        "height": 44,
+        "scrollWidth": 73,
+        "clientWidth": 73
+      },
+      {
+        "text": "ไทย",
+        "x": 81.046875,
+        "y": 108,
+        "width": 72.984375,
+        "height": 44,
+        "scrollWidth": 73,
+        "clientWidth": 73
+      },
+      {
+        "text": "Bahasa Indonesia",
+        "x": 156.03125,
+        "y": 108,
+        "width": 147.96875,
+        "height": 44,
+        "scrollWidth": 148,
+        "clientWidth": 148
+      },
+      {
+        "text": "Tiếng Việt",
+        "x": 81.046875,
+        "y": 154,
+        "width": 222.953125,
+        "height": 44,
+        "scrollWidth": 223,
+        "clientWidth": 223
+      }
+    ],
+    "dictionaryRequests": [
+      "th-n8Rj7YRM.js",
+      "th-n8Rj7YRM.js",
+      "id-QJ8_QsNJ.js",
+      "id-QJ8_QsNJ.js",
+      "vi-DBLSLc1u.js",
+      "vi-DBLSLc1u.js"
+    ],
+    "result": "PASS: fixed header, nine readable 44px options, scroll, six-language persistence, inner page"
+  },
+  {
+    "width": 390,
+    "boxes": [
+      {
+        "text": "繁體",
+        "x": 151.046875,
+        "y": 16,
+        "width": 72.984375,
+        "height": 44,
+        "scrollWidth": 73,
+        "clientWidth": 73
+      },
+      {
+        "text": "简体",
+        "x": 226.03125,
+        "y": 16,
+        "width": 72.984375,
+        "height": 44,
+        "scrollWidth": 73,
+        "clientWidth": 73
+      },
+      {
+        "text": "English",
+        "x": 301.015625,
+        "y": 16,
+        "width": 72.984375,
+        "height": 44,
+        "scrollWidth": 73,
+        "clientWidth": 73
+      },
+      {
+        "text": "日本語",
+        "x": 151.046875,
+        "y": 62,
+        "width": 72.984375,
+        "height": 44,
+        "scrollWidth": 73,
+        "clientWidth": 73
+      },
+      {
+        "text": "한국어",
+        "x": 226.03125,
+        "y": 62,
+        "width": 72.984375,
+        "height": 44,
+        "scrollWidth": 73,
+        "clientWidth": 73
+      },
+      {
+        "text": "हिन्दी",
+        "x": 301.015625,
+        "y": 62,
+        "width": 72.984375,
+        "height": 44,
+        "scrollWidth": 73,
+        "clientWidth": 73
+      },
+      {
+        "text": "ไทย",
+        "x": 151.046875,
+        "y": 108,
+        "width": 72.984375,
+        "height": 44,
+        "scrollWidth": 73,
+        "clientWidth": 73
+      },
+      {
+        "text": "Bahasa Indonesia",
+        "x": 226.03125,
+        "y": 108,
+        "width": 147.96875,
+        "height": 44,
+        "scrollWidth": 148,
+        "clientWidth": 148
+      },
+      {
+        "text": "Tiếng Việt",
+        "x": 151.046875,
+        "y": 154,
+        "width": 222.953125,
+        "height": 44,
+        "scrollWidth": 223,
+        "clientWidth": 223
+      }
+    ],
+    "dictionaryRequests": [
+      "th-n8Rj7YRM.js",
+      "th-n8Rj7YRM.js",
+      "id-QJ8_QsNJ.js",
+      "id-QJ8_QsNJ.js",
+      "vi-DBLSLc1u.js",
+      "vi-DBLSLc1u.js"
+    ],
+    "result": "PASS: fixed header, nine readable 44px options, scroll, six-language persistence, inner page"
+  },
+  {
+    "result": "PASS: delayed import cannot overwrite a later selection; second selection uses cache",
+    "requests": [
+      "http://127.0.0.1:4173/assets/th-n8Rj7YRM.js"
+    ]
+  }
+]

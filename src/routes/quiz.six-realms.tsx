@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { RealmEmblemArt } from "@/components/realm-emblem-art";
+import { QuizShareButton } from "@/components/quiz-share-button";
 import { useI18n } from "@/lib/i18n";
 import { SIX_REALM_QUESTIONS, SIX_REALM_RESULTS, scoreSixRealmAnswers, type SixRealmKey } from "@/lib/fun-tests/six-realms";
 
@@ -187,6 +188,7 @@ function SixRealmsQuiz() {
             <Link to="/" className="grid min-h-12 place-items-center rounded-full bg-cinnabar px-5 py-3 text-sm text-cream">{copy.formal}</Link>
           </div>
           <p className="text-center text-xs leading-6 text-ink-mute">{copy.formalNote}</p>
+          <QuizShareButton quizId="six-realms" quizName={copy.title} resultLabel={finalScore.primary.map((key) => results[key].name).join(" · ")} description={finalScore.primary.map((key) => results[key].summary).join(" · ")} />
         </section>
       )}
 

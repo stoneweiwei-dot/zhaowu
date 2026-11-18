@@ -1055,8 +1055,7 @@ html[data-zw-theme="night"] .zhaowu-specialist-node { border-top-color: rgba(236
 /* Result readability. */
 .zhaowu-result-flow .zhaowu-bazi-chart > header { display: none !important; }
 .zhaowu-result-card,
-.zhaowu-decree-couplet,
-.zhaowu-bazi-chart { border-radius: 18px !important; }
+.zhaowu-decree-couplet { border-radius: 18px !important; }
 .zhaowu-pillar-grid { gap: 8px !important; }
 .zhaowu-pillar-grid > section { min-width: 0 !important; padding: 15px 8px !important; }
 .zhaowu-pillar-grid > section > strong { font-size: clamp(24px, 6vw, 31px) !important; line-height: 1.15 !important; white-space: nowrap !important; }
@@ -1069,6 +1068,94 @@ html[data-zw-theme="night"] .zhaowu-specialist-node { border-top-color: rgba(236
 .bazi-detail-card { padding: 15px 16px !important; }
 .zhaowu-cycle-list,
 .bazi-luck-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 9px !important; }
+
+/* Result chart + report share card: Song scroll presentation, scoped to the completed report. */
+.zhaowu-result-flow .zhaowu-bazi-chart {
+  margin: 18px 0 22px;
+  padding: 18px 14px;
+  border: 1px solid var(--zws-divider, #d8d2c3) !important;
+  border-radius: 0 !important;
+  background: var(--zws-surface, #fffdf8) !important;
+  color: var(--zws-ink, #27241f) !important;
+  box-shadow: 0 0 0 1px rgba(216, 199, 164, .28) !important;
+}
+.zhaowu-result-flow .zhaowu-bazi-chart .zhaowu-pillar-grid {
+  gap: 0 !important;
+  margin-top: 0 !important;
+  border: 1px solid var(--zws-divider, #d8d2c3);
+  background: var(--zws-surface, #fffdf8);
+}
+.zhaowu-result-flow .zhaowu-pillar-grid > section {
+  display: grid;
+  align-content: start;
+  min-height: 154px;
+  padding: 13px 5px 12px !important;
+  border: 0 !important;
+  border-right: 1px solid var(--zws-divider, #d8d2c3) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+.zhaowu-result-flow .zhaowu-pillar-grid > section:last-child { border-right: 0 !important; }
+.zhaowu-result-flow .zhaowu-pillar-grid > section > h3 {
+  margin: 0 0 9px;
+  color: var(--zws-soft, #5a554c) !important;
+  font-family: 'Jost', var(--zw-font-body), sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .08em;
+}
+.zhaowu-result-flow .zhaowu-pillar-grid > section > strong {
+  color: var(--zws-ink, #27241f) !important;
+  font-family: 'Noto Serif TC', 'Songti TC', 'Songti SC', 'Noto Serif CJK TC', PMingLiU, serif !important;
+  font-size: clamp(25px, 7.2vw, 31px) !important;
+  font-weight: 650;
+  line-height: 1.45 !important;
+  letter-spacing: .04em;
+}
+.zhaowu-result-flow .zhaowu-pillar-grid > section > small {
+  color: var(--zws-soft, #5a554c) !important;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .02em;
+  line-height: 1.5;
+}
+.zhaowu-result-flow .zhaowu-chart-details { margin-top: 13px; border-top: 1px solid var(--zws-divider, #d8d2c3); }
+.zhaowu-result-flow .zhaowu-chart-details > summary {
+  padding: 12px 2px 2px;
+  color: var(--zws-accent, #315e50);
+  font-family: 'Noto Serif TC', 'Songti TC', 'Songti SC', 'Noto Serif CJK TC', PMingLiU, serif;
+  font-weight: 600;
+}
+.zhaowu-result-flow .zhaowu-pillar-detail-grid > section { border-color: var(--zws-divider, #d8d2c3) !important; }
+.zhaowu-result-flow .zhaowu-share-card-panel {
+  margin: 22px 0;
+  padding: 16px 14px 14px;
+  border: 1px solid var(--zws-divider, #d8d2c3);
+  border-radius: 0;
+  background: var(--zws-surface, #fffdf8);
+  color: var(--zws-ink, #27241f);
+  box-shadow: 0 0 0 1px rgba(216, 199, 164, .28);
+}
+.zhaowu-result-flow .zhaowu-share-card-panel > header > p { color: var(--zws-accent, #315e50); font-size: 10px; letter-spacing: .18em; }
+.zhaowu-result-flow .zhaowu-share-card-panel > header h4 {
+  color: var(--zws-ink, #27241f);
+  font-family: 'Noto Serif TC', 'Songti TC', 'Songti SC', 'Noto Serif CJK TC', PMingLiU, serif;
+  font-size: 22px;
+  font-weight: 650;
+  letter-spacing: .04em;
+}
+.zhaowu-result-flow .zhaowu-share-card-panel > header span { color: var(--zws-soft, #5a554c); font-size: 12px; line-height: 1.7; }
+.zhaowu-result-flow .zhaowu-share-preview,
+.zhaowu-result-flow .zhaowu-share-placeholder {
+  width: min(82vw, 292px);
+  border: 1px solid #d8c7a4;
+  border-radius: 0;
+  background: #fffaf0;
+  box-shadow: 0 0 0 1px rgba(216, 199, 164, .25);
+}
+.zhaowu-result-flow .zhaowu-share-actions button { font-weight: 600; }
+.zhaowu-result-flow .zhaowu-share-fallback,
+.zhaowu-result-flow .zhaowu-share-guide-tip { color: var(--zws-soft, #5a554c); }
 
 [data-background-music-control]:where(:not([data-owner-background-music-manager]):not([role="dialog"])) {
   width: 44px !important;
@@ -6222,23 +6309,76 @@ html body .zhaowu-intro-skip {
   white-space: nowrap;
 }
 
-/* r226 — visible view counts in the footer (owner 2026-10-01). Quiet, single line, wraps safely on phones. */
+/* r226 / r228 — substantial small visit-count block in the footer: large Song-serif jade numeral beside a compact label on a rice-paper bordered badge. */
 html body .zhaowu-site-footer .zhaowu-site-views {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
   justify-content: center;
-  gap: 4px 12px;
-  margin: 0 0 8px;
-  color: var(--zw-muted, #6b6558);
+  gap: 10px;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 4px auto 12px;
+  padding: 6px 14px 7px;
+  border: 1px solid var(--zw-line, rgba(50, 76, 66, .19));
+  border-radius: var(--zw-card-radius, 7px);
+  background: var(--zw-paper-soft, rgba(250, 247, 239, .91));
+  color: var(--zw-muted, #69736b);
   font-size: 12px;
-  line-height: 1.4;
+  line-height: 1.25;
   letter-spacing: .06em;
+  white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
-html body .zhaowu-site-footer .zhaowu-site-views b { font-weight: 650; color: inherit; margin-left: 4px; }
-html body .zhaowu-site-footer .zhaowu-site-views i { width: 1px; height: 11px; background: currentColor; opacity: .35; }
-html[data-zw-theme="night"] body .zhaowu-site-footer .zhaowu-site-views { color: #cfc6b4; }
+html body .zhaowu-site-footer .zhaowu-site-views__total,
+html body .zhaowu-site-footer .zhaowu-site-views__today {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  white-space: nowrap;
+}
+html body .zhaowu-site-footer .zhaowu-site-views__number {
+  font-family: var(--zw-font-heading, "Songti TC", "Noto Serif TC", serif);
+  font-size: clamp(17px, 4.4vw, 20px);
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: .03em;
+  color: var(--zw-jade, #305b50);
+}
+html body .zhaowu-site-footer .zhaowu-site-views__label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--zw-ink-soft, #4a5953);
+  letter-spacing: .08em;
+}
+html body .zhaowu-site-footer .zhaowu-site-views b {
+  font-family: var(--zw-font-heading, "Songti TC", "Noto Serif TC", serif);
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--zw-jade, #305b50);
+  margin-left: 2px;
+}
+html body .zhaowu-site-footer .zhaowu-site-views i {
+  align-self: center;
+  width: 1px;
+  height: 13px;
+  background: var(--zw-line, rgba(50, 76, 66, .19));
+}
+html[data-zw-theme="night"] body .zhaowu-site-footer .zhaowu-site-views {
+  background: rgba(24, 33, 30, .72);
+  border-color: rgba(207, 198, 180, .24);
+  color: #cfc6b4;
+}
+html[data-zw-theme="night"] body .zhaowu-site-footer .zhaowu-site-views__number,
+html[data-zw-theme="night"] body .zhaowu-site-footer .zhaowu-site-views b {
+  color: var(--zw-gold, #d8be86);
+}
+html[data-zw-theme="night"] body .zhaowu-site-footer .zhaowu-site-views__label {
+  color: #cfc6b4;
+}
+html[data-zw-theme="night"] body .zhaowu-site-footer .zhaowu-site-views i {
+  background: rgba(207, 198, 180, .28);
+}
 
 /* r227 — night music player blends into the paper panel (owner 2026-10-01: "狗皮膏藥感覺很重").
  * At night the dragon panel is light paper, but the shared night rule painted .zhaowu-dragon-music as a
@@ -8125,6 +8265,67 @@ body > .zhaowu-spirit-slip .zhaowu-spirit-slip-layout {
   justify-items: end;
   gap: 8px;
   pointer-events: none;
+}
+
+/* Volume used to be portaled into this dock and stayed on screen with the Music button.
+   The mount point is gone; keep the rule so a leftover empty dock cannot pin a control pile. */
+.zhaowu-music-volume-dock {
+  display: none !important;
+}
+
+.zhaowu-music-volume {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+  border: 1px solid rgba(146, 112, 64, .28);
+  border-radius: 16px;
+  padding: 6px 10px 6px 6px;
+  background: rgba(247, 241, 228, .94);
+  box-shadow: 0 8px 24px rgba(59, 48, 35, .12);
+}
+
+.zhaowu-music-volume > button {
+  min-width: 72px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 12px;
+  padding: 0 10px;
+  color: #24362f;
+  background: rgba(52, 94, 80, .12);
+  font: 650 14px/1 var(--font-body, inherit);
+  cursor: pointer;
+}
+
+.zhaowu-music-volume > button[aria-pressed="true"] {
+  color: #fffdf8;
+  background: #345e50;
+}
+
+.zhaowu-music-volume label {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  color: #4a4338;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.zhaowu-music-volume input[type="range"] {
+  width: 100%;
+  height: 44px;
+  margin: 0;
+  accent-color: #345e50;
+  cursor: pointer;
+}
+
+.zhaowu-site-utility-panel .zhaowu-music-volume {
+  position: static;
+  width: 100%;
+  margin: 10px 0 4px;
+  box-shadow: none;
 }
 
 .zhaowu-site-utility-buttons {
@@ -10211,4 +10412,49 @@ html[lang="en"] #zhaowu-main-content :is(h1, h2, h3) {
   }
   #zhaowu-main-content main > h1 { font-size: clamp(30px, 8vw, 39px) !important; }
   .zhaowu-site-header .zhaowu-brand-name { font-size: 19px !important; }
+}
+
+/* 2026-11-02: visitor music playlist must never shrink to a one-glyph column on mobile.
+   The music section is a grid; explicitly give it a zero-minimum full-width track,
+   then reserve space for the number, two-line title and play marker. */
+html body [data-background-music-player] {
+  width: 100% !important;
+  min-width: 0 !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  justify-items: stretch !important;
+}
+html body [data-background-music-player] [data-public-music-playlist],
+html body [data-background-music-player] [data-public-music-playlist] > ol,
+html body [data-background-music-player] [data-public-music-playlist] > ol > li {
+  display: block;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+html body [data-background-music-player] [data-public-music-playlist] > ol {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+html body [data-background-music-player] [data-music-playlist-track] {
+  display: grid !important;
+  grid-template-columns: 30px minmax(0, 1fr) 18px;
+  align-items: center;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  column-gap: 10px;
+}
+html body [data-background-music-player] [data-music-playlist-track] > span:nth-child(2) {
+  display: block;
+  min-width: 0 !important;
+  width: 100% !important;
+  overflow: hidden;
+}
+html body [data-background-music-player] [data-music-playlist-track] > span:nth-child(2) > span {
+  display: block;
+  width: 100%;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
 }

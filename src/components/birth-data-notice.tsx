@@ -4,9 +4,9 @@ type NoticeLocale = "zh-Hant" | "zh-Hans" | "en";
 // The full wording (children, sensitive data, medical records) lives in the Privacy Policy.
 const COPY = {
   birth: {
-    "zh-Hant": "請只輸入你本人，或已取得對方同意的出生資料。",
-    "zh-Hans": "请只输入你本人，或已取得对方同意的出生资料。",
-    en: "Enter only your own birth details, or those of someone who has agreed.",
+    "zh-Hant": "完成命盤後，生辰與盤面摘要會儲存於伺服器，用於提供及改善命盤服務；僅管理員可查看。你可來信要求刪除。請只輸入你本人或已同意者的資料。",
+    "zh-Hans": "完成命盘后，生辰与盘面摘要会储存在服务器，用于提供和改善命盘服务；仅管理员可查看。你可来信申请删除。请只输入你本人或已同意者的资料。",
+    en: "After a chart is completed, birth details and its chart snapshot are stored on our server to provide and improve the chart service. Only administrators can view them. Email us to request deletion. Enter only your own details or those of someone who agreed.",
   },
   question: {
     "zh-Hant": "提問請勿寫出他人的姓名、電話、住址等可識別資料。",

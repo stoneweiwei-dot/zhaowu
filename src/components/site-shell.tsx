@@ -1,3 +1,4 @@
+import { languagePath, languageAlternates } from "@/lib/language-routing.js";
 import { FROST_PHASES } from '@/lib/seasonal-skins';
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
@@ -13,7 +14,16 @@ import {
   useDisplayLanguage,
   type DisplayLanguage,
 } from "@/lib/display-language";
-import { getPublicSiteStats, recordVisit, SITE_RELEASE_FALLBACK, type PublicSiteStats } from "@/lib/site-stats";
+import { SORTED_PUBLIC_CHANGELOG, publicChangeText } from "@/lib/public-changelog";
+import {
+  formatCumulativeVisitsLabel,
+  formatCumulativeVisitsNumber,
+  getPublicSiteStats,
+  LEGACY_VISITS_BASE,
+  recordVisit,
+  SITE_RELEASE_FALLBACK,
+  type PublicSiteStats,
+} from "@/lib/site-stats";
 import { JourneyNavigation } from "@/components/journey-navigation";
 import { SiteUtilityDock } from "@/components/site-utility-dock";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -23,6 +33,7 @@ import { routeMetaFor, routeMetaForLanguage, ROUTE_META_PATHS } from "@/lib/rout
 import { applyBrandTheme, hydrateBrandTheme, NIGHT_MODE_ENABLED, useBrandTheme } from "@/lib/brand-theme";
 import { applySkin, readSkinId, hydrateSkin, refreshSharedSkin } from "@/lib/theme-skins";
 import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
+import { trackConversion } from "@/lib/observability/conversion-telemetry";
 import "@/legal-pages.css";
 import "@/brand-watermark.css";
 
@@ -59,6 +70,172 @@ function releaseSummaryForLanguage(summary: string, version: string, language: D
   if (language === "hi") return `नवीनतम प्रोडक्शन अपडेट: ${version} में वर्तमान इंटरफ़ेस, सामग्री और स्थिरता से जुड़े सुधार शामिल हैं।`;
   if (!/[\u3400-\u9fff]/u.test(summary)) return summary;
   return `Latest production update: ${version} includes the current interface, content and reliability fixes.`;
+}
+
+
+type ExtraLanguage = "th" | "id" | "vi" | "fil";
+
+// Reusable, static translations for shared shell strings that are not CopyKey entries.
+const SHELL_COPY: Record<string, Record<ExtraLanguage, string>> = {
+  "Release number": {
+    "th": "หมายเลขรุ่นเผยแพร่",
+    "id": "Nomor versi rilis",
+    "vi": "Số phiên bản phát hành",
+    "fil": "Numero ng inilabas na bersyon"
+  },
+  "Latest update": {
+    "th": "อัปเดตล่าสุด",
+    "id": "Pembaruan terbaru",
+    "vi": "Cập nhật mới nhất",
+    "fil": "Pinakabagong update"
+  },
+  "Site controls": {
+    "th": "เมนูเว็บไซต์",
+    "id": "Pengaturan situs",
+    "vi": "Điều khiển trang web",
+    "fil": "Mga kontrol ng website"
+  },
+  "Media": {
+    "th": "สื่อ",
+    "id": "Media",
+    "vi": "Tư liệu",
+    "fil": "Media"
+  },
+  "Open content and media management": {
+    "th": "เปิดการจัดการเนื้อหาและสื่อ",
+    "id": "Buka pengelolaan konten dan media",
+    "vi": "Mở phần quản lý nội dung và tư liệu",
+    "fil": "Buksan ang pamamahala ng nilalaman at media"
+  },
+  "Switch to day mode": {
+    "th": "เปลี่ยนเป็นโหมดกลางวัน",
+    "id": "Ganti ke mode siang",
+    "vi": "Chuyển sang chế độ ban ngày",
+    "fil": "Lumipat sa day mode"
+  },
+  "Switch to night mode": {
+    "th": "เปลี่ยนเป็นโหมดกลางคืน",
+    "id": "Ganti ke mode malam",
+    "vi": "Chuyển sang chế độ ban đêm",
+    "fil": "Lumipat sa night mode"
+  },
+  "Skip to main content": {
+    "th": "ข้ามไปยังเนื้อหาหลัก",
+    "id": "Lewati ke konten utama",
+    "vi": "Chuyển đến nội dung chính",
+    "fil": "Lumaktaw sa pangunahing nilalaman"
+  },
+  "ZHAOWU｜Free BaZi Chart · Four Pillars · True Solar Time · Annual Luck · No Sign-up": {
+    "th": "ZHAOWU｜ผังดวงปาจื้อฟรี · สี่เสา · เวลาสุริยะจริง · แนวโน้มรายปี · ไม่ต้องสมัคร",
+    "id": "ZHAOWU｜Bagan BaZi gratis · Empat Pilar · Waktu Matahari Sejati · Siklus Tahunan · Tanpa Daftar",
+    "vi": "ZHAOWU｜Lá số Bát Tự miễn phí · Tứ Trụ · Giờ mặt trời thực · Xu hướng năm · Không cần đăng ký",
+    "fil": "ZHAOWU｜Libreng BaZi Chart · Apat na Haligi · Tunay na Oras ng Araw · Taunang Takbo · Walang Sign-up"
+  },
+  "Free BaZi (Four Pillars) chart with true solar time correction: five-element balance, luck cycles, annual luck and daily guidance. No sign-up needed.": {
+    "th": "ผูกดวงปาจื้อ (สี่เสา) ฟรี พร้อมปรับเวลาสุริยะจริง อ่านสมดุลธาตุทั้งห้า รอบจังหวะชีวิต แนวโน้มรายปี และคำแนะนำประจำวัน ไม่ต้องสมัครสมาชิก",
+    "id": "Bagan BaZi (Empat Pilar) gratis dengan penyesuaian waktu matahari sejati. Pelajari hubungan lima unsur, siklus sepuluh tahunan, pengaruh tahunan, dan panduan harian tanpa mendaftar.",
+    "vi": "Lập lá số Bát Tự (Tứ Trụ) miễn phí có hiệu chỉnh giờ mặt trời thực: tìm hiểu ngũ hành, chu kỳ vận hạn, xu hướng từng năm và gợi ý hằng ngày. Không cần đăng ký.",
+    "fil": "Libreng BaZi (Apat na Haligi) chart na may pagwawasto ng tunay na oras ng araw. Tingnan ang ugnayan ng limang elemento, mga siklo ng buhay, taunang impluwensiya at pang-araw-araw na gabay. Walang kailangang account."
+  },
+  "Day": {
+    "th": "กลางวัน",
+    "id": "Siang",
+    "vi": "Ngày",
+    "fil": "Araw"
+  },
+  "Night": {
+    "th": "กลางคืน",
+    "id": "Malam",
+    "vi": "Đêm",
+    "fil": "Gabi"
+  },
+  "Admin": {
+    "th": "ผู้ดูแล",
+    "id": "Admin",
+    "vi": "Quản trị",
+    "fil": "Admin"
+  },
+  "Owner sign-in": {
+    "th": "เข้าสู่ระบบเจ้าของเว็บไซต์",
+    "id": "Masuk sebagai pemilik situs",
+    "vi": "Đăng nhập dành cho chủ trang",
+    "fil": "Sign-in para sa may-ari"
+  },
+  "Why ZHAOWU exists": {
+    "th": "เหตุผลที่สร้าง ZHAOWU",
+    "id": "Mengapa ZHAOWU dibuat",
+    "vi": "Vì sao có ZHAOWU",
+    "fil": "Bakit ginawa ang ZHAOWU"
+  },
+  "Destiny reading is not fate — it is a way to understand yourself. Timing is not an answer — it is the ability to see the moment. What truly changes a life is each clear, conscious choice.": {
+    "th": "การอ่านดวงชะตาไม่ใช่การยอมรับโชคชะตา แต่เป็นวิธีเข้าใจตัวเอง จังหวะเวลาไม่ใช่คำตอบ แต่ช่วยให้มองเห็นโอกาส สิ่งที่เปลี่ยนชีวิตจริงคือการตัดสินใจอย่างชัดเจนและมีสติในแต่ละครั้ง",
+    "id": "Membaca takdir bukan berarti menyerah pada nasib, melainkan cara memahami diri. Waktu yang tepat bukanlah jawaban, tetapi membantu melihat kesempatan. Yang benar-benar mengubah hidup adalah pilihan yang sadar dan dipikirkan matang.",
+    "vi": "Luận mệnh không phải là phó mặc cho số phận, mà là cách hiểu chính mình. Thời điểm không tự đưa ra câu trả lời, nhưng giúp nhận ra cơ hội. Điều thực sự thay đổi cuộc sống là từng lựa chọn sáng suốt và có ý thức.",
+    "fil": "Ang pag-aaral ng kapalaran ay hindi pagsuko sa tadhana, kundi paraan upang maunawaan ang sarili. Ang tamang panahon ay hindi awtomatikong sagot; tumutulong ito na makita ang pagkakataon. Ang malinaw at pinag-isipang mga pagpili mo ang tunay na nakapagbabago sa buhay."
+  },
+  "So charting and the quick reading are free with no sign-up, and reports are stored encrypted in this browser on this device. A full report is a one-time purchase with no subscription. ZHAOWU offers traditional symbolism for reflection — not a medical diagnosis — and the decision stays yours.": {
+    "th": "จึงเปิดให้ผูกดวงและอ่านสรุปฟรีโดยไม่ต้องสมัคร รายงานจัดเก็บแบบเข้ารหัสในเบราว์เซอร์ของอุปกรณ์นี้ รายงานฉบับเต็มจ่ายครั้งเดียว ไม่มีสมาชิกแบบต่ออายุ ZHAOWU นำเสนอสัญลักษณ์ตามวัฒนธรรมเพื่อใช้ไตร่ตรอง ไม่ใช่การวินิจฉัยทางการแพทย์ และคุณยังเป็นผู้ตัดสินใจเอง",
+    "id": "Karena itu, pembuatan bagan dan bacaan singkat gratis tanpa pendaftaran. Laporan disimpan terenkripsi di browser perangkat ini. Laporan lengkap dibeli sekali tanpa langganan. ZHAOWU memberi penafsiran simbolik tradisional untuk refleksi, bukan diagnosis medis. Keputusan tetap di tangan Anda.",
+    "vi": "Vì vậy, lập lá số và đọc nhanh đều miễn phí, không cần đăng ký. Báo cáo được lưu mã hóa trong trình duyệt trên thiết bị này. Báo cáo đầy đủ chỉ trả phí một lần, không có thuê bao. ZHAOWU cung cấp ý nghĩa biểu tượng truyền thống để tham khảo, không phải chẩn đoán y khoa; quyết định vẫn thuộc về bạn.",
+    "fil": "Kaya libre ang paggawa ng chart at maikling pagbasa nang walang sign-up. Naka-encrypt ang mga ulat at nakaimbak sa browser ng device na ito. Isang beses lang babayaran ang buong ulat, walang subscription. Ang tradisyonal na simbolismo ng ZHAOWU ay para sa pagninilay, hindi medikal na diagnosis. Ikaw pa rin ang magpapasya."
+  },
+  "Four classical sources · Our reading method": {
+    "th": "สี่คัมภีร์โบราณ · วิธีวิเคราะห์ของเรา",
+    "id": "Empat sumber klasik · Metode penafsiran kami",
+    "vi": "Bốn nguồn kinh điển · Phương pháp luận giải",
+    "fil": "Apat na klasikong sanggunian · Paraan ng pagsusuri"
+  },
+  "Legal": {
+    "th": "ข้อมูลทางกฎหมาย",
+    "id": "Informasi hukum",
+    "vi": "Thông tin pháp lý",
+    "fil": "Impormasyong legal"
+  },
+  "Privacy": {
+    "th": "นโยบายความเป็นส่วนตัว",
+    "id": "Privasi",
+    "vi": "Quyền riêng tư",
+    "fil": "Privacy"
+  },
+  "Terms": {
+    "th": "ข้อกำหนดการใช้บริการ",
+    "id": "Ketentuan layanan",
+    "vi": "Điều khoản sử dụng",
+    "fil": "Mga tuntunin"
+  },
+  "Copyright": {
+    "th": "ลิขสิทธิ์",
+    "id": "Hak cipta",
+    "vi": "Bản quyền",
+    "fil": "Karapatang-ari"
+  },
+  "Sign in / Sign up": {
+    "th": "เข้าสู่ระบบ / สมัครสมาชิก",
+    "id": "Masuk / Daftar",
+    "vi": "Đăng nhập / Đăng ký",
+    "fil": "Mag-sign in / Gumawa ng account"
+  },
+  "My reports": {
+    "th": "รายงานของฉัน",
+    "id": "Laporan saya",
+    "vi": "Báo cáo của tôi",
+    "fil": "Aking mga ulat"
+  },
+  "No registration required. Reports are stored in this browser on this device.": {
+    "th": "ไม่ต้องสมัครสมาชิก รายงานจะเก็บไว้ในเบราว์เซอร์ของอุปกรณ์นี้",
+    "id": "Tidak perlu mendaftar. Laporan tersimpan di browser pada perangkat ini.",
+    "vi": "Không cần đăng ký. Báo cáo được lưu trong trình duyệt trên thiết bị này.",
+    "fil": "Hindi kailangang magparehistro. Nakaimbak ang mga ulat sa browser ng device na ito."
+  }
+};
+
+function displayShellText(...args: Parameters<typeof displayText>): string {
+  const [language, , , english] = args;
+  if (language === "th" || language === "id" || language === "vi" || language === "fil") {
+    const localized = SHELL_COPY[english]?.[language];
+    if (localized) return localized;
+  }
+  return displayText(...args);
 }
 
 export function SiteShell({ children }: { children: ReactNode }) {
@@ -172,41 +349,44 @@ export function SiteShell({ children }: { children: ReactNode }) {
   }, []);
 
   const releaseDate = formatReleaseDate(stats.publishedAt, language);
-  const releaseSummary = releaseSummaryForLanguage(stats.latestSummary, stats.version, language);
+  const releaseSummary = SORTED_PUBLIC_CHANGELOG[0] ? publicChangeText(SORTED_PUBLIC_CHANGELOG[0], language).summary : releaseSummaryForLanguage(stats.latestSummary, stats.version, language);
   const numberLocale = intlTagFor(language);
-  // Korean and Hindi remain implemented in the codebase but are intentionally
-  // hidden from the public language selector until they are reactivated.
+  // Expose all implemented display dictionaries; article editing keeps its own three-language scope.
   const languageOptions = [
     { value: "zh-Hant" as const, label: "繁體", aria: "繁體中文" },
     { value: "zh-Hans" as const, label: "简体", aria: "简体中文" },
     { value: "en" as const, label: "English", aria: "English" },
+    { value: "ja" as const, label: "日本語", aria: "日本語" },
+    { value: "ko" as const, label: "한국어", aria: "한국어" },
+    { value: "hi" as const, label: "हिन्दी", aria: "हिन्दी" },
+    { value: "fil" as const, label: "Filipino", aria: "Filipino (Pilipinas)" },
+    { value: "th" as const, label: "ไทย", aria: "ไทย" },
+    { value: "id" as const, label: "Bahasa Indonesia", aria: "Bahasa Indonesia" },
+    { value: "vi" as const, label: "Tiếng Việt", aria: "Tiếng Việt" },
   ];
 
-  const updateLabel = displayText(language, "累計更新", "累计更新", "Updates", "更新", "누적 업데이트", "कुल अपडेट");
-  const todayLabel = displayText(language, "今日", "今日", "Today", "本日", "오늘", "आज");
-  const totalLabel = displayText(language, "累計訪問", "累计访问", "Total visits", "累計訪問", "누적 방문", "कुल विज़िट");
-  // Owner 2026-10-01: view counts must be visible. The header strip that used to carry them is hidden by the
-  // layout system, so they live in the page footer (existing counter/RPC unchanged).
-  const viewsTodayLabel = displayText(language, "今日瀏覽", "今日浏览", "Views today", "本日の閲覧", "오늘 조회", "आज के दृश्य");
-  const viewsTotalLabel = displayText(language, "累計瀏覽", "累计浏览", "Total views", "累計閲覧", "누적 조회", "कुल दृश्य");
-  const latestLabel = displayText(language, "最新更新", "最新更新", "Latest update", "最新更新", "최신 업데이트", "नवीनतम अपडेट");
-  const siteControlsLabel = displayText(language, "網站控制", "网站控制", "Site controls", "サイト操作", "사이트 메뉴", "साइट नियंत्रण");
-  const galleryLabel = displayText(language, "素材管理", "素材管理", "Media", "素材管理", "미디어", "मीडिया");
-  const openGalleryLabel = displayText(language, "打開內容與素材管理", "打开内容与素材管理", "Open content and media management", "コンテンツ管理を開く", "콘텐츠 관리를 열기", "कंटेंट प्रबंधन खोलें");
-  const dayModeLabel = displayText(language, "切換日間模式", "切换日间模式", "Switch to day mode", "昼モードに切り替える", "주간 모드로 전환", "दिन मोड पर जाएँ");
-  const nightModeLabel = displayText(language, "切換夜間模式", "切换夜间模式", "Switch to night mode", "夜モードに切り替える", "야간 모드로 전환", "रात मोड पर जाएँ");
-  const languageVisualLabel = displayText(language, "語言", "语言", "Language", "言語", "언어", "भाषा");
-  const skipLabel = displayText(language, "跳到主要內容", "跳到主要内容", "Skip to main content", "本文へ移動", "본문으로 이동", "मुख्य सामग्री पर जाएँ");
+  const updateLabel = displayShellText(language, "正式版本序號", "正式版本序号", "Release number", "正式版番号", "정식 버전 번호", "रिलीज़ संख्या");
+  // Owner 2026-10-01 / 2026-11-11: cumulative visit counts must always be visible in the footer as legacy base + new DB count.
+  const displayedTotal = LEGACY_VISITS_BASE + (stats.totalVisits > 0 ? stats.totalVisits : 0);
+  const cumulativeVisitsNumber = formatCumulativeVisitsNumber(displayedTotal, language);
+  const cumulativeVisitsLabel = formatCumulativeVisitsLabel(language);
+  const latestLabel = displayShellText(language, "最新更新", "最新更新", "Latest update", "最新更新", "최신 업데이트", "नवीनतम अपडेट");
+  const siteControlsLabel = displayShellText(language, "網站控制", "网站控制", "Site controls", "サイト操作", "사이트 메뉴", "साइट नियंत्रण");
+  const galleryLabel = displayShellText(language, "素材管理", "素材管理", "Media", "素材管理", "미디어", "मीडिया");
+  const openGalleryLabel = displayShellText(language, "打開內容與素材管理", "打开内容与素材管理", "Open content and media management", "コンテンツ管理を開く", "콘텐츠 관리를 열기", "कंटेंट प्रबंधन खोलें");
+  const dayModeLabel = displayShellText(language, "切換日間模式", "切换日间模式", "Switch to day mode", "昼モードに切り替える", "주간 모드로 전환", "दिन मोड पर जाएँ");
+  const nightModeLabel = displayShellText(language, "切換夜間模式", "切换夜间模式", "Switch to night mode", "夜モードに切り替える", "야간 모드로 전환", "रात मोड पर जाएँ");
+  const languageVisualLabel = t("language");
+  const skipLabel = displayShellText(language, "跳到主要內容", "跳到主要内容", "Skip to main content", "本文へ移動", "본문으로 이동", "मुख्य सामग्री पर जाएँ");
 
   useEffect(() => {
-    // Per-route metadata from src/lib/route-meta.json for the three public
-    // languages (zh-Hant/zh-Hans/en). Hidden languages (ja/ko/hi) and unknown
-    // routes keep the previous inline site-wide defaults below.
+    // Public routes use the same ten-language metadata as the static build.
+    // Unknown/private routes retain the site-wide fallback.
     const routeMeta = routeMetaFor(pathname);
-    const routeEntry = routeMeta && (language === "zh-Hant" || language === "zh-Hans" || language === "en")
+    const routeEntry = routeMeta
       ? routeMetaForLanguage(routeMeta, language)
       : null;
-    const title = routeEntry?.title ?? displayText(
+    const title = routeEntry?.title ?? displayShellText(
       language,
       "昭梧｜八字排盤・子平八字・真太陽時・流年運勢｜免登入免費",
       "昭梧｜八字排盘・子平八字・真太阳时・流年运势｜免登录免费",
@@ -215,7 +395,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       "ZHAOWU｜출생 정보로 읽는 개인 명서",
       "ZHAOWU｜जन्म विवरण से व्यक्तिगत Destiny Book",
     );
-    const description = routeEntry?.description ?? displayText(
+    const description = routeEntry?.description ?? displayShellText(
       language,
       "免登入免費八字排盤：依子平八字與真太陽時校正，整理五行旺衰、大運與流年運勢、今日提示。",
       "免登录免费八字排盘：依子平八字与真太阳时校正，整理五行旺衰、大运与流年运势、今日提示。",
@@ -242,12 +422,22 @@ export function SiteShell({ children }: { children: ReactNode }) {
     const origin = "https://zhao-wu.com";
     const normalized = pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
     const isPrivate = PRIVATE_ROUTES.some((route) => normalized === route || normalized.startsWith(`${route}/`));
-    const canonicalPath = SELF_CANONICAL_ROUTES.includes(normalized) ? normalized : "/";
+    const canonicalPath = languagePath(SELF_CANONICAL_ROUTES.includes(normalized) ? normalized : "/", language);
     const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (canonical) canonical.href = `${origin}${canonicalPath === "/" ? "/" : canonicalPath}`;
     updateMeta('meta[property="og:url"]', `${origin}${canonicalPath}`);
     updateMeta('meta[name="robots"]', isPrivate ? "noindex,nofollow" : "index,follow");
-  }, [pathname]);
+    document.querySelectorAll('link[hreflang]').forEach(node => node.remove());
+    if (!isPrivate && SELF_CANONICAL_ROUTES.includes(normalized)) {
+      for (const alternate of languageAlternates(normalized, origin)) {
+        const link = document.createElement("link");
+        link.rel = "alternate";
+        link.hreflang = alternate.language;
+        link.href = alternate.href;
+        document.head.appendChild(link);
+      }
+    }
+  }, [pathname, language]);
 
   return (
     <div data-owner-view={user?.isOwner ? "true" : undefined} style={shellStyle} className={`relative min-h-dvh bg-transparent text-ink ${!isLogin ? "zhaowu-home-sheet-shell" : ""} ${isHome ? "zhaowu-route-home" : ""} ${isLogin ? "zhaowu-login-shell overflow-auto" : "overflow-x-hidden"}`}>
@@ -258,7 +448,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
             {!isOwnerWorkspace && !isHome ? (
               <div className="mb-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-b border-line/50 pb-1 text-[11px] leading-4 text-ink-mute" data-site-status-strip>
                 <span data-site-release>{stats.version} · {updateLabel} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}</span>
-                <span>{todayLabel} {stats.todayVisits.toLocaleString(numberLocale)} · {totalLabel} {stats.totalVisits.toLocaleString(numberLocale)}</span>
                 <Link to="/updates" className="zhaowu-latest-update-link" data-latest-change-report aria-label={`${latestLabel}：${releaseSummary}`}>
                   <span>{latestLabel}</span><span aria-hidden="true">›</span>
                 </Link>
@@ -294,8 +483,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
               />
 
               {NIGHT_MODE_ENABLED ? <div className="zhaowu-header-mode-toggle" role="group" aria-label={language === "en" ? "Appearance" : "日夜模式"}>
-                <button type="button" onClick={() => applyBrandTheme("day")} aria-pressed={!night} aria-label={dayModeLabel} data-active={!night ? "true" : "false"}>{displayText(language, "日", "日", "Day", "日", "낮", "दिन")}</button>
-                <button type="button" onClick={() => applyBrandTheme("night")} aria-pressed={night} aria-label={nightModeLabel} data-active={night ? "true" : "false"}>{displayText(language, "夜", "夜", "Night", "夜", "밤", "रात")}</button>
+                <button type="button" onClick={() => applyBrandTheme("day")} aria-pressed={!night} aria-label={dayModeLabel} data-active={!night ? "true" : "false"}>{displayShellText(language, "日", "日", "Day", "日", "낮", "दिन")}</button>
+                <button type="button" onClick={() => applyBrandTheme("night")} aria-pressed={night} aria-label={nightModeLabel} data-active={night ? "true" : "false"}>{displayShellText(language, "夜", "夜", "Night", "夜", "밤", "रात")}</button>
               </div> : null}
             </nav>
           </div>
@@ -322,27 +511,30 @@ export function SiteShell({ children }: { children: ReactNode }) {
           {user?.isOwner ? (
               <Link to="/account" className="zhaowu-home-login-inline" data-owner-console-entry aria-label={t("navAdmin")}>
                 <BrandIcon name="account" />
-                <span>{displayText(language, "後台管理", "后台管理", "Admin", "管理", "관리", "कंसोल")}</span>
+                <span>{displayShellText(language, "後台管理", "后台管理", "Admin", "管理", "관리", "कंसोल")}</span>
               </Link>
             ) : (
-              <Link to="/login" className="zhaowu-home-login-inline" data-owner-login-entry aria-label={displayText(language, "站主登入", "站主登录", "Owner sign-in", "管理者ログイン", "관리자 로그인", "मालिक लॉगिन")}>
+              <Link to="/login" className="zhaowu-home-login-inline" data-owner-login-entry aria-label={displayShellText(language, "站主登入", "站主登录", "Owner sign-in", "管理者ログイン", "관리자 로그인", "मालिक लॉगिन")}>
                 <BrandIcon name="account" />
-                <span>{displayText(language, "站主登入", "站主登录", "Owner sign-in", "管理者ログイン", "관리자 로그인", "मालिक लॉगिन")}</span>
+                <span>{displayShellText(language, "站主登入", "站主登录", "Owner sign-in", "管理者ログイン", "관리자 로그인", "मालिक लॉगिन")}</span>
               </Link>
             )}
         </div>
-        {stats.totalVisits > 0 ? (
-          <p className="zhaowu-site-views" data-site-views aria-label={`${viewsTodayLabel} ${stats.todayVisits.toLocaleString(numberLocale)}，${viewsTotalLabel} ${stats.totalVisits.toLocaleString(numberLocale)}`}>
-            <span>{viewsTodayLabel} <b>{stats.todayVisits.toLocaleString(numberLocale)}</b></span>
-            <i aria-hidden="true" />
-            <span>{viewsTotalLabel} <b>{stats.totalVisits.toLocaleString(numberLocale)}</b></span>
-          </p>
-        ) : null}
+        <p
+          className="zhaowu-site-views"
+          data-site-views
+          aria-label={`${cumulativeVisitsLabel} ${cumulativeVisitsNumber}`}
+        >
+          <span className="zhaowu-site-views__total">
+            <strong className="zhaowu-site-views__number" data-site-views-number>{cumulativeVisitsNumber}</strong>
+            <span className="zhaowu-site-views__label" data-site-views-label>{cumulativeVisitsLabel}</span>
+          </span>
+        </p>
         {isHome ? (
           <details className="zhaowu-why" data-why-zhaowu>
-            <summary>{displayText(language, "為何做昭梧", "为何做昭梧", "Why ZHAOWU exists", "昭梧をつくる理由", "昭梧를 만든 이유")}</summary>
+            <summary>{displayShellText(language, "為何做昭梧", "为何做昭梧", "Why ZHAOWU exists", "昭梧をつくる理由", "昭梧를 만든 이유")}</summary>
             <div className="zhaowu-why__body">
-              <p>{displayText(
+              <p>{displayShellText(
                 language,
                 "命理不是宿命，而是理解自己的方法；運勢不是答案，而是看見時機的能力。真正改變人生的，始終是每一次清醒而有意識的選擇。",
                 "命理不是宿命，而是理解自己的方法；运势不是答案，而是看见时机的能力。真正改变人生的，始终是每一次清醒而有意识的选择。",
@@ -350,7 +542,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 "命理は宿命ではなく、自分を理解するための方法。運勢は答えではなく、時機を見る力。人生を本当に変えるのは、いつも、澄んだ意識で行う一つひとつの選択です。",
                 "명리는 숙명이 아니라 자신을 이해하는 방법이고, 운세는 답이 아니라 때를 보는 힘입니다. 삶을 정말로 바꾸는 것은 언제나 깨어 있는 의식으로 하는 매번의 선택입니다.",
               )}</p>
-              <p>{displayText(
+              <p>{displayShellText(
                 language,
                 "所以排盤與快速讀免費、免登入，報告加密保存在這台裝置的瀏覽器；完整報告為單次付費，不自動續費。昭梧只提供傳統象義的參考，不作醫療診斷，決定仍由你自己做。",
                 "所以排盘与快速读免费、免登录，报告加密保存在这台设备的浏览器；完整报告为单次付费，不自动续费。昭梧只提供传统象义的参考，不作医疗诊断，决定仍由你自己做。",
@@ -358,16 +550,18 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 "そのため、命盤とクイックリーディングは無料・登録不要で、レポートはこの端末のブラウザに暗号化して保存されます。完全版レポートは一回払いで、自動更新はありません。昭梧が示すのは伝統的な象意の参考であり、医療診断ではありません。決めるのは、あなた自身です。",
                 "그래서 명반과 빠른 해석은 무료이며 가입이 필요 없고, 보고서는 이 기기의 브라우저에 암호화되어 저장됩니다. 전체 보고서는 1회 결제이며 자동 갱신되지 않습니다. 昭梧는 전통 상징에 기반한 참고 자료일 뿐 의료 진단이 아니며, 결정은 언제나 당신의 몫입니다.",
               )}</p>
+              <p><Link to="/knowledge" hash="zhaowu-four-classics" className="inline-flex min-h-11 items-center underline underline-offset-4">{displayShellText(language, "四書合參 · 昭梧判讀依據", "四书合参 · 昭梧判断依据", "Four classical sources · Our reading method", "四書に基づく分析方法", "네 가지 고전과 분석 방식", "चार ग्रंथ और विश्लेषण पद्धति")}</Link></p>
             </div>
           </details>
         ) : null}
-        <ul className="zhaowu-footer-legal" aria-label={displayText(language, "法律資訊", "法律信息", "Legal", "法的情報", "법적 고지", "कानूनी")}>
-          <li><Link to="/privacy">{displayText(language, "隱私權政策", "隐私权政策", "Privacy", "プライバシー", "개인정보", "गोपनीयता")}</Link></li>
-          <li><Link to="/terms">{displayText(language, "服務條款", "服务条款", "Terms", "利用規約", "이용약관", "शर्तें")}</Link></li>
-          <li><Link to="/copyright">{displayText(language, "版權聲明", "版权声明", "Copyright", "著作権", "저작권", "कॉपीराइट")}</Link></li>
+        <p className="text-sm leading-7"><Link to="/" hash="birth-form" className="inline-flex min-h-11 items-center rounded-full bg-pine px-5 font-medium text-white" onClick={() => trackConversion("content_cta_clicked", { source: "site_footer", destination: "birth_form" })}>{displayShellText(language, "免費排盤，先看核心解讀", "免费排盘，先看核心解读", "Create my free chart", "無料で命盤を作る", "무료 명반 만들기", "मुफ़्त चार्ट बनाएँ")}</Link></p>
+        <ul className="zhaowu-footer-legal" aria-label={displayShellText(language, "法律資訊", "法律信息", "Legal", "法的情報", "법적 고지", "कानूनी")}>
+          <li><Link to="/privacy">{displayShellText(language, "隱私權政策", "隐私权政策", "Privacy", "プライバシー", "개인정보", "गोपनीयता")}</Link></li>
+          <li><Link to="/terms">{displayShellText(language, "服務條款", "服务条款", "Terms", "利用規約", "이용약관", "शर्तें")}</Link></li>
+          <li><Link to="/copyright">{displayShellText(language, "版權聲明", "版权声明", "Copyright", "著作権", "저작권", "कॉपीराइट")}</Link></li>
         </ul>
-        {!user?.isOwner ? <p className="zhaowu-member-link text-sm leading-7"><Link to="/member" className="inline-flex min-h-11 items-center rounded-full border border-line bg-cream/80 px-5 font-medium text-ink underline-offset-4" data-member-entry>{displayText(language, "會員登入／註冊", "会员登录／注册", "Sign in / Sign up", "ログイン／登録", "로그인／가입", "साइन इन／साइन अप")}</Link></p> : null}
-        <p className="text-xs leading-6 text-ink-mute"><Link to="/history" className="underline underline-offset-4">{displayText(language, "我的報告", "我的报告", "My reports", "履歴", "내 보고서", "मेरी रिपोर्ट")}</Link> · {displayText(language, "無需註冊，報告會加密保存在這台裝置的瀏覽器", "无需注册，报告会加密保存在这台设备的浏览器", "No registration required. Reports are stored in this browser on this device.", "登録不要。レポートはこの端末のブラウザに保存されます。", "가입 없이 이 기기의 브라우저에 저장됩니다.", "पंजीकरण की आवश्यकता नहीं; रिपोर्ट इस ब्राउज़र में सहेजी जाती हैं।")}</p>
+        {!user?.isOwner ? <p className="zhaowu-member-link text-sm leading-7"><Link to="/member" className="inline-flex min-h-11 items-center rounded-full border border-line bg-cream/80 px-5 font-medium text-ink underline-offset-4" data-member-entry>{displayShellText(language, "會員登入／註冊", "会员登录／注册", "Sign in / Sign up", "ログイン／登録", "로그인／가입", "साइन इन／साइन अप")}</Link></p> : null}
+        <p className="text-xs leading-6 text-ink-mute"><Link to="/history" className="underline underline-offset-4">{displayShellText(language, "我的報告", "我的报告", "My reports", "履歴", "내 보고서", "मेरी रिपोर्ट")}</Link> · {displayShellText(language, "無需註冊，報告會加密保存在這台裝置的瀏覽器", "无需注册，报告会加密保存在这台设备的浏览器", "No registration required. Reports are stored in this browser on this device.", "登録不要。レポートはこの端末のブラウザに保存されます。", "가입 없이 이 기기의 브라우저에 저장됩니다.", "पंजीकरण की आवश्यकता नहीं; रिपोर्ट इस ब्राउज़र में सहेजी जाती हैं।")}</p>
         <p className="font-display text-xs tracking-[0.22em] text-ink-mute">{t("brand")}<span className="ml-2">ZHAOWU</span></p>
         <p className="text-xs text-ink-mute">© 2026 {t("brand")} ZHAOWU</p>
       </footer> : null}

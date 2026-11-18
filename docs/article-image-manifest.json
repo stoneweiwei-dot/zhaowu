@@ -270,6 +270,78 @@
       "note": "2026-10-25 接入先前已要求發布的 STONE 原創圖；原始 PNG 941×1672、3114001 bytes、SHA-256 d34231de9886519964666c838278ca04cffc5906880ae1a657a301d412271a61。未裁切、未重繪、保留署名。圖內推論由圖前三語說明限定；圖片本身保留繁體中文字。",
       "libraryFileId": "libfile_c867bec331d48191b6f06bd64e19c795",
       "sha256": "d34231de9886519964666c838278ca04cffc5906880ae1a657a301d412271a61"
+    },
+    {
+      "src": "/articles/cai-sheng-zhe-ge/01-zhangliu-spirit.webp",
+      "article": "cai-sheng-zhe-ge-20261116",
+      "kind": "infographic",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "2026-11-16 站主授權本篇九圖隨文章發布，繁體中文字圖；WebP 916×1717，260678 bytes，SHA-256 9bd4d21b207b7d8bc4b67d20f3e674f164aa99628184dbd12dad38d2bff50b33。"
+    },
+    {
+      "src": "/articles/cai-sheng-zhe-ge/02-ghost-woven-cloth.webp",
+      "article": "cai-sheng-zhe-ge-20261116",
+      "kind": "infographic",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "2026-11-16 站主授權本篇九圖隨文章發布，繁體中文字圖；WebP 941×1672，381600 bytes，SHA-256 39dbc041c91dbaa805d92cc2e1f0f33f05a7288562a4596c36d92133eb10f0f3。"
+    },
+    {
+      "src": "/articles/cai-sheng-zhe-ge/03-soul-jar.webp",
+      "article": "cai-sheng-zhe-ge-20261116",
+      "kind": "infographic",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "2026-11-16 站主授權本篇九圖隨文章發布，繁體中文字圖；WebP 916×1717，314904 bytes，SHA-256 ae3eb9e74f05ea325d50f67928c89e9bb4b33634059b0bd70567cf0785462804。"
+    },
+    {
+      "src": "/articles/cai-sheng-zhe-ge/04-animal-transformation.webp",
+      "article": "cai-sheng-zhe-ge-20261116",
+      "kind": "infographic",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "2026-11-16 站主授權本篇九圖隨文章發布，繁體中文字圖；WebP 916×1717，371522 bytes，SHA-256 0abe13b520a39ed7d46ea0ae3b39043a586b72219e8b67d56f67767a33da2615。"
+    },
+    {
+      "src": "/articles/cai-sheng-zhe-ge/05-daxuba.webp",
+      "article": "cai-sheng-zhe-ge-20261116",
+      "kind": "infographic",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "2026-11-16 站主授權本篇九圖隨文章發布，繁體中文字圖；WebP 916×1717，360446 bytes，SHA-256 26b294ea1de57c2d5e6c29e66e09e47222e4b9033f26d80fe592e6802f8e95d4。"
+    },
+    {
+      "src": "/articles/cai-sheng-zhe-ge/06-gu-poison-law.webp",
+      "article": "cai-sheng-zhe-ge-20261116",
+      "kind": "infographic",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "2026-11-16 站主授權本篇九圖隨文章發布，繁體中文字圖；WebP 941×1672，299536 bytes，SHA-256 d2a6998166b0df23cd45b812adf0e6e3f10526f9d02a1465476634f97c13e52f。"
+    },
+    {
+      "src": "/articles/cai-sheng-zhe-ge/07-xiangshan-case.webp",
+      "article": "cai-sheng-zhe-ge-20261116",
+      "kind": "infographic",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "2026-11-16 站主授權本篇九圖隨文章發布，繁體中文字圖；WebP 916×1717，290044 bytes，SHA-256 a4a489238f487c4b573a3d51fffae275df54a4b2fa1ac0bc344252d03c5b3641。"
+    },
+    {
+      "src": "/articles/cai-sheng-zhe-ge/08-bear-and-dog-tales.webp",
+      "article": "cai-sheng-zhe-ge-20261116",
+      "kind": "infographic",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "2026-11-16 站主授權本篇九圖隨文章發布，繁體中文字圖；WebP 916×1717，388884 bytes，SHA-256 6318182a8209713d6b4900d03b45ee12bd58ebeaa917f8a39aa6ba8cbf8ac21f。"
+    },
+    {
+      "src": "/articles/cai-sheng-zhe-ge/09-forced-begging.webp",
+      "article": "cai-sheng-zhe-ge-20261116",
+      "kind": "infographic",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "2026-11-16 站主授權本篇九圖隨文章發布，繁體中文字圖；WebP 916×1717，301800 bytes，SHA-256 ad8126ea7a1b48baa56f46ce104cd748e634690de0b869b737d6cc11ade3635b。"
     }
   ]
 }

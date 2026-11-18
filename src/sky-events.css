@@ -103,3 +103,100 @@
  .sky-event-disclosure-body{padding-right:12px;padding-left:12px}
  .sky-events-archive-grid{grid-template-columns:minmax(0,1fr)}
 }
+
+/* /sky-events editorial integration: art and dated facts, not decorative orbits. */
+.sky-events-page{background:#f4efe3;color:#293c35}
+.sky-event-article{background:#fbf8ef;box-shadow:none;border:1px solid rgba(111,83,37,.13);border-radius:8px}
+.sky-event-title{align-items:center;gap:clamp(16px,3vw,32px)}
+.sky-event-art{box-sizing:border-box;flex:0 0 clamp(105px,20vw,220px);width:clamp(105px,20vw,220px);margin:0;min-width:0}
+.sky-event-art img{display:block;width:100%;height:auto;max-width:100%;aspect-ratio:4/5;object-fit:contain;background:#f4efe3}
+.sky-event-art figcaption{margin-top:5px;color:#675b4e;font-size:.82rem;line-height:1.45;text-align:center}
+.sky-event-timeline{display:grid;grid-template-columns:minmax(0,1fr);gap:0;overflow:visible;padding:10px 0 24px}
+.sky-event-timeline>div{box-sizing:border-box;display:grid;grid-template-columns:minmax(90px,150px) minmax(0,1fr);gap:clamp(12px,2.5vw,24px);min-width:0;padding:14px 0;border:0;border-bottom:1px solid rgba(106,90,64,.22)}
+.sky-event-timeline time{font-size:.94rem;line-height:1.65;color:#725124;font-weight:700}
+.sky-event-timeline span{min-width:0;font-size:1rem;line-height:1.75;color:#334238;overflow-wrap:anywhere}
+.sky-event-article,.sky-section-disclosure,.sky-events-page{overflow-wrap:anywhere}
+@media(max-width:520px){
+ .sky-event-title{display:block}
+ .sky-event-art{width:min(100%,240px);margin:0 auto 16px}
+ .sky-event-timeline{grid-template-columns:minmax(0,1fr)}
+ .sky-event-timeline>div{grid-template-columns:minmax(0,1fr);gap:2px;padding:13px 0}
+ .sky-event-timeline time{font-size:.88rem}
+ .sky-event-timeline span{font-size:.96rem}
+}
+@media(prefers-reduced-motion:reduce){.sky-events-page *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Song editorial surface for the sky desk. */
+.sky-events-page{width:min(100%,920px);background:#f7f3ea;color:#292c27;padding:clamp(18px,4vw,44px)}
+.sky-events-page .sky-events-hero{padding:30px 0 20px}
+.sky-events-page .sky-events-hero h1,.sky-events-page h2,.sky-events-page h3{font-family:"Songti TC","Songti SC",STSong,SimSun,"Noto Serif CJK TC",Georgia,serif}
+.sky-events-page .sky-events-truth-note{background:transparent;border-left:2px solid #9b4438;padding:4px 14px}
+.sky-events-page .sky-events-shortcuts{gap:0;border-block:1px solid #d9cdb8}
+.sky-events-page .sky-events-shortcuts a{border:0;border-radius:0;background:transparent;padding:0 18px 0 0;margin-right:18px;color:#315e50}
+.sky-events-page .sky-event-article{padding:30px 0;border:0;border-radius:0;background:transparent;box-shadow:none}
+.sky-events-page .sky-event-title{align-items:center;gap:clamp(24px,5vw,55px)}
+.sky-events-page .sky-event-art{flex-basis:42%;width:42%}
+.sky-events-page .sky-event-art img{aspect-ratio:auto;background:transparent}
+.sky-events-page .sky-event-art figcaption{text-align:left}
+.sky-events-page .sky-event-kind-tags span{padding:0;border-radius:0;background:transparent;color:#315e50;margin-right:16px}
+.sky-events-page .sky-section-disclosure{border:0;border-top:1px solid #cfc2ab;border-radius:0;background:transparent;box-shadow:none}
+.sky-events-page .sky-section-disclosure>summary{padding-inline:0}
+.sky-events-page .sky-event-disclosure-body{padding:0 0 22px}
+.sky-events-page .sky-event-two-layers{display:block}
+.sky-events-page .sky-event-layer{border:0;border-top:1px solid #d9cdb8;border-radius:0;background:transparent;padding:20px 0}
+.sky-events-page .sky-event-timeline>div{border-bottom:1px solid #ddd3c2}
+.sky-events-page .sky-events-archive-grid{display:block}
+.sky-events-page .sky-events-archive-card{border:0;border-bottom:1px solid #ddd3c2;border-radius:0;background:transparent;padding:16px 0}
+.sky-events-page .sky-events-category-grid span{border:0;border-radius:0;background:transparent;padding:4px 14px 4px 0}
+.sky-events-page .daily-sky{border:0;border-top:1px solid #cfc2ab;border-radius:0;background:transparent;padding:28px 0;margin:10px auto}
+@media(max-width:520px){.sky-events-page{padding:18px}.sky-events-page .sky-event-title{display:block}.sky-events-page .sky-event-art{width:min(100%,300px);margin:0 0 22px}.sky-events-page .sky-event-timeline>div{grid-template-columns:minmax(0,1fr);gap:3px}.sky-events-page .sky-event-article{padding:22px 0}}
+
+/* 2026-11-04 interpretive-first sky desk */
+.sky-events-page .sky-events-hero{padding:18px 0 6px}
+.sky-events-page .sky-events-hero h1{margin-bottom:9px}
+.sky-events-page .sky-events-hero>p{margin:0 0 18px;font-size:.92rem}
+.sky-events-page .sky-events-shortcuts{margin-bottom:9px}
+.sky-events-page .sky-event-article{padding-top:8px}
+.sky-event-impact{border-top:3px solid #315e50;background:#f5efe1;padding:clamp(20px,3.5vw,34px) clamp(18px,3.5vw,34px);margin:0 0 12px;scroll-margin-top:16px}
+.sky-event-impact .sky-layer-tag{display:block;color:#8c6539;letter-spacing:.17em;font-size:.75rem;font-weight:750}
+.sky-event-impact h2{font-size:clamp(1.65rem,4vw,2.45rem);margin:8px 0 7px;font-weight:600;color:#24483e;line-height:1.4}
+.sky-event-impact .sky-impact-intro{font-size:.92rem;color:#4b6357;margin:0 0 19px;line-height:1.8}
+.sky-impact-points{list-style:none;counter-reset:impact;display:grid;gap:0;padding:0;margin:0}
+.sky-impact-points li{counter-increment:impact;display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;padding:14px 0;border-top:1px solid #d5cbbb;color:#2b3932;font-size:clamp(.96rem,1.55vw,1.04rem);line-height:1.85;overflow-wrap:anywhere}
+.sky-impact-points li:before{content:counter(impact,decimal-leading-zero);font-size:.78rem;color:#9b4438;font-weight:750;line-height:2.4;font-variant-numeric:tabular-nums}
+.sky-impact-context{font-size:.79rem;color:#758478;margin:20px 0 0;border-top:1px solid #d5cbbb;padding-top:12px}
+.sky-event-article .sky-event-title{margin-top:18px;border-top:1px solid #d9cdb8;padding:24px 0}
+.sky-event-article .sky-event-title h2{font-size:clamp(1.4rem,3vw,2rem);line-height:1.5}
+.sky-event-article .sky-event-kind-tags{display:none}
+.sky-events-page .sky-event-layer.science{border-top:0;padding-top:14px}
+.sky-events-page .sky-science-disclaimer{font-size:.84rem;color:#637166;line-height:1.8;margin:14px 0}
+.sky-events-page .sky-observation-disclosure{margin-top:24px;scroll-margin-top:24px}
+.sky-events-page .sky-observation-disclosure-body{padding:10px 0 22px}
+.sky-events-page .sky-observation-disclosure .sky-observation-brief{margin:10px 0 20px}
+.sky-events-page .sky-observation-disclosure .daily-sky{margin:10px 0 0}
+.sky-events-page .sky-section-disclosure>summary{min-height:52px;padding:11px 3px}
+.sky-events-page .sky-section-disclosure>summary strong{font-family:"Songti TC","Songti SC",STSong,SimSun,"Noto Serif CJK TC",Georgia,serif;font-size:clamp(.94rem,2vw,1.06rem);font-weight:600}
+@media(max-width:520px){
+ .sky-events-page .sky-event-impact{padding:18px 15px;margin-inline:-4px}
+ .sky-event-impact h2{font-size:1.55rem}
+ .sky-impact-points li{grid-template-columns:23px minmax(0,1fr);gap:9px;font-size:.96rem;line-height:1.8}
+ .sky-event-article .sky-event-title{padding:18px 0}
+ .sky-events-page .sky-event-article{padding-top:10px}
+}
+
+/* Reader-first: the specialist symbolic reading follows four plain-language points. */
+.sky-impact-more{border-top:1px solid #d7cbbb;margin:8px 0 0}
+.sky-impact-more>summary{min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:12px;list-style:none;cursor:pointer;color:#315e50;font-size:.9rem;font-weight:700}
+.sky-impact-more>summary::-webkit-details-marker{display:none}
+.sky-impact-more>summary:after{content:"＋";font-size:1.1rem}
+.sky-impact-more[open]>summary:after{content:"−"}
+.sky-impact-more>summary:focus-visible{outline:3px solid #a77a31;outline-offset:3px}
+.sky-impact-more ul{margin:0;padding:0 0 8px 17px;font-size:.9rem;line-height:1.85;color:#536a5c}
+.sky-impact-more li{padding:7px 0}
+
+/* The self-hosted artwork remains independent of the dated observations. */
+.sky-universe-section { margin: 1.25rem 0 2rem; width: 100%; }
+.sky-universe-frame { display: block; width: 100%; height: min(80svh, 700px); min-height: 560px; border: 0; background: #070a16; }
+.sky-universe-frame[hidden] { display: none; }
+.sky-universe-note { margin: .65rem 0 0; font-size: 13px; line-height: 1.65; color: var(--zw-ink, #344c43); }
+@media (max-width: 480px) { .sky-universe-frame { height: 78svh; min-height: 560px; } }

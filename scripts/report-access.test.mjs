@@ -73,7 +73,7 @@ test("full paid reports include a customer-specific birth profile without changi
     assert.match(surface, /PersonalPaidProfile/);
     assert.match(surface, /personal=\{/);
   }
-  assert.match(unified, /href=\{entry\.route\}/);
+  assert.match(unified, /<Link className="zhaowu-specialist-free-link" to=\{entry\.route\}/);
   assert.doesNotMatch(unified, /<ReportAccessGate|<PersonalPaidProfile/);
 });
 

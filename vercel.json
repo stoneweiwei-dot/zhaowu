@@ -21,7 +21,7 @@
       "maxDuration": 60
     },
     "api/owner-music.js": {
-      "maxDuration": 10
+      "maxDuration": 30
     },
     "api/mingshu-doctor.js": {
       "maxDuration": 10
@@ -67,7 +67,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob: https://esm.sh https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' blob: data: https://plgpxusmemnmzckbwtiv.supabase.co https://api.open-meteo.com https://geocoding-api.open-meteo.com https://photon.komoot.io https://us.i.posthog.com https://esm.sh https://cdn.jsdelivr.net; worker-src 'self' blob:; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob: https://esm.sh https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' blob: data: https://gyisxbkjzvdretbqzeuw.supabase.co https://api.open-meteo.com https://geocoding-api.open-meteo.com https://photon.komoot.io https://us.i.posthog.com https://esm.sh https://cdn.jsdelivr.net; worker-src 'self' blob:; manifest-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
         },
         {
           "key": "Strict-Transport-Security",
@@ -222,6 +222,15 @@
           "value": "public, max-age=86400, stale-while-revalidate=604800"
         }
       ]
+    },
+    {
+      "source": "/(member|login|account|history|social|gallery)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     }
   ],
   "redirects": [
@@ -229,6 +238,46 @@
       "source": "/guide/:path*",
       "destination": "/?guide=1",
       "permanent": false
+    },
+    {
+      "source": "/bazi",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/bazi/",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/color",
+      "destination": "/daily-colors",
+      "permanent": true
+    },
+    {
+      "source": "/color/",
+      "destination": "/daily-colors",
+      "permanent": true
+    },
+    {
+      "source": "/zh-Hans",
+      "destination": "/zh-hans",
+      "permanent": true
+    },
+    {
+      "source": "/zh-Hans/:path*",
+      "destination": "/zh-hans/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/zh-Hant",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/zh-Hant/:path*",
+      "destination": "/:path*",
+      "permanent": true
     },
     {
       "source": "/",
@@ -251,28 +300,33 @@
       ],
       "destination": "https://zhao-wu.com/:path*",
       "permanent": true
+    },
+    {
+      "source": "/pricing",
+      "destination": "/sample-report",
+      "permanent": true
     }
   ],
   "rewrites": [
     {
       "source": "/api/gallery-ingest-finalize",
-      "destination": "https://plgpxusmemnmzckbwtiv.supabase.co/functions/v1/gallery-ingest-finalize"
+      "destination": "https://gyisxbkjzvdretbqzeuw.supabase.co/functions/v1/gallery-ingest-finalize"
     },
     {
       "source": "/sb/auth/v1/:path*",
-      "destination": "https://plgpxusmemnmzckbwtiv.supabase.co/auth/v1/:path*"
+      "destination": "https://gyisxbkjzvdretbqzeuw.supabase.co/auth/v1/:path*"
     },
     {
       "source": "/sb/rest/v1/:path*",
-      "destination": "https://plgpxusmemnmzckbwtiv.supabase.co/rest/v1/:path*"
+      "destination": "https://gyisxbkjzvdretbqzeuw.supabase.co/rest/v1/:path*"
     },
     {
       "source": "/sb/functions/v1/:path*",
-      "destination": "https://plgpxusmemnmzckbwtiv.supabase.co/functions/v1/:path*"
+      "destination": "https://gyisxbkjzvdretbqzeuw.supabase.co/functions/v1/:path*"
     },
     {
       "source": "/sb/storage/v1/object/public/:path*",
-      "destination": "https://plgpxusmemnmzckbwtiv.supabase.co/storage/v1/object/public/:path*"
+      "destination": "https://gyisxbkjzvdretbqzeuw.supabase.co/storage/v1/object/public/:path*"
     },
     {
       "source": "/login/:path*",
@@ -313,6 +367,78 @@
     {
       "source": "/tianji-xinggong/:path*",
       "destination": "/index.html"
+    },
+    {
+      "source": "/zh-hans/:page(login|account|member|history|auth|gallery|social|tianji-dual|tianji-xinggong)/:path*",
+      "destination": "/zh-hans/index.html"
+    },
+    {
+      "source": "/zh-hans/:path*",
+      "destination": "/zh-hans/index.html"
+    },
+    {
+      "source": "/en/:page(login|account|member|history|auth|gallery|social|tianji-dual|tianji-xinggong)/:path*",
+      "destination": "/en/index.html"
+    },
+    {
+      "source": "/en/:path*",
+      "destination": "/en/index.html"
+    },
+    {
+      "source": "/ja/:page(login|account|member|history|auth|gallery|social|tianji-dual|tianji-xinggong)/:path*",
+      "destination": "/ja/index.html"
+    },
+    {
+      "source": "/ja/:path*",
+      "destination": "/ja/index.html"
+    },
+    {
+      "source": "/ko/:page(login|account|member|history|auth|gallery|social|tianji-dual|tianji-xinggong)/:path*",
+      "destination": "/ko/index.html"
+    },
+    {
+      "source": "/ko/:path*",
+      "destination": "/ko/index.html"
+    },
+    {
+      "source": "/hi/:page(login|account|member|history|auth|gallery|social|tianji-dual|tianji-xinggong)/:path*",
+      "destination": "/hi/index.html"
+    },
+    {
+      "source": "/hi/:path*",
+      "destination": "/hi/index.html"
+    },
+    {
+      "source": "/th/:page(login|account|member|history|auth|gallery|social|tianji-dual|tianji-xinggong)/:path*",
+      "destination": "/th/index.html"
+    },
+    {
+      "source": "/th/:path*",
+      "destination": "/th/index.html"
+    },
+    {
+      "source": "/id/:page(login|account|member|history|auth|gallery|social|tianji-dual|tianji-xinggong)/:path*",
+      "destination": "/id/index.html"
+    },
+    {
+      "source": "/id/:path*",
+      "destination": "/id/index.html"
+    },
+    {
+      "source": "/vi/:page(login|account|member|history|auth|gallery|social|tianji-dual|tianji-xinggong)/:path*",
+      "destination": "/vi/index.html"
+    },
+    {
+      "source": "/vi/:path*",
+      "destination": "/vi/index.html"
+    },
+    {
+      "source": "/fil/:page(login|account|member|history|auth|gallery|social|tianji-dual|tianji-xinggong)/:path*",
+      "destination": "/fil/index.html"
+    },
+    {
+      "source": "/fil/:path*",
+      "destination": "/fil/index.html"
     }
   ],
   "ignoreCommand": "if [ \"$VERCEL_GIT_COMMIT_REF\" != \"main\" ]; then exit 0; fi; git diff --quiet HEAD^ HEAD -- . ':(exclude)docs/**' ':(exclude)**/*.md' ':(exclude).github/**'"
