@@ -1,7 +1,7 @@
 import type { AnalysisResult } from "@/lib/bazi/types";
 import type { Locale } from "@/lib/i18n";
 import { buildReportVisualModel } from "@/lib/report/report-visual-model";
-import { getReportVisualAsset, type ReportVisualAsset } from "@/lib/report/report-visual-assets";
+import { getDayStemCharacterAsset, getReportVisualAsset, type ReportVisualAsset } from "@/lib/report/report-visual-assets";
 import { customerCopy } from "@/lib/report/customer-copy";
 
 export type ShareCardModel = {
@@ -26,7 +26,9 @@ export function buildShareCardModel(result: AnalysisResult, locale: Locale): Sha
     ? `${result.chart.dayMaster} (${result.chart.dayMasterElement}) day master. ${visual.dayMaster.summary}`
     : `日主${result.chart.dayMaster}${result.chart.dayMasterElement}。${visual.dayMaster.summary}`;
   const summary = compactSummary(chartSummary);
-  const artwork = getReportVisualAsset("day-master", visual.dayMaster.visualKey);
+  const artwork = locale === "zh-Hant" || locale === "zh-Hans"
+    ? getDayStemCharacterAsset(visual.dayMaster.visualKey)
+    : getReportVisualAsset("day-master", visual.dayMaster.visualKey);
 
   if (locale === "en") {
     return {
@@ -123,6 +125,15 @@ function drawCoverImage(
     x + (width - drawWidth) / 2, y + (height - drawHeight) / 2, drawWidth, drawHeight);
 }
 
+function drawCharacterImage(ctx: CanvasRenderingContext2D, image: HTMLImageElement, x: number, y: number, width: number, height: number) {
+  // Character sources are 720x773. Keep them at native pixels and show the full
+  // figure; the surrounding warm-paper fill remains visible at the sides.
+  const scale = Math.min(1, width / image.naturalWidth, height / image.naturalHeight);
+  const drawWidth = image.naturalWidth * scale;
+  const drawHeight = image.naturalHeight * scale;
+  ctx.drawImage(image, x + (width - drawWidth) / 2, y + (height - drawHeight) / 2, drawWidth, drawHeight);
+}
+
 function splitText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
   const chars = Array.from(text);
   const lines: string[] = [];
@@ -195,8 +206,14 @@ export async function renderShareCardPng(model: ShareCardModel): Promise<Blob> {
   ctx.rect(70, 318, 940, 650);
   ctx.save();
   ctx.clip();
+  ctx.fillStyle = "#fffaf0";
+  ctx.fillRect(70, 318, 940, 650);
   if (artwork) {
-    drawCoverImage(ctx, artwork.image, 70, 318, 940, 650, artwork.asset);
+    if (artwork.asset?.id.endsWith("-character")) {
+      drawCharacterImage(ctx, artwork.image, 70, 318, 940, 650);
+    } else {
+      drawCoverImage(ctx, artwork.image, 70, 318, 940, 650, artwork.asset);
+    }
   } else {
     const gradient = ctx.createLinearGradient(70, 318, 1010, 968);
     gradient.addColorStop(0, "#f4ead9");
