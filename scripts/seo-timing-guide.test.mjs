@@ -23,10 +23,23 @@ test('JSON-LD parses and includes WebSite, WebApplication and FAQPage with 4 que
   assert.equal(data['@graph'][2].mainEntity.length, 4);
 });
 
-test('robots.txt and sitemap.xml agree: private routes disallowed, sitemap url declared, listed paths exist as routes', () => {
+test('robots.txt and sitemap.xml agree: private routes crawlable with edge noindex, sitemap url declared, listed paths exist as routes', () => {
   const robots = read('public/robots.txt');
   assert.match(robots, /Sitemap: https:\/\/zhao-wu\.com\/sitemap\.xml/);
-  for (const p of ['/login', '/account', '/history']) assert.match(robots, new RegExp(`Disallow: ${p}`));
+  // Private HTML routes must stay crawlable so their X-Robots-Tag: noindex header is
+  // actually read by search bots; robots.txt Disallow would hide that signal.
+  for (const p of ['/login', '/account', '/member', '/history', '/gallery', '/social']) {
+    assert.doesNotMatch(robots, new RegExp(`Disallow: ${p}\\n`), `robots.txt must not disallow page route ${p}`);
+  }
+  // Non-HTML endpoints stay disallowed.
+  for (const p of ['/auth/', '/api/']) assert.match(robots, new RegExp(`Disallow: ${p}`));
+  // The noindex signal for private page routes lives at the edge in vercel.json.
+  const vercel = JSON.parse(read('vercel.json'));
+  const noindexEntry = vercel.headers.find((e) => e.headers.some((h) => h.key === 'X-Robots-Tag' && h.value.includes('noindex')));
+  assert.ok(noindexEntry, 'expected an X-Robots-Tag noindex header rule in vercel.json');
+  for (const p of ['member', 'login', 'account', 'history', 'social', 'gallery']) {
+    assert.ok(noindexEntry.source.includes(p), `X-Robots-Tag rule missing ${p}`);
+  }
   const sitemap = read('public/sitemap.xml');
   const locs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => parseLanguagePath(m[1].replace('https://zhao-wu.com', '') || '/').rest);
   assert.ok(locs.includes('/'));

@@ -27,7 +27,7 @@ test("CSP keeps index.html bootstrap scripts (release live-update, theme, langua
 
 test("CSP allows the origins the client really calls and the blob/wasm ffmpeg path", () => {
   const csp = header("Content-Security-Policy");
-  for (const origin of ["https://plgpxusmemnmzckbwtiv.supabase.co", "https://api.open-meteo.com", "https://geocoding-api.open-meteo.com", "https://photon.komoot.io", "https://us.i.posthog.com"]) {
+  for (const origin of ["https://gyisxbkjzvdretbqzeuw.supabase.co", "https://api.open-meteo.com", "https://geocoding-api.open-meteo.com", "https://photon.komoot.io", "https://us.i.posthog.com"]) {
     assert.ok(directive(csp, "connect-src").includes(origin), `connect-src missing ${origin}`);
   }
   assert.match(directive(csp, "script-src"), /'wasm-unsafe-eval'/);
