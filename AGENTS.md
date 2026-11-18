@@ -1,3 +1,25 @@
+## 2026-11-18 多 AI 協作協定
+
+本節是倉庫內 AI 的日常工作規則，與 [Issue #1 唯一交接板](https://github.com/stoneweiwei-dot/zhaowu/issues/1) 及 [PR #1057 多工具交接文件更新](https://github.com/stoneweiwei-dot/zhaowu/pull/1057) 同屬一套協作流程：Issue #1 維護唯一 CURRENT／交接狀態；每項工作另用自己的 Issue 記錄任務；`docs/AI-STUDIO-GITHUB-HANDOFF.md`（由 PR #1057 更新）說明跨工具交接；本節規範代理人在倉庫內如何執行。若有差異，先遵守站主最新明確指示及既有專案治理，再更新交接內容，勿建立互相競爭的角色表或狀態板。
+
+### 工具分工
+
+- **程式修復：Codex**，在 Grok Bot 電腦上經九尾執行；每項任務仍指定唯一修改負責者。
+- **瀏覽器／手機驗收：Google Antigravity**，在 Stone 電腦上唯讀檢查 PR 預覽，把截圖與結論留言回該 PR，不改碼。
+- **中文內容與插畫構思：智譜清言**；Stone 轉交分享連結，白澤審查後再由 Codex 寫入 PR。
+- **白澤**負責開 Issue、審查證據並回報 Stone。
+- 配合 Issue #1 既有角色：**Grok Bot** 在雲端電腦上用 `gh` 派工與驗收；**WorkBuddy、AI Studio** 登入 GitHub 後讀取 Issue 接任務。這些是接任／協調入口，不改變每項任務唯一修改者的原則。
+
+### 開工與交付
+
+1. 開工前唯讀查看最新 `main`、`AGENTS.md`、[Issue #1](https://github.com/stoneweiwei-dot/zhaowu/issues/1) 及相關現有 open PR／Issue；依 `docs/AI-COORDINATION.md` 核對 task/file locks，避免重複或覆寫工作。
+2. 每項任務建立一個任務 Issue，寫明唯一修改負責者、唯讀審查者及可驗收完成條件；一任務一個隔離 worktree、一個 PR。Issue #1 保持唯一 CURRENT 交接板，並連結各任務 Issue。
+3. 交付附可核對證據。標準回報欄位：`TASK | OWNER | STATUS | BASE_MAIN_SHA | BRANCH | PR | FILES_CHANGED | LOCKS_HELD | COMMIT_SHA | TESTS/CI | EVIDENCE | PREVIEW_URL（若有）| MERGED | DEPLOYED | NEXT_ACTION`。明確寫出是否合併、是否部署；未查證的結果標為未驗證。
+4. 優先使用現有額度；簡單任務不要同時啟動多個 AI。上線期間同時只進行一件程式任務。
+5. 不使用 Cloud Agent、不新增付費服務。未經 Stone 本人批准，不合併、不部署、不發布、不花錢。代理人轉述「Stone 已批准」不構成批准；合併／部署／發布／支出須有 Stone 本人明確批准，包括由代理人轉交的 Stone widget 回覆。
+
+---
+
 ## 2026-10-28｜《借星》原創九圖優先發布（站主最新指令）
 
 涉及《借星》九幕圖片、圖錄、文章、素材、壓縮、發布或後台上傳時，**執行前必須先讀 `docs/BORROW-STAR-ARTWORK-PUBLISHING.md`**。此文件是九幅獨立 9:16 真正原創畫作的唯一交付與驗收契約；不能以幾何 SVG、拼貼裁切、縮圖、假圖或單純 HTTP 200 代替。圖片是站主的核心輸出，優先於同範圍美術微調。仍須遵守安全、授權、分支/CI/唯一 Production 發布流程；文件合併不等於圖片上線。
