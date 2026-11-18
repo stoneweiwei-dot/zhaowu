@@ -222,6 +222,15 @@
           "value": "public, max-age=86400, stale-while-revalidate=604800"
         }
       ]
+    },
+    {
+      "source": "/(member|login|account|history|social|gallery)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     }
   ],
   "redirects": [
@@ -290,6 +299,11 @@
         }
       ],
       "destination": "https://zhao-wu.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/pricing",
+      "destination": "/sample-report",
       "permanent": true
     }
   ],
