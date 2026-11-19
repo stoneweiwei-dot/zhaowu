@@ -340,7 +340,7 @@ export const LEGAL_DOCS: Record<LegalDocKey, Record<LegalLocale, LegalDoc>> = {
         {
           "h": "4. 付款、交付與退款",
           "ul": [
-            "付費報告以美元（USD）標價，由 Stripe 處理付款，不自動續費、非訂閱制。實際扣款金額與匯率、銀行手續費以你的付款方式為準。",
+            "付費報告以澳幣（AUD）標價，由 Stripe 處理付款，不自動續費、非訂閱制。實際扣款金額與銀行手續費以你的付款方式為準。",
             "報告為數位內容，付款成功後即時於你購買時所用的瀏覽器開通。請保留購買時的瀏覽器與存取金鑰；清除瀏覽器資料可能令你需要聯絡我們還原權限。",
             "若你已付款但因技術故障而無法取得報告，請聯絡我們，我們會還原權限或退款。",
             "本條款不排除、限制或修改你依《澳洲消費者法》（Australian Consumer Law）或你所在地強制性消費者法律享有的任何權利，包括服務未達合理品質、不符合描述或出現重大問題時的救濟。"
@@ -413,7 +413,7 @@ export const LEGAL_DOCS: Record<LegalDocKey, Record<LegalLocale, LegalDoc>> = {
         {
           "h": "4. 付款、交付与退款",
           "ul": [
-            "付费报告以美元（USD）标价，由 Stripe 处理付款，不自动续费、非订阅制。实际扣款金额与汇率、银行手续费以你的付款方式为准。",
+            "付费报告以澳币（AUD）标价，由 Stripe 处理付款，不自动续费、非订阅制。实际扣款金额与银行手续费以你的付款方式为准。",
             "报告为数字内容，付款成功后即时于你购买时所用的浏览器开通。请保留购买时的浏览器与访问密钥；清除浏览器数据可能令你需要联系我们还原权限。",
             "若你已付款但因技术故障而无法取得报告，请联系我们，我们会还原权限或退款。",
             "本条款不排除、限制或修改你依《澳洲消费者法》（Australian Consumer Law）或你所在地强制性消费者法律享有的任何权利，包括服务未达合理品质、不符合描述或出现重大问题时的救济。"
@@ -486,7 +486,7 @@ export const LEGAL_DOCS: Record<LegalDocKey, Record<LegalLocale, LegalDoc>> = {
         {
           "h": "4. Payment, delivery and refunds",
           "ul": [
-            "Paid reports are priced in US dollars (USD) and paid through Stripe. There is no subscription and no automatic renewal. The amount actually charged, exchange rate and bank fees depend on your payment method.",
+            "Paid reports are priced in Australian dollars (AUD) and paid through Stripe. There is no subscription and no automatic renewal. The amount actually charged and bank fees depend on your payment method.",
             "Reports are digital content and are unlocked in the browser you used to buy them as soon as payment succeeds. Keep that browser and your access key; clearing browser data may mean you need to contact us to restore access.",
             "If you paid but cannot receive your report because of a technical fault, contact us and we will restore access or refund you.",
             "Nothing in these terms excludes, restricts or modifies any right you have under the Australian Consumer Law or mandatory consumer law where you live, including remedies if a service is not of acceptable quality, does not match its description or has a major problem."

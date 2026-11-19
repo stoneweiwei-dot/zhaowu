@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { searchCities } from "@/lib/actions";
 import type { CityHit } from "@/lib/bazi/types";
 import type { Locale } from "@/lib/i18n";
-import { localizePlaceHit as localizeCityHit, needsTimezone, resolveCityTimezone, searchLocalPlaces } from "@/lib/geo/city-search";
+import { findLocalExactPlace, localizePlaceHit as localizeCityHit, needsTimezone, resolveCityTimezone, searchLocalPlaces } from "@/lib/geo/city-search";
 
 type PickerProps = {
   id: string;
@@ -17,19 +17,6 @@ type PickerProps = {
   invalid?: boolean;
   errorMessage?: string;
 };
-
-function normalizeQuery(value: string) {
-  return value.normalize("NFKC").toLowerCase().replace(/[\s,，。·/\\-]+/g, "");
-}
-
-function exactMatch(rows: CityHit[], q: string): CityHit | null {
-  const normalizedQuery = normalizeQuery(q);
-  return rows.find((city) => {
-    const firstLabel = city.display.split(/[，,]/)[0] ?? city.display;
-    const candidates = [city.name, city.display, firstLabel].map(normalizeQuery);
-    return candidates.includes(normalizedQuery);
-  }) ?? null;
-}
 
 /**
  * Birthplace picker.
@@ -119,9 +106,11 @@ export function CityPicker({
 
   function commitBestAvailable() {
     const q = query.trim();
-    const pick = exactMatch(hits, q);
+    // Only an unambiguous offline place may be committed without the visitor
+    // picking from the dropdown. A remote row is never silently confirmed.
+    const pick = findLocalExactPlace(q);
     if (pick) {
-      void commit(pick, true);
+      void commit(localizeCityHit(pick, locale), true);
       return;
     }
     if (!optional && q) setTzError(true);
@@ -142,17 +131,20 @@ export function CityPicker({
     // never hold the offline results back.
     const instant = searchLocalPlaces(q);
     if (instant.length) setHits(instant.map((city) => localizeCityHit(city, locale)));
+    // Confirm an exact match silently only when the offline gazetteer names it
+    // unambiguously ("Sydney" -> Sydney, Australia). Remote rows are never
+    // silently confirmed: the same name can be another country's city.
+    const localExact = findLocalExactPlace(q);
+    if (localExact && !needsTimezone(localExact)) {
+      const hit = localizeCityHit(localExact, locale);
+      setSelected(hit);
+      onSelect(hit);
+    }
     void searchCities({ data: q })
       .then((rows) => {
         if (seq !== requestSeq.current) return;
         const localized = rows.map((city) => localizeCityHit(city, locale));
         setHits(localized);
-        // Confirm an exact match silently; never overwrite what the visitor is typing.
-        const exact = exactMatch(localized, q);
-        if (exact && !needsTimezone(exact)) {
-          setSelected(exact);
-          onSelect(exact);
-        }
       })
       .catch(() => {
         if (seq === requestSeq.current) setHits(instant.map((city) => localizeCityHit(city, locale)));

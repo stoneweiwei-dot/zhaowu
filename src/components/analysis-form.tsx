@@ -1,4 +1,5 @@
 import { BaziReadingUnlock, useBaziReadingAccess } from "@/components/bazi-reading-unlock";
+import { FreeSummaryEmail } from "@/components/free-summary-email";
 import { JourneySteps } from "@/components/journey-steps";
 import { currentJourneyStep, type JourneyStep } from "@/lib/site-journey";
 import { CharacterPanel } from "@/components/character-panel";
@@ -591,6 +592,7 @@ export function AnalysisForm() {
                 </div>
               ) : null}
             </details></> : <BaziReadingUnlock locale={locale} grade={rememberedGrade} pending={readingPaymentPending} />}
+            <FreeSummaryEmail locale={locale} />
             <button type="button" className="zw-flow-next" onClick={() => selectStep(3)}>{locale === "en" ? "Ask a question" : locale === "zh-Hans" ? "继续：问个问题" : "繼續：問個問題"}<span aria-hidden="true"> →</span></button>
             <p className="zw-flow-note">{locale === "en" ? "Optional. Your birth details are already saved on this device." : locale === "zh-Hans" ? "提问是选填；生辰已保存在这台设备。" : "提問是選填；生辰已保存在這台裝置。"}</p>
           </div>

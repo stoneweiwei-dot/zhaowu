@@ -123,6 +123,21 @@ export function filterFeatured(query: string): CityHit[] {
   ).slice(0, 8);
 }
 
+/**
+ * Exact alias match for a featured city (e.g. "Sydney" -> 雪梨，澳洲).
+ * Returns the city only when exactly one featured city claims that alias:
+ * an alias shared by several cities (e.g. "Taiwan", "Australia") is ambiguous
+ * and must never silently resolve to one of them.
+ */
+export function findFeaturedByAlias(query: string): CityHit | null {
+  const q = normalizeCityQuery(query.trim());
+  if (!q) return null;
+  const matches = FEATURED_CITIES.filter((c) =>
+    (FEATURED_ALIASES[c.display] ?? []).some((alias) => normalizeCityQuery(alias) === q),
+  );
+  return matches.length === 1 ? matches[0] : null;
+}
+
 export function timezoneOffsetHours(timeZone: string, at: Date): number {
   const dtf = new Intl.DateTimeFormat("en-US", {
     timeZone,
