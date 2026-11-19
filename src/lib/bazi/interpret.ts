@@ -141,13 +141,31 @@ function weather(chart: Chart): string {
   return `当前流年为${chart.currentYear}。`;
 }
 
-function moveScore(text: string): number {
-  const move = ["轉", "转", "離", "离", "走", "換", "换", "創", "创", "出國", "出国", "分手", "結束", "结束", "辭", "辞", "跳", "搬", "開", "开", "新工作", "新公司", "新職位", "新职位", "升遷", "升迁", "成長", "成长", "薪資高", "薪资高", "收入高"];
-  const stay = ["留", "穩", "稳", "等", "維持", "维持", "繼續", "继续", "復合", "复合", "保留"];
-  let n = 0;
-  for (const k of move) if (text.includes(k)) n += 1;
-  for (const k of stay) if (text.includes(k)) n -= 1;
-  return n;
+// 辨認哪一個選項是「新承接」、哪一個是「維持現狀」，只用來把結構傾向對應到選項上。
+// 關鍵字只做標籤，不計分、不決定方向：一句話換個用詞絕不能翻轉結論。
+// 方向完全由命局結構決定，規則見 leanChoice 內的註解。
+const CHANGE_KEYS = ["新", "換", "换", "轉", "转", "離", "离", "走", "創", "创", "出國", "出国", "辭", "辞", "跳", "搬", "開", "开", "接受"];
+const STAY_KEYS = ["留", "維持", "维持", "穩", "稳", "等", "繼續", "继续", "復合", "复合", "保留", "現職", "现职"];
+
+function changeOrStay(text: string): "change" | "stay" | null {
+  const isChange = CHANGE_KEYS.some((k) => text.includes(k));
+  const isStay = STAY_KEYS.some((k) => text.includes(k));
+  if (isChange && !isStay) return "change";
+  if (isStay && !isChange) return "stay";
+  return null;
+}
+
+// 大運／流年的繁體寫法：leanChoice 的輸出會直接進回答契約測試，
+// 不可混入簡體字，故不用 weather()（該函數回傳簡體），在此另寫繁體版。
+function weatherTraditional(chart: Chart): string {
+  if (chart.currentDayun) {
+    const d = chart.currentDayun;
+    return `目前走${d.ganZhi}大運（${d.startYear}–${d.endYear}），流年${chart.currentYear}在這個基礎上觸發原局。`;
+  }
+  if (chart.timeUnknown) {
+    return `目前流年為${chart.currentYear}。時辰未定，大運與時柱相關判斷降級。`;
+  }
+  return `目前流年為${chart.currentYear}。`;
 }
 
 type ChoicePart = { label: "A" | "B" | null; text: string };
@@ -176,7 +194,19 @@ function choiceName(part: ChoicePart): string {
 
 function leanChoice(q: string, chart: Chart): string {
   const parts = choiceParts(q);
-  const strong = chart.strength.tendency.includes("旺");
+  const structure = analyzeStructure(chart);
+  const useful = chart.useful[0] ?? "未定";
+  // 傾向規則（可核查）：
+  // 月令主氣透干（established）且第二層有可見主線（supportingPattern），
+  // 表示命局有一條看得見、走得動的主線，傾向承接新的承擔；
+  // 否則先顧好手上的結構與資源，傾向維持現狀。
+  // 身強身弱（strength.tendency）不參與決定——不用單一指標定去留；
+  // 關鍵字只標籤選項（changeOrStay），不計分。
+  const readyToTakeOn = structure.established && structure.supportingPattern !== null;
+  const basis = `依據：用神為${useful}，主格${structure.label}${structure.established ? "" : "方向"}${structure.supportingPattern ? `，第二層為${structure.supportingPattern}` : ""}。${weatherTraditional(chart)}`;
+  const realityTwo = "現實檢核：請用同一標準比較兩邊的收益、責任、時間投入、支援與退出成本，再決定。";
+  const realityOne = "現實檢核：先比較實際收益、風險、支援與退出成本，再結合完整命局及當前運勢判斷。";
+
   if (parts.length >= 2) {
     const aPart = parts[0];
     const bPart = parts[1];
@@ -186,27 +216,33 @@ function leanChoice(q: string, chart: Chart): string {
       .replace(/[，,、]$/, "")
       .trim();
     const b = bPart.text.replace(/[？?。！!].*$/, "").trim();
-    const aMove = moveScore(a);
-    const bMove = moveScore(b);
+    const aRole = changeOrStay(a);
+    const bRole = changeOrStay(b);
 
-    if (a && b && aMove !== bMove) {
-      const moveChoice = aMove > bMove ? { ...aPart, text: a } : { ...bPart, text: b };
-      const stayChoice = aMove > bMove ? { ...bPart, text: b } : { ...aPart, text: a };
-      return strong
-        ? `直接回答：偏向 ${choiceName(moveChoice)}。原局偏滿時，更需要把能量轉成可衡量的成果與有效轉場；但要先確認新增責任、時間成本與退出條款仍在可承受範圍。`
-        : `直接回答：偏向 ${choiceName(stayChoice)}。原局承載偏弱時，應先保住穩定資源與可持續節奏；除非另一選項的支援、規則與退出條款明顯更完整。`;
+    if (a && b && aRole && bRole && aRole !== bRole) {
+      const changePart = aRole === "change" ? { ...aPart, text: a } : { ...bPart, text: b };
+      const stayPart = aRole === "change" ? { ...bPart, text: b } : { ...aPart, text: a };
+      const leanPart = readyToTakeOn ? changePart : stayPart;
+      const otherPart = readyToTakeOn ? stayPart : changePart;
+      const premise = readyToTakeOn
+        ? `${choiceName(changePart)}那邊的支援、規則與退出條款核對後確實更完整`
+        : `${choiceName(otherPart)}那邊的支援、規則與退出條款還沒有明顯更完整`;
+      const reversal = `反轉條件：如果${choiceName(otherPart)}那邊的支援、規則與退出條款明顯更完整，或者${structure.label}的主線條件出現變化，這個偏向就會反轉。`;
+      return `直接回答：偏向 ${choiceName(leanPart)}，前提是${premise}。${basis}${reversal}${realityTwo}`;
     }
 
-    return `直接回答：目前不能可靠強選。你已提出 ${choiceName(aPart)} 與 ${choiceName(bPart)}，但兩邊還缺少能拉開差異的現實條件；請至少用同一標準補上收益、責任、時間投入、穩定性與退出成本。`;
+    return `直接回答：目前無明確偏向，兩個選項沒有明確標出哪一邊是新承接、哪一邊是維持現狀，無法把結構傾向對應到選項上；請先標明哪一邊是新的承擔、哪一邊是維持現狀。${basis}${realityTwo}`;
   }
 
   if (q.includes("該不該") || q.includes("该不该") || q.includes("要不要")) {
-    return strong
-      ? "盤面偏滿，原則上可以動，但先控制退出成本，用小規模試行代替一次性全押。"
-      : "盤面承載優先，暫不建議一次性全押；先補穩定資源，再用小規模試行驗證。";
+    const conclusion = readyToTakeOn
+      ? "直接回答：偏向可以試，前提是先用小規模試行、把退出成本控制在可承受範圍。"
+      : "直接回答：偏向先不全押，前提是先把穩定的資源與節奏顧好，再用小規模試行驗證。";
+    const reversal = "反轉條件：如果現實條件證明另一邊明顯更完整，或者時機與結構條件改變，結論會跟著反轉。";
+    return `${conclusion}${basis}${reversal}${realityOne}`;
   }
 
-  return "目前問題缺少可比較的兩個明確選項，不作強行二選一。";
+  return "直接回答：目前無明確偏向，缺少可比較的兩個明確選項；請先提出兩個可以比較的選項，再按命局結構判斷。";
 }
 
 // 面向客户的白話版：不把「日支／財星／官殺」這類術語直接丟給讀者。
