@@ -1,4 +1,4 @@
-import { FEATURED_CITIES, filterFeatured, localizeCityHit } from "@/lib/bazi/cities";
+import { FEATURED_CITIES, filterFeatured, findFeaturedByAlias, localizeCityHit } from "@/lib/bazi/cities";
 import type { CityHit } from "@/lib/bazi/types";
 import { fuzzyChinaPlaces, isKnownPlace, localizeChinaPlace, searchChinaPlaces } from "@/lib/geo/china-places";
 
@@ -49,6 +49,25 @@ export function searchLocalPlaces(q: string): CityHit[] {
     (f) => !gazetteer.some((g) => Math.abs(g.latitude - f.latitude) < 0.1 && Math.abs(g.longitude - f.longitude) < 0.1),
   );
   return [...gazetteer, ...featured];
+}
+
+/**
+ * The one offline place a typed query unambiguously names, or null.
+ *
+ * Matches an exact local name/display first, then a featured-city alias that
+ * belongs to exactly one city ("Sydney" -> 雪梨，澳洲). Remote-only rows are
+ * never returned here: a place the visitor did not pick from the dropdown
+ * must never be silently confirmed, because remote ordering is not
+ * contractual — the same name can be Sydney, Australia or Sydney, Canada.
+ */
+export function findLocalExactPlace(q: string): CityHit | null {
+  const query = normalize(String(q ?? "").trim());
+  if (!query) return null;
+  for (const row of searchLocalPlaces(q)) {
+    const firstLabel = row.display.split(/[，,]/)[0] ?? row.display;
+    if ([row.name, row.display, firstLabel].map(normalize).includes(query)) return row;
+  }
+  return findFeaturedByAlias(q);
 }
 
 /** localizeCityHit + gazetteer places (Simplified / English display). */
