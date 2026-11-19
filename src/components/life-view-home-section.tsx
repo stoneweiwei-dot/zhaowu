@@ -3,6 +3,7 @@ import { useDisplayLanguage, intlTagFor } from "@/lib/display-language";
 import { customerChrome, translateCustomerChrome, translateChromeObject } from "@/lib/customer-chrome";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { StellarLifeCycleInteractive } from "@/components/stellar-life-cycle-interactive";
+import { ShanhaijingStarBeastsSection } from "@/components/shanhaijing-star-beasts-section";
 import { Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { LIFE_VIEW_ARTICLES, type LifeViewArticle } from "@/lib/life-view";
@@ -411,6 +412,8 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
           );
         })}
       </div>
+
+      {archiveMode ? <ShanhaijingStarBeastsSection /> : null}
 
       {!archiveMode ? (
         <div className="zhaowu-guanshilu-teaser mt-3">
