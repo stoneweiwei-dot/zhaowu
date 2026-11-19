@@ -86,6 +86,7 @@ function KnowledgePage() {
           <li><Link className="underline underline-offset-4" to="/knowledge/nine-heavens-lamps">{tr(locale,"九重天外，無人掌燈 · 緣起四境","九重天外，无人掌灯 · 缘起四境","Beyond Nine Heavens · Four lamps and dependent origination")}</Link></li>
           <li><Link className="underline underline-offset-4" to="/knowledge/shushu-boundary">{tr(locale,"術數的邊界","术数的边界","The boundary of the divination arts")}</Link></li>
           <li><Link className="underline underline-offset-4" to="/knowledge/system-map">{tr(locale,"昭梧命理系統能力地圖","昭梧命理系统能力地图","Zhaowu system capability map")}</Link></li>
+          <li><Link className="underline underline-offset-4" to="/knowledge/xiuxian-cultivation">{tr(locale,"修仙：把命運修在自己手裡","修仙：把命运修在自己手里","Cultivation: holding your destiny in your own hands")}</Link></li>
         </ul>
       </nav>
 
