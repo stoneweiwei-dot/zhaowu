@@ -1,0 +1,9 @@
+/* 開明獸專頁以高亮宣紙與松綠正文營造圖鑑閱讀節奏。 */
+.kaiming-figure { position: relative; margin: 1.5rem auto 0; width: min(100%, 34rem); overflow: hidden; border: 1px solid rgba(144,112,66,.25); border-radius: 1.1rem; background: #f4ead7; }
+.kaiming-figure img { display: block; width: 100%; height: auto; }
+.kaiming-watermark { position: absolute; right: 1rem; bottom: 3.4rem; padding: .3rem .7rem; border: 1px solid rgba(105,73,35,.65); border-radius: .2rem; color: #684921; background: rgba(250,246,232,.78); font: 600 .9rem/1.2 serif; letter-spacing: .08em; }
+.kaiming-figure figcaption { padding: .85rem 1rem; color: #4d5b4e; background: #f8f4e9; font-size: .9rem; line-height: 1.6; }
+.kaiming-section { margin-top: 2.2rem; padding-left: 1rem; border-left: 2px solid #9b8157; }
+.kaiming-source { margin-top: 2.4rem; padding: 1.2rem; border: 1px solid rgba(88,113,89,.25); border-radius: .9rem; background: #f2f5ed; color: #34473b; line-height: 1.75; }
+.kaiming-source h2 { margin: 0 0 .65rem; font-family: serif; font-size: 1.2rem; }
+.kaiming-source a { display: inline-block; margin: .4rem 0; text-decoration: underline; text-underline-offset: .2em; }

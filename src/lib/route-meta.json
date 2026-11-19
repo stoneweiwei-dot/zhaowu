@@ -1,6 +1,48 @@
 {
   "origin": "https://zhao-wu.com",
   "routes": {
+    "/myth/xianhui-chronicle/creatures/kai-ming-beast": {
+      "zh-Hant": {
+        "title": "開明獸｜顯晦紀事神獸圖鑑｜昭梧",
+        "description": "九首面向東方，佇立在山闕的邊界。以觀照辨別外境與本心。"
+      },
+      "zh-Hans": {
+        "title": "开明兽｜显晦纪事神兽图鉴｜昭梧",
+        "description": "九首面向东方，伫立在山阙的边界。以观照辨别外境与本心。"
+      },
+      "en": {
+        "title": "Kaiming Beast | The Xianhui Chronicle Bestiary | ZHAOWU",
+        "description": "Nine heads face east at the mountain threshold, an invitation to distinguish the world outside from the voice within."
+      },
+      "ja": {
+        "title": "開明獣｜顕晦紀事の神獣図鑑｜ZHAOWU",
+        "description": "九つの首が東を向き、山の境に立つ。外の世界と心の声を見分けるために。"
+      },
+      "ko": {
+        "title": "개명수｜현회기사 신수 도감｜ZHAOWU",
+        "description": "아홉 머리가 동쪽을 향한 채 산의 경계에 선다. 바깥 세상과 마음의 소리를 구분하기 위해."
+      },
+      "hi": {
+        "title": "कैमिंग पशु｜श्येनहुई वृत्तांत पशु-सूची｜ZHAOWU",
+        "description": "नौ सिर पूर्व की ओर, पर्वत की सीमा पर खड़े हैं — बाहरी संसार और अपने भीतर की आवाज़ को अलग करने का निमंत्रण।"
+      },
+      "th": {
+        "title": "สัตว์ไคมิง｜สารานุกรมสัตว์วิเศษบันทึกเสียนฮุ่ย｜ZHAOWU",
+        "description": "เก้าหัวหันไปทางตะวันออก ยืนอยู่ที่ขอบภูเขา เพื่อแยกโลกภายนอกออกจากเสียงในใจ"
+      },
+      "id": {
+        "title": "Binatang Kaiming｜Bestiari Kronik Xianhui｜ZHAOWU",
+        "description": "Sembilan kepala menghadap timur di ambang gunung, mengajak membedakan dunia luar dari suara di dalam hati."
+      },
+      "vi": {
+        "title": "Khai Minh Thú｜Thần thú chí Hiển Hối Ký Sự｜ZHAOWU",
+        "description": "Chín đầu hướng về phía đông, đứng nơi ranh giới núi non, mời gọi phân biệt thế giới bên ngoài với tiếng nói trong lòng."
+      },
+      "fil": {
+        "title": "Hayop na Kaiming｜Bestiaryo ng Xianhui Chronicle｜ZHAOWU",
+        "description": "Siyam na ulo ang nakaharap sa silangan sa hangganan ng bundok, paanyaya na kilalanin ang mundo sa labas mula sa tinig sa loob."
+      }
+    },
     "/": {
       "zh-Hant": {
         "title": "昭梧｜八字排盤・子平八字・真太陽時・流年運勢｜免登入免費",

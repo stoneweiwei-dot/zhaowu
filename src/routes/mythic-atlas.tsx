@@ -70,6 +70,7 @@ function MythicAtlasPage() {
     </section>
 
     <section className="hq-section" id="atlas">
+      <p><a href="/myth/xianhui-chronicle/creatures/kai-ming-beast">{tr(l("開明獸｜顯晦紀事神獸圖鑑", "开明兽｜显晦纪事神兽图鉴", "Kaiming Beast · Bestiary"), locale)} →</a></p>
       <div className="hq-section-heading"><span>卷二</span><h2>{tr(COPY.atlas, locale)}</h2><p>{tr(COPY.atlasLead, locale)}</p></div>
       <div className="hq-controls">
         <label><span className="sr-only">{tr(COPY.search, locale)}</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={tr(COPY.search, locale)} /></label>
