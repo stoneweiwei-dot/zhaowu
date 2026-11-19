@@ -181,7 +181,7 @@ export function renderRouteSummary(routePath, language = "zh-Hant") {
   const entry = routes[routePath]?.[language];
   if (!entry) throw new Error(`missing route metadata for ${routePath} ${language}`);
   const copy = SHELL_COPY[language];
-  const knowledgePaths = ["/knowledge/true-solar-time", "/knowledge/five-elements-tone-qi", "/knowledge/shushu-boundary", "/knowledge/system-map"];
+  const knowledgePaths = ["/knowledge/true-solar-time", "/knowledge/five-elements-tone-qi", "/knowledge/shushu-boundary", "/knowledge/system-map", "/knowledge/xiuxian-cultivation"];
   const links = (routePath === "/knowledge" || knowledgePaths.includes(routePath))
     ? `<nav aria-label="${esc(copy.knowledge)}"><h2>${esc(copy.knowledge)}</h2><ul>${knowledgePaths.filter(p => p !== routePath).map(p => `<li><a href="${esc(p)}">${esc(routes[p][language].title)}</a></li>`).join("")}</ul></nav>`
     : "";

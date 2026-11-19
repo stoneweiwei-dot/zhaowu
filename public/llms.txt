@@ -81,6 +81,7 @@
 - [術數的邊界](https://zhao-wu.com/knowledge/shushu-boundary): 資料求真、規則求明的研究札記
 - [系統能力地圖](https://zhao-wu.com/knowledge/system-map): 正式運行與研究中的分界
 - [真太陽時計算說明](https://zhao-wu.com/knowledge/true-solar-time): 經度差、均時差與夏令時的公式、實例（含南半球）與誤差限制
+- [修仙：把命運修在自己手裡](https://zhao-wu.com/knowledge/xiuxian-cultivation): 築基、金丹、渡劫的升級之路，「我命由我不由天」與八字的分別
 - [最新更新](https://zhao-wu.com/updates)
 
 ### 政策與條款

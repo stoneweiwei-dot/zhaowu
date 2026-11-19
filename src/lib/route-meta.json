@@ -463,6 +463,48 @@
         "description": "Bakit nananatili ang Four Pillars at buwan ayon sa solar term, paano nakaaapekto ang daylight saving at paano ginagamit ang lokal na panahon bilang konteksto."
       }
     },
+    "/knowledge/xiuxian-cultivation": {
+      "zh-Hant": {
+        "title": "修仙：把命運修在自己手裡，築基、金丹、渡劫｜昭梧",
+        "description": "修仙是中國兩千多年的文化想像：人可以靠自己修煉成仙。本文講築基、結金丹、渡天劫的升級之路，「我命由我不由天」的出處，東西方求長生的不同，以及它與八字的分別。"
+      },
+      "zh-Hans": {
+        "title": "修仙：把命运修在自己手里，筑基、金丹、渡劫｜昭梧",
+        "description": "修仙是中国两千多年的文化想象：人可以靠自己修炼成仙。本文讲筑基、结金丹、渡天劫的升级之路，“我命由我不由天”的出处，东西方求长生的不同，以及它与八字的分别。"
+      },
+      "en": {
+        "title": "Cultivation: Holding Your Destiny in Your Own Hands — Foundation, Golden Core, Tribulation | ZHAOWU",
+        "description": "Xiuxian is a 2,000-year-old Chinese idea: a person can train to become an immortal. This essay traces the path from Foundation Building to the Golden Core and the Heavenly Tribulation, the line “My fate is mine, not heaven's”, and how it differs from a BaZi chart."
+      },
+      "ja": {
+        "title": "修仙：運命を自分の手で修める・築基、金丹、渡劫 | ZHAOWU",
+        "description": "修仙は二千年以上の中国の文化的な想像です。人は修行によって仙人になれるという考えで、築基、金丹、渡劫の道のりと「我命由我不由天」の意味、東西の長生観の違い、八字との区別を解説します。"
+      },
+      "ko": {
+        "title": "수선: 운명을 내 손으로 닦는다·축기, 금단, 도겁 | ZHAOWU",
+        "description": "수선은 2천 년이 넘는 중국의 문화적 상상입니다. 사람이 수행을 통해 신선이 될 수 있다는 생각으로, 축기·금단·도겁의 길과 “내 운명은 내가 정한다”는 말의 의미, 동서양 장생관의 차이와 사주와의 구분을 설명합니다。"
+      },
+      "hi": {
+        "title": "साधना: भाग्य अपने हाथों में·नींव, स्वर्ण केंद्र, दिव्य परीक्षा | ZHAOWU",
+        "description": "साधना चीन की दो हज़ार साल पुरानी सांस्कृतिक कल्पना है: मनुष्य साधना से अमर बन सकता है। यह लेख नींव निर्माण, स्वर्ण केंद्र और दिव्य परीक्षा के मार्ग, “मेरा भाग्य मेरा है, स्वर्ग का नहीं” पंक्ति का अर्थ, पूर्व-पश्चिम अमरता दृष्टियों का अंतर और बाज़ी से इसका भेद समझाता है।"
+      },
+      "th": {
+        "title": "การบำเพ็ญเซียน: ลิขิตชะตาด้วยมือตน·สร้างฐาน, แก่นทอง, มหาภัยสวรรค์ | ZHAOWU",
+        "description": "การบำเพ็ญเซียนคือจินตนาการทางวัฒนธรรมของจีนที่มีมากว่าสองพันปี: มนุษย์สามารถฝึกตนจนเป็นเซียนได้ บทความนี้เล่าเส้นทางสร้างฐาน หลอมแก่นทอง ฝ่ามหาภัยสวรรค์ ความหมายของประโยค “ชะตาของข้าข้ากำหนดเอง มิใช่ฟ้า” ความต่างของมุมมองอายุยืนระหว่างตะวันออกกับตะวันตก และความแตกต่างจากโป๊ยหยี่"
+      },
+      "id": {
+        "title": "Kultivasi: Takdir di Tangan Sendiri·Fondasi, Inti Emas, Ujian Langit | ZHAOWU",
+        "description": "Kultivasi adalah imajinasi budaya Tiongkok yang berusia lebih dari dua ribu tahun: manusia dapat berlatih menjadi abadi. Esai ini menelusuri jalan dari Pembangunan Fondasi ke Inti Emas dan Ujian Langit, makna kalimat “takdirku milikku, bukan milik langit”, serta perbedaan pandangan umur panjang Timur-Barat dan bedanya dengan bagan BaZi."
+      },
+      "vi": {
+        "title": "Tu tiên: Vận mệnh trong tay mình·Trúc Cơ, Kim Đan, Thiên Kiếp | ZHAOWU",
+        "description": "Tu tiên là trí tưởng tượng văn hóa hơn hai nghìn năm của Trung Quốc: con người có thể tu luyện thành tiên. Bài viết này kể con đường từ Trúc Cơ đến Kim Đan và Thiên Kiếp, ý nghĩa câu “Mệnh ta do ta, không do trời”, sự khác biệt trong quan niệm trường sinh Đông–Tây và điểm khác với lá số Bát Tự."
+      },
+      "fil": {
+        "title": "Pagsasanay: Kapalaran sa Sariling Kamay·Pundasyon, Gintong Core, Pagsubok ng Langit | ZHAOWU",
+        "description": "Ang pagsasanay ay imahenasyong kultural ng Tsina na mahigit dalawang libong taon na: kayang magsanay ang tao upang maging imortal. Tinatalakay ng sanaysay na ito ang landas mula sa Pagtatayo ng Pundasyon hanggang sa Gintong Core at Pagsubok ng Langit, ang kahulugan ng “Ang kapalaran ko ay akin, hindi sa langit”, at ang pagkakaiba nito sa tsart ng BaZi."
+      }
+    },
     "/bajinggong": {
       "zh-Hant": {
         "title": "八景宮九景圖志｜九幅原創仙境畫與古籍來源辨識｜昭梧",

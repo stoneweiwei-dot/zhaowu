@@ -48,6 +48,7 @@ import { Route as KnowledgeShushuBoundaryRouteImport } from './routes/knowledge.
 import { Route as KnowledgeSouthernHemisphereBaziRouteImport } from './routes/knowledge.southern-hemisphere-bazi'
 import { Route as KnowledgeSystemMapRouteImport } from './routes/knowledge.system-map'
 import { Route as KnowledgeTrueSolarTimeRouteImport } from './routes/knowledge.true-solar-time'
+import { Route as KnowledgeXiuxianCultivationRouteImport } from './routes/knowledge.xiuxian-cultivation'
 import { Route as QuizCultivationDestinyRouteImport } from './routes/quiz.cultivation-destiny'
 import { Route as QuizDivineAffinityRouteImport } from './routes/quiz.divine-affinity'
 import { Route as QuizFiveElementOverdriveRouteImport } from './routes/quiz.five-element-overdrive'
@@ -252,6 +253,12 @@ const KnowledgeTrueSolarTimeRoute = KnowledgeTrueSolarTimeRouteImport.update({
   path: '/true-solar-time',
   getParentRoute: () => KnowledgeRoute,
 } as any)
+const KnowledgeXiuxianCultivationRoute =
+  KnowledgeXiuxianCultivationRouteImport.update({
+    id: '/xiuxian-cultivation',
+    path: '/xiuxian-cultivation',
+    getParentRoute: () => KnowledgeRoute,
+  } as any)
 const QuizCultivationDestinyRoute = QuizCultivationDestinyRouteImport.update({
   id: '/quiz/cultivation-destiny',
   path: '/quiz/cultivation-destiny',
@@ -320,6 +327,7 @@ export interface FileRoutesByFullPath {
   '/knowledge/southern-hemisphere-bazi': typeof KnowledgeSouthernHemisphereBaziRoute
   '/knowledge/system-map': typeof KnowledgeSystemMapRoute
   '/knowledge/true-solar-time': typeof KnowledgeTrueSolarTimeRoute
+  '/knowledge/xiuxian-cultivation': typeof KnowledgeXiuxianCultivationRoute
   '/quiz/cultivation-destiny': typeof QuizCultivationDestinyRoute
   '/quiz/divine-affinity': typeof QuizDivineAffinityRoute
   '/quiz/five-element-overdrive': typeof QuizFiveElementOverdriveRoute
@@ -366,6 +374,7 @@ export interface FileRoutesByTo {
   '/knowledge/southern-hemisphere-bazi': typeof KnowledgeSouthernHemisphereBaziRoute
   '/knowledge/system-map': typeof KnowledgeSystemMapRoute
   '/knowledge/true-solar-time': typeof KnowledgeTrueSolarTimeRoute
+  '/knowledge/xiuxian-cultivation': typeof KnowledgeXiuxianCultivationRoute
   '/quiz/cultivation-destiny': typeof QuizCultivationDestinyRoute
   '/quiz/divine-affinity': typeof QuizDivineAffinityRoute
   '/quiz/five-element-overdrive': typeof QuizFiveElementOverdriveRoute
@@ -413,6 +422,7 @@ export interface FileRoutesById {
   '/knowledge/southern-hemisphere-bazi': typeof KnowledgeSouthernHemisphereBaziRoute
   '/knowledge/system-map': typeof KnowledgeSystemMapRoute
   '/knowledge/true-solar-time': typeof KnowledgeTrueSolarTimeRoute
+  '/knowledge/xiuxian-cultivation': typeof KnowledgeXiuxianCultivationRoute
   '/quiz/cultivation-destiny': typeof QuizCultivationDestinyRoute
   '/quiz/divine-affinity': typeof QuizDivineAffinityRoute
   '/quiz/five-element-overdrive': typeof QuizFiveElementOverdriveRoute
@@ -461,6 +471,7 @@ export interface FileRouteTypes {
     | '/knowledge/southern-hemisphere-bazi'
     | '/knowledge/system-map'
     | '/knowledge/true-solar-time'
+    | '/knowledge/xiuxian-cultivation'
     | '/quiz/cultivation-destiny'
     | '/quiz/divine-affinity'
     | '/quiz/five-element-overdrive'
@@ -507,6 +518,7 @@ export interface FileRouteTypes {
     | '/knowledge/southern-hemisphere-bazi'
     | '/knowledge/system-map'
     | '/knowledge/true-solar-time'
+    | '/knowledge/xiuxian-cultivation'
     | '/quiz/cultivation-destiny'
     | '/quiz/divine-affinity'
     | '/quiz/five-element-overdrive'
@@ -553,6 +565,7 @@ export interface FileRouteTypes {
     | '/knowledge/southern-hemisphere-bazi'
     | '/knowledge/system-map'
     | '/knowledge/true-solar-time'
+    | '/knowledge/xiuxian-cultivation'
     | '/quiz/cultivation-destiny'
     | '/quiz/divine-affinity'
     | '/quiz/five-element-overdrive'
@@ -875,6 +888,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KnowledgeTrueSolarTimeRouteImport
       parentRoute: typeof KnowledgeRoute
     }
+    '/knowledge/xiuxian-cultivation': {
+      id: '/knowledge/xiuxian-cultivation'
+      path: '/xiuxian-cultivation'
+      fullPath: '/knowledge/xiuxian-cultivation'
+      preLoaderRoute: typeof KnowledgeXiuxianCultivationRouteImport
+      parentRoute: typeof KnowledgeRoute
+    }
     '/quiz/cultivation-destiny': {
       id: '/quiz/cultivation-destiny'
       path: '/quiz/cultivation-destiny'
@@ -932,6 +952,7 @@ interface KnowledgeRouteChildren {
   KnowledgeSouthernHemisphereBaziRoute: typeof KnowledgeSouthernHemisphereBaziRoute
   KnowledgeSystemMapRoute: typeof KnowledgeSystemMapRoute
   KnowledgeTrueSolarTimeRoute: typeof KnowledgeTrueSolarTimeRoute
+  KnowledgeXiuxianCultivationRoute: typeof KnowledgeXiuxianCultivationRoute
 }
 
 const KnowledgeRouteChildren: KnowledgeRouteChildren = {
@@ -941,6 +962,7 @@ const KnowledgeRouteChildren: KnowledgeRouteChildren = {
   KnowledgeSouthernHemisphereBaziRoute: KnowledgeSouthernHemisphereBaziRoute,
   KnowledgeSystemMapRoute: KnowledgeSystemMapRoute,
   KnowledgeTrueSolarTimeRoute: KnowledgeTrueSolarTimeRoute,
+  KnowledgeXiuxianCultivationRoute: KnowledgeXiuxianCultivationRoute,
 }
 
 const KnowledgeRouteWithChildren = KnowledgeRoute._addFileChildren(
