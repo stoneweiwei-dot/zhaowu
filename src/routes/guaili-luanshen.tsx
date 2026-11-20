@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
-import { GUAILI_COPY, GUAILI_VOLUMES, GUAILI_ZODIAC, GUAILI_YEARS } from "./-mythic-atlas-guaili-data";
+import { GUAILI_COPY, GUAILI_VOLUMES, GUAILI_PART_TWO, GUAILI_ZODIAC, GUAILI_YEARS } from "./-mythic-atlas-guaili-data";
 import { l, tr } from "./-mythic-atlas-data";
 import { ZODIAC_PLATES } from "./-mythic-atlas-zodiac-essay";
 import "./mythic-atlas.css";
@@ -42,10 +42,11 @@ function GuailiCollectionPage() {
       <a href="#volumes">{tr(GUAILI_COPY.volumes, locale)}</a>
       <a href="#zodiac">{tr(GUAILI_COPY.zodiac, locale)}</a>
       <a href="#chronicle">{tr(GUAILI_COPY.chronology, locale)}</a>
+      <a href="#part-two">{tr(l("第二部・續卷", "第二部・续卷", "Part Two"), locale)}</a>
     </nav>
     <section id="volumes" className="hqc-section" aria-labelledby="hqc-volumes-heading">
       <div className="hqc-section-intro">
-        <span>01 / 03</span>
+        <span>01 / 04</span>
         <h2 id="hqc-volumes-heading">{tr(GUAILI_COPY.volumes, locale)}</h2>
         <p>{tr(refer, locale)}</p>
       </div>
@@ -61,7 +62,7 @@ function GuailiCollectionPage() {
     </section>
     <section id="zodiac" className="hqc-section" aria-labelledby="hqc-zodiac-heading">
       <div className="hqc-section-intro">
-        <span>02 / 03</span>
+        <span>02 / 04</span>
         <h2 id="hqc-zodiac-heading">{tr(GUAILI_COPY.zodiac, locale)}</h2>
         <p>{tr(GUAILI_COPY.zodiacLead, locale)}</p>
       </div>
@@ -78,7 +79,7 @@ function GuailiCollectionPage() {
     </section>
     <section id="chronicle" className="hqc-section" aria-labelledby="hqc-chronicle-heading">
       <div className="hqc-section-intro">
-        <span>03 / 03</span>
+        <span>03 / 04</span>
         <h2 id="hqc-chronicle-heading">{tr(GUAILI_COPY.chronology, locale)}</h2>
         <p>{tr(GUAILI_COPY.chronologyLead, locale)}</p>
       </div>
@@ -90,6 +91,26 @@ function GuailiCollectionPage() {
         </li>)}
       </ol>
       <blockquote className="hqc-final-line">{tr(GUAILI_COPY.finalQuote,locale)}</blockquote>
+    </section>
+    <section id="part-two" className="hqc-section" aria-labelledby="hqc-part-two-heading">
+      <div className="hqc-section-intro">
+        <span>04 / 04</span>
+        <h2 id="hqc-part-two-heading">{tr(l("《黃泉紀》第二部・續卷設定", "《黄泉纪》第二部・续卷设定", "Yellow Springs · Part Two"), locale)}</h2>
+        <p>{tr(l(
+          "卷十八至二十六與終章補記。此為故事設定與情節提要；卷八至十七尚未收錄。每篇通往《幽明萬象錄》同一份正文。",
+          "卷十八至二十六与终章补记。此为故事设定与情节提要；卷八至十七尚未收录。每篇通往《幽明万象录》同一份正文。",
+          "Story treatments for volumes 18–26 and the afterword; volumes 8–17 are not published here. Each entry leads to the same archive text."
+        ), locale)}</p>
+      </div>
+      <ol className="hqc-booklist">
+        {GUAILI_PART_TWO.map((chapter) => <li key={chapter.no}>
+          <Link to="/mythic-atlas" hash={`guaili-part-two-${chapter.no === "終" ? "ending" : chapter.no}`}>
+            <span className="hqc-number">{chapter.no}</span>
+            <span className="hqc-mainline"><strong>{tr(chapter.title, locale)}</strong><small>{tr(chapter.lead, locale)}</small></span>
+            <span className="hqc-arrow" aria-hidden="true">↗</span>
+          </Link>
+        </li>)}
+      </ol>
     </section>
     <footer className="hqc-footer">
       <p>{tr(GUAILI_COPY.sourceNotice, locale)}</p>
