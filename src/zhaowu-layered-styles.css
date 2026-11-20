@@ -13299,3 +13299,9 @@ html[data-zw-theme="night"] .zhaowu-question-stage .zhaowu-section-lead {
 @keyframes birthday-fall { from { transform: translateY(-22px); opacity: 0; } 25% { opacity: 1; } to { transform: translateY(44px); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .birthday-opening,.birthday-opening * { animation: none !important; } }
 @media (max-width: 480px) { .birthday-surprise { padding: 17px; } }
+@media (max-width: 480px) {
+  .birthday-surprise.birthday-countdown {
+    padding-right: calc(17px + 120px);
+    padding-bottom: calc(17px + 72px + env(safe-area-inset-bottom, 0px));
+  }
+}
