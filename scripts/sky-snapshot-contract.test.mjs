@@ -43,12 +43,6 @@ test("Sydney 11 November 2026 snapshot preserves prior records, matches trilingu
   ]) {
     assert.ok(uniqueDates.includes(historicalDate), `missing historical snapshot ${historicalDate}`);
   }
-  const dayMs = 24 * 60 * 60 * 1000;
-  for (let i = 1; i < foundDates.length; i += 1) {
-    const previous = Date.parse(`${foundDates[i - 1]}T00:00:00Z`);
-    const current = Date.parse(`${foundDates[i]}T00:00:00Z`);
-    assert.equal(current - previous, dayMs, `snapshot series has a gap between ${foundDates[i - 1]} and ${foundDates[i]}`);
-  }
   for (const datum of ["06:29", "21:36", "14:01", "3.4%", "02:00", "02:02", "04:23", "04:11", "16–26°C", "50%"]) {
     assert.ok(src.includes(datum), `missing 2026-11-11 datum ${datum}`);
   }
@@ -85,4 +79,14 @@ test("daily sky observation generator computes matching Sydney ephemeris values 
   const noop = upsertObservationSource(src, snap, { force: false });
   assert.equal(noop.updated, false);
   assert.equal(noop.content, src);
+});
+
+test("sky observation workflow is scheduled weekly for Monday morning in Sydney", () => {
+  const workflow = read(".github/workflows/daily-sky-observation-update.yml");
+  assert.match(workflow, /name: Weekly Sydney Sky Observation Update/);
+  assert.match(workflow, /cron:\\s*'15 18 \\* \\* 0'/);
+  assert.match(workflow, /18:15 UTC Sunday = 05:15 Monday AEDT/);
+  assert.match(workflow, /group: weekly-sky-observation-update/);
+  assert.match(workflow, /automation\\/weekly-sky-/);
+  assert.doesNotMatch(workflow, /force-with-lease/);
 });

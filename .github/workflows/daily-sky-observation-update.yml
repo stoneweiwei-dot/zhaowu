@@ -1,13 +1,13 @@
-name: Daily Sydney Sky Observation Update
+name: Weekly Sydney Sky Observation Update
 
 on:
   schedule:
-    # 18:15 UTC = 05:15 AEDT (UTC+11) / 04:15 AEST (UTC+10), before 06:00 Sydney time
-    - cron: '15 18 * * *'
+    # 18:15 UTC Sunday = 05:15 Monday AEDT (UTC+11) / 04:15 Monday AEST (UTC+10), before 06:00 Sydney time year-round.
+    - cron: '15 18 * * 0'
   workflow_dispatch:
     inputs:
-      date:
-        description: 'Optional Sydney date (YYYY-MM-DD); defaults to current Sydney date'
+      week_start:
+        description: 'Optional Sydney week-start Monday (YYYY-MM-DD); defaults to current Sydney date'
         required: false
         type: string
 
@@ -16,7 +16,7 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: daily-sky-observation-update
+  group: weekly-sky-observation-update
   cancel-in-progress: false
 
 jobs:
@@ -38,12 +38,12 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: Generate Sydney daily sky observation (idempotent, preserves history on failure)
+      - name: Generate Sydney sky observation (idempotent, preserves history on failure)
         env:
-          TARGET_DATE: ${{ github.event.inputs.date }}
+          WEEK_START: ${{ github.event.inputs.week_start }}
         run: |
-          if [ -n "$TARGET_DATE" ]; then
-            node scripts/generate-daily-sky-observation.mjs --date="$TARGET_DATE"
+          if [ -n "$WEEK_START" ]; then
+            node scripts/generate-daily-sky-observation.mjs --date="$WEEK_START"
           else
             node scripts/generate-daily-sky-observation.mjs
           fi
@@ -59,17 +59,17 @@ jobs:
             echo "No changes to src/components/daily-sky-observation.tsx; keeping existing verified snapshot."
             exit 0
           fi
-          SYDNEY_DAY=$(node -e 'import("./scripts/generate-daily-sky-observation.mjs").then(m => console.log(process.env.TARGET_DATE || m.sydneyDateString()))')
-          BRANCH="automation/daily-sky-${SYDNEY_DAY}"
+          SYDNEY_DATE=$(node -e 'import("./scripts/generate-daily-sky-observation.mjs").then(m => console.log(process.env.WEEK_START || m.sydneyDateString()))')
+          BRANCH="automation/weekly-sky-${SYDNEY_DATE}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B "$BRANCH"
           git add src/components/daily-sky-observation.tsx
-          git commit -m "chore(sky): update Sydney daily observation snapshot for ${SYDNEY_DAY}"
-          git push -u origin "$BRANCH" --force-with-lease
-          gh pr create --title "chore(sky): Sydney daily sky snapshot ${SYDNEY_DAY}" \
-                       --body "Automated pre-06:00 Sydney sky observation snapshot generated via approved self-hosted astronomy-engine. Unverified S/A events and weather layers remain marked as data unavailable." \
+          git commit -m "chore(sky): update Sydney weekly observation snapshot for ${SYDNEY_DATE}"
+          git push -u origin "$BRANCH"
+          gh pr create --title "chore(sky): Sydney weekly sky snapshot ${SYDNEY_DATE}" \
+                       --body "Automated weekly Sydney sky observation snapshot generated via approved self-hosted astronomy-engine." \
                        --head "$BRANCH" --base main || true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TARGET_DATE: ${{ github.event.inputs.date }}
+          WEEK_START: ${{ github.event.inputs.week_start }}
