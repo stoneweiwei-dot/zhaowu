@@ -23,13 +23,27 @@ const tomes: { id: string; title: Copy; intro: Copy; works: Work[] }[] = [
 function YunyiShenxiangPage() {
   const { locale } = useI18n();
   const [selected, setSelected] = useState<{src:string; label:string} | null>(null);
+  const [wallVisible, setWallVisible] = useState(false);
   const viewer = useRef<HTMLDialogElement>(null);
+  const wallRef = useRef<HTMLElement>(null);
   useEffect(() => {
     const dialog = viewer.current;
     if (selected && dialog && !dialog.open) dialog.showModal();
     document.documentElement.classList.toggle("yunyi-viewer-open", Boolean(selected));
     return () => document.documentElement.classList.remove("yunyi-viewer-open");
   }, [selected]);
+  useEffect(() => {
+    const wall = wallRef.current;
+    if (!wall) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setWallVisible(true);
+        observer.disconnect();
+      }
+    }, { rootMargin: "900px 0px" });
+    observer.observe(wall);
+    return () => observer.disconnect();
+  }, []);
   const text = (a: string,b: string,e: string) => c([a,b,e],locale);
   return <main className="yunyi-page">
     <header className="yunyi-hero" id="knowledge">
@@ -47,14 +61,15 @@ function YunyiShenxiangPage() {
     <nav id="gallery" className="yunyi-volumes" aria-label={text("三卷目錄","三卷目录","Three volumes")}>
       {tomes.map(t => <a href={`#${t.id}`} key={t.id}>{c(t.title,locale)}</a>)}
     </nav>
-    <section className="yunyi-wall" aria-label={text("75 張作品縮圖牆","75 张作品缩略图墙","Wall of all 75 artworks")}>
+    <section ref={wallRef} className="yunyi-wall" aria-label={text("75 張作品縮圖牆","75 张作品缩略图墙","Wall of all 75 artworks")}>
       <h2>{text("三卷作品一覽","三卷作品一览","All works at a glance")}</h2>
       <p>{text("點選任一縮圖，可開啟完整畫幅。","点击任一缩略图，可打开完整画幅。","Select any thumbnail to open the full artwork.")}</p>
       <div className="yunyi-wall-grid">{Array.from({ length: 75 }, (_, index) => {
         const n = index + 1, nn = String(n).padStart(2,"0"), src = `/articles/yunyi-shenxiang/${nn}.webp`;
         const item = tomes.flatMap(t => t.works).find(w => w.n === n);
         const label = item ? c(item.title,locale) : nn;
-        return <button key={n} type="button" className="yunyi-wall-thumb" aria-label={text(`開啟 ${label}`,`打开 ${label}`,`Open ${label}`)} onClick={() => setSelected({src,label})}><img src={src} alt={label} width={941} height={1672} loading="lazy" decoding="async" /><span>{nn}</span></button>;
+        const thumbSrc = `/articles/yunyi-shenxiang/thumbs/${nn}.webp`;
+        return <button key={n} type="button" className="yunyi-wall-thumb" aria-label={text(`開啟 ${label}`,`打开 ${label}`,`Open ${label}`)} onClick={() => setSelected({src,label})}><img src={thumbSrc} alt={label} width={240} height={428} loading={wallVisible ? "eager" : "lazy"} decoding="async" /><span>{nn}</span></button>;
       })}</div>
     </section>
     {tomes.map((tome, ti) => <section className="yunyi-tome" id={tome.id} key={tome.id}>
