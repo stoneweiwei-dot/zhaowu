@@ -74,6 +74,9 @@ type Verification = {
   revoked?: boolean;
   product?: ReportAccessProduct | "bundle";
   system?: ReportSystemId | null;
+  createdAt?: string;
+  updatedAt?: string;
+  live?: boolean;
   error?: { code?: string } | string;
 };
 
@@ -210,31 +213,43 @@ export async function resolveReportAccess(system: ReportSystemId) {
   let pending = false;
   let stripeGranted = false;
   let revoked = false;
-  const revokedSessionIds: string[] = [];
+  let latestEntitlementAt = -Infinity;
+  let latestEntitlementRevoked = false;
+  let livePaid = false;
   for (const sessionId of [...new Set([query, ...storedSessions()].filter(Boolean))]) {
     try {
       // The checkout session ID is the high-entropy return capability. Verification
       // must also work when Stripe opens the success URL in a different browser whose
       // localStorage cannot contain the original client reference key.
       const verification = await verifySession(sessionId);
-      if (verification.revoked) { revoked = true; revokedSessionIds.push(sessionId); continue; }
-      pending ||= verification.pending === true;
       const candidate = levelFor(verification, system);
-      if (candidate === "system") stripeGranted = true;
-      if (rank[candidate] > rank[level]) level = candidate;
+      if (candidate !== "system" && !verification.revoked) {
+        pending ||= verification.pending === true;
+        continue;
+      }
+      const timestamp = Math.max(Date.parse(verification.createdAt || "") || 0, Date.parse(verification.updatedAt || "") || 0);
+      if (verification.live && candidate === "system") livePaid = true;
+      if (verification.revoked) revoked = true;
+      if (timestamp >= latestEntitlementAt) {
+        latestEntitlementAt = timestamp;
+        latestEntitlementRevoked = verification.revoked === true;
+      }
+      continue;
     } catch {
       // A transient lookup failure is unknown, not a confirmed non-payment.
       // Continue checking other sessions; the bounded watcher may retry this one.
       pending = true;
     }
   }
-  if (revoked) {
-    try {
-      const revokedIds = new Set(revokedSessionIds);
-      localStorage.setItem(SESSION_STORAGE, JSON.stringify(storedSessions().filter((sessionId) => !revokedIds.has(sessionId))));
-      localStorage.setItem("zhaowu.report-access-revoked.v1", "refunded");
-    } catch { /* best effort cache cleanup */ }
-  }
+  if (latestEntitlementRevoked) level = "quick";
+  else if (latestEntitlementAt > -Infinity) level = "system";
+  if (livePaid) level = "system";
+  stripeGranted = level === "system";
+  revoked = latestEntitlementRevoked && !livePaid;
+  try {
+    if (revoked) localStorage.setItem("zhaowu.report-access-revoked.v1", "refunded");
+    else localStorage.removeItem("zhaowu.report-access-revoked.v1");
+  } catch { /* optional refund marker */ }
   {
     try {
       // Server-authoritative, same as a Stripe session: the access key alone never grants

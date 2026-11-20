@@ -118,9 +118,9 @@ test("paid entitlement checks revalidate Stripe refunds and disputes before retu
   assert.match(checkout, /revoked: true/);
   assert.match(checkout, /data\.status === "refunded"/);
   assert.match(checkout, /paid: data\.status === "paid"/);
-  assert.match(client, /if \(verification\.revoked\) \{ revoked = true/);
+  assert.match(client, /if \(verification\.revoked\) revoked = true/);
   assert.match(client, /return \{ level, pending, owner: false, revoked \}/);
-  assert.match(client, /localStorage\.setItem\(SESSION_STORAGE, JSON\.stringify\(storedSessions\(\)\.filter/);
+  assert.doesNotMatch(client, /storedSessions\(\)\.filter\(\(sessionId\).*revoked/);
   assert.match(resultUi, /此訂單已退款/);
 });
 
