@@ -1,0 +1,24 @@
+/* Owner reference: compact paper readings inside the existing almanac board. */
+html body .zw-ink-board .zw-reference-grid{display:grid;grid-column:1 / -1;order:-1;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:0 0 12px}
+html body .zw-ink-board .zw-reference-cell{min-width:0;padding:12px 10px;background:#f7f2e6;color:#243a32;border:1px solid #b9aa87;border-radius:7px;line-height:1.55}
+html body .zw-ink-board .zw-reference-cell :is(small,strong,span){display:block;color:inherit}
+html body .zw-ink-board .zw-reference-cell small{font-size:14px;font-weight:700;color:#715a34}
+html body .zw-ink-board .zw-reference-cell strong{font-size:16px;margin-top:5px;overflow-wrap:anywhere}
+html body .zw-ink-board .zw-reference-cell span,html body .zw-ink-board .zw-reference-cell p{font-size:14px;line-height:1.6;margin:5px 0 0;overflow-wrap:anywhere}
+html body .zw-ink-board .zw-reference-cell .zw-ink-icon{width:28px;height:28px;color:#a58148;margin-top:4px}
+html body .zw-ink-board .zw-reference-cell .is-yi{color:#276658}
+html body .zw-ink-board .zw-reference-cell .is-ji{color:#a2362f}
+html body .zw-ink-board .zw-reference-more>summary{min-height:44px;display:flex;align-items:center;padding:8px 12px;color:#f9f2df;font-weight:700;cursor:pointer}
+html body .zw-ink-board[data-variant="day"] .zw-reference-more>summary{color:#243a32}
+@media(max-width:520px){html body .zw-ink-board .zw-reference-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+html body .zw-ink-board > .zw-ink-variant{position:static !important;grid-column:1 / -1;order:-2;justify-self:end;max-width:100%}
+html body .zw-ink-board > .zw-reference-more{grid-column:1 / -1;order:0;min-width:0}
+html body .zw-ink-board .zw-reference-expanded{margin-top:8px}
+html body .zw-ink-board .zw-reference-cell .zhaowu-today-location-inline{display:inline-block;max-width:100%;min-height:44px;white-space:normal;overflow-wrap:anywhere;text-align:left}
+/* Header illustration is an AI-generated interpretation of the supplied reference. */
+html body #daily-almanac .zhaowu-daily-details.is-embedded-open .zhaowu-today-guide__hero{display:flex!important;min-height:150px;padding:24px 18px!important;background:#f6eddb url('/today/sydney-reference-scene.webp') center right / cover no-repeat!important;border-bottom:1px solid #cfbf9e!important}
+html body #daily-almanac .zhaowu-daily-details.is-embedded-open .zhaowu-today-guide__hero::after{display:none}
+html body #daily-almanac .zhaowu-today-guide__hero p{color:#30291d!important;font-family:Georgia,"Noto Serif TC",serif;font-weight:700!important;font-size:clamp(30px,8vw,42px)!important}
+html body #daily-almanac .zhaowu-today-guide__hero span{color:#3c382b!important;font-size:14px!important;text-shadow:0 1px #f5ead7}
+html body .zw-ink-board > .zw-ink-variant button{min-height:44px}
