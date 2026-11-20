@@ -88,7 +88,7 @@ const STORY_ARCS = [
     id: "return",
     label: l("第二部・下｜卷二十五至二十七", "第二部・下｜卷二十五至二十七", "Part Two, III · Volumes 25–27"),
     title: l("回流：庇護所與最後潛入", "回流：庇护所与最后潜入", "The Refuge and the Final Infiltration"),
-    bridge: l("主角沿煉丹廢料追到地底，卷十六建立的臨時落腳處在卷二十六擴成庇護網。至卷二十七，前面散落的殘卷、口訣和實戰經驗才合為隱景八化，並讓主角返回太一宮破壞偽鳳工程。終章補記保留關鍵未解：神籍焚毀，黃泉仍未修復。", "主角沿炼丹废料追到地底，卷十六建立的临时落脚处在卷二十六扩成庇护网。至卷二十七，前面散落的残卷、口诀和实战经验才合为隐景八化，并让主角返回太一宫破坏伪凤工程。终章补记保留关键未解：神籍焚毁，黄泉仍未修复。", "The trail of alchemical waste leads underground. The camp from volume 16 grows into a refuge in volume 26. By volume 27, scroll fragments, oral clues and field experience unite as the Eight Transformations, enabling the return to Taiyi Palace. The afterword keeps the central question open: the registers burn, but the Yellow Springs remain broken."),
+    bridge: l("卷二十四救出村民後，主角沿著被傾倒的丹渣追進地下墓地，才揭出卷二十五鼠王背後的煉丹廢料源頭。卷十六建立的臨時落腳處在卷二十六擴成庇護網；到卷二十七，散落的殘卷、口訣和實戰經驗才合為隱景八化，主角返回太一宮破壞偽鳳工程。終章補記保留關鍵未解：神籍焚毀，黃泉仍未修復。", "第二十四卷救出村民后，主角沿着被倾倒的丹渣追进地下墓地，才揭出第二十五卷鼠王背后的炼丹废料源头。第十六卷建立的临时落脚点在第二十六卷扩成庇护网；到第二十七卷，散落的残卷、口诀和实战经验才合为隐景八化，主角返回太一宫破坏伪凤工程。终章补记保留关键未解：神籍焚毁，黄泉仍未修复。", "After rescuing the village in volume 24, the protagonist follows dumped alchemical residue into the burial grounds and uncovers the waste behind the rat king in volume 25. The camp founded in volume 16 grows into a refuge in volume 26. By volume 27, scroll fragments, oral clues and field experience unite as the Eight Transformations, enabling the return to Taiyi Palace. The afterword keeps the central question open: the registers burn, but the Yellow Springs remain broken."),
     chapters: CONTINUATION_CHAPTERS.filter((chapter) => Number(chapter.no) >= 25 && Number(chapter.no) <= 27),
   },
 ];
