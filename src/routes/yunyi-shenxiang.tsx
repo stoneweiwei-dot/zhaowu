@@ -47,6 +47,16 @@ function YunyiShenxiangPage() {
     <nav id="gallery" className="yunyi-volumes" aria-label={text("三卷目錄","三卷目录","Three volumes")}>
       {tomes.map(t => <a href={`#${t.id}`} key={t.id}>{c(t.title,locale)}</a>)}
     </nav>
+    <section className="yunyi-wall" aria-label={text("75 張作品縮圖牆","75 张作品缩略图墙","Wall of all 75 artworks")}>
+      <h2>{text("三卷作品一覽","三卷作品一览","All works at a glance")}</h2>
+      <p>{text("點選任一縮圖，可開啟完整畫幅。","点击任一缩略图，可打开完整画幅。","Select any thumbnail to open the full artwork.")}</p>
+      <div className="yunyi-wall-grid">{Array.from({ length: 75 }, (_, index) => {
+        const n = index + 1, nn = String(n).padStart(2,"0"), src = `/articles/yunyi-shenxiang/${nn}.webp`;
+        const item = tomes.flatMap(t => t.works).find(w => w.n === n);
+        const label = item ? c(item.title,locale) : nn;
+        return <button key={n} type="button" className="yunyi-wall-thumb" aria-label={text(`開啟 ${label}`,`打开 ${label}`,`Open ${label}`)} onClick={() => setSelected({src,label})}><img src={src} alt={label} width={941} height={1672} loading="lazy" decoding="async" /><span>{nn}</span></button>;
+      })}</div>
+    </section>
     {tomes.map((tome, ti) => <section className="yunyi-tome" id={tome.id} key={tome.id}>
       <header><p className="yunyi-kicker">{text(`第 ${ti+1} 卷`,`第 ${ti+1} 卷`,`VOLUME ${ti+1}`)} · {tome.works.length} {text("條目","条目","entries")}</p><h2>{c(tome.title,locale)}</h2><p>{c(tome.intro,locale)}</p></header>
       <div className="yunyi-grid">{tome.works.map((item, index) => {

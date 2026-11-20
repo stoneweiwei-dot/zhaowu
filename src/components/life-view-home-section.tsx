@@ -302,7 +302,7 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                     return (
                       <li key={id}>
                         <a
-                          className="block min-h-10 py-1 text-sm leading-6 text-ink-soft underline decoration-line underline-offset-4 hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-offset-2"
+                          className="flex min-h-[68px] items-center gap-3 rounded-xl border border-line/70 bg-[#fffaf1]/85 p-2.5 text-sm leading-6 text-ink-soft shadow-sm transition hover:border-cinnabar/35 focus-visible:outline-2 focus-visible:outline-offset-2"
                           href={`#article-${id}`}
                           onClick={(event) => {
                             event.preventDefault();
@@ -310,7 +310,8 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                             document.getElementById(`article-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
                           }}
                         >
-                          {target.title[locale]}
+                          <img src={target.illustrations?.[0]?.src ?? "/articles/yunyi-shenxiang/01.webp"} alt="" width={941} height={1672} loading="lazy" decoding="async" className="h-14 w-12 shrink-0 rounded-md object-cover" />
+                          <span className="min-w-0"><strong className="block font-medium text-ink">{target.title[locale]}</strong><span className="mt-0.5 line-clamp-2 block text-xs leading-5 text-ink-mute">{target.summary?.[locale] ?? target.body[locale].split(/\n\n+/)[0]}</span></span>
                         </a>
                       </li>
                     );
@@ -329,13 +330,14 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
           const kindLabel = article.contentKind === "short-note" ? copy.shortNote : copy.article;
 
           return (
-            <article key={article.id} id={`article-${article.id}`} className={`${index ? "border-t border-line/60" : ""} scroll-mt-24 py-4`}>
+            <article key={article.id} id={`article-${article.id}`} className={`${index ? "border-t border-line/60" : ""} scroll-mt-24 py-2`}>
               <button
                 type="button"
                 onClick={() => toggleArticle(article.id, isOpen)}
-                className="flex w-full items-start justify-between gap-4 text-left"
+                className="flex w-full min-h-[104px] items-center gap-3 rounded-xl border border-line/70 bg-[#fffaf1]/85 p-3 text-left shadow-sm transition hover:border-cinnabar/35 focus-visible:outline-2 focus-visible:outline-offset-2 sm:gap-4 sm:p-4"
                 aria-expanded={isOpen}
               >
+                <img src={article.illustrations?.[0]?.src ?? "/articles/yunyi-shenxiang/01.webp"} alt="" width={941} height={1672} loading="lazy" decoding="async" className="h-20 w-16 shrink-0 rounded-lg object-cover sm:h-24 sm:w-[4.5rem]" />
                 <span className="min-w-0">
                   <span className="flex flex-wrap items-center gap-2 text-[10px] font-semibold tracking-[0.14em] text-cinnabar">
                     <span>{index === 0 ? copy.latest : article.publishedAt}</span>
