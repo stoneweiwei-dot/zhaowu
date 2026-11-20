@@ -1073,17 +1073,19 @@ html[data-zw-theme="night"] .zhaowu-specialist-node { border-top-color: rgba(236
 .zhaowu-result-flow .zhaowu-bazi-chart {
   margin: 18px 0 22px;
   padding: 18px 14px;
-  border: 1px solid var(--zws-divider, #d8d2c3) !important;
-  border-radius: 0 !important;
-  background: var(--zws-surface, #fffdf8) !important;
+  border: 1px solid rgba(87, 76, 59, .22) !important;
+  border-radius: 16px !important;
+  background: rgba(247, 242, 230, .90) !important;
   color: var(--zws-ink, #27241f) !important;
-  box-shadow: 0 0 0 1px rgba(216, 199, 164, .28) !important;
+  box-shadow: 0 10px 32px rgba(26, 31, 26, .16) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(.88);
+  backdrop-filter: blur(12px) saturate(.88);
 }
 .zhaowu-result-flow .zhaowu-bazi-chart .zhaowu-pillar-grid {
   gap: 0 !important;
   margin-top: 0 !important;
-  border: 1px solid var(--zws-divider, #d8d2c3);
-  background: var(--zws-surface, #fffdf8);
+  border: 1px solid rgba(87, 76, 59, .30);
+  background: rgba(236, 229, 213, .35);
 }
 .zhaowu-result-flow .zhaowu-pillar-grid > section {
   display: grid;
@@ -1091,7 +1093,7 @@ html[data-zw-theme="night"] .zhaowu-specialist-node { border-top-color: rgba(236
   min-height: 154px;
   padding: 13px 5px 12px !important;
   border: 0 !important;
-  border-right: 1px solid var(--zws-divider, #d8d2c3) !important;
+  border-right: 1px solid rgba(87, 76, 59, .24) !important;
   border-radius: 0 !important;
   background: transparent !important;
 }
@@ -1130,11 +1132,13 @@ html[data-zw-theme="night"] .zhaowu-specialist-node { border-top-color: rgba(236
 .zhaowu-result-flow .zhaowu-share-card-panel {
   margin: 22px 0;
   padding: 16px 14px 14px;
-  border: 1px solid var(--zws-divider, #d8d2c3);
-  border-radius: 0;
-  background: var(--zws-surface, #fffdf8);
+  border: 1px solid rgba(87, 76, 59, .24);
+  border-radius: 16px;
+  background: rgba(247, 242, 230, .90);
   color: var(--zws-ink, #27241f);
-  box-shadow: 0 0 0 1px rgba(216, 199, 164, .28);
+  box-shadow: 0 10px 32px rgba(26, 31, 26, .16);
+  -webkit-backdrop-filter: blur(12px) saturate(.88);
+  backdrop-filter: blur(12px) saturate(.88);
 }
 .zhaowu-result-flow .zhaowu-share-card-panel > header > p { color: var(--zws-accent, #315e50); font-size: 10px; letter-spacing: .18em; }
 .zhaowu-result-flow .zhaowu-share-card-panel > header h4 {
@@ -2398,8 +2402,8 @@ body:has(.zhaowu-home-sheet-shell) {
 
 .zhaowu-home-sheet-shell::before {
   background:
-    linear-gradient(180deg, rgba(250, 247, 238, .50), rgba(255, 248, 232, .34)),
-    radial-gradient(circle at 18% 8%, rgba(255, 255, 255, .18), transparent 42%),
+    linear-gradient(180deg, rgba(250, 247, 238, .24), rgba(255, 248, 232, .16)),
+    radial-gradient(circle at 18% 8%, rgba(255, 255, 255, .10), transparent 42%),
     var(--zhaowu-shell-wallpaper, url('/wallpaper-song.jpg')) center 72% / cover no-repeat !important;
   filter: saturate(.92) contrast(1.04) sepia(.08);
   opacity: .98;
@@ -10458,3 +10462,20 @@ html body [data-background-music-player] [data-music-playlist-track] > span:nth-
   overflow-wrap: anywhere;
   line-height: 1.4;
 }
+
+/* Keep the report over the painting, rather than replacing it with an opaque panel. */
+html body #root .zhaowu-home-sheet-shell #bazi.zhaowu-bazi-stage {
+  border: 1px solid rgba(69, 65, 53, .28) !important;
+  border-radius: 18px !important;
+  background: rgba(244, 238, 224, .90) !important;
+  box-shadow: 0 12px 30px rgba(24, 29, 27, .16) !important;
+  -webkit-backdrop-filter: blur(13px) saturate(.9) !important;
+  backdrop-filter: blur(13px) saturate(.9) !important;
+}
+html body #root .zhaowu-home-sheet-shell #bazi .zhaowu-bazi-plain,
+html body #root .zhaowu-home-sheet-shell #bazi .zhaowu-bazi-preview > details.zhaowu-chart-details {
+  border-color: rgba(73, 68, 57, .25) !important;
+  background: rgba(238, 231, 215, .40) !important;
+  box-shadow: none !important;
+}
+html body #root .zhaowu-home-sheet-shell #bazi .zhaowu-bazi-preview > details.zhaowu-chart-details > summary { color: #26372f !important; }
