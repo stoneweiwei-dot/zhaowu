@@ -2,7 +2,7 @@ import type { Locale } from "@/lib/i18n";
 import { l, tr } from "./-mythic-atlas-data";
 import {
   GUAILI_ARTS, GUAILI_COPY, GUAILI_EIGHT, GUAILI_HOUSES,
-  GUAILI_TWELVE, GUAILI_VOLUMES, GUAILI_YEARS, GUAILI_ZODIAC,
+  GUAILI_TWELVE, GUAILI_VOLUMES, GUAILI_PART_TWO, GUAILI_YEARS, GUAILI_ZODIAC,
 } from "./-mythic-atlas-guaili-data";
 import { ZODIAC_PLATES } from "./-mythic-atlas-zodiac-essay";
 import { mythicWebPlate } from "@/lib/mythic-web-assets";
@@ -130,5 +130,31 @@ export function GuailiBook({ locale }: { locale: Locale }) {
         <p><a href="#sources">{tr(l("參閱本館來源分層","参阅本馆来源分层","See archive source classifications"), locale)}</a></p>
       </div>
     </section>
+    <section className="hq-section hq-guaili" id="guaili-part-two" aria-labelledby="hq-guaili-part-two-heading">
+      <div className="hq-guaili-subheading">
+        <span>II</span>
+        <h2 id="hq-guaili-part-two-heading">{tr(l("《黃泉紀》第二部・續卷設定", "《黄泉纪》第二部・续卷设定", "Yellow Springs · Part Two"), locale)}</h2>
+        <p>{tr(l(
+          "承接七卷原書的同一架空世界。這份近期續稿現存卷十八至二十六及終章補記；卷八至十七尚未在此收錄。以下是各卷的故事設定與情節提要，不冒稱完整小說正文。",
+          "承接七卷原书的同一架空世界。这份近期续稿现存卷十八至二十六及终章补记；卷八至十七尚未在此收录。以下是各卷的故事设定与情节提要，不冒称完整小说正文。",
+          "This continuation shares the seven-volume world. The recent manuscript supplies volumes 18–26 and an afterword; volumes 8–17 are not published here. These are story treatments, not complete prose chapters."
+        ), locale)}</p>
+      </div>
+      <div className="hq-guaili-volumes">
+        {GUAILI_PART_TWO.map((chapter) => <details key={chapter.no} id={`guaili-part-two-${chapter.no === "終" ? "ending" : chapter.no}`}>
+          <summary>
+            <span className="hq-guaili-volume-number">{chapter.no}</span>
+            <span className="hq-guaili-volume-title">{tr(chapter.title, locale)}<small>{tr(chapter.lead, locale)}</small></span>
+          </summary>
+          <p>{tr(chapter.text, locale)}</p>
+        </details>)}
+      </div>
+      <p className="hq-guaili-source-note">{tr(l(
+        "創作界線：天庭官僚與黃泉裂隙是昭梧小說世界觀；借用的宗教人物、異獸名號及五毒分類不等於史實或教義。終章沿用既有十年未解結局。",
+        "创作界线：天庭官僚与黄泉裂隙是昭梧小说世界观；借用的宗教人物、异兽名号及五毒分类不等于史实或教义。终章沿用既有十年未解结局。",
+        "Heaven's bureaucracy and the broken crossing belong to this fictional world. Borrowed religious names, beasts and venom groupings are not historical or doctrinal claims. The unresolved ten-year ending remains intact."
+      ), locale)}</p>
+    </section>
+
   </>;
 }

@@ -1,6 +1,7 @@
 import { l, type Localized } from "./-mythic-atlas-data";
 
 export type GuailiVolume = { no: string; title: Localized; lead: Localized; text: Localized };
+export type GuailiContinuation = { no: string; title: Localized; lead: Localized; text: Localized };
 export type ZodiacPath = { earthly: Localized; shadow: Localized; beast: Localized; god: Localized; caveat: Localized };
 export type ChronicleEvent = { year: Localized; name: Localized; detail: Localized };
 
@@ -66,6 +67,111 @@ export const GUAILI_VOLUMES: GuailiVolume[] = [
   {no:"伍",title:l("左道術法・擴充名錄","左道术法・扩充名录","Unorthodox Arts · Reference Index"),lead:l("貓鬼、蠱毒、厭勝、扶乩與走陰。","猫鬼、蛊毒、厌胜、扶乩与走阴。","Spirit rites, curses and border-crossing arts."),text:l("母本列出貓鬼、蠱毒、厭勝、履璧、差神、扶乩、詛咒、調禽、造畜、幻伎、走陰、趕屍、梵杖等擴充方向。本卷目前為索引，不是逐條有出處的完整百科。","母本列出猫鬼、蛊毒、厌胜、履璧、差神、扶乩、诅咒、调禽、造畜、幻伎、走阴、赶尸、梵杖等扩充方向。本卷目前为索引，不是逐条有出处的完整百科。","A working index of thirteen named practices from the owner's source. Individual provenance and folklore remain to be researched; they are not presented as verified ancient entries.")},
   {no:"陸",title:l("正統神譜與官僚機器","正统神谱与官僚机器","The Bureaucracy of Heaven"),lead:l("敕封、香火、官署與搜山執法。","敕封、香火、官署与搜山执法。","Investiture, devotion and coercive authority."),text:l("五嶽七十五司、真武伏魔院六雷八煞、二郎灌口草頭神與十殿等，構成敘事中的官僚對照。具體數目、隸屬與跨朝代機構不得一概視為古代通行神譜；本卷目前亦為考證待補索引。","五岳七十五司、真武伏魔院六雷八煞、二郎灌口草头神与十殿等，构成叙事中的官僚对照。具体数目、隶属与跨朝代机构不得一概视为古代通行神谱；本卷目前亦为考证待补索引。","The Five Peaks, Zhenwu, Erlang and the Ten Courts illustrate institutional mythmaking. Numbers and chains of command differ by tradition and require specific sourcing; this volume remains a reference index.")},
   {no:"柒",title:l("災異編年・八災並起","灾异编年・八灾并起","Chronicle of Eight Calamities"),lead:l("元年失籍，十年焚籍；黃泉未復。","元年失籍，十年焚籍；黄泉未复。","Year one loses the records; year ten burns them."),text:l("亥月彘瘟、子月骨噬、酉月血雞與黑煞業火麟等災相推進大裂隙。黃泉曆十年，東皇舊檔成灰，玉皇天庭失去共同號令。沒有救世主；焚籍之後輪迴尚未修復，這是本書保留的黑暗終局。","亥月彘瘟、子月骨噬、酉月血鸡与黑煞业火麟等灾相推进大裂隙。黄泉历十年，东皇旧档成灰，玉皇天庭失去共同号令。没有救世主；焚籍之后轮回尚未修复，这是本书保留的黑暗终局。","Calamities hasten the breach. By year ten the celestial registers burn and Heaven loses its shared authority. No saviour repairs rebirth; the deliberately unresolved ending remains.")},
+];
+
+// A continuation of the same fictional archive. The supplied draft labels these
+// as volumes 18–26; volumes 8–17 are not represented as published here.
+export const GUAILI_PART_TWO: GuailiContinuation[] = [
+  {
+    no: "18",
+    title: l("祥瑞的墮落", "祥瑞的堕落", "When Auspices Fall"),
+    lead: l("妖鳳妖麟與靈炁枯竭", "妖凤妖麟与灵炁枯竭", "Strange birds, qilin and a depleted world"),
+    text: l(
+      "天庭過度攫取山川靈炁，卻把生態異變歸罪於妖獸，藉「降妖」之名繼續收取牠們身上的殘餘力量。鷫鸘、發明、焦明、幽昌，以及角端、素冥、炎駒、獨狐，在此是昭梧小說設定中的受難者與盟友；八災的成因和牠們的分組均非古籍定論。主角循著異獸被獵的痕跡，發現「祥瑞」與「災異」可能只是天庭更改過的檔案標籤。",
+      "天庭过度攫取山川灵炁，却把生态异变归罪于妖兽，借「降妖」之名继续收取它们身上的残余力量。鹔鹴、发明、焦明、幽昌，以及角端、素冥、炎驹、独狐，在此是昭梧小说设定中的受难者与盟友；八灾的成因和它们的分组均非古籍定论。主角循着异兽被猎的痕迹，发现「祥瑞」与「灾异」可能只是天庭更改过的档案标签。",
+      "Heaven drains the world's vital breath and blames the resulting mutations on beasts, then hunts them for what power remains. The named birds and qilin-like beings become refugees and allies in this fiction; their grouping and the eight calamities are not a classical taxonomy. The protagonist discovers that 'auspice' and 'disaster' may be labels altered in Heaven's records."
+    ),
+  },
+  {
+    no: "19",
+    title: l("大地的黑幫", "大地的黑帮", "The Earthbound Syndicate"),
+    lead: l("虎王領地與求仙的代價", "虎王领地与求仙的代价", "A tiger lord and the price of ascension"),
+    text: l(
+      "無法入籍的妖修在山中自建秩序。虎王一面與地方官分利，一面收容弱小的精怪；虎千歲忍受蛻牙生角，盼望化龍後取得天庭名額，反被列入煉丹獵物。虎皮女的復仇與虎倀的勞役揭開這個庇護所的另一面：被放逐者也可能複製壓迫。這些人物關係是本作演繹，不是民俗傳說的固定譜系。",
+      "无法入籍的妖修在山中自建秩序。虎王一面与地方官分利，一面收容弱小的精怪；虎千岁忍受蜕牙生角，盼望化龙后取得天庭名额，反被列入炼丹猎物。虎皮女的复仇与虎伥的劳役揭开这个庇护所的另一面：被放逐者也可能复制压迫。这些人物关系是本作演绎，不是民俗传说的固定谱系。",
+      "Unregistered spirits govern their own mountain refuge. Its tiger lord both bargains with officials and shelters smaller beings. A younger tiger endures a painful transformation in hope of a celestial appointment, only to be marked as alchemical prey. Vengeful spirits and captive ghosts reveal that the excluded can reproduce the oppression they fled. These relationships belong to this story."
+    ),
+  },
+  {
+    no: "20",
+    title: l("偽鳳與假象", "伪凤与假象", "False Phoenixes"),
+    lead: l("把災區裝扮成祥瑞", "把灾区装扮成祥瑞", "A spectacle staged over catastrophe"),
+    text: l(
+      "天庭向受災之地放出華麗的鳥群，對外稱為祥瑞，對內卻讓牠們承受病氣並回收香火。被稱作「偽鳳」的鸑鷟、定甲等名號在此只作待考的創作線索，不把不同古籍祥禽混成同一物種。主角追查鳥群的去向，才看見一套掩飾第十八卷生態災難的宣傳工程。",
+      "天庭向受灾之地放出华丽的鸟群，对外称为祥瑞，对内却让它们承受病气并回收香火。被称作「伪凤」的鸑鷟、定甲等名号在此只作待考的创作线索，不把不同古籍祥禽混成同一物种。主角追查鸟群的去向，才看见一套掩饰第十八卷生态灾难的宣传工程。",
+      "Heaven releases ornate birds over stricken districts, calls them auspicious and quietly uses them to absorb disease while collecting offerings. Their names remain provisional creative references, not a unified species from the classics. Following the birds reveals a spectacle designed to conceal the ecological disaster of volume 18."
+    ),
+  },
+  {
+    no: "21",
+    title: l("萬獸朝蒼", "万兽朝苍", "The Procession of Beasts"),
+    lead: l("百官與異獸的鏡像", "百官与异兽的镜像", "A procession that mirrors the court"),
+    text: l(
+      "天庭閱兵把異獸排成文官、武將、貪官、酷吏與佞臣的隊列。主角在金光背後看見被拔去羽毛、強作祥瑞的幼鳥與虎千歲，遂斬開鎖鏈。獸群奔逃時，儀仗和軍隊一同失序；這場政治寓言以獸形映照官場，並非歷史動物分類。",
+      "天庭阅兵把异兽排成文官、武将、贪官、酷吏与佞臣的队列。主角在金光背后看见被拔去羽毛、强作祥瑞的幼鸟与虎千岁，遂斩开锁链。兽群奔逃时，仪仗和军队一同失序；这场政治寓言以兽形映照官场，并非历史动物分类。",
+      "Heaven arranges beasts into a parade of ministers, generals, profiteers and enforcers. Behind the glitter, the protagonist finds young creatures mutilated to resemble auspicious signs and breaks their chains. As the procession scatters, the army's authority crumbles with its pageantry. The animal offices are a political allegory."
+    ),
+  },
+  {
+    no: "22",
+    title: l("佛國疑案", "佛国疑案", "A Case at the Buddhist Frontier"),
+    lead: l("借用名號的異端特遣傳聞", "借用名号的异端特遣传闻", "A fictional clandestine unit"),
+    text: l(
+      "一支自稱奉命維持秩序的隊伍在裂隙邊緣出沒，飛鈸、鐵頭與火氣等稱號是本作的戲劇化角色名。有人把祇陀太子的名字寫進密令，主角卻發現署名與傳聞互相矛盾，不能以此指認歷史或佛教傳統中的祇陀太子，更不能把佛陀與觀音寫成此案的幕後加害者。這卷追問的是借神聖名義行事的偽令與歸責。",
+      "一支自称奉命维持秩序的队伍在裂隙边缘出没，飞钹、铁头与火气等称号是本作的戏剧化角色名。有人把祇陀太子的名字写进密令，主角却发现署名与传闻互相矛盾，不能以此指认历史或佛教传统中的祇陀太子，更不能把佛陀与观音写成此案的幕后加害者。这卷追问的是借神圣名义行事的伪令与归责。",
+      "A clandestine group claims a sacred mandate at the breach. Its weapon-bearing figures are fictional characters. Orders invoke Prince Jeta, but the signatures contradict the rumours: this does not identify the prince of Buddhist tradition, nor implicate the Buddha or Guanyin. The mystery concerns forged authority and accountability."
+    ),
+  },
+  {
+    no: "23",
+    title: l("靈幽魔主", "灵幽魔主", "Lord of Lingyou"),
+    lead: l("第三方勢力提出的危險交易", "第三方势力提出的危险交易", "A dangerous bargain with a third power"),
+    text: l(
+      "那育丑琰及五名魔帥據守靈幽宮，不服天庭，也不願收容無籍者。他們許諾牽制天兵，條件卻是放任裂隙繼續擴張。主角不得不衡量：借混亂反抗編制，會否讓亡魂失去最後的歸路？魔主名號與部屬編組沿用待考素材，具體陣營、動機與交易皆為昭梧演繹。",
+      "那育丑琰及五名魔帅据守灵幽宫，不服天庭，也不愿收容无籍者。他们许诺牵制天兵，条件却是放任裂隙继续扩张。主角不得不衡量：借混乱反抗编制，会否让亡魂失去最后的归路？魔主名号与部属编组沿用待考素材，具体阵营、动机与交易皆为昭梧演绎。",
+      "Nayu Chouyan and five captains defy Heaven but will not shelter the unregistered. They offer to hold back its forces if the breach is left to widen. The protagonist must decide whether resistance through chaos will destroy the souls' last path home. Names remain provisional references; this faction and bargain are original fiction."
+    ),
+  },
+  {
+    no: "24",
+    title: l("神聖的恐怖", "神圣的恐怖", "Terror in Sacred Dress"),
+    lead: l("西山蟒與五通神的假敕", "西山蟒与五通神的假敕", "A serpent's counterfeit decree"),
+    text: l(
+      "西山蟒藉「神婚」謊稱天命，逼迫村落獻出孩子，石將軍等惡役則假借五通神之名威嚇索取香火。主角毀去假敕並救人，村民卻仍害怕違逆上天而受罰。這是對制度恐懼的架空敘事；五通信仰、東皇太一及原稿借用的人物名號，不能因此被認定曾組成這個犯罪集團。",
+      "西山蟒借「神婚」谎称天命，逼迫村落献出孩子，石将军等恶役则假借五通神之名威吓索取香火。主角毁去假敕并救人，村民却仍害怕违逆上天而受罚。这是对制度恐惧的架空叙事；五通信仰、东皇太一及原稿借用的人物名号，不能因此被认定曾组成这个犯罪集团。",
+      "A serpent invents a divine marriage decree to demand children from a village. Enforcers exploit the Wutong name to seize offerings. Even after the protagonist destroys the counterfeit order and rescues the children, the villagers fear Heaven's punishment. This is fiction about institutional fear, not a claim about real traditions or historical figures."
+    ),
+  },
+  {
+    no: "25",
+    title: l("地底的狂潮", "地底的狂潮", "The Tide Beneath"),
+    lead: l("鼠王與煉丹廢料", "鼠王与炼丹废料", "The rat king and alchemical waste"),
+    text: l(
+      "黃泉斷流後，死者無處可歸，鼠群在埋骨地受怨氣與棄置丹渣侵染。鼠王所到之處，鼠妖成群；主角在牠腹中發現天庭煉丹的殘料，循此查到災害源頭。鼠尿增殖與天狗一吠破煞都是此作的怪談機制，不是生物學、醫學或古籍知識。",
+      "黄泉断流后，死者无处可归，鼠群在埋骨地受怨气与弃置丹渣侵染。鼠王所到之处，鼠妖成群；主角在它腹中发现天庭炼丹的残料，循此查到灾害源头。鼠尿增殖与天狗一吠破煞都是此作的怪谈机制，不是生物学、医学或古籍知识。",
+      "With the crossing broken, the dead have nowhere to go. Rats among the burial grounds are changed by resentment and discarded alchemical residue. Inside the rat king, the protagonist finds waste that leads back to Heaven. The swarm's uncanny reproduction and a hound's power to scatter it are story devices, not biology or ancient doctrine."
+    ),
+  },
+  {
+    no: "26",
+    title: l("五毒仙班", "五毒仙班", "The Venomous Refuge"),
+    lead: l("金花聖母的大孤山庇護所", "金花圣母的大孤山庇护所", "Golden Flowers shelters the abandoned"),
+    text: l(
+      "被天庭與陰司遺下的人來到大孤山，金花聖母收容傷者，血結魔君與骷髏鬼王在此協助守護。蜈蚣、蛇虺、蠍、蛤蚧與蟾蜍組成小說中的五毒醫隊：巡護、辨毒、製藥、續命與止痛只是故事分工，不提供真實醫療方法，也不是通行的民俗五毒名單。這處庇護所讓主角看見，崩壞的編制之外仍有人選擇照顧無籍者。",
+      "被天庭与阴司遗下的人来到大孤山，金花圣母收容伤者，血结魔君与骷髅鬼王在此协助守护。蜈蚣、蛇虺、蝎、蛤蚧与蟾蜍组成小说中的五毒医队：巡护、辨毒、制药、续命与止痛只是故事分工，不提供真实医疗方法，也不是通行的民俗五毒名单。这处庇护所让主角看见，崩坏的编制之外仍有人选择照顾无籍者。",
+      "The abandoned reach Mount Dagu, where Golden Flowers shelters the wounded with two unlikely guardians. Centipede, serpent, scorpion, gecko and toad form a fictional healing team. Their roles are neither medical advice nor a standard folk list of five venoms. The refuge shows that care can survive beyond the failed registers."
+    ),
+  },
+  {
+    no: "終",
+    title: l("災異編年・終章補記", "灾异编年・终章补记", "Afterword to the Calamity Chronicle"),
+    lead: l("神籍成灰，輪迴仍未修復", "神籍成灰，轮回仍未修复", "The ledgers burn; rebirth is not restored"),
+    text: l(
+      "元年無籍亡魂滯留，三年五毒八災並起，五年封印破裂；十年神籍焚毀後，天庭失去號令，黃泉卻沒有因此恢復通行。第二部的異獸、村落、山中勢力與庇護所沿同一條裂隙互相牽連。原稿曾將蓐收與「石言、木冰」的句子錯置為古籍原文，此處不沿用那些引文；這條編年是昭梧的小說時間線，不是古史。",
+      "元年无籍亡魂滞留，三年五毒八灾并起，五年封印破裂；十年神籍焚毁后，天庭失去号令，黄泉却没有因此恢复通行。第二部的异兽、村落、山中势力与庇护所沿同一条裂隙互相牵连。原稿曾将蓐收与「石言、木冰」的句子错置为古籍原文，此处不沿用那些引文；这条编年是昭梧的小说时间线，不是古史。",
+      "Unregistered souls wait in year one; calamities spread in year three; seals fail in year five. In year ten the celestial ledgers burn, yet the crossing remains broken. Beasts, villages, mountain factions and the refuge are bound by that breach. Misattributed classical quotations in the supplied draft are omitted. This chronology is original fiction, not ancient history."
+    ),
+  },
 ];
 
 export const GUAILI_ZODIAC: ZodiacPath[] = [
