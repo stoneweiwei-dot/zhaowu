@@ -69,9 +69,69 @@ export const GUAILI_VOLUMES: GuailiVolume[] = [
   {no:"柒",title:l("災異編年・八災並起","灾异编年・八灾并起","Chronicle of Eight Calamities"),lead:l("元年失籍，十年焚籍；黃泉未復。","元年失籍，十年焚籍；黄泉未复。","Year one loses the records; year ten burns them."),text:l("亥月彘瘟、子月骨噬、酉月血雞與黑煞業火麟等災相推進大裂隙。黃泉曆十年，東皇舊檔成灰，玉皇天庭失去共同號令。沒有救世主；焚籍之後輪迴尚未修復，這是本書保留的黑暗終局。","亥月彘瘟、子月骨噬、酉月血鸡与黑煞业火麟等灾相推进大裂隙。黄泉历十年，东皇旧档成灰，玉皇天庭失去共同号令。没有救世主；焚籍之后轮回尚未修复，这是本书保留的黑暗终局。","Calamities hasten the breach. By year ten the celestial registers burn and Heaven loses its shared authority. No saviour repairs rebirth; the deliberately unresolved ending remains.")},
 ];
 
-// A continuation of the same fictional archive. The supplied draft labels these
-// as volumes 18–26; volumes 8–17 are not represented as published here.
+// The second part follows narrative order: volumes 8–27, then the afterword.
+// Volume 14 introduces a damaged fragment; volume 27 completes the fictional art.
 export const GUAILI_PART_TWO: GuailiContinuation[] = [
+  {
+    no: "8",
+    title: l("天條改制——靈炁收割令", "天条改制——灵炁收割令", "The New Decree"),
+    lead: l("香火斷供後，天庭改以靈炁續命", "香火断供后，天庭改以灵炁续命", "Heaven turns to vital breath"),
+    text: l("黃泉斷流後，天庭各部爭奪殘存權限。東皇太一舊署提出以靈炁替代香火的臨時法令，鎮魔司奉命下界抽取山川與眾生之炁。這不是三界一致承認的新天條，而是一場權力拉鋸，為後續異獸遭獵、地方勢力受雇立下制度背景。", "黄泉断流后，天庭各部争夺残存权限。东皇太一旧署提出以灵炁替代香火的临时法令，镇魔司奉命下界抽取山川与众生之炁。这不是三界一致承认的新天条，而是一场权力拉锯，为后续异兽遭猎、地方势力受雇立下制度背景。", "After the crossing fails, Heaven's offices compete for what authority remains. The old Eastern Emperor bureau proposes a temporary decree replacing offerings with vital breath and sends the Demon Suppression Office to extract it from living beings and the land. The decree is contested, not a universal law; it sets up the later beast hunts."),
+  },
+  {
+    no: "9",
+    title: l("瘟部暴走——十二流煞外泄", "瘟部暴走——十二流煞外泄", "The Twelve Currents Escape"),
+    lead: l("抽取靈炁令瘟疫系統失衡", "抽取灵炁令瘟疫系统失衡", "Extraction destabilizes the plague offices"),
+    text: l("鎮魔司濫用小說設定中的「天髓靈章」術式，令瘟部失衡。十二流煞從黃泉曆法的封存欄位逃逸，在不同月份引發疫災；鎮魔司一派趁亂販售假解藥。這是故事中的官僚腐敗，不是對真實宗教儀式或醫療的描述。", "镇魔司滥用小说设定中的「天髓灵章」术式，令瘟部失衡。十二流煞从黄泉历法的封存栏位逃逸，在不同月份引发疫灾；镇魔司一派趁乱贩售假解药。这是故事中的官僚腐败，不是对真实宗教仪式或医疗的描述。", "The Demon Suppression Office overuses the fictional marrow-script rite, destabilizing the plague bureau. Twelve Currents escape their sealed calendar entries and spread calamities across the months. A faction sells false cures. This is fictional corruption, not a claim about real religion or medicine."),
+  },
+  {
+    no: "10",
+    title: l("末世狂信——借名救世的教團", "末世狂信——借名救世的教团", "A Cult of Borrowed Hope"),
+    lead: l("災民在假極樂中尋找出口", "灾民在假极乐中寻找出口", "Refugees seek escape in false paradise"),
+    text: l("瘟疫與徵斂使民間失去依靠，一個自立教團借用彌勒未來降世的名號聚眾，以幻境與肉身歡宴招徠信徒。教團把「多欲魔王」等稱號包裝成救贖承諾，天狐聖姑的幻術則是本作角色能力。本卷寫冒名與操控，不把彌勒或佛教信仰本身定為反派。", "瘟疫与征敛使民间失去依靠，一个自立教团借用弥勒未来降世的名号聚众，以幻境与肉身欢宴招徕信徒。教团把「多欲魔王」等称号包装成救赎承诺，天狐圣姑的幻术则是本作角色能力。本卷写冒名与操控，不把弥勒或佛教信仰本身定为反派。", "Plague and extraction leave communities without support. A self-appointed sect gathers followers under a borrowed promise of Maitreya's future arrival, offering illusions and revels as escape. Its leaders turn titles such as Desire-Demon into salesmanship; the fox's glamour is an original ability. The target is impersonation, not Maitreya or Buddhist faith."),
+  },
+  {
+    no: "11",
+    title: l("佛國的算盤——阿修羅雇兵", "佛国的算盘——阿修罗雇兵", "The Buddhist Frontier's Bargain"),
+    lead: l("平亂之名下，戰士承受代價", "平乱之名下，战士承受代价", "Soldiers bear the cost of intervention"),
+    text: l("佛國一支邊境機構以鎮壓流煞、救援災區為名介入，雇用阿修羅戰士迎擊疫煞；後方官僚回收靈炁結晶，前線死傷者卻得不到補償與身份。故事批判的是具體制度，不把如來或佛教教義寫成命令屠害凡人的主使。", "佛国一支边境机构以镇压流煞、救援灾区为名介入，雇用阿修罗战士迎击疫煞；后方官僚回收灵炁结晶，前线死伤者却得不到补偿与身份。故事批判的是具体制度，不把如来或佛教教义写成命令屠害凡人的主使。", "A frontier office of the Buddhist realm intervenes in the name of containing the Currents, hiring asura fighters to face the plagues. Officials collect the vital crystals while the wounded receive neither fair compensation nor standing. The story critiques an institution, not the Buddha or Buddhist doctrine as a command to harm civilians."),
+  },
+  {
+    no: "12",
+    title: l("權力外包——西山蟒與五通假敕", "权力外包——西山蟒与五通假敕", "Counterfeit Gods"),
+    lead: l("地方邪役借神名勒索村落", "地方邪役借神名勒索村落", "Local enforcers weaponize sacred names"),
+    text: l("天庭一派無力維持地面秩序，縱容西山蟒與五通名下的地方勢力承接差事。惡役偽造太一神敕令，以「神婚獻祭」脅迫村落交出孩子煉丹。失職官吏選擇視而不見；責任落在具體施害者，不泛指真武本人或所有五通信眾。", "天庭一派无力维持地面秩序，纵容西山蟒与五通名下的地方势力承接差事。恶役伪造太一神敕令，以「神婚献祭」胁迫村落交出孩子炼丹。失职官吏选择视而不见；责任落在具体施害者，不泛指真武本人或所有五通信众。", "Unable to keep order, one Heavenly faction tolerates local operators associated with the West Mountain Serpent and the Wutong name. They forge Taiyi's decree and coerce villages into surrendering children for alchemy. Negligent officials look away; blame rests on specific perpetrators, not Zhenwu or all Wutong worshippers."),
+  },
+  {
+    no: "13",
+    title: l("龍族離心——水脈倒灌與慎郎之亂", "龙族离心——水脉倒灌与慎郎之乱", "The Flooding of the Waterways"),
+    lead: l("靈炁枯竭使四海秩序鬆動", "灵炁枯竭使四海秩序松动", "A depleted world unsettles the seas"),
+    text: l("長期抽取使江河乾涸、海脈失衡。部分龍族不再替天庭維持水系，底層蛟龍慎郎與螭龍乘亂起事，掀起倒灌並強擄人間血食。主角必須分清求生的抗命者與趁亂掠奪者；這是本作的水患因果，不是對所有龍族的定性。", "长期抽取使江河干涸、海脉失衡。部分龙族不再替天庭维持水系，底层蛟龙慎郎与螭龙乘乱起事，掀起倒灌并强掳人间血食。主角必须分清求生的抗命者与趁乱掠夺者；这是本作的水患因果，不是对所有龙族的定性。", "Extraction dries rivers and unsettles the sea channels. Some dragons withdraw from maintaining Heaven's water system; the lower-ranking flood dragon Shenlang and a chi dragon rebel, driving waters inland and taking humans as prey. The protagonist distinguishes desperate resistance from opportunistic predation. This is fiction, not a judgment on all dragons."),
+  },
+  {
+    no: "14",
+    title: l("底層黑夜——六甲神兵與隱地八化殘篇", "底层黑夜——六甲神兵与隐地八化残篇", "A Fragment of the Eight Transformations"),
+    lead: l("主角初遇棄兵，只得禁術殘卷", "主角初遇弃兵，只得禁术残卷", "The protagonist finds abandoned soldiers and a fragment"),
+    text: l("主角遇見被裁撤的六甲神兵，目睹一支被稱作「過山瑤五百伙子」的架空隊伍以命堵住黃泉裂隙，補給卻遭截留。此名不指現實瑤族社群。主角從殘卷辨出《隱地八化》線索，開始練習但未掌握全術；真正完成八術要到第二十七卷。", "主角遇见被裁撤的六甲神兵，目睹一支被称作「过山瑶五百伙子」的架空队伍以命堵住黄泉裂隙，补给却遭截留。此名不指现实瑶族社群。主角从残卷辨出《隐地八化》线索，开始练习但未掌握全术；真正完成八术要到第二十七卷。", "The protagonist encounters disbanded Six-Jia soldiers and a fictional unit called the Five Hundred Companions of the Crossing Yao, who risk their lives at the breach while supplies are diverted. The name does not refer to a real Yao community. A damaged scroll reveals clues to the Eight Transformations; training begins, but mastery waits until volume 27."),
+  },
+  {
+    no: "15",
+    title: l("黑暗降臨——靈幽宮的交易", "黑暗降临——灵幽宫的交易", "The Bargain at Lingyou Palace"),
+    lead: l("魔主願牽制天庭，代價是放任裂隙", "魔主愿牵制天庭，代价是放任裂隙", "An offer against Heaven at a price"),
+    text: l("靈幽宮的那育丑琰與五名魔帥趁諸方交戰入局。他們欲摧毀三界秩序，提出以魔瘟牽制天庭與佛國，交換主角放任裂隙擴大。主角拒絕盟約，轉而追查楊玉環殘魂與幽泉線索；魔主的立場與作為皆屬小說設定。", "灵幽宫的那育丑琰与五名魔帅趁诸方交战入局。他们欲摧毁三界秩序，提出以魔瘟牵制天庭与佛国，交换主角放任裂隙扩大。主角拒绝盟约，转而追查杨玉环残魂与幽泉线索；魔主的立场与作为皆属小说设定。", "Nayu Chouyan and five captains of Lingyou Palace enter as the factions clash. They offer to unleash a demon plague against Heaven and the Buddhist frontier if the protagonist lets the breach widen. The protagonist refuses and pursues clues to Yang Guifei's remnant soul and the dark spring. Their motives are fictional."),
+  },
+  {
+    no: "16",
+    title: l("大孤山暫營——五毒的血肉防線", "大孤山暂营——五毒的血肉防线", "A First Refuge at Mount Dagu"),
+    lead: l("金花聖母先立臨時避難所", "金花圣母先立临时避难所", "Golden Flowers opens a provisional shelter"),
+    text: l("主角帶無籍難民與染疫傷兵逃至大孤山。金花聖母開出臨時避難所，血結魔君與骷髏鬼王守住山道；五毒隊伍分工巡護與照料。此處只是脆弱的第一個落腳點，第二十六卷再將它擴成較完整的庇護網。", "主角带无籍难民与染疫伤兵逃至大孤山。金花圣母开出临时避难所，血结魔君与骷髅鬼王守住山道；五毒队伍分工巡护与照料。此处只是脆弱的第一个落脚点，第二十六卷再将它扩成较完整的庇护网。", "The protagonist brings unregistered refugees and infected wounded to Mount Dagu. Golden Flowers opens a provisional shelter as two guardians hold the pass and a five-venom team shares patrol and care. It is only a fragile foothold; volume 26 expands it into a wider refuge."),
+  },
+  {
+    no: "17",
+    title: l("獵場失控——生態崩潰的前兆", "猎场失控——生态崩溃的前兆", "The Hunting Ground Breaks"),
+    lead: l("主角帶疑點逃出天庭，卷18展開", "主角带疑点逃出天庭，卷18展开", "Clues lead into volume 18"),
+    text: l("主角潛入天庭異獸獵場，只找到偽鳳檔案遭竄改的疑點，尚未證明真相。獵場暴動後，主角帶虎千歲與幼年妖鳳逃向荒原；飛鈸追兵奉行冒用祇陀太子名號的偽令，不能據此指稱祇陀親自追殺。逃亡揭開第十八卷的生態災難，第十九卷續寫虎千歲，第二十卷才查明偽鳳工程。", "主角潜入天庭异兽猎场，只找到伪凤档案遭篡改的疑点，尚未证明真相。猎场暴动后，主角带虎千岁与幼年妖凤逃向荒原；飞钹追兵奉行冒用祇陀太子名号的伪令，不能据此指称祇陀亲自追杀。逃亡揭开第十八卷的生态灾难，第十九卷续写虎千岁，第二十卷才查明伪凤工程。", "The protagonist enters Heaven's beast preserve and finds signs of altered false-phoenix records, but no proof yet. After the preserve erupts, they flee with Tiger Qiansui and a young phoenix. Cymbal-bearing pursuers follow a forged order invoking Prince Jeta; it does not make him their commander. The escape opens volume 18's ecological crisis; volume 19 follows Qiansui, and volume 20 exposes the false-auspice scheme."),
+  },
   {
     no: "18",
     title: l("祥瑞的墮落", "祥瑞的堕落", "When Auspices Fall"),
@@ -157,10 +217,16 @@ export const GUAILI_PART_TWO: GuailiContinuation[] = [
     title: l("五毒仙班", "五毒仙班", "The Venomous Refuge"),
     lead: l("金花聖母的大孤山庇護所", "金花圣母的大孤山庇护所", "Golden Flowers shelters the abandoned"),
     text: l(
-      "被天庭與陰司遺下的人來到大孤山，金花聖母收容傷者，血結魔君與骷髏鬼王在此協助守護。蜈蚣、蛇虺、蠍、蛤蚧與蟾蜍組成小說中的五毒醫隊：巡護、辨毒、製藥、續命與止痛只是故事分工，不提供真實醫療方法，也不是通行的民俗五毒名單。這處庇護所讓主角看見，崩壞的編制之外仍有人選擇照顧無籍者。",
-      "被天庭与阴司遗下的人来到大孤山，金花圣母收容伤者，血结魔君与骷髅鬼王在此协助守护。蜈蚣、蛇虺、蝎、蛤蚧与蟾蜍组成小说中的五毒医队：巡护、辨毒、制药、续命与止痛只是故事分工，不提供真实医疗方法，也不是通行的民俗五毒名单。这处庇护所让主角看见，崩坏的编制之外仍有人选择照顾无籍者。",
-      "The abandoned reach Mount Dagu, where Golden Flowers shelters the wounded with two unlikely guardians. Centipede, serpent, scorpion, gecko and toad form a fictional healing team. Their roles are neither medical advice nor a standard folk list of five venoms. The refuge shows that care can survive beyond the failed registers."
+      "此處承接第十六卷的大孤山臨時營地：更多被天庭與陰司遺下的人陸續抵達，金花聖母收容傷者，血結魔君與骷髏鬼王協助守護，脆弱落腳點逐漸成為較完整的庇護網。蜈蚣、蛇虺、蠍、蛤蚧與蟾蜍組成小說中的五毒醫隊：巡護、辨毒、製藥、續命與止痛只是故事分工，不提供真實醫療方法，也不是通行的民俗五毒名單。這處庇護所讓主角看見，崩壞的編制之外仍有人選擇照顧無籍者。",
+      "此处承接第十六卷的大孤山临时营地：更多被天庭与阴司遗下的人陆续抵达，金花圣母收容伤者，血结魔君与骷髅鬼王协助守护，脆弱落脚点逐渐成为较完整的庇护网。蜈蚣、蛇虺、蝎、蛤蚧与蟾蜍组成小说中的五毒医队：巡护、辨毒、制药、续命与止痛只是故事分工，不提供真实医疗方法，也不是通行的民俗五毒名单。这处庇护所让主角看见，崩坏的编制之外仍有人选择照顾无籍者。",
+      "This continues the provisional camp founded in volume 16: more people abandoned by Heaven and the underworld arrive, and Golden Flowers with the two guardians turns the fragile foothold into a wider refuge. Centipede, serpent, scorpion, gecko and toad form a fictional healing team. Their roles are neither medical advice nor a standard folk list of five venoms. The refuge shows that care can survive beyond the failed registers."
     ),
+  },
+  {
+    no: "27",
+    title: l("隱景八化——游走於虛無的暗影行者", "隐景八化——游走于虚无的暗影行者", "The Shadow Walker"),
+    lead: l("殘卷至此合一，主角完成八術", "残卷至此合一，主角完成八术", "The fragments unite; the protagonist completes the eight arts"),
+    text: l("第二十六卷後，主角合勘殘卷、口訣與實戰線索，才完成小說化的《隱景八化》。藏形匿影、乘虛御空、隱淪飛霄構成潛行與突防；出有入無、解形遁變、飛靈八方被演繹為穿梭、化散與分身；回晨轉玄、隱景舞天則被演繹為短暫回溯與扭曲光景。這些具體效果是本作創作，不等同古籍原義。主角再潛入太一宮，追查並破壞偽鳳工程；飛鈸追兵依第二十二卷揭出的冒名偽令行動，祇陀太子不是幕後主使。", "第二十六卷后，主角合勘残卷、口诀与实战线索，才完成小说化的《隐景八化》。藏形匿影、乘虚御空、隐沦飞霄构成潜行与突防；出有入无、解形遁变、飞灵八方被演绎为穿梭、化散与分身；回晨转玄、隐景舞天则被演绎为短暂回溯与扭曲光景。这些具体效果是本作创作，不等同古籍原义。主角再潜入太一宫，追查并破坏伪凤工程；飞钹追兵依第二十二卷揭出的冒名伪令行动，祇陀太子不是幕后主使。", "After volume 26, the protagonist combines the damaged scroll, oral clues and field experience to complete a fictionalized Eight Transformations. Concealment, flight and swift passage enable stealth; appearing from nowhere, dissolving form and multiplying become fictional traversal, dispersal and doubles; turning the morning back and dancing through hidden light become a brief rewind and warped scenery. These effects are inventions, not claims about the source text. The protagonist returns to Taiyi Palace to disrupt the false-phoenix scheme. The cymbal-bearing pursuers act under the forged order uncovered in volume 22; Prince Jeta is not behind it."),
   },
   {
     no: "終",
