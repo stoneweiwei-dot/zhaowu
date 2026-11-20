@@ -1,6 +1,6 @@
 import type { ReportAccessLevel } from "@/lib/report-access";
 
-type AccessResult = { level: ReportAccessLevel; pending: boolean; owner: boolean };
+type AccessResult = { level: ReportAccessLevel; pending: boolean; owner: boolean; revoked?: boolean };
 
 /** Recheck a pending server-side entitlement without overlapping requests. */
 export function watchReportAccess(

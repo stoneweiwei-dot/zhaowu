@@ -54,18 +54,28 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [purchasing, setPurchasing] = useState<ReportAccessProduct | null>(null);
   const [purchaseError, setPurchaseError] = useState<string | null>(null);
   const [paymentPending, setPaymentPending] = useState(false);
+  const [checkoutSuccess, setCheckoutSuccess] = useState(false);
   const consent = usePurchaseConsent(result.dataGrade);
+
+  useEffect(() => {
+    try {
+      const visible = sessionStorage.getItem("zhaowu.checkout-success-visible.v1") === "1";
+      sessionStorage.removeItem("zhaowu.checkout-success-visible.v1");
+      setCheckoutSuccess(visible);
+    } catch { setCheckoutSuccess(false); }
+  }, []);
 
   useEffect(() => {
     return watchReportAccess(() => resolveReportAccess("bazi"), (acc) => {
       setAccessLevel(acc.level);
       setOwnerAccess(Boolean(acc.owner));
       setPaymentPending(acc.pending && acc.level !== "system");
+      if (acc.revoked) setMsg(locale === "en" ? "This order was refunded." : locale === "zh-Hans" ? "此订单已退款" : "此訂單已退款");
       if (!acc.owner && acc.level !== "system" && oncePerSession("paywall:bazi")) {
         trackConversion("zhaowu_paywall_viewed", { system: "bazi", level: acc.level });
       }
     }, () => { setAccessLevel("none"); setOwnerAccess(false); });
-  }, []);
+  }, [locale]);
 
   useEffect(() => {
     if (oncePerSession(`answer-shown:${result.id ?? ""}`)) trackConversion("zhaowu_answer_shown", { system: "bazi" });
@@ -243,6 +253,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
   return (
     <section id="result" className="zhaowu-result-flow space-y-5" data-answer-first-r144="true">
+      {checkoutSuccess && unlocked ? <p className="rounded-lg border border-wood/30 bg-wood/5 p-4 text-sm leading-6 text-ink" role="status" data-checkout-success>{locale === "en" ? "Full access confirmed. Your complete report is open. This is a one-time unlock, not a subscription." : locale === "zh-Hans" ? "完整权限已确认／完整报告已经开放／本次为单次解锁，不是订阅。" : "完整權限已確認／完整報告已經開放／本次為單次解鎖，不是訂閱。"}</p> : null}
       <article className="zhaowu-result-card seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <p className="text-xs tracking-[0.28em] text-cinnabar">{t("resultQ")}</p>
         <h2 className="mt-2 font-display text-2xl">{question}</h2>

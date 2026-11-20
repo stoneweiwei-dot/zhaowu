@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const client = await readFile(new URL("../src/lib/report-access.ts", import.meta.url), "utf8");
+const resultUi = await readFile(new URL("../src/components/result-view.tsx", import.meta.url), "utf8");
 const checkout = await readFile(new URL("../supabase/functions/stripe-checkout/index.ts", import.meta.url), "utf8");
 const webhook = await readFile(new URL("../supabase/functions/stripe-webhook/index.ts", import.meta.url), "utf8");
 const migration = await readFile(new URL("../supabase/migrations/20261003170000_report_purchase_entitlements.sql", import.meta.url), "utf8");
@@ -60,7 +61,31 @@ test("the browser can only query server-side entitlements; it cannot create paym
   assert.match(checkout, /\.eq\("checkout_session_id", sessionId\)/);
   assert.doesNotMatch(checkout, /\.eq\("access_key", accessKey\)/);
   assert.doesNotMatch(startCheckoutFn, /searchParams\.set\("access_key"/);
-  assert.doesNotMatch(checkout, /npm:stripe|STRIPE_(?:SECRET|RESTRICTED)_KEY|checkout\.sessions\.create/);
+  assert.doesNotMatch(startCheckoutFn, /npm:stripe|STRIPE_(?:SECRET|RESTRICTED)_KEY|checkout\.sessions\.create/);
+  assert.doesNotMatch(checkout, /checkout\.sessions\.create/);
+});
+
+test("paid entitlement checks revalidate Stripe refunds and disputes before returning access", () => {
+  assert.match(checkout, /STRIPE_SECRET_KEY/);
+  assert.match(checkout, /api\.stripe\.com\/v1\/checkout\/sessions/);
+  assert.match(checkout, /charge\?\.refunded/);
+  assert.match(checkout, /amount_refunded \?\? 0\) > 0/);
+  assert.match(checkout, /charge\?\.disputed/);
+  assert.match(checkout, /revoked: true/);
+  assert.match(checkout, /data\.status === "refunded"/);
+  assert.match(checkout, /paid: data\.status === "paid"/);
+  assert.match(client, /if \(verification\.revoked\) \{ revoked = true/);
+  assert.match(client, /return \{ level, pending, owner: false, revoked \}/);
+  assert.match(client, /localStorage\.setItem\(SESSION_STORAGE, JSON\.stringify\(storedSessions\(\)\.filter/);
+  assert.match(resultUi, /此訂單已退款/);
+});
+
+test("success UI state is persisted before checkout query cleanup", async () => {
+  const shell = await readFile(new URL("../src/components/site-shell.tsx", import.meta.url), "utf8");
+  assert.ok(shell.indexOf('sessionStorage.setItem("zhaowu.checkout-success-visible.v1"') < shell.indexOf('url.searchParams.delete("checkout")'));
+  const result = await readFile(new URL("../src/components/result-view.tsx", import.meta.url), "utf8");
+  assert.match(result, /data-checkout-success/);
+  assert.match(result, /完整權限已確認／完整報告已經開放／本次為單次解鎖，不是訂閱/);
 });
 
 test("the webhook authenticates with a one-way token hash and trusts only known live Payment Links", () => {
@@ -77,6 +102,7 @@ test("only paid Stripe events grant paid access and stale failure cannot downgra
   assert.match(webhook, /checkout\.session\.completed/);
   assert.match(webhook, /checkout\.session\.async_payment_succeeded/);
   assert.match(webhook, /checkout\.session\.async_payment_failed/);
+  assert.match(webhook, /charge\.refunded/);
   assert.match(webhook, /session\.payment_status === "paid"/);
   assert.match(webhook, /existing\?\.status === "paid" && nextStatus !== "paid"/);
   assert.match(webhook, /product_id: definition\.product/);

@@ -50,6 +50,25 @@ test("BaZi payment unlocks BaZi alone, never Zi Wei", async () => {
   } finally { browser.restore(); }
 });
 
+test("a refunded Stripe session is returned as revoked and cannot leave paid access unlocked", async () => {
+  const browser = browserFixture({ paid: false, revoked: true, reason: "refunded" });
+  try {
+    const access = await resolveReportAccess("bazi");
+    assert.equal(access.level, "quick");
+    assert.equal(access.revoked, true);
+    assert.equal(browser.data.has("zhaowu.report-access-revoked.v1"), true);
+  } finally { browser.restore(); }
+});
+
+test("a valid paid session remains authorized and does not show refunded state", async () => {
+  const browser = browserFixture({ paid: true, product: "system", system: "bazi" });
+  try {
+    const access = await resolveReportAccess("bazi");
+    assert.equal(access.level, "system");
+    assert.equal(access.revoked, false);
+  } finally { browser.restore(); }
+});
+
 test("a temporary entitlement lookup failure remains unconfirmed rather than granting access", async () => {
   const browser = browserFixture({ product: "system", system: "bazi" });
   try {
@@ -117,6 +136,14 @@ test("USD prices and webhook entitlement agree with new Stripe link", () => {
   assert.match(shell, /pending-bazi-report\.v1/);
   assert.match(shell, /url\.hash = "bazi"/);
   assert.doesNotMatch(resultView, /Zi Wei Full Reading|紫微斗數完整深批/);
+});
+
+test("refund webhook revokes the matching entitlement through its PaymentIntent", () => {
+  assert.match(webhook, /charge\.refunded/);
+  assert.match(webhook, /payment_intent_id/);
+  assert.match(webhook, /status: "refunded"/);
+  assert.match(webhook, /UNKNOWN_PAYMENT_INTENT/);
+  assert.match(webhook, /existing\?\.status === "refunded"\) return response\(\{ ok: true, ignored: "ALREADY_REFUNDED" \}\)/);
 });
 
 test("free preview never calls the paid report writer or saves paid output", () => {
