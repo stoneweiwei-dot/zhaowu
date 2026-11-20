@@ -1,3 +1,22 @@
+.hqc-breadcrumb{
+  display:flex;
+  align-items:center;
+  gap:.65rem;
+  flex-wrap:wrap;
+  padding:1rem 0 1.2rem;
+  color:var(--hq-soft,#706b60);
+  font-size:.72rem;
+}
+.hqc-breadcrumb a{color:var(--hqr-moss);text-underline-offset:.2em}
+.hqc-footer{
+  margin-top:2rem;
+  border-top:1px solid var(--hqr-rule);
+  padding:1.4rem 0;
+  color:var(--hq-soft,#706b60);
+  font-size:.74rem;
+  line-height:1.85;
+}
+.hqc-footer p{margin:.35rem 0}
 /* Continuous, book-like reader for the full Yellow Springs story. */
 .hqr-reader{
   --hqr-rule:rgba(96,86,66,.24);
