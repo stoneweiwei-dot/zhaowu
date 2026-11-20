@@ -97,9 +97,9 @@ function GuailiCollectionPage() {
         <span>04 / 04</span>
         <h2 id="hqc-part-two-heading">{tr(l("《黃泉紀》第二部・續卷設定", "《黄泉纪》第二部・续卷设定", "Yellow Springs · Part Two"), locale)}</h2>
         <p>{tr(l(
-          "卷十八至二十六與終章補記。此為故事設定與情節提要；卷八至十七尚未收錄。每篇通往《幽明萬象錄》同一份正文。",
-          "卷十八至二十六与终章补记。此为故事设定与情节提要；卷八至十七尚未收录。每篇通往《幽明万象录》同一份正文。",
-          "Story treatments for volumes 18–26 and the afterword; volumes 8–17 are not published here. Each entry leads to the same archive text."
+          "卷八至二十七按事件順序收錄，並附終章補記；第七卷為災異編年的總覽。此處呈現故事設定與情節提要，不冒稱完整正文。每篇通往《幽明萬象錄》同一份正文。",
+          "卷八至二十七按事件顺序收录，并附终章补记；第七卷为灾异编年的总览。此处呈现故事设定与情节提要，不冒称完整正文。每篇通往《幽明万象录》同一份正文。",
+          "Volumes 8–27 appear in event order, followed by an afterword; volume 7 is the calamity chronicle overview. These are story treatments, not complete chapters. Each entry leads to the same archive text."
         ), locale)}</p>
       </div>
       <ol className="hqc-booklist">
