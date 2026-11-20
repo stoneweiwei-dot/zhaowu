@@ -253,7 +253,7 @@ export async function resolveReportAccess(system: ReportSystemId) {
     trackConversion("unlock_paid", { system });
   }
   if (stripeGranted && !revoked) try { localStorage.removeItem("zhaowu.report-access-revoked.v1"); } catch { /* optional marker */ }
-  return { level, pending, owner: false };
+  return { level, pending, owner: false, revoked };
 }
 
 export async function startReportCheckout(product: ReportAccessProduct, system: ReportSystemId, reportId?: string) {

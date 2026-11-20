@@ -72,8 +72,10 @@ test("paid entitlement checks revalidate Stripe refunds and disputes before retu
   assert.match(checkout, /amount_refunded \?\? 0\) > 0/);
   assert.match(checkout, /charge\?\.disputed/);
   assert.match(checkout, /revoked: true/);
+  assert.match(checkout, /data\.status === "refunded"/);
   assert.match(checkout, /paid: data\.status === "paid"/);
   assert.match(client, /if \(verification\.revoked\) \{ revoked = true/);
+  assert.match(client, /return \{ level, pending, owner: false, revoked \}/);
   assert.match(client, /localStorage\.setItem\(SESSION_STORAGE, JSON\.stringify\(storedSessions\(\)\.filter/);
   assert.match(resultUi, /此訂單已退款/);
 });
@@ -100,6 +102,7 @@ test("only paid Stripe events grant paid access and stale failure cannot downgra
   assert.match(webhook, /checkout\.session\.completed/);
   assert.match(webhook, /checkout\.session\.async_payment_succeeded/);
   assert.match(webhook, /checkout\.session\.async_payment_failed/);
+  assert.match(webhook, /charge\.refunded/);
   assert.match(webhook, /session\.payment_status === "paid"/);
   assert.match(webhook, /existing\?\.status === "paid" && nextStatus !== "paid"/);
   assert.match(webhook, /product_id: definition\.product/);

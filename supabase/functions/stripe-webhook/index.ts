@@ -88,11 +88,34 @@ export async function handle(req: Request) {
   try { event = await req.json(); } catch { return response({ ok: false, error: "INVALID_JSON" }, 400); }
 
   const eventType = String(event.type || "");
-  if (!["checkout.session.completed", "checkout.session.async_payment_succeeded", "checkout.session.async_payment_failed"].includes(eventType)) {
+  if (!["checkout.session.completed", "checkout.session.async_payment_succeeded", "checkout.session.async_payment_failed", "charge.refunded"].includes(eventType)) {
     return response({ ok: true, ignored: true });
   }
   if (event.livemode !== true || !/^evt_[A-Za-z0-9_]+$/.test(String(event.id || ""))) {
     return response({ ok: false, error: "INVALID_LIVE_EVENT" }, 400);
+  }
+
+  if (eventType === "charge.refunded") {
+    const charge = event.data?.object ?? {};
+    const paymentIntent = typeof charge.payment_intent === "string" ? charge.payment_intent : charge.payment_intent?.id;
+    if (typeof paymentIntent !== "string" || !/^pi_[A-Za-z0-9]{10,200}$/.test(paymentIntent)) {
+      return response({ ok: false, error: "INVALID_REFUND_EVENT" }, 400);
+    }
+    const admin = createClient(supabaseUrl, supabaseSecret, { auth: { persistSession: false, autoRefreshToken: false } });
+    const { data: session, error: lookupError } = await admin
+      .from("report_purchase_entitlements")
+      .select("checkout_session_id")
+      .eq("payment_intent_id", paymentIntent)
+      .maybeSingle();
+    if (lookupError) return response({ ok: false, error: "ENTITLEMENT_READ_FAILED" }, 500);
+    if (!session) return response({ ok: true, ignored: "UNKNOWN_PAYMENT_INTENT" });
+    const { error: updateError } = await admin.from("report_purchase_entitlements").update({
+      status: "refunded",
+      stripe_event_id: String(event.id),
+      updated_at: new Date().toISOString(),
+    }).eq("checkout_session_id", session.checkout_session_id);
+    if (updateError) return response({ ok: false, error: "ENTITLEMENT_WRITE_FAILED" }, 500);
+    return response({ ok: true, status: "refunded" });
   }
 
   const session = event.data?.object ?? {};
@@ -126,6 +149,8 @@ export async function handle(req: Request) {
     .eq("checkout_session_id", sessionId)
     .maybeSingle();
   if (readError) return response({ ok: false, error: "ENTITLEMENT_READ_FAILED" }, 500);
+  if (existing?.status === "refunded") return response({ ok: true, ignored: "ALREADY_REFUNDED" });
+  const paymentIntentId = typeof session.payment_intent === "string" ? session.payment_intent : session.payment_intent?.id;
   if (existing?.status === "paid" && nextStatus !== "paid") return response({ ok: true, ignored: "STALE_NONPAID_EVENT" });
 
   const { error } = await admin.from("report_purchase_entitlements").upsert({
@@ -136,6 +161,7 @@ export async function handle(req: Request) {
     system_id: definition.system,
     amount_cents: amount,
     currency,
+    ...(typeof paymentIntentId === "string" && /^pi_[A-Za-z0-9]{10,200}$/.test(paymentIntentId) ? { payment_intent_id: paymentIntentId } : {}),
     status: nextStatus,
     updated_at: new Date().toISOString(),
   }, { onConflict: "checkout_session_id" });

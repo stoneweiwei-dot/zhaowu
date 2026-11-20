@@ -91,6 +91,7 @@ export async function handle(req: Request, env: Runtime = runtimeFromDeno()): Pr
 
   if (error) return json(req, env, { ok: false, error: { code: "PAYMENT_STORE_ERROR" } }, 502);
   if (!data) return json(req, env, { ok: true, paid: false, pending: true });
+  if (data.status === "refunded") return json(req, env, { ok: true, paid: false, revoked: true, reason: "refunded" });
 
   // The entitlement row identifies the purchase; Stripe remains authoritative
   // for its current refund/dispute state on every restore/open check.
