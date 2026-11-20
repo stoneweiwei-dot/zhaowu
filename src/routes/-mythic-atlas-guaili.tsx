@@ -135,9 +135,9 @@ export function GuailiBook({ locale }: { locale: Locale }) {
         <span>II</span>
         <h2 id="hq-guaili-part-two-heading">{tr(l("《黃泉紀》第二部・續卷設定", "《黄泉纪》第二部・续卷设定", "Yellow Springs · Part Two"), locale)}</h2>
         <p>{tr(l(
-          "承接七卷原書的同一架空世界。這份近期續稿現存卷十八至二十六及終章補記；卷八至十七尚未在此收錄。以下是各卷的故事設定與情節提要，不冒稱完整小說正文。",
-          "承接七卷原书的同一架空世界。这份近期续稿现存卷十八至二十六及终章补记；卷八至十七尚未在此收录。以下是各卷的故事设定与情节提要，不冒称完整小说正文。",
-          "This continuation shares the seven-volume world. The recent manuscript supplies volumes 18–26 and an afterword; volumes 8–17 are not published here. These are story treatments, not complete prose chapters."
+          "承接七卷原書的同一架空世界。第七卷以編年概述終局；第二部依事件順序補出卷八至二十七，並以終章補記收束。以下為故事設定與情節提要，不冒稱完整小說正文。",
+          "承接七卷原书的同一架空世界。第七卷以编年概述终局；第二部依事件顺序补出卷八至二十七，并以终章补记收束。以下为故事设定与情节提要，不冒称完整小说正文。",
+          "This shares the seven-volume fictional world. Volume 7 summarizes the eventual calamity; the continuation now presents volumes 8–27 in event order, followed by an afterword. These are story treatments, not complete prose chapters."
         ), locale)}</p>
       </div>
       <div className="hq-guaili-volumes">
