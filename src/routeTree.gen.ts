@@ -39,6 +39,7 @@ import { Route as TianjiDualRouteImport } from './routes/tianji-dual'
 import { Route as TianjiXinggongRouteImport } from './routes/tianji-xinggong'
 import { Route as UpdatesRouteImport } from './routes/updates'
 import { Route as YizhangjingRouteImport } from './routes/yizhangjing'
+import { Route as YunyiShenxiangRouteImport } from './routes/yunyi-shenxiang'
 import { Route as ZiweiRouteImport } from './routes/ziwei'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as FunTestsEarthOnlineRouteImport } from './routes/fun-tests.earth-online'
@@ -205,6 +206,11 @@ const YizhangjingRoute = YizhangjingRouteImport.update({
   path: '/yizhangjing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const YunyiShenxiangRoute = YunyiShenxiangRouteImport.update({
+  id: '/yunyi-shenxiang',
+  path: '/yunyi-shenxiang',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ZiweiRoute = ZiweiRouteImport.update({
   id: '/ziwei',
   path: '/ziwei',
@@ -318,6 +324,7 @@ export interface FileRoutesByFullPath {
   '/tianji-xinggong': typeof TianjiXinggongRoute
   '/updates': typeof UpdatesRoute
   '/yizhangjing': typeof YizhangjingRoute
+  '/yunyi-shenxiang': typeof YunyiShenxiangRoute
   '/ziwei': typeof ZiweiRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
@@ -365,6 +372,7 @@ export interface FileRoutesByTo {
   '/tianji-xinggong': typeof TianjiXinggongRoute
   '/updates': typeof UpdatesRoute
   '/yizhangjing': typeof YizhangjingRoute
+  '/yunyi-shenxiang': typeof YunyiShenxiangRoute
   '/ziwei': typeof ZiweiRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
@@ -413,6 +421,7 @@ export interface FileRoutesById {
   '/tianji-xinggong': typeof TianjiXinggongRoute
   '/updates': typeof UpdatesRoute
   '/yizhangjing': typeof YizhangjingRoute
+  '/yunyi-shenxiang': typeof YunyiShenxiangRoute
   '/ziwei': typeof ZiweiRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/fun-tests/earth-online': typeof FunTestsEarthOnlineRoute
@@ -462,6 +471,7 @@ export interface FileRouteTypes {
     | '/tianji-xinggong'
     | '/updates'
     | '/yizhangjing'
+    | '/yunyi-shenxiang'
     | '/ziwei'
     | '/auth/callback'
     | '/fun-tests/earth-online'
@@ -509,6 +519,7 @@ export interface FileRouteTypes {
     | '/tianji-xinggong'
     | '/updates'
     | '/yizhangjing'
+    | '/yunyi-shenxiang'
     | '/ziwei'
     | '/auth/callback'
     | '/fun-tests/earth-online'
@@ -556,6 +567,7 @@ export interface FileRouteTypes {
     | '/tianji-xinggong'
     | '/updates'
     | '/yizhangjing'
+    | '/yunyi-shenxiang'
     | '/ziwei'
     | '/auth/callback'
     | '/fun-tests/earth-online'
@@ -604,6 +616,7 @@ export interface RootRouteChildren {
   TianjiXinggongRoute: typeof TianjiXinggongRoute
   UpdatesRoute: typeof UpdatesRoute
   YizhangjingRoute: typeof YizhangjingRoute
+  YunyiShenxiangRoute: typeof YunyiShenxiangRoute
   ZiweiRoute: typeof ZiweiRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   QuizCultivationDestinyRoute: typeof QuizCultivationDestinyRoute
@@ -825,6 +838,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof YizhangjingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/yunyi-shenxiang': {
+      id: '/yunyi-shenxiang'
+      path: '/yunyi-shenxiang'
+      fullPath: '/yunyi-shenxiang'
+      preLoaderRoute: typeof YunyiShenxiangRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ziwei': {
       id: '/ziwei'
       path: '/ziwei'
@@ -1000,6 +1020,7 @@ const rootRouteChildren: RootRouteChildren = {
   TianjiXinggongRoute: TianjiXinggongRoute,
   UpdatesRoute: UpdatesRoute,
   YizhangjingRoute: YizhangjingRoute,
+  YunyiShenxiangRoute: YunyiShenxiangRoute,
   ZiweiRoute: ZiweiRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   QuizCultivationDestinyRoute: QuizCultivationDestinyRoute,

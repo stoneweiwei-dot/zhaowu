@@ -68,6 +68,12 @@ function KnowledgePage() {
           <p className="mt-3 text-sm leading-7 text-ink-soft">{tr(locale,"九幅9:16原畫，逐景介紹畫風與意象，並區分古籍記載與現代整理。","九幅9:16原画，逐景介绍画风与意象，并区分古籍记载与现代整理。","Nine portrait paintings with descriptions and clear distinctions between classical sources and modern interpretations.")}</p>
           <a className="mt-3 inline-block underline underline-offset-4" href="/bajinggong">{tr(locale,"閱讀完整九景圖志","阅读完整九景图志","Explore the illustrated feature")}</a>
         </article>
+        <article className="seal-border rounded-xl bg-cream p-5 sm:p-7">
+          <p className="text-xs tracking-[0.2em] text-cinnabar">{tr(locale,"昭梧原創圖志 · 三卷 75 圖","昭梧原创图志 · 三卷 75 图","ZHAOWU ORIGINAL ATLAS · 75 WORKS IN THREE VOLUMES")}</p>
+          <h3 className="mt-2 font-display text-2xl text-ink">{tr(locale,"《雲衣神相》：封神、九歌與上古四時","《云衣神相》：封神、九歌与上古四时","Yunyi Shenxiang: Investiture, Nine Songs & the Four Seasons")}</h3>
+          <p className="mt-3 text-sm leading-7 text-ink-soft">{tr(locale,"75 張完整原畫，分入封神人物、楚辭九歌、上古四時三卷；含人物異版、古典來源與原創演繹。","75 张完整原画，分入封神人物、楚辞九歌、上古四时三卷；含人物异版、古典来源与原创演绎。","75 complete artworks across Investiture figures, the Nine Songs and ancient seasonal imagery, with related variants and source notes.")}</p>
+          <a className="mt-3 inline-block underline underline-offset-4" href="/yunyi-shenxiang">{tr(locale,"瀏覽《雲衣神相》圖庫","浏览《云衣神相》图库","Explore the Yunyi Shenxiang gallery")}</a>
+        </article>
       </section>
 
       <RealityPatchSection />
