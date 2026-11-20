@@ -6,7 +6,7 @@
   "installCommand": "npm ci",
   "git": {
     "deploymentEnabled": {
-      "**": true,
+      "**": false,
       "main": true
     }
   },
@@ -441,5 +441,5 @@
       "destination": "/fil/index.html"
     }
   ],
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)docs/**' ':(exclude)**/*.md' ':(exclude).github/**'"
+  "ignoreCommand": "if [ \"$VERCEL_GIT_COMMIT_REF\" != \"main\" ]; then exit 0; fi; git diff --quiet HEAD^ HEAD -- . ':(exclude)docs/**' ':(exclude)**/*.md' ':(exclude).github/**'"
 }
