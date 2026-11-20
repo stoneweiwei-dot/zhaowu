@@ -370,13 +370,30 @@ export function FocusedReportSections({ sections, result, showChartArtwork = tru
   const overviewLines = directFull ? [directFull, ...supportingSummary] : content.summary;
   const fallbackNotes = result ? [] : supportingSummary.slice(3);
   const bodyLines = content.body.length ? content.body : [copy.bodyUnavailable];
+  const chromeCopy = locale === "en"
+    ? { together: "Together", contents: "Contents", footer: "ZHAOWU · STONE Original" }
+    : locale === "zh-Hans"
+      ? { together: "合盘", contents: "目录", footer: "昭梧・S 原创" }
+      : { together: "合盤", contents: "目錄", footer: "昭梧・S 原創" };
 
   // Technical-only legacy chapters must remain accessible even when the
   // plain-language overview filters every line.
   if (!sections.length) return null;
 
   return (
-    <section className="zhaowu-focused-report zhaowu-report-continuous-sheet" aria-label={locale === "en" ? "Reading and full report" : locale === "zh-Hans" ? "导读与完整命书" : "導讀與完整命書"}>
+    <section className="zhaowu-focused-report zhaowu-report-continuous-sheet zhaowu-v6-report-pages" aria-label={locale === "en" ? "Reading and full report" : locale === "zh-Hans" ? "导读与完整命书" : "導讀與完整命書"} data-report-design-v6>
+      <nav className="zhaowu-v6-float-nav" aria-label={chromeCopy.contents}>
+        <a href="#zhaowu-report-summary-title" className="zhaowu-v6-together" onClick={() => document.querySelector<HTMLElement>("[data-professional-report]")?.setAttribute("open", "")}>{chromeCopy.together}</a>
+        <details className="zhaowu-v6-toc">
+          <summary className="zhaowu-v6-contents">{chromeCopy.contents}</summary>
+          <div className="zhaowu-v6-toc-menu">
+            <a href="#zhaowu-report-summary-title">{copy.summaryTitle}</a>
+            <a href="#zhaowu-v6-visual">{copy.visual}</a>
+            <a href="#zhaowu-v6-body">{copy.body}</a>
+            <a href="#zhaowu-v6-notes-anchor">{copy.detail}</a>
+          </div>
+        </details>
+      </nav>
       {model && showReadingGuide ? <MobileReadingGuide model={model} locale={locale} narrative={sections.find((section) => section.narrative)?.narrative} /> : null}
       <details className="zhaowu-professional-report" data-professional-report>
         <summary>{locale === "en" ? "Open the full professional report" : locale === "zh-Hans" ? "展开专业命书与完整依据" : "展開專業命書與完整依據"}</summary>
@@ -432,7 +449,7 @@ export function FocusedReportSections({ sections, result, showChartArtwork = tru
       {result ? <ReportElementMeters result={result} /> : null}
 
       {result ? (
-        <details className="zhaowu-report-stage-fold" data-report-stage="visual">
+        <details className="zhaowu-report-stage-fold" data-report-stage="visual" id="zhaowu-v6-visual">
           <summary>
             <b className="zhaowu-report-stage-no">02</b>
             <span><strong>{copy.visual}</strong><small>{copy.visualHint}</small></span>
@@ -450,7 +467,7 @@ export function FocusedReportSections({ sections, result, showChartArtwork = tru
       ) : null}
 
       <section className="zhaowu-report-body-block">
-          <details className="zhaowu-report-fold zhaowu-report-fold--section" data-report-fold>
+          <details className="zhaowu-report-fold zhaowu-report-fold--section" data-report-fold id="zhaowu-v6-body">
             <summary><h4><span className="zhaowu-report-stage-no">03</span>{copy.body}</h4></summary>
             <div className="zhaowu-report-copy">
               {bodyLines.map((line, index) => <p key={index} className="whitespace-pre-line">{line}</p>)}
@@ -460,7 +477,7 @@ export function FocusedReportSections({ sections, result, showChartArtwork = tru
 
 
       {result ? (
-        <AnalysisNotes result={result} locale={locale} supportingSummary={fallbackNotes} showLuck={showLuck} />
+        <div data-v6-notes><span id="zhaowu-v6-notes-anchor" /><AnalysisNotes result={result} locale={locale} supportingSummary={fallbackNotes} showLuck={showLuck} /></div>
       ) : fallbackNotes.length ? (
         <details className="zhaowu-report-method-notes">
           <summary>
@@ -474,6 +491,11 @@ export function FocusedReportSections({ sections, result, showChartArtwork = tru
         </details>
       ) : null}
       </div>
+      <footer className="zhaowu-v6-page-footer" aria-label={chromeCopy.footer}>
+        <svg aria-hidden="true" className="zhaowu-v6-footer-cat" viewBox="0 0 36 28"><path d="M5 10 4 3l8 4a16 16 0 0 1 12 0l8-4-1 8c2 2 3 4 3 7 0 6-6 9-16 9S2 23 2 17c0-3 1-5 3-7Z" fill="#fff" stroke="#b89060" strokeWidth="1.2"/><circle cx="13" cy="16" r="1" fill="#514940"/><circle cx="23" cy="16" r="1" fill="#514940"/><path d="M16 20q2 2 4 0M2 18h8m16 0h8" fill="none" stroke="#b89060" strokeWidth="1" strokeLinecap="round"/></svg>
+        <span>{chromeCopy.footer}</span>
+        <span className="zhaowu-v6-page-number">{result ? String(Math.max(1, sections.length)).padStart(2, "0") : "—"}</span>
+      </footer>
       </details>
     </section>
   );
