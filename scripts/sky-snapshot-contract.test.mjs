@@ -84,9 +84,10 @@ test("daily sky observation generator computes matching Sydney ephemeris values 
 test("sky observation workflow is scheduled weekly for Monday morning in Sydney", () => {
   const workflow = read(".github/workflows/daily-sky-observation-update.yml");
   assert.match(workflow, /name: Weekly Sydney Sky Observation Update/);
-  assert.match(workflow, /cron:\\s*'15 18 \\* \\* 0'/);
+  assert.match(workflow, /cron:\s*'15 18 \* \* 0'/);
   assert.match(workflow, /18:15 UTC Sunday = 05:15 Monday AEDT/);
   assert.match(workflow, /group: weekly-sky-observation-update/);
-  assert.match(workflow, /automation\\/weekly-sky-/);
+  assert.match(workflow, /automation\/weekly-sky-/);
   assert.doesNotMatch(workflow, /force-with-lease/);
 });
+b92104f30f059f9c8cf58b34c3d02bfd650393f2
