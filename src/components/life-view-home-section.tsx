@@ -125,6 +125,42 @@ const READING_MAP_GROUPS = [
   },
 ] as const;
 
+// Thumbnails are editorial cues: use an article's own art only when it depicts
+// the subject. Entries without matching art use a restrained topic glyph.
+const ARTICLE_THUMBNAILS: Record<string, { src: string; alt: string }> = {
+  "emotional-intelligence-four-practices-20261112": { src: "/articles/face-mind-cultivation-2026-09-14.webp", alt: "觀心與修習" },
+  "bazi-health-symbolism": { src: "/articles/bazi-health-five-phases.svg", alt: "五行與身體象徵" },
+  "a-day-with-incense": { src: "/today/almanac-mist-v1.webp", alt: "香事與日常" },
+  "time-is-it-really-faster": { src: "/articles/time-objective-subjective.webp", alt: "時間" },
+  "see-break-return": { src: "/articles/stone-cause-and-action.webp", alt: "因果與行動" },
+  "seven-cultural-atlases-20261023": { src: "/articles/stone-cultural-atlas-01.png", alt: "文化圖譜" },
+  "abhidhamma-thirty-one-planes": { src: "/articles/abhidhamma-31-realms-overview.svg", alt: "三十一界" },
+  "face-mind-cultivation": { src: "/articles/face-mind-cultivation-2026-09-14.webp", alt: "面相與修心" },
+  "civilization-timeline-2025-2030-cross-analysis": { src: "/articles/civilization-timeline-2025-2030-stone-original.png", alt: "文明時間線" },
+};
+
+function articleThumbnail(article: IllustratedArticle) {
+  const mapped = ARTICLE_THUMBNAILS[article.id];
+  if (mapped) return { ...mapped, kind: "image" as const };
+  // Own illustration is suitable by default only when explicitly present; the
+  // remaining uncatalogued pieces are text-led reflections, represented by a
+  // simple glyph instead of borrowed artwork.
+  if (article.illustrations?.[0]?.src) return { src: article.illustrations[0].src, alt: "", kind: "image" as const };
+  return { src: "", alt: "", kind: "icon" as const };
+}
+
+function TopicThumbnail({ article, compact = false }: { article: IllustratedArticle; compact?: boolean }) {
+  const thumb = articleThumbnail(article);
+  const size = compact ? "h-14 w-12" : "h-20 w-16 sm:h-24 sm:w-[4.5rem]";
+  return thumb.kind === "image" ? (
+    <img src={thumb.src} alt={thumb.alt} width={941} height={1672} loading="lazy" decoding="async" className={`${size} shrink-0 rounded-lg object-cover`} />
+  ) : (
+    <span aria-hidden="true" className={`${size} flex shrink-0 items-center justify-center rounded-lg border border-cinnabar/20 bg-cream font-display text-xl text-cinnabar`}>
+      {article.id.includes("five-elements") || article.id.includes("money-needs") ? "五" : article.id.includes("boundar") || article.id.includes("sensitivity") || article.id.includes("relationship") ? "界" : article.id.includes("practice") || article.id.includes("effort") ? "行" : "觀"}
+    </span>
+  );
+}
+
 export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSectionProps) {
   const { locale } = useI18n();
   const { language } = useDisplayLanguage();
@@ -310,7 +346,7 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                             document.getElementById(`article-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
                           }}
                         >
-                          <img src={target.illustrations?.[0]?.src ?? "/articles/yunyi-shenxiang/01.webp"} alt="" width={941} height={1672} loading="lazy" decoding="async" className="h-14 w-12 shrink-0 rounded-md object-cover" />
+                          <TopicThumbnail article={target} compact />
                           <span className="min-w-0"><strong className="block font-medium text-ink">{target.title[locale]}</strong><span className="mt-0.5 line-clamp-2 block text-xs leading-5 text-ink-mute">{target.summary?.[locale] ?? target.body[locale].split(/\n\n+/)[0]}</span></span>
                         </a>
                       </li>
@@ -337,7 +373,7 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
                 className="flex w-full min-h-[104px] items-center gap-3 rounded-xl border border-line/70 bg-[#fffaf1]/85 p-3 text-left shadow-sm transition hover:border-cinnabar/35 focus-visible:outline-2 focus-visible:outline-offset-2 sm:gap-4 sm:p-4"
                 aria-expanded={isOpen}
               >
-                <img src={article.illustrations?.[0]?.src ?? "/articles/yunyi-shenxiang/01.webp"} alt="" width={941} height={1672} loading="lazy" decoding="async" className="h-20 w-16 shrink-0 rounded-lg object-cover sm:h-24 sm:w-[4.5rem]" />
+                <TopicThumbnail article={article} />
                 <span className="min-w-0">
                   <span className="flex flex-wrap items-center gap-2 text-[10px] font-semibold tracking-[0.14em] text-cinnabar">
                     <span>{index === 0 ? copy.latest : article.publishedAt}</span>
