@@ -1,6 +1,50 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile, rm } from "node:fs/promises";
+import { tsImport } from "tsx/esm/api";
+
+const checkoutTestUrl = new URL("./.stripe-checkout-runtime.test.ts", import.meta.url);
+let checkoutSource = await readFile(new URL("../supabase/functions/stripe-checkout/index.ts", import.meta.url), "utf8");
+checkoutSource = checkoutSource.replace(/^import .*;\n/, "").replace("if (D?.serve) D.serve((req: Request) => handle(req));", "");
+checkoutSource = checkoutSource.replace(/const admin = adminClient\(env\);/, "const admin = adminOverride ?? adminClient(env);");
+await writeFile(checkoutTestUrl, checkoutSource);
+const { handle } = await tsImport(checkoutTestUrl.href, import.meta.url);
+await rm(checkoutTestUrl);
+let stripeFetchCount = 0;
+let activeStripeMock;
+const originalFetch = globalThis.fetch;
+globalThis.fetch = async () => {
+  stripeFetchCount += 1;
+  if (activeStripeMock === "throw") throw new Error("mock network failure");
+  if (activeStripeMock === "non-ok") return Response.json({ error: "mock failure" }, { status: 503 });
+  return Response.json(activeStripeMock || {});
+};
+test.after(() => { globalThis.fetch = originalFetch; });
+
+function mockAdmin(status) {
+  return {
+    from(table) {
+      assert.equal(table, "report_purchase_entitlements");
+      return {
+        select() { return this; },
+        eq() { return this; },
+        async maybeSingle() { return { data: { product_id: "system", system_id: "bazi", status }, error: null }; },
+      };
+    },
+  };
+}
+
+async function verifyEntitlement(status, stripeSecretKey, stripeMock) {
+  stripeFetchCount = 0;
+  activeStripeMock = stripeMock;
+  const req = new Request("https://zhao-wu.com/functions/v1/stripe-checkout?session_id=cs_test_mockpaid1234567890");
+  const response = await handle(req, {
+    supabaseUrl: "https://mock.supabase.co",
+    supabaseSecretKey: "service_role_mock_only",
+    stripeSecretKey,
+  }, mockAdmin(status));
+  return { status: response.status, body: await response.json(), count: stripeFetchCount };
+}
 
 const client = await readFile(new URL("../src/lib/report-access.ts", import.meta.url), "utf8");
 const resultUi = await readFile(new URL("../src/components/result-view.tsx", import.meta.url), "utf8");
@@ -78,6 +122,52 @@ test("paid entitlement checks revalidate Stripe refunds and disputes before retu
   assert.match(client, /return \{ level, pending, owner: false, revoked \}/);
   assert.match(client, /localStorage\.setItem\(SESSION_STORAGE, JSON\.stringify\(storedSessions\(\)\.filter/);
   assert.match(resultUi, /此訂單已退款/);
+});
+
+test("paid webhook entitlement unlocks without a Stripe key and skips Stripe", async () => {
+  const result = await verifyEntitlement("paid", undefined);
+  assert.equal(result.status, 200);
+  assert.deepEqual(result.body, { ok: true, paid: true, pending: false, product: "system", system: "bazi" });
+  assert.equal(result.count, 0);
+});
+
+test("refunded webhook entitlement is revoked without a Stripe key", async () => {
+  const result = await verifyEntitlement("refunded", "");
+  assert.equal(result.status, 200);
+  assert.deepEqual(result.body, { ok: true, paid: false, revoked: true, reason: "refunded" });
+  assert.equal(result.count, 0);
+});
+
+test("paid webhook entitlement unlocks if the live Stripe lookup is non-OK or throws", async (t) => {
+  for (const [name, stripeFetch] of [
+    ["returns non-OK", "non-ok"],
+    ["throws", "throw"],
+  ]) {
+    await t.test(name, async () => {
+      const result = await verifyEntitlement("paid", "sk_test_mock_only", stripeFetch);
+      assert.equal(result.status, 200);
+      assert.deepEqual(result.body, { ok: true, paid: true, pending: false, product: "system", system: "bazi" });
+      assert.equal(result.count, 1);
+    });
+  }
+});
+
+test("successful live Stripe lookup still revokes refunded and disputed charges", async (t) => {
+  for (const [reason, charge] of [
+    ["refunded", { refunded: true }],
+    ["refunded", { amount_refunded: 1 }],
+    ["disputed", { disputed: true }],
+  ]) {
+    await t.test(reason, async () => {
+      const result = await verifyEntitlement("paid", "sk_test_mock_only", {
+        payment_status: "paid", payment_intent: { latest_charge: charge },
+      });
+      assert.equal(result.status, 200);
+      assert.equal(result.body.paid, false);
+      assert.equal(result.body.revoked, true);
+      assert.equal(result.body.reason, reason);
+    });
+  }
 });
 
 test("success UI state is persisted before checkout query cleanup", async () => {

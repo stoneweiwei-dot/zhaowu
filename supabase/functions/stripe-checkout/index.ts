@@ -69,7 +69,7 @@ function validBrowserKey(req: Request, env: Runtime) {
   return !env.publishableKey || req.headers.get("apikey") === env.publishableKey;
 }
 
-export async function handle(req: Request, env: Runtime = runtimeFromDeno()): Promise<Response> {
+export async function handle(req: Request, env: Runtime = runtimeFromDeno(), adminOverride?: ReturnType<typeof adminClient>): Promise<Response> {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders(req, env) });
   if (!validBrowserKey(req, env)) return json(req, env, { ok: false, error: { code: "CLIENT_KEY_REJECTED" } }, 401);
   if (req.method !== "GET") return json(req, env, { ok: false, error: { code: "PAYMENT_LINKS_ONLY" } }, 405);
@@ -80,7 +80,7 @@ export async function handle(req: Request, env: Runtime = runtimeFromDeno()): Pr
     return json(req, env, { ok: false, error: { code: "BAD_VERIFICATION_REQUEST" } }, 400);
   }
 
-  const admin = adminClient(env);
+  const admin = adminOverride ?? adminClient(env);
   if (!admin) return json(req, env, { ok: false, error: { code: "PAYMENT_STORE_NOT_CONFIGURED" } }, 503);
 
   const { data, error } = await admin
@@ -93,25 +93,29 @@ export async function handle(req: Request, env: Runtime = runtimeFromDeno()): Pr
   if (!data) return json(req, env, { ok: true, paid: false, pending: true });
   if (data.status === "refunded") return json(req, env, { ok: true, paid: false, revoked: true, reason: "refunded" });
 
-  // The entitlement row identifies the purchase; Stripe remains authoritative
-  // for its current refund/dispute state on every restore/open check.
-  if (data.status === "paid" && !env.stripeSecretKey) return json(req, env, { ok: false, error: { code: "STRIPE_REVALIDATION_NOT_CONFIGURED" } }, 503);
-  if (data.status === "paid") {
-    const stripeResponse = await fetch(`https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(sessionId)}?expand[]=payment_intent.latest_charge`, {
-      headers: { Authorization: `Bearer ${env.stripeSecretKey}` },
-      cache: "no-store",
-    });
-    if (!stripeResponse.ok) return json(req, env, { ok: false, error: { code: "STRIPE_REVALIDATION_FAILED" } }, 502);
-    const stripeSession = await stripeResponse.json() as {
-      payment_status?: string;
-      payment_intent?: { latest_charge?: { amount_refunded?: number; refunded?: boolean; disputed?: boolean } | string | null } | string | null;
-    };
-    const intent = typeof stripeSession.payment_intent === "object" ? stripeSession.payment_intent : null;
-    const charge = intent && typeof intent.latest_charge === "object" ? intent.latest_charge : null;
-    if (charge?.refunded || (charge?.amount_refunded ?? 0) > 0 || charge?.disputed) {
-      return json(req, env, { ok: true, paid: false, revoked: true, reason: charge.disputed ? "disputed" : "refunded" });
+  // The webhook's entitlement row is the fallback when Stripe cannot be queried.
+  // If Stripe is available, keep checking for later refunds and disputes.
+  if (data.status === "paid" && env.stripeSecretKey) {
+    try {
+      const stripeResponse = await fetch(`https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(sessionId)}?expand[]=payment_intent.latest_charge`, {
+        headers: { Authorization: `Bearer ${env.stripeSecretKey}` },
+        cache: "no-store",
+      });
+      if (stripeResponse.ok) {
+        const stripeSession = await stripeResponse.json() as {
+          payment_status?: string;
+          payment_intent?: { latest_charge?: { amount_refunded?: number; refunded?: boolean; disputed?: boolean } | string | null } | string | null;
+        };
+        const intent = typeof stripeSession.payment_intent === "object" ? stripeSession.payment_intent : null;
+        const charge = intent && typeof intent.latest_charge === "object" ? intent.latest_charge : null;
+        if (charge?.refunded || (charge?.amount_refunded ?? 0) > 0 || charge?.disputed) {
+          return json(req, env, { ok: true, paid: false, revoked: true, reason: charge.disputed ? "disputed" : "refunded" });
+        }
+        if (stripeSession.payment_status !== "paid") return json(req, env, { ok: true, paid: false, pending: true });
+      }
+    } catch {
+      // Fall back to the paid entitlement already recorded by the webhook.
     }
-    if (stripeSession.payment_status !== "paid") return json(req, env, { ok: true, paid: false, pending: true });
   }
 
   return json(req, env, {
