@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useI18n, type Locale } from "@/lib/i18n";
 import "./yunyi-shenxiang.css";
+import "./-mythic-image-viewer.css";
 
 export const Route = createFileRoute("/yunyi-shenxiang")({ component: YunyiShenxiangPage });
 
@@ -25,7 +26,9 @@ function YunyiShenxiangPage() {
   const viewer = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const dialog = viewer.current;
-    if (selected) dialog?.showModal();
+    if (selected && dialog && !dialog.open) dialog.showModal();
+    document.documentElement.classList.toggle("yunyi-viewer-open", Boolean(selected));
+    return () => document.documentElement.classList.remove("yunyi-viewer-open");
   }, [selected]);
   const text = (a: string,b: string,e: string) => c([a,b,e],locale);
   return <main className="yunyi-page">
@@ -34,14 +37,14 @@ function YunyiShenxiangPage() {
       <p className="yunyi-kicker">{text("昭梧原創圖志　｜　封神、九歌與四時","昭梧原创图志　｜　封神、九歌与四时","ZHAOWU ORIGINAL ATLAS · INVESTITURE, NINE SONGS & SEASONS")}</p>
       <h1>{text("《雲衣神相》","《云衣神相》","Yunyi Shenxiang")}</h1>
       <p className="yunyi-lead">{text("從陸壓道人翻開封神世界。三卷收錄 75 張完整畫作，人物異版並列，古典來源與原創演繹分開讀。","从陆压道人翻开封神世界。三卷收录 75 张完整画作，人物异版并列，古典来源与原创演绎分开读。","Enter the world of Investiture through Lu Ya. Three volumes gather 75 complete artworks, related variants and notes that separate classical sources from original interpretation.")}</p>
-      <nav className="yunyi-nav" aria-label={text("本頁導覽","本页导航","Page navigation")}><a href="#story-sanxiao">{text("金蛟剪未歸","金蛟剪未归","The Scissors Never Returned")}</a><a href="#volumes">{text("瀏覽三卷","浏览三卷","Browse the volumes")}</a><a href="#seasonal-reading">{text("四時讀圖","四时读图","Seasonal reading")}</a></nav>
+      <nav className="yunyi-nav" aria-label={text("本頁導覽","本页导航","Page navigation")}><a href="#gallery">{text("直接看 75 張作品","直接看 75 张作品","Jump to all 75 artworks")}</a><a href="#story-sanxiao">{text("金蛟剪未歸","金蛟剪未归","The Scissors Never Returned")}</a><a href="#seasonal-reading">{text("四時讀圖","四时读图","Seasonal reading")}</a></nav>
     </header>
     <section id="story-sanxiao" className="yunyi-story">
       <p className="yunyi-kicker">{text("故事線一　｜　封神人物","故事线一　｜　封神人物","STORY THREAD · INVESTITURE")}</p><h2>{text("金蛟剪未歸","金蛟剪未归","The Golden Scissors Never Returned")}</h2>
       <p>{text("趙公明借剪入戰，卻沒能親手還剪。交回三仙島姊妹手上的，是一件故人的道袍，裡面包著他借走的金蛟剪。三霄原可不下山，故事轉向，恰恰就在她們打開那件衣裳之後。","赵公明借剪入战，却没能亲手还剪。交回三仙岛姐妹手上的，是一件故人的道袍，里面包着他借走的金蛟剪。三霄原可不下山，故事转向，恰恰就在她们打开那件衣裳之后。","Zhao Gongming borrowed the Golden Scissors for battle but never returned them himself. His sisters receive his robe, with the borrowed treasure wrapped inside. Their story turns when they unfold it.")}</p>
       <div className="yunyi-story-links"><a href="#lu-ya">{text("陸壓獻計","陆压献计","Lu Ya's stratagem")}</a><a href="#plate-28">{text("趙公明借剪","赵公明借剪","Zhao Gongming borrows the scissors")}</a><a href="#plate-35">{text("雲霄至商營","云霄至商营","Yunxiao arrives")}</a><a href="#plate-36">{text("瓊霄入戰","琼霄入战","Qiongxiao enters battle")}</a><a href="#plate-37">{text("碧霄守陣","碧霄守阵","Bixiao holds the formation")}</a><a href="#story-sanxiao-end">{text("尾聲","尾声","Aftermath")}</a></div>
     </section>
-    <nav id="volumes" className="yunyi-volumes" aria-label={text("三卷目錄","三卷目录","Three volumes")}>
+    <nav id="gallery" className="yunyi-volumes" aria-label={text("三卷目錄","三卷目录","Three volumes")}>
       {tomes.map(t => <a href={`#${t.id}`} key={t.id}>{c(t.title,locale)}</a>)}
     </nav>
     {tomes.map((tome, ti) => <section className="yunyi-tome" id={tome.id} key={tome.id}>

@@ -14,6 +14,9 @@
   overscroll-behavior: contain;
 }
 .hq-image-viewer::backdrop { background: rgba(0, 0, 0, .7); }
+html.yunyi-viewer-open .zhaowu-site-utility-dock,
+html:has(dialog.hq-image-viewer[open]) .zhaowu-site-utility-dock,
+body:has(dialog.hq-image-viewer[open]) .zhaowu-site-utility-dock { display: none !important; }
 .hq-image-viewer[open] { display: grid; place-items: center; }
 .hq-image-viewer img {
   display: block;
