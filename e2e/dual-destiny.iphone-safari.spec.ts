@@ -1,0 +1,63 @@
+import { expect, test } from "@playwright/test";
+
+const SHARED_BIRTH = {
+  year: 1988,
+  month: 10,
+  day: 4,
+  hour: 4,
+  minute: 40,
+  timeUnknown: false,
+  gender: "male",
+  relation: "unset",
+  city: {
+    name: "Sydney",
+    country: "Australia",
+    display: "Sydney, Australia",
+    timezone: "Australia/Sydney",
+    latitude: -33.8688,
+    longitude: 151.2093,
+  },
+  liveCity: null,
+  ziPolicy: "midnight",
+  useTrueSolar: true,
+};
+
+test.beforeEach(async ({ page }) => {
+  await page.route("**/api/owner-session", (route) => route.fulfill({
+    status: 200,
+    contentType: "application/json",
+    body: JSON.stringify({ authenticated: true }),
+  }));
+});
+
+test("iPhone Safari One-Palm page is usable without the removed duplicate specialist shell", async ({ page }) => {
+  await page.goto("/yizhangjing", { waitUntil: "domcontentloaded" });
+  await expect(page.getByRole("heading", { name: "前世今生・達摩一掌經", exact: true })).toBeVisible();
+  await expect(page.locator("form.palm-form")).toBeVisible();
+  await expect(page.getByLabel("年", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("時", { exact: true })).toBeVisible();
+  await expect(page.locator("main.palm-standalone")).toHaveCount(1);
+  await expect(page.locator('article[aria-label="印度古法占星"]')).toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+});
+
+test("shared birth auto-generates the report and changing direction regenerates it", async ({ page }) => {
+  await page.addInitScript((record) => {
+    localStorage.setItem("zhaowu.birth-record.v1", JSON.stringify(record));
+  }, SHARED_BIRTH);
+  await page.goto("/yizhangjing", { waitUntil: "domcontentloaded" });
+
+  const result = page.locator(".palm-result");
+  await expect(result).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator('article[aria-label="印度古法占星"]')).toHaveCount(0);
+  const before = await result.innerText();
+
+  const reverse = page.getByLabel("逆行（傳統女命）", { exact: true });
+  await reverse.scrollIntoViewIfNeeded();
+  // Use the element's native click path: WebKit pointer emulation can miss the tiny controlled radio target after the smooth result scroll/reflow.
+  await reverse.evaluate((node) => (node as HTMLInputElement).click());
+  await expect(reverse).toBeChecked();
+  await expect.poll(async () => result.innerText(), { timeout: 10_000 }).not.toBe(before);
+  await expect(result).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+});

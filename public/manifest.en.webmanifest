@@ -1,0 +1,18 @@
+{
+  "id": "/",
+  "name": "ZHAOWU | Life rhythm and decision analysis",
+  "short_name": "ZHAOWU",
+  "description": "ZHAOWU | BaZi-based life rhythm and decision analysis. See the unseen. Find where you belong.",
+  "lang": "en",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#faf8f1",
+  "theme_color": "#faf8f1",
+  "icons": [
+    { "src": "/apple-touch-icon-r113.png", "sizes": "180x180", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/zhaowu-gourd-wordmark-r113-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icons/zhaowu-gourd-wordmark-r113-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icons/zhaowu-gourd-wordmark-r113-1024.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any" }
+  ]
+}

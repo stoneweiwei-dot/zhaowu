@@ -1,0 +1,4 @@
+/* Astrology now uses the same compact directory row as the other homepage lenses. */
+.zhaowu-home-portal--astrology {
+  --portal-accent: 100, 75, 98;
+}

@@ -1,0 +1,111 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+
+const main = readFileSync(new URL('../src/main.tsx', import.meta.url), 'utf8');
+const root = readFileSync(new URL('../src/routes/__root.tsx', import.meta.url), 'utf8');
+const design = readFileSync(new URL('../src/zhaowu-design-system.css', import.meta.url), 'utf8');
+const login = readFileSync(new URL('../src/routes/login.tsx', import.meta.url), 'utf8');
+const legacyVisual = readFileSync(new URL('../src/legacy-visual-compat.css', import.meta.url), 'utf8');
+const loginApproved = readFileSync(new URL('../src/login-approved-r89.css', import.meta.url), 'utf8');
+const account = readFileSync(new URL('../src/routes/account.tsx', import.meta.url), 'utf8');
+const home = readFileSync(new URL('../src/routes/index.tsx', import.meta.url), 'utf8');
+const r144 = readFileSync(new URL('../src/device-question-flow-r144.css', import.meta.url), 'utf8');
+const siteShell = readFileSync(new URL('../src/components/site-shell.tsx', import.meta.url), 'utf8');
+const analysisForm = readFileSync(new URL('../src/components/analysis-form.tsx', import.meta.url), 'utf8');
+
+const canonicalImport = "import './zhaowu-design-system.css';";
+const legacyImport = "import './legacy-visual-compat.css';";
+
+test('canonical design system is the final global visual authority', () => {
+  assert.match(main, /zhaowu-design-system\.css/);
+  assert.match(main, /legacy-visual-compat\.css/);
+  assert.ok(main.lastIndexOf(canonicalImport) > main.lastIndexOf(legacyImport));
+  assert.equal(main.lastIndexOf(canonicalImport), main.lastIndexOf("import './"));
+  assert.deepEqual(
+    main.match(/import '\.\/[^']+\.css';/g),
+    ["import './styles.css';", legacyImport, canonicalImport],
+  );
+  assert.match(legacyVisual, /@import "\.\/login-approved-r89\.css";/);
+  assert.match(legacyVisual, /@import "\.\/site-ux-r75-final\.css";/);
+  assert.match(loginApproved, /\.zhaowu-login-shell/);
+  assert.doesNotMatch(loginApproved, /\.zhaowu-home-sheet-shell/);
+  assert.doesNotMatch(root, /mobile-foundation-r81\.css/);
+});
+
+test('two-language header uses stylesheet-governed controls without inline visual overrides', () => {
+  assert.match(siteShell, /value: "en" as const/);
+  assert.match(siteShell, /value: "zh-Hant" as const/);
+  assert.doesNotMatch(siteShell, /value: "ko" as const|value: "hi" as const/);
+  assert.doesNotMatch(siteShell, /site-lang-group"\s+style=|site-lang-button"\s+style=/);
+  assert.match(design, /\.site-lang-button[\s\S]*min-height:\s*44px/);
+  assert.match(design, /\.zhaowu-home-sheet-shell input[\s\S]*font-size:\s*16px/);
+});
+
+test('approved login keeps official mark, Song wallpaper and independent owner credentials only', () => {
+  assert.match(login, /BrandSeal/);
+  assert.match(login, /stone-login-brand/);
+  assert.match(login, /id="login-secret"/);
+  assert.match(login, /vercel-owner-cookie/);
+  assert.match(login, /data-owner-only-login="true"/);
+  assert.match(login, /ownerSignIn/);
+  assert.doesNotMatch(login, /id="login-email"|id="login-password"|signInWithPassword|signUpWithPassword|startOAuth/);
+  assert.match(r144, /\.zhaowu-site-header \.zhaowu-header-login \{ display: none !important; \}/);
+  assert.match(loginApproved, /url\("\/wallpaper-song\.jpg"\)/);
+  assert.match(loginApproved, /rgba\(255, 252, 244, \.91\)/);
+  assert.match(loginApproved, /#ac473b/);
+  assert.match(loginApproved, /background-attachment:\s*scroll/);
+  assert.match(loginApproved, /\.stone-login-stage-media/);
+});
+
+test('runtime R79 visual injector stays removed', () => {
+  assert.doesNotMatch(root, /VisibleRegressionFixesR79/);
+});
+
+test('saved report owner controls remain secondary to reading content', () => {
+  assert.match(account, /data-report-primary-actions/);
+  assert.match(account, /data-report-secondary-actions/);
+  assert.match(design, /data-report-secondary-actions/);
+  assert.match(design, /Saved reports: generation state is owner metadata/);
+});
+
+test('scent test stays collapsed until explicitly opened', () => {
+  assert.match(home, /data-scent-panel/);
+  assert.match(home, /hidden=\{!scentOpen\}/);
+  assert.match(design, /\[data-scent-panel\]\[hidden\]/);
+});
+
+test('mobile header and Bazi layout are governed by canonical responsive rules', () => {
+  assert.match(design, /\.zhaowu-site-header > div/);
+  assert.match(design, /@media \(max-width: 780px\)/);
+  assert.match(design, /grid-template-columns: 1fr !important/);
+  assert.match(design, /\.zhaowu-header-gallery \{ display: none; \}/);
+  assert.doesNotMatch(design, /\.zhaowu-header-utility:not\(\.zhaowu-header-signout\)/);
+  assert.match(design, /\.bazi-detail-pillars/);
+  assert.match(design, /grid-template-columns: 1fr !important/);
+});
+
+
+test('birth onboarding keeps time correction automatic and print layout finite', () => {
+  assert.match(analysisForm, /data-auto-time-calibration="true"/);
+  assert.match(analysisForm, /時間校正由系統自動完成/);
+  assert.match(analysisForm, /經度、歷史時區、夏令時與真太陽時由系統自動處理/);
+  assert.doesNotMatch(analysisForm, /type="number"[^>]+(?:longitude|timezone|dst)|id="(?:longitude|timezone|dst)"/i);
+  assert.match(design, /\.zhaowu-time-calibration-note/);
+  assert.match(design, /@media print/);
+  assert.match(design, /\.zhaowu-home-sheet-page[\s\S]*min-height:\s*0\s*!important/);
+  assert.match(design, /\.zhaowu-dragon-guide[\s\S]*display:\s*none\s*!important/);
+});
+
+test('home birth ticket implements double RAF scroll and 350ms delay for 390px Safari keyboard stability', () => {
+  assert.match(home, /data-home-birth-entry/);
+  assert.match(home, /aria-controls="birth-form"/);
+  assert.match(home, /requestAnimationFrame\(\(\)\s*=>\s*\{\s*window\.requestAnimationFrame/);
+  assert.match(home, /getElementById\("birth-form"\)/);
+  assert.match(home, /scrollIntoView\(\{\s*behavior:\s*"smooth"/);
+  assert.match(home, /getElementById\("birth-year"\)\?\.focus\(\{\s*preventScroll:\s*true\s*\}\)/);
+  assert.match(home, /350/);
+  assert.match(analysisForm, /id="birth-form"/);
+  assert.match(analysisForm, /data-legacy-id="analysisForm"/);
+  assert.ok(/id="birth-year"|id:\s*"birth-year"/.test(analysisForm));
+});

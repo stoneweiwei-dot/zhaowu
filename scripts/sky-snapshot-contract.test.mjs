@@ -90,4 +90,3 @@ test("sky observation workflow is scheduled weekly for Monday morning in Sydney"
   assert.match(workflow, /automation\/weekly-sky-/);
   assert.doesNotMatch(workflow, /force-with-lease/);
 });
-b92104f30f059f9c8cf58b34c3d02bfd650393f2

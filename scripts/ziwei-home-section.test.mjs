@@ -1,0 +1,48 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import test from 'node:test';
+
+const read = (path) => readFile(new URL(path, import.meta.url), 'utf8');
+
+test('紫微保留内部独立页面与引擎，但首页只交付单一综合报告', async () => {
+  const [home, route, unified] = await Promise.all([
+    read('../src/routes/index.tsx'),
+    read('../src/routes/ziwei.tsx'),
+    read('../src/components/unified-birth-report.tsx'),
+  ]);
+  assert.doesNotMatch(home, /ZiweiHomeFeature/);
+  assert.doesNotMatch(home, /to: "\/ziwei"|紫微斗數|紫微斗数/);
+  assert.match(unified, /buildZiweiReading/);
+  assert.match(route, /createFileRoute\("\/ziwei"\)/);
+});
+
+test('紫微页面只交付客户白话报告，不呈现专业命盘', async () => {
+  const [route, css, summaryCss, reportCss, engine, summary] = await Promise.all([
+    read('../src/routes/ziwei.tsx'),
+    read('../src/ziwei.css'),
+    read('../src/ziwei-summary.css'),
+    read('../src/ziwei-report-clean.css'),
+    read('../src/lib/ziwei/horoscope.ts'),
+    read('../src/lib/ziwei/plain-summary.ts'),
+  ]);
+  assert.match(route, /createFileRoute\("\/ziwei"\)/);
+  assert.match(route, /SpecialistSystemPage/);
+  assert.match(route, /id="ziwei"/);
+  assert.doesNotMatch(route, /<details className="ziwei-technical">|ziwei-chart-board|technicalChart|真太阳时|真太陽時/);
+  assert.doesNotMatch(route, /排盤事實已鎖定版本|排盘事实已锁定版本|Calculation facts are version-locked/);
+  assert.doesNotMatch(route, /productionReady=false/);
+  assert.match(css, /min-height:\s*56px/);
+  assert.match(css, /@media \(max-width:\s*430px\)/);
+  assert.match(summaryCss, /\.ziwei-plain-report/);
+  assert.match(summaryCss, /html\[lang="en"\] \.ziwei-hero-rule b\{font-size:0\}/);
+  assert.match(summaryCss, /html\[lang="en"\] \.ziwei-plain-seal\{font-size:0\}/);
+  assert.match(summaryCss, /@media\(max-width:520px\)/);
+  assert.match(reportCss, /\.ziwei-report-sections/);
+  assert.match(summary, /zhaowu_ziwei_plain_summary_v1/);
+  assert.match(summary, /internalEvidence/);
+  assert.match(engine, /import \{ ZIWEI_ENGINE_READINESS \} from '\.\/profiles'/);
+  assert.match(engine, /productionReady:\s*ZIWEI_ENGINE_READINESS\.calculationDataReady/);
+  assert.match(engine, /calculationDataReady:\s*ZIWEI_ENGINE_READINESS\.calculationDataReady/);
+  assert.match(engine, /primarySourceComplete:\s*ZIWEI_ENGINE_READINESS\.primarySourceComplete/);
+  assert.match(engine, /1ba89cca577c6d5d46754d6f49b6b51467c577d1/);
+});

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" role="img" aria-labelledby="title desc">
+  <title id="title">太陽三分北交點｜地心黃經 120° 示意</title>
+  <desc id="desc">暖紙宋式幾何圖：地球居中，太陽與北交點在黃道圓上相隔約 120°。北交點以計算位置表示，不是可見天體。</desc>
+  <defs>
+    <linearGradient id="paper" x2="0" y2="1"><stop stop-color="#fbf8f0"/><stop offset="1" stop-color="#f1eadb"/></linearGradient>
+    <linearGradient id="jade" x2="1" y2="1"><stop stop-color="#a7c9bd"/><stop offset="1" stop-color="#527e70"/></linearGradient>
+    <radialGradient id="sun"><stop stop-color="#fff0bb"/><stop offset=".52" stop-color="#e1ad5f"/><stop offset="1" stop-color="#b56e42"/></radialGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="14"/></filter>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#paper)"/>
+  <path d="M80 84H1000M80 1836H1000" stroke="#b59a65" stroke-opacity=".48" stroke-width="2"/>
+  <text x="540" y="142" text-anchor="middle" fill="#456c5d" font-size="28" letter-spacing="8" font-family="Georgia,serif">昭梧 · SKY DESK</text>
+  <text x="540" y="236" text-anchor="middle" fill="#242923" font-size="66" font-family="serif">太陽 △ 北交點</text>
+  <text x="540" y="290" text-anchor="middle" fill="#687068" font-size="24" letter-spacing="4" font-family="Arial,sans-serif">SUN TRINE THE NORTH NODE</text>
+  <text x="540" y="370" text-anchor="middle" fill="#785d3f" font-size="27" font-family="Arial,sans-serif">19 OCT · 22:04 EDT</text>
+  <text x="540" y="411" text-anchor="middle" fill="#785d3f" font-size="27" font-family="Arial,sans-serif">20 OCT · 13:04 AEDT · SYDNEY</text>
+  <path d="M150 474H930" stroke="#9c8b69" stroke-opacity=".35" stroke-width="2"/>
+  <text x="540" y="535" text-anchor="middle" fill="#344f45" font-size="30" font-family="serif">地心視黃經角度示意</text>
+  <circle cx="540" cy="930" r="322" fill="none" stroke="#668e7e" stroke-opacity=".38" stroke-width="3"/>
+  <circle cx="540" cy="930" r="264" fill="none" stroke="#b59a65" stroke-opacity=".42" stroke-width="2" stroke-dasharray="3 16"/>
+  <path d="M540 930L312 798M540 930L768 798" stroke="#739184" stroke-opacity=".7" stroke-width="3"/>
+  <path d="M312 798H768" stroke="#8e6c44" stroke-width="4" stroke-dasharray="12 12"/>
+  <path d="M449.1 877.5A105 105 0 0 1 630.9 877.5" fill="none" stroke="#9b4438" stroke-width="5" stroke-linecap="round"/>
+  <text x="540" y="1060" text-anchor="middle" fill="#9b4438" font-size="35" font-family="Georgia,serif">120°</text>
+  <circle cx="540" cy="930" r="26" fill="url(#jade)" stroke="#315e50" stroke-width="4"/>
+  <path d="M528 930h24M540 918v24" stroke="#f7f3ea" stroke-width="2"/>
+  <text x="540" y="990" text-anchor="middle" fill="#425e53" font-size="22" font-family="serif">地球</text>
+  <circle cx="312" cy="798" r="48" fill="#e2b56a" fill-opacity=".28" filter="url(#soft)"/>
+  <circle cx="312" cy="798" r="24" fill="url(#sun)" stroke="#9a633d" stroke-width="3"/>
+  <path d="M312 758V772M312 824V838M272 798H286M338 798H352M284 770L294 780M330 816L340 826M340 770L330 780M294 816L284 826" stroke="#b98045" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="768" cy="798" r="24" fill="#fbf8f0" stroke="#4d7d70" stroke-width="5"/>
+  <path d="M768 757v82M727 798h82" stroke="#4d7d70" stroke-width="3"/>
+  <text x="312" y="710" text-anchor="middle" fill="#7a5433" font-size="27" font-family="serif">☉ 太陽 · 天秤座</text>
+  <text x="768" y="710" text-anchor="middle" fill="#426d61" font-size="27" font-family="serif">☊ 北交點 · 水瓶座</text>
+  <text x="540" y="1170" text-anchor="middle" fill="#5d665d" font-size="22" font-family="Arial,sans-serif">TROPICAL ZODIAC · GEOCENTRIC LONGITUDE</text>
+  <path d="M150 1240H930" stroke="#9c8b69" stroke-opacity=".35" stroke-width="2"/>
+  <text x="150" y="1320" fill="#315e50" font-size="33" font-family="serif">先分清兩件事</text>
+  <text x="150" y="1400" fill="#282d28" font-size="29" font-family="serif">① 北交點是月球軌道與黃道面的交點，</text>
+  <text x="190" y="1450" fill="#4f5b53" font-size="26" font-family="serif">是計算位置，不是行星或發光天體。</text>
+  <text x="150" y="1535" fill="#282d28" font-size="29" font-family="serif">② 三分相是黃經相差約 120°，</text>
+  <text x="190" y="1585" fill="#4f5b53" font-size="26" font-family="serif">不是兩個天體靠近，也不是肉眼可見的排列。</text>
+  <text x="150" y="1670" fill="#282d28" font-size="29" font-family="serif">③「關係走向群體方向」屬占星象徵，</text>
+  <text x="190" y="1720" fill="#4f5b53" font-size="26" font-family="serif">不代表已證實的天文因果或個人預測。</text>
+  <text x="540" y="1880" text-anchor="middle" fill="#6b746b" font-size="20" letter-spacing="2" font-family="Arial,sans-serif">ASTRONOMY FACTS · ASTROLOGY AS SYMBOLIC INTERPRETATION</text>
+</svg>

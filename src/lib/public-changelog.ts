@@ -1,0 +1,425 @@
+export type PublicChangeEntry = {
+  id: string;
+  date: string;
+  zhHant: { title: string; summary: string };
+  zhHans: { title: string; summary: string };
+  en: { title: string; summary: string };
+};
+
+/**
+ * Public, user-facing change history.
+ *
+ * Owner rule (2026-10-06): every production-impacting product change must add
+ * or update an entry here in the same PR. Formal rN releases can still be
+ * batched, but /updates must never stop showing what changed between releases.
+ */
+export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
+  {
+    id: "2026-11-18-share-chart-visual-r2",
+    date: "2026-11-18",
+    zhHant: { title: "命象分享卡與四柱排盤顯示整理", summary: "分享卡改用已計算的日主與命象摘要，移除淡色重複浮水印；四柱天干、地支依既有五行資料著色，十神標籤調整為次要層級。命盤計算不變。" },
+    zhHans: { title: "命象分享卡与四柱排盘显示整理", summary: "分享卡改用已计算的日主与命象摘要，移除淡色重复水印；四柱天干、地支依既有五行资料着色，十神标签调整为次要层级。命盘计算不变。" },
+    en: { title: "Share card and Four Pillars display refinements", summary: "The share card now uses the computed day master and chart summary and removes its faint duplicate watermark. Four Pillars stems and branches use their existing element values for colour, with Ten-God labels visually secondary. Chart calculations are unchanged." },
+  },
+  {
+    id: "2026-11-11-sky-visits-updates",
+    date: "2026-11-11",
+    zhHant: {
+      title: "此時天象頁面精簡、頁尾累計到訪與更新紀錄補齊",
+      summary: "此時天象保留上方太陽系互動示意圖並移除下方重複天象轉盤；頁尾僅保留累計到訪人次徽章（含既有基數 2,444）並隱藏其他公開閱讀計數；更新頁補齊近期首頁、多語言、節氣七十二候、手機閱讀與天象頁等正式改動。",
+    },
+    zhHans: {
+      title: "此时天象页面精简、页尾累计到访与更新记录补齐",
+      summary: "此时天象保留上方太阳系互动示意图并移除下方重复天象转盘；页尾仅保留累计到访人次徽章（含既有基数 2,444）并隐藏其他公开阅读计数；更新页补齐近期首页、多语言、节气七十二候、手机阅读与天象页等正式改动。",
+    },
+    en: {
+      title: "Sky page trim, cumulative-only footer visits, and updated release notes",
+      summary: "The Sky Now keeps the upper interactive solar system illustration while removing the lower duplicate motion dial; the footer keeps only the cumulative visit badge (including the 2,444 historical base) while hiding other public view counts; and the updates page adds the recent homepage, language, seasonal, mobile and sky improvements.",
+    },
+  },
+  {
+    id: "2026-11-09-sky-solar-system",
+    date: "2026-11-09",
+    zhHant: {
+      title: "此時天象加入太陽系互動示意圖",
+      summary: "此時天象頁面頂部新增可拖曳調整視角、暫停與重設的太陽系運行示意圖，並標明行星與矮行星圖例。",
+    },
+    zhHans: {
+      title: "此时天象加入太阳系互动示意图",
+      summary: "此时天象页面顶部新增可拖动调整视角、暂停与重设的太阳系运行示意图，并标明行星与矮行星图例。",
+    },
+    en: {
+      title: "Interactive solar system illustration on the sky page",
+      summary: "Added an interactive solar system illustration at the top of The Sky Now with view dragging, pause and reset controls, and a clear planetary legend.",
+    },
+  },
+  {
+    id: "2026-11-08-mobile-zoom-and-swipe-cues",
+    date: "2026-11-08",
+    zhHant: {
+      title: "手機雙指縮放與橫向滑動提示",
+      summary: "開放手機頁面雙指縮放與橫向拖曳檢視，並為較寬的圖表與區塊加入橫向滑動容器與滑動提示。",
+    },
+    zhHans: {
+      title: "手机双指缩放与横向滑动提示",
+      summary: "开放手机页面双指缩放与横向拖动查看，并为较宽的图表与区块加入横向滑动容器与滑动提示。",
+    },
+    en: {
+      title: "Mobile pinch-zoom and horizontal swipe cues",
+      summary: "Enabled pinch-zoom and horizontal panning on mobile, with dedicated horizontal scroll containers and swipe hints for wider charts and sections.",
+    },
+  },
+  {
+    id: "2026-11-08-owner-face-id-signin",
+    date: "2026-11-08",
+    zhHant: {
+      title: "站主 Face ID 登入連線穩定性修正",
+      summary: "修正站主使用 Face ID 驗證登入時的服務連線設定，提升裝置通行密鑰登入的穩定度；一般訪客與命盤流程不變。",
+    },
+    zhHans: {
+      title: "站主 Face ID 登录连接稳定性修正",
+      summary: "修正站主使用 Face ID 验证登录时的服务连接配置，提升设备通行密钥登录的稳定度；普通访客与命盘流程不变。",
+    },
+    en: {
+      title: "Owner Face ID sign-in reliability fix",
+      summary: "Updated the owner Face ID sign-in service connection so device passkey verification stays reliable. Visitor and chart flows are unchanged.",
+    },
+  },
+  {
+    id: "2026-11-07-sydney-auto-72-hou",
+    date: "2026-11-07",
+    zhHant: {
+      title: "節氣七十二候整合為悉尼自動面板",
+      summary: "主題面板將二十四節氣與七十二候收合為單一悉尼自動節氣入口，依當地時序自動對應當下物候與畫面氛圍。",
+    },
+    zhHans: {
+      title: "节气七十二候整合为悉尼自动面板",
+      summary: "主题面板将二十四节气与七十二候收合为单一悉尼自动节气入口，依当地时序自动对应当下物候与画面氛围。",
+    },
+    en: {
+      title: "72 micro-seasons unified into a Sydney auto panel",
+      summary: "Consolidated the solar terms and 72 micro-seasons into a single Sydney auto-seasonal panel that follows local seasonal timing automatically.",
+    },
+  },
+  {
+    id: "2026-11-07-language-switcher-and-music-volume",
+    date: "2026-11-07",
+    zhHant: {
+      title: "首頁收合式九語切換選單與音樂音量位置整理",
+      summary: "首頁改為收合式語言切換器並支援九種介面語言顯示，同時將音量控制固定收進音樂面板內，減少頂部操作干擾。",
+    },
+    zhHans: {
+      title: "首页收合式九语切换菜单与音乐音量位置整理",
+      summary: "首页改为收合式语言切换器并支持九种界面语言显示，同时将音量控制固定收进音乐面板内，减少顶部操作干扰。",
+    },
+    en: {
+      title: "Collapsible nine-language switcher and music volume tidy-up",
+      summary: "Replaced the expanded language strip with a collapsible nine-language switcher on the homepage and kept volume controls inside the Music panel.",
+    },
+  },
+  {
+    id: "2026-11-07-home-four-collapsed-blocks",
+    date: "2026-11-07",
+    zhHant: {
+      title: "首頁四主塊收合版面與長卷底紋調整",
+      summary: "首頁四大主入口改為預設收合的分層結構，搭配更柔和的長卷底紋與音樂音量細節，讓首屏閱讀更聚焦。",
+    },
+    zhHans: {
+      title: "首页四主块收合版面与长卷底纹调整",
+      summary: "首页四大主入口改为默认收合的分层结构，搭配更柔和的长卷底纹与音乐音量细节，让首屏阅读更聚焦。",
+    },
+    en: {
+      title: "Four-block collapsible homepage layout and scroll ground",
+      summary: "Refined the homepage into four collapsible primary blocks over a calmer scroll ground with balanced music volume controls.",
+    },
+  },
+  {
+    id: "2026-11-03-update-records",
+    date: "2026-11-03",
+    zhHant: { title: "更新紀錄與開發提交數", summary: "更新頁區分正式版本序號與 Git 開發提交，並在部署時計算可查證的提交數。" },
+    zhHans: { title: "更新记录与开发提交数", summary: "更新页区分正式版本序号与 Git 开发提交，并在部署时计算可核验的提交数。" },
+    en: { title: "Release and development history", summary: "The updates page distinguishes numbered releases from Git commits and calculates the verifiable commit count at deployment." },
+  },
+  {
+    id: "2026-11-03-sky-observations-layout",
+    date: "2026-11-03",
+    zhHant: { title: "此時天象閱讀版面與悉尼觀測", summary: "更新天象頁閱讀版面，並提供已標日期的悉尼觀測資料；觀測快照不代表自動持續更新。" },
+    zhHans: { title: "此时天象阅读版面与悉尼观测", summary: "更新天象页阅读版面，并提供已标日期的悉尼观测资料；观测快照不代表自动持续更新。" },
+    en: { title: "Sky page layout and Sydney observations", summary: "Updated the sky page layout and added dated Sydney observation snapshots; the snapshots do not update continuously." },
+  },
+  {
+    id: "2026-11-02-music-and-report-atlas",
+    date: "2026-11-02",
+    zhHant: { title: "音樂清單與免費命盤圖鑑", summary: "改善手機音樂清單和播放，免費報告加入十天干與十二地支圖鑑。" },
+    zhHans: { title: "音乐清单与免费命盘图鉴", summary: "改善手机音乐清单和播放，免费报告加入十天干与十二地支图鉴。" },
+    en: { title: "Music playlist and free chart illustrations", summary: "Improved the mobile music playlist and playback and added the ten stems and twelve branches illustrations to free reports." },
+  },
+  {
+    id: "2026-10-30-mythic-atlas-lighter-images",
+    date: "2026-10-30",
+    zhHant: { title: "黃泉圖錄與怪力亂神圖片載入更快", summary: "黃泉圖錄、十二生肖與怪力亂神頁面改用網頁尺寸的圖片與 720p 影片，載入量減少約九成；點圖仍可開啟原始全尺寸檔案。命盤計算與付款流程不變。" },
+    zhHans: { title: "黄泉图录与怪力乱神图片加载更快", summary: "黄泉图录、十二生肖与怪力乱神页面改用网页尺寸的图片与 720p 影片，加载量减少约九成；点图仍可打开原始全尺寸文件。命盘计算与付款流程不变。" },
+    en: { title: "Faster Mythic Atlas and Guaili images", summary: "The Mythic Atlas, zodiac and Guaili pages now load web-sized images and a 720p film, about 90% less data; tapping an image still opens the full-resolution original. Chart calculation and payments are unchanged." },
+  },
+  {
+    id: "2026-10-23-pwa-language-guide-empty-state",
+    date: "2026-10-23",
+    zhHant: { title: "安裝版語言對應、導覽頁收編、空內容區塊不再顯示", summary: "安裝為 App 後，名稱與語言標記會跟隨繁中／簡中／英文；舊的 /guide 網址改導向首頁導覽；吉象圖鑑與影片區在沒有內容時直接隱藏，不再出現空區塊。命盤計算與付款流程不變。" },
+    zhHans: { title: "安装版语言对应、导览页收编、空内容区块不再显示", summary: "安装为 App 后，名称与语言标记会跟随繁中／简中／英文；旧的 /guide 网址改导向首页导览；吉象图鉴与影片区在没有内容时直接隐藏，不再出现空区块。命盘计算与付款流程不变。" },
+    en: { title: "Installed-app language, guide URL tidy-up, no empty sections", summary: "The installed app now takes its name and language from your display language (Traditional Chinese, Simplified Chinese or English). The old /guide address redirects to the home-page guide, and atlas image and film sections hide themselves when they have nothing to show. Chart calculation and payments are unchanged." },
+  },
+  {
+    id: "2026-10-21-owner-auth-runtime-config",
+    date: "2026-10-21",
+    zhHant: { title: "管理登入安全加固", summary: "管理登入憑證改由伺服器設定提供，統一加密登入狀態與失效檢查；一般訪客、命盤與付款流程不變。" },
+    zhHans: { title: "管理登录安全加固", summary: "管理登录凭证改由服务器配置提供，统一加密登录状态与失效检查；普通访客、命盘与付款流程不变。" },
+    en: { title: "Admin sign-in security hardening", summary: "Admin credentials move to server configuration with consistent encrypted-session validation. Visitor, chart and payment flows are unchanged." },
+  },
+  {
+    id: "2026-10-20-guide-member-login-wording",
+    date: "2026-10-20",
+    zhHant: { title: "導覽登入指向會員頁，更新記錄與說明用詞調整", summary: "向網站導覽詢問登入或註冊時，現在會指向會員登入頁；更新記錄、紫微環境文章、八字筆記與付費報告說明中的後台用語改為更中性的描述。功能、命盤計算與付款流程不變。" },
+    zhHans: { title: "导览登录指向会员页，更新记录与说明用词调整", summary: "向网站导览询问登录或注册时，现在会指向会员登录页；更新记录、紫微环境文章、八字笔记与付费报告说明中的后台用语改为更中性的描述。功能、命盘计算与付款流程不变。" },
+    en: { title: "Guide sign-in now points to Member sign-in; calmer wording in notes", summary: "Asking the site guide about signing in or registering now points to Member sign-in. Back-office wording in the update notes, the Zi Wei environment article, BaZi notes and the paid-report note is neutralised. Features, chart calculation and payments are unchanged." },
+  },
+  {
+    id: "2026-10-21-member-form-feedback",
+    date: "2026-10-21",
+    zhHant: { title: "會員表單補齊錯誤與連線提示", summary: "登入、註冊與找回密碼改用頁內欄位提示；處理中狀態清楚顯示，連線逾時會停止等待並提供重試訊息。" },
+    zhHans: { title: "会员表单补齐错误与连接提示", summary: "登录、注册与找回密码改用页内字段提示；处理中状态清楚显示，连接超时会停止等待并提供重试信息。" },
+    en: { title: "Clearer member-form and connection feedback", summary: "Sign-in, sign-up and password recovery show persistent field feedback, a visible working state and a retry message when a connection times out." },
+  },
+  {
+    id: "2026-10-12-song-shell-wardrobe-swatches",
+    date: "2026-10-12",
+    zhHant: { title: "首頁穿衣加入對應色卡，共用介面收斂為宋式暖紙", summary: "每日穿衣的命盤主色、今日天時色與少量使用色改為可辨識的對應色卡，首飾與材質另列，不再只顯示一串淡色文字。首頁入口、音樂／導覽工具、登入與系統頁同步收斂為低圓角暖紙、細線與克制陰影，移除殘留玻璃膠囊感；五行取值與命盤計算不變。" },
+    zhHans: { title: "首页穿衣加入对应色卡，共用界面收敛为宋式暖纸", summary: "每日穿衣的命盘主色、今日天时色与少量使用色改为可辨识的对应色卡，首饰与材质另列，不再只显示一串淡色文字。首页入口、音乐／导览工具、登录与系统页同步收敛为低圆角暖纸、细线与克制阴影，移除残留玻璃胶囊感；五行取值与命盘计算不变。" },
+    en: { title: "True wardrobe swatches and a calmer Song-paper shared interface", summary: "Daily Dress now shows distinct, labelled swatches for your working palette, today's sky colours and colours to use lightly, with jewellery and materials kept separate. Home entrances, Music/Guide tools, login and system pages also move to low-radius warm paper, fine rules and restrained shadows instead of glassy pills; five-element selection and chart calculations are unchanged." },
+  },
+  {
+    id: "2026-10-11-skin-sets-quiz-hub-d60",
+    date: "2026-10-11",
+    zhHant: { title: "主題皮膚改為整套樣式、趣味測驗入口統一、D60 業力分盤補回", summary: "十款主題皮膚不再只換頂圖：各自有背景紋理、卡片框線、按鈕、標題線與導覽膠囊，並修正首頁標語與頁尾偏淡的字。趣味測驗頁現在列出全部測驗，與首頁一致（新增「五行優勢內耗測驗」到首頁）。印度占星確認出生分鐘後，即使前後 ±2 分鐘會改變 D60 上升細分，也會生成 D60 業力分盤並標示為弱旁證，不再整段空白；只有計算失敗才不作判定。" },
+    zhHans: { title: "主题皮肤改为整套样式、趣味测验入口统一、D60 业力分盘补回", summary: "十款主题皮肤不再只换顶图：各自有背景纹理、卡片框线、按钮、标题线与导览胶囊，并修正首页标语与页尾偏淡的字。趣味测验页现在列出全部测验，与首页一致（新增「五行优势内耗测验」到首页）。印度占星确认出生分钟后，即使前后 ±2 分钟会改变 D60 上升细分，也会生成 D60 业力分盘并标示为弱旁证，不再整段空白；只有计算失败才不作判断。" },
+    en: { title: "Full theme skin sets, one quiz hub, D60 karma chart restored", summary: "The ten theme skins now change more than the banner: each has its own background texture, card frame, buttons, title rule and nav pills, and faint tagline/footer text is fixed. The fun-tests page lists every quiz, matching the home page (the Five-Element Overuse Test is now on the home list). In Indian astrology, once you confirm the birth minute the D60 karma chart is generated even if a ±2-minute shift changes the rising subdivision, labelled as weak supporting context; only a failed calculation is withheld." },
+  },
+  {
+    id: "2026-10-10-dark-skin-readability",
+    date: "2026-10-10",
+    zhHant: { title: "深色主題皮膚文字可讀性修正、城市選單與浮動鈕不再遮擋", summary: "套用夜藍類主題皮膚時，出生資料表單標籤、報告導覽、我的報告與更新頁的標題不再變成淺色字壓在米色卡片上；出生城市選單不再被下一段標題蓋住；音樂／導覽浮動鈕縮小，頁尾也留出空間。" },
+    zhHans: { title: "深色主题皮肤文字可读性修正、城市菜单与浮动钮不再遮挡", summary: "套用夜蓝类主题皮肤时，出生资料表单标签、报告导览、我的报告与更新页的标题不再变成浅色字压在米色卡片上；出生城市菜单不再被下一段标题盖住；音乐／导览浮动钮缩小，页尾也留出空间。" },
+    en: { title: "Dark-skin readability fixes; city list and floating dock no longer cover content", summary: "With the night-blue theme skins, form labels, report wayfinding, My Reports and updates headings no longer render pale text on cream cards; the birth-city list is no longer covered by the next heading; the Music/Guide dock is smaller and the page end keeps clear of it." },
+  },
+  {
+    id: "2026-10-10-hans-and-checkout-label-fix",
+    date: "2026-10-10",
+    zhHant: { title: "簡體報告用字修正、付費卡標示改為紫微", summary: "選擇簡體時，報告段落標題與旅行建議不再混入繁體字；結果頁付費區塊補上簡體文案。單盤付費卡改標為「紫微斗數完整深批」，與實際購買內容一致。" },
+    zhHans: { title: "简体报告用字修正、付费卡标示改为紫微", summary: "选择简体时，报告段落标题与旅行建议不再混入繁体字；结果页付费区块补上简体文案。单盘付费卡改标为「紫微斗数完整深批」，与实际购买内容一致。" },
+    en: { title: "Simplified Chinese report fixes; single-system card now labelled Zi Wei", summary: "Simplified Chinese readers no longer see Traditional characters in report headings and travel advice, and the result-page paywall has Simplified copy. The single-system card is now labelled Zi Wei Full Reading to match what it unlocks." },
+  },
+  {
+    id: "2026-10-09-owner-console-integration",
+    date: "2026-10-09",
+    zhHant: { title: "後台集中管理", summary: "報告、背景圖片、開場影片與 Instagram／Threads 改為同頁切換；音樂管理保留在後台入口。切換分區保留報告選取與社群草稿，沿用原有管理權限與資料接口。" },
+    zhHans: { title: "后台集中管理", summary: "报告、背景图片、开场视频与 Instagram／Threads 改为同页切换；音乐管理保留在后台入口。切换分区保留报告选择与社交草稿，沿用原有管理权限与数据接口。" },
+    en: { title: "One admin console", summary: "Reports, backgrounds, opening videos and Instagram/Threads now share one console. Music management remains available at the console entry. Switching sections retains report selection and social drafts while keeping the existing admin permissions and data APIs." },
+  },
+  {
+    id: "2026-10-07-offline-china-place-gazetteer",
+    date: "2026-10-07",
+    zhHant: { title: "出生地補全中國地級市與縣級市，找不到時推薦最近地點", summary: "出生地搜尋內建全中國三百多個地級市、臺灣縣市、香港與澳門，以及三百個常見縣級市；簡體、繁體、拼音都能秒出並自帶時區。輸入有誤或查不到時，會列出最接近的地名供你直接選擇。" },
+    zhHans: { title: "出生地补全中国地级市与县级市，找不到时推荐最近地点", summary: "出生地搜索内置全中国三百多个地级市、台湾县市、香港与澳门，以及三百个常见县级市；简体、繁体、拼音都能秒出并自带时区。输入有误或查不到时，会列出最接近的地名供你直接选择。" },
+    en: { title: "Birthplace search now covers every Chinese prefecture-level city", summary: "Birthplace search now ships an offline gazetteer of 330+ prefecture-level cities, Taiwan counties, Hong Kong, Macau and 300 county-level cities. Simplified, Traditional and pinyin all resolve instantly with a confirmed time zone, and near-miss spellings suggest the closest known places." },
+  },
+  {
+    id: "2026-10-08-launch-polish",
+    date: "2026-10-08",
+    zhHant: { title: "今日黃曆改為墨青版、命盤先講白話、出生地更好找", summary: "今日黃曆重做為墨青底版：日期、天氣、今日干支、聖日、五行氣機、宜忌圖示、合沖刑害、吉時慎時、顏色首飾與性格面具一頁看完；錄入生辰後會依你的命盤顯示今日對你的關係。輸入生辰後先用白話列出你的命盤重點，四柱與術語收合在下方。出生地輸入不再跳字，並補上小城鎮與鄉區搜尋。報告字體放大加粗、段落更舒展；首頁入口換上新的四幅山水插畫。" },
+    zhHans: { title: "今日黄历改为墨青版、命盘先讲白话、出生地更好找", summary: "今日黄历重做为墨青底版：日期、天气、今日干支、圣日、五行气机、宜忌图示、合冲刑害、吉时慎时、颜色首饰与性格面具一页看完；录入生辰后会依你的命盘显示今日对你的关系。输入生辰后先用白话列出你的命盘重点，四柱与术语收合在下方。出生地输入不再跳字，并补上小城镇与乡区搜索。报告字体放大加粗、段落更舒展；首页入口换上新的四幅山水插画。" },
+    en: { title: "Ink-teal almanac, plain-language chart first, easier birthplace search", summary: "Today's Almanac is rebuilt as an ink-teal sheet with date, weather, pillars, observance, five-element dynamic, do/avoid icons, combinations and clashes, supportive and careful hours, colours, jewellery and persona—personalised to your saved chart. After entering a birth record you now see plain-language highlights first, with the Four Pillars and terms folded below. Birthplace typing no longer jumps and finds small towns. Report text is larger and airier, and the home entries use four new landscape illustrations." },
+  },
+  {
+    id: "2026-10-07-owner-media-home-background-simplify",
+    date: "2026-10-07",
+    zhHant: { title: "後台圖片操作收斂，首頁背景可直接從圖庫套用", summary: "移除圖片與開場影片裡難懂的批次顯示／隱藏／啟用控制；圖片卡改為直接預覽、設為首頁背景與必要的刪除，管理端首頁不再顯示獨立空白的首頁背景入口。今日指引的首頁小卡同步恢復暖宣紙與山水感，深青玉只保留在局部欄頭。" },
+    zhHans: { title: "后台图片操作收敛，首页背景可直接从图库套用", summary: "移除图片与开场视频里难懂的批量显示／隐藏／启用控制；图片卡改为直接预览、设为首页背景与必要的删除，管理端首页不再显示独立空白的首页背景入口。今日指引的首页小卡同步恢复暖宣纸与山水感，深青玉只保留在局部栏头。" },
+    en: { title: "Admin media controls simplified; gallery images can set the homepage background directly", summary: "Confusing bulk show/hide/enable controls were removed from image and opening-video managers. Image cards now focus on preview, set-as-home-background and necessary deletion, while the empty standalone Home Backgrounds entry is no longer shown. The Today Guide summary also returns to a warm paper-and-landscape surface with deep jade reserved for section headers." },
+  },
+  {
+    id: "2026-10-07-today-native-dashboard",
+    date: "2026-10-07",
+    zhHant: { title: "今日指引改為原生宋式儀表頁", summary: "修正完整今日指引展開後遮住其他三個主入口的狀態問題：切換命書、測驗或觀世錄會先收回今日。黃曆、五行穿衣與靈籤以 1/3、2/3、3/3 的原生 React/CSS 模組重整為暖宣紙、深青玉與淡金框架，不使用整張參考圖假裝介面。" },
+    zhHans: { title: "今日指引改为原生宋式仪表页", summary: "修正完整今日指引展开后遮住其他三个主入口的状态问题：切换命书、测验或观世录会先收回今日。黄历、五行穿衣与灵签以 1/3、2/3、3/3 的原生 React/CSS 模块重整为暖宣纸、深青玉与淡金框架，不使用整张参考图假装界面。" },
+    en: { title: "Today Guide rebuilt as a native Song-style dashboard", summary: "Opening the full Today Guide no longer leaves the other primary entrances visually stranded: Destiny, Explore and Notes collapse Today first. Almanac, five-element dress and the spirit slip are now presented as native 1/3, 2/3 and 3/3 React/CSS modules in warm paper, deep jade and restrained gold rather than as a screenshot surface." },
+  },
+  {
+    id: "2026-10-07-auto-location-home-visuals",
+    date: "2026-10-07",
+    zhHant: { title: "定位與首頁視覺再收斂", summary: "已授權的定位會自動沿用並定期刷新；未取得精準定位時以 Vercel IP 的城市級位置兜底。首頁背景專區會在打開時主動載入現有背景，後台資料橋接偶發讀取失敗時以公開背景庫兜底，不再出現空白分區；單張上傳即直接套用，選中的背景會真正顯示在首頁，底部白色輪播條已徹底移除。" },
+    zhHans: { title: "定位与首页视觉再收敛", summary: "已授权的定位会自动沿用并定期刷新；未取得精准定位时以 Vercel IP 的城市级位置兜底。首页背景专区会在打开时主动载入现有背景，后台数据桥接偶发读取失败时以公开背景库兜底，不再出现空白分区；单张上传即直接套用，选中的背景会真正显示在首页，底部白色轮播条已彻底移除。" },
+    en: { title: "Automatic location and cleaner homepage visuals", summary: "Granted location is reused and refreshed automatically, with Vercel IP city-level geolocation as a coarse fallback. Homepage Backgrounds now reloads its library whenever opened and falls back to the public background library if the admin read bridge fails, so the section no longer appears empty. A single upload applies immediately, the selected wallpaper is visible on the homepage, and the white carousel rail is fully removed." },
+  },
+  {
+    id: "2026-10-06-owner-live-controls",
+    date: "2026-10-06",
+    zhHant: { title: "定位、五行版面與首頁背景控制修正", summary: "今日定位加入明確重試與權限提示；五行五格收緊為同列緊湊控制；後台選定的首頁背景現在真正驅動正式站背景。Instagram／Threads 發布器同步顯示目前缺少 Meta 連接，不再假裝可發布。" },
+    zhHans: { title: "定位、五行版面与首页背景控制修正", summary: "今日定位加入明确重试与权限提示；五行五格收紧为同列紧凑控制；后台选定的首页背景现在真正驱动正式站背景。Instagram／Threads 发布器同步显示目前缺少 Meta 连接，不再假装可发布。" },
+    en: { title: "Location, five-element layout and live wallpaper controls fixed", summary: "Today location now exposes retry and permission feedback; the five choices use a compact single-row control; admin-selected home backgrounds now drive the live shell. The Instagram/Threads publisher also shows the missing Meta connection instead of presenting a false ready state." },
+  },
+  {
+    id: "2026-10-06-answer-routing-credit-talent",
+    date: "2026-10-06",
+    zhHant: { title: "工作、天賦與信用問題的回答路由修正", summary: "修正「適合做什麼運動」被誤當職業問題、天賦讀不到實際命盤資料，以及第一屏直接露出過多命理術語的問題；現實信用分仍明確以徵信資料為準。" },
+    zhHans: { title: "工作、天赋与信用问题的回答路由修正", summary: "修正「适合做什么运动」被误当职业问题、天赋读不到实际命盘数据，以及第一屏直接露出过多命理术语的问题；现实信用分仍明确以征信资料为准。" },
+    en: { title: "Job, talent and credit-question routing corrected", summary: "Fixed sports questions being mistaken for career questions, talent answers missing real chart data, and excess astrology jargon on the first screen. Real credit scores remain explicitly tied to actual credit records, not the chart." },
+  },
+  {
+    id: "2026-10-06-today-first-home-rhythm",
+    date: "2026-10-06",
+    zhHant: { title: "今日指引移到首頁主流程最前", summary: "今日摘要與青玉「今日」入口會在原位進入同一套既有正式版完整指引，不再觸發多餘頁面捲動；載入時保留版面高度避免跳動，減少動態模式與手動選圖會停止自動輪播。命書仍保持單一路徑，深度解讀只在已有命盤結果後出現。" },
+    zhHans: { title: "今日指引移到首页主流程最前", summary: "今日摘要与青玉「今日」入口会在原位进入同一套既有正式版完整指引，不再触发多余页面滚动；载入时保留版面高度避免跳动，减少动态模式与手动选图会停止自动轮播。命书仍保持单一路径，深度解读只在已有命盘结果后出现。" },
+    en: { title: "Today Guide now leads the homepage flow", summary: "The Today summary and jade Today shortcut now open the same approved full guide in place, without redundant page scrolling, with reserved loading space to prevent layout jumps. Reduced-motion mode and manual painting selection stop auto-cycling; the Destiny Book stays a single path and deep-reading promotion appears only after a result exists." },
+  },
+  {
+    id: "2026-10-06-public-change-log",
+    date: "2026-10-06",
+    zhHant: { title: "更新紀錄改為每次改動必寫", summary: "網站功能、視覺、後台或正式 runtime 有實際變化時，同一個 PR 必須加入公開更新紀錄；CI 會阻止漏寫的產品變更。" },
+    zhHans: { title: "更新记录改为每次改动必写", summary: "网站功能、视觉、后台或正式 runtime 有实际变化时，同一个 PR 必须加入公开更新记录；CI 会阻止漏写的产品变更。" },
+    en: { title: "Every product change now needs a public note", summary: "Any real change to the site, visuals, admin console or production runtime must add a public change note in the same PR; CI blocks product changes that omit it." },
+  },
+  {
+    id: "2026-10-06-opening-library",
+    date: "2026-10-06",
+    zhHant: { title: "開場動畫整理並選定雙生並蒂蓮", summary: "後台開場影片改用可讀名稱；目前開場切換為較輕的 MP4「雙生並蒂蓮」，並保留其他版本作備用。" },
+    zhHans: { title: "开场动画整理并选定双生并蒂莲", summary: "后台开场影片改用可读名称；目前开场切换为较轻的 MP4「双生并蒂莲」，并保留其他版本作备用。" },
+    en: { title: "Opening-video library cleaned up", summary: "Opening videos now use readable names. The lighter MP4 Twin Lotus clip is the current opening, while the other versions remain available as fallbacks." },
+  },
+  {
+    id: "2026-10-06-song-visual-qc",
+    date: "2026-10-06",
+    zhHant: { title: "正式宋式圖像加入硬性品質門檻", summary: "正式母圖加入解析度與重影檢查；不合格素材不再回到報告或後台圖庫，圖片放大也不超過原始解析度。" },
+    zhHans: { title: "正式宋式图像加入硬性质量门槛", summary: "正式母图加入分辨率与重影检查；不合格素材不再回到报告或后台图库，图片放大也不超过原始分辨率。" },
+    en: { title: "Formal Song artwork now has a hard QC gate", summary: "Formal source art is checked for resolution and ghosting; blocked art cannot return to reports or the admin gallery, and zoom is capped at native resolution." },
+  },
+  {
+    id: "2026-10-06-gallery-groups",
+    date: "2026-10-06",
+    zhHant: { title: "核心宋式圖庫分組並防誤刪", summary: "正式宋式母圖、天干、地支／月令、五行運圖等核心素材與私人上傳、舊素材分開；核心資產禁止批次或單筆誤刪。" },
+    zhHans: { title: "核心宋式图库分组并防误删", summary: "正式宋式母图、天干、地支／月令、五行运图等核心素材与私人上传、旧素材分开；核心资产禁止批量或单笔误删。" },
+    en: { title: "Core Song artwork is separated and protected", summary: "Formal source art, stems, branches/month commands and five-element artwork are separated from private uploads and legacy assets, with destructive deletion blocked for core assets." },
+  },
+  {
+    id: "2026-10-05-owner-bulk",
+    date: "2026-10-05",
+    zhHant: { title: "後台改為精簡、多選優先", summary: "音樂、圖庫、開場影片、首頁背景與客戶報告加入全選、清除與批次操作；縮小過大的控制區並移除含糊選項。" },
+    zhHans: { title: "后台改为精简、多选优先", summary: "音乐、图库、开场影片、首页背景与客户报告加入全选、清除与批量操作；缩小过大的控制区并移除含糊选项。" },
+    en: { title: "Admin console is denser and bulk-first", summary: "Music, gallery, opening-video, home-background and customer-report managers gained select-all, clear and bulk actions, while oversized and ambiguous controls were removed." },
+  },
+  {
+    id: "2026-10-05-mobile-home-five-elements",
+    date: "2026-10-05",
+    zhHant: { title: "手機首頁與每日五行重新收口", summary: "首頁頂部資訊合併成單排，主視覺上移，管理入口移到頁尾；每日五行五格改為同屏完整顯示，不再橫向滑動。" },
+    zhHans: { title: "手机首页与每日五行重新收口", summary: "首页顶部信息合并成单排，主视觉上移，管理入口移到页尾；每日五行五格改为同屏完整显示，不再横向滑动。" },
+    en: { title: "Mobile home and five-element layout tightened", summary: "Home utilities now share one compact row, the hero sits higher, admin access moved to the footer, and all five daily-element choices fit the phone viewport without horizontal swiping." },
+  },
+  {
+    id: "2026-10-05-social-publisher",
+    date: "2026-10-05",
+    zhHant: { title: "Instagram／Threads 發布器完成整合", summary: "發布器可從圖庫選素材、手機上傳、預覽與填 alt text，並支援 Instagram 與 Threads 並行提交；後台收斂為單一入口。" },
+    zhHans: { title: "Instagram／Threads 发布器完成整合", summary: "发布器可从图库选素材、手机上传、预览与填写 alt text，并支持 Instagram 与 Threads 并行提交；后台收敛为单一入口。" },
+    en: { title: "Instagram and Threads publisher integrated", summary: "The publisher can use gallery assets, mobile uploads, previews and alt text, then submit to Instagram and Threads in parallel from a single console flow." },
+  },
+  {
+    id: "2026-10-05-report-mobile",
+    date: "2026-10-05",
+    zhHant: { title: "報告手機版清理與單一署名", summary: "專項表格改為手機卡片式閱讀，清除重複插畫文字與重複署名，縮小青玉小龍對內容的遮擋。" },
+    zhHans: { title: "报告手机版清理与单一署名", summary: "专项表格改为手机卡片式阅读，清除重复插画文字与重复署名，缩小青玉小龙对内容的遮挡。" },
+    en: { title: "Report mobile layout cleaned up", summary: "Specialist tables now adapt to phone cards, duplicate illustration copy and signatures were removed, and the jade-dragon assistant overlaps less content." },
+  },
+  {
+    id: "2026-10-05-jade-navigation",
+    date: "2026-10-05",
+    zhHant: { title: "首頁主導航換成青玉牌圖示", summary: "命書、今日、測驗、觀世錄四個主要入口統一為青玉牌視覺，並針對手機尺寸調整。" },
+    zhHans: { title: "首页主导航换成青玉牌图标", summary: "命书、今日、测验、观世录四个主要入口统一为青玉牌视觉，并针对手机尺寸调整。" },
+    en: { title: "Home navigation moved to jade plaques", summary: "The four primary entrances—Destiny Book, Today, Quiz and Notes—now use a consistent jade-plaque visual sized for mobile." },
+  },
+  {
+    id: "2026-10-05-pwa-self-heal",
+    date: "2026-10-05",
+    zhHant: { title: "PWA 更新流程改為先更新再自癒", summary: "已安裝的 Web App 遇到版本落後時先更新 Service Worker 並等待接管，必要時才做範圍化修復，降低刪除後重裝的需求。" },
+    zhHans: { title: "PWA 更新流程改为先更新再自愈", summary: "已安装的 Web App 遇到版本落后时先更新 Service Worker 并等待接管，必要时才做范围化修复，降低删除后重装的需求。" },
+    en: { title: "Installed PWA now updates before self-healing", summary: "When an installed web app is stale, it updates its service worker and waits for takeover first, only using scoped recovery when necessary." },
+  },
+  {
+    id: "2026-10-05-performance-a11y-seo",
+    date: "2026-10-05",
+    zhHant: { title: "效能、無障礙與 SEO 收尾", summary: "首頁延後載入次要模組，補上鍵盤跳轉、在地化 metadata 與保守的結構化資料，降低首屏負擔。" },
+    zhHans: { title: "性能、无障碍与 SEO 收尾", summary: "首页延后加载次要模块，补上键盘跳转、本地化 metadata 与保守的结构化数据，降低首屏负担。" },
+    en: { title: "Performance, accessibility and SEO closeout", summary: "Secondary home modules load later, while keyboard skip navigation, localized metadata and conservative structured data reduce first-screen overhead." },
+  },
+  {
+    id: "2026-10-04-home-hero",
+    date: "2026-10-04",
+    zhHant: { title: "首頁改為畫作主視覺與二層導航", summary: "首頁主視覺改為宋式礦彩畫作方向，主要操作與次要入口重新分層，維持手機優先。" },
+    zhHans: { title: "首页改为画作主视觉与二层导航", summary: "首页主视觉改为宋式矿彩画作方向，主要操作与次要入口重新分层，维持手机优先。" },
+    en: { title: "Home rebuilt around artwork and two-level navigation", summary: "The homepage hero moved to the Song mineral-painting direction, with primary and secondary actions separated in a mobile-first hierarchy." },
+  },
+  {
+    id: "2026-10-04-paid-reports",
+    date: "2026-10-04",
+    zhHant: { title: "公開基本盤與三檔按次付費報告", summary: "六類基本盤公開；深讀報告改為三檔一次性付費，加入客戶出生資料專屬頁與命盤五音贈曲，付款權限仍由伺服器驗證。" },
+    zhHans: { title: "公开基本盘与三档按次付费报告", summary: "六类基本盘公开；深读报告改为三档一次性付费，加入客户出生资料专属页与命盘五音赠曲，付款权限仍由服务器验证。" },
+    en: { title: "Public base charts and three one-off report tiers", summary: "Six base charts are public; deeper readings use three one-off paid tiers with personal birth-data pages and chart-linked five-tone bonus tracks, with entitlements verified server-side." },
+  },
+  {
+    id: "2026-10-04-illustrated-destiny",
+    date: "2026-10-04",
+    zhHant: { title: "命盤加入一盤一景插畫系統", summary: "完整報告可依命盤與問題生成統一敘事場景，圖像只作報告附件，不改命理計算，也不因圖像失敗阻塞文字報告。" },
+    zhHans: { title: "命盘加入一盘一景插画系统", summary: "完整报告可依命盘与问题生成统一叙事场景，图像只作报告附件，不改命理计算，也不因图像失败阻塞文字报告。" },
+    en: { title: "Illustrated destiny scene added to full reports", summary: "Full reports can derive one coherent visual scene from the chart and question. Artwork remains an attachment: it does not alter calculation truth or block the text report if generation fails." },
+  },
+  {
+    id: "2026-10-03-day-song-theme",
+    date: "2026-10-03",
+    zhHant: { title: "全站固定日間宋式礦彩方向", summary: "夜間模式關閉；共用色彩、首頁、報告概覽與品牌控制統一為暖紙、青玉、柔和礦彩與克制留白。" },
+    zhHans: { title: "全站固定日间宋式矿彩方向", summary: "夜间模式关闭；共用色彩、首页、报告概览与品牌控制统一为暖纸、青玉、柔和矿彩与克制留白。" },
+    en: { title: "Site fixed to the daytime Song mineral palette", summary: "Night mode was retired. Shared colours, home, report overview and brand controls now use warm paper, jade, soft mineral washes and restrained spacing." },
+  },
+  {
+    id: "2026-10-03-answer-layer",
+    date: "2026-10-03",
+    zhHant: { title: "第一屏回答更白話並加強安全邊界", summary: "問題回答擴充更多生活情境，限制第一屏為簡短結論、原因與時間；醫療、離婚／暴力等問題不再由命盤替使用者作決定。" },
+    zhHans: { title: "第一屏回答更白话并加强安全边界", summary: "问题回答扩充更多生活情境，限制第一屏为简短结论、原因与时间；医疗、离婚／暴力等问题不再由命盘替用户作决定。" },
+    en: { title: "First-screen answers are plainer and safer", summary: "More real-life question types are covered, while the first screen stays to a short verdict, reason and timing. Medical and high-stakes relationship decisions are no longer nudged by the chart." },
+  },
+  {
+    id: "2026-10-03-today-intro",
+    date: "2026-10-03",
+    zhHant: { title: "今日指引重排，開場影片不再先閃舊片", summary: "黃曆、五行穿衣、靈籤改為三段獨立閱讀；自訂影片載入時先保持中性畫面，不再短暫播放舊的內建開場。" },
+    zhHans: { title: "今日指引重排，开场影片不再先闪旧片", summary: "黄历、五行穿衣、灵签改为三段独立阅读；自定义影片加载时先保持中性画面，不再短暂播放旧的内建开场。" },
+    en: { title: "Today guide reorganised; old intro flash removed", summary: "Almanac, five-element dressing and spirit slips now read as three separate sections, while custom opening videos resolve over a neutral field instead of briefly flashing the old built-in clip." },
+  },
+  {
+    id: "2026-10-02-three-languages",
+    date: "2026-10-02",
+    zhHant: { title: "繁體／简体／English 三語顯示恢復", summary: "簡體中文重新成為正式顯示語言，並修正多個頁面把繁體字串錯送到簡體模式的問題。" },
+    zhHans: { title: "繁体／简体／English 三语显示恢复", summary: "简体中文重新成为正式显示语言，并修正多个页面把繁体字符串错送到简体模式的问题。" },
+    en: { title: "Traditional / Simplified / English display restored", summary: "Simplified Chinese returned as a first-class display language, with multiple Traditional-text leaks in Simplified mode corrected." },
+  },
+  {
+    id: "2026-10-02-owner-report-structure",
+    date: "2026-10-02",
+    zhHant: { title: "後台分區，完整報告恢復連續閱讀", summary: "後台管理區重新分開，減少功能混在同一頁；完整報告恢復單一連續 summary／body，不再被舊分組切碎。" },
+    zhHans: { title: "后台分区，完整报告恢复连续阅读", summary: "后台管理区重新分开，减少功能混在同一页；完整报告恢复单一连续 summary／body，不再被旧分组切碎。" },
+    en: { title: "Admin console separated; full report flow restored", summary: "Back-office sections were separated to reduce clutter, while the full report returned to one continuous summary/body instead of being fragmented by older grouping." },
+  },
+] as const;
+
+export function publicChangeText(entry: PublicChangeEntry, language: string) {
+  if (language === "en") return entry.en;
+  if (language === "zh-Hans") return entry.zhHans;
+  return entry.zhHant;
+}
+
+/** Newest recorded change; stable source order breaks same-day ties. */
+export const SORTED_PUBLIC_CHANGELOG = [...PUBLIC_CHANGELOG].sort((a, b) => b.date.localeCompare(a.date));

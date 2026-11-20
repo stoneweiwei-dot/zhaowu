@@ -1,0 +1,1 @@
+drop index if exists public.report_purchase_entitlements_access_key_idx;

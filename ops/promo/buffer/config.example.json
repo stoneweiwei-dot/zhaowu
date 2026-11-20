@@ -1,0 +1,9 @@
+{
+  "timezone": "Australia/Sydney",
+  "publish_time": "08:45",
+  "targets": {
+    "facebook": {"enabled": false, "channel_id": "", "expected_name": "昭梧 Zhaowu", "expected_service_id": "61595856501708"},
+    "instagram": {"enabled": false, "channel_id": "", "expected_name": "stone1004"},
+    "threads": {"enabled": false, "channel_id": "", "expected_name": "stone1004"}
+  }
+}

@@ -1,0 +1,12 @@
+zh-Hant/day/320: no overflow; nine source chapters + evidence visible
+zh-Hant/day/390: no overflow; nine source chapters + evidence visible
+zh-Hant/night/320: no overflow; nine source chapters + evidence visible
+zh-Hant/night/390: no overflow; nine source chapters + evidence visible
+zh-Hans/day/320: no overflow; nine source chapters + evidence visible
+zh-Hans/day/390: no overflow; nine source chapters + evidence visible
+zh-Hans/night/320: no overflow; nine source chapters + evidence visible
+zh-Hans/night/390: no overflow; nine source chapters + evidence visible
+en/day/320: no overflow; nine source chapters + evidence visible
+en/day/390: no overflow; nine source chapters + evidence visible
+en/night/320: no overflow; nine source chapters + evidence visible
+en/night/390: no overflow; nine source chapters + evidence visible

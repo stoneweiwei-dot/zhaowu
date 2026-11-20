@@ -1,0 +1,317 @@
+import assert from "node:assert/strict";
+import { readdir, readFile } from "node:fs/promises";
+import test from "node:test";
+import { publishSocialPost, socialConfiguration, validateSocialPost } from "../lib/meta-social-publisher.js";
+import {
+  createThreadsAuthorization,
+  threadsOauthConfiguration,
+  decryptThreadsAccessToken,
+  encryptThreadsAccessToken,
+  threadsAuthorizationOwnerProof,
+  verifyThreadsAuthorization,
+} from "../lib/threads-oauth.js";
+import {
+  createMetaAuthorization,
+  exchangeMetaAuthorizationCode,
+  metaAuthorizationOwnerProof,
+  verifyMetaAuthorization,
+} from "../lib/meta-oauth.js";
+
+const root = new URL("../", import.meta.url);
+const source = (path) => readFile(new URL(path, root), "utf8");
+const configuredEnv = {
+  META_INSTAGRAM_USER_ID: "ig-user",
+  META_INSTAGRAM_ACCESS_TOKEN: "ig-secret-token",
+  META_THREADS_USER_ID: "threads-user",
+  META_THREADS_ACCESS_TOKEN: "threads-secret-token",
+  META_GRAPH_API_VERSION: "v26.0",
+};
+
+test("social credentials stay server-side and configuration exposes booleans only", async () => {
+  assert.deepEqual(socialConfiguration(configuredEnv), {
+    instagram: true,
+    facebook: false,
+    threads: true,
+    ready: true,
+    targets: { instagram: "", threads: "" },
+  });
+  const client = await source("src/lib/owner-social-client.ts");
+  const route = await source("src/routes/social.tsx");
+  assert.doesNotMatch(client, /META_.*ACCESS_TOKEN|graph\.facebook\.com|graph\.threads/);
+  assert.doesNotMatch(route, /graph\.facebook\.com|graph\.threads/);
+  assert.doesNotMatch(route, /ig-secret-token|threads-secret-token/);
+  assert.match(client, /credentials: "include"/);
+  assert.match(client, /fetch\("\/api\/owner-session"/);
+  assert.match(client, /social\.status/);
+  assert.match(client, /social\.publish/);
+});
+
+test("Meta OAuth state is bound to the owner and discovers managed Pages with linked Instagram", async () => {
+  const env = {
+    META_APP_ID: "1234567890",
+    META_APP_SECRET: "app-secret-for-unit-test-123456",
+    ZHAOWU_OWNER_BRIDGE_SECRET: "bridge-secret-for-unit-test-123456",
+    PUBLIC_SITE_ORIGIN: "https://zhao-wu.com",
+  };
+  const authorization = createMetaAuthorization(env, 1_000_000, "sealed-owner-proof");
+  const authUrl = new URL(authorization.url);
+  assert.equal(authUrl.origin, "https://www.facebook.com");
+  assert.match(authUrl.pathname, /\/dialog\/oauth$/);
+  assert.match(authUrl.searchParams.get("scope"), /pages_manage_posts/);
+  assert.match(authUrl.searchParams.get("scope"), /instagram_content_publish/);
+  const state = authUrl.searchParams.get("state");
+  const cookieValue = decodeURIComponent(authorization.cookie.match(/=([^;]+)/)[1]);
+  const request = { headers: { cookie: `__Host-zhaowu_meta_oauth=${encodeURIComponent(cookieValue)}` } };
+  assert.equal(verifyMetaAuthorization(request, state, env, 1_000_001), true);
+  assert.equal(metaAuthorizationOwnerProof(request), "sealed-owner-proof");
+
+  const calls = [];
+  const fakeFetch = async (url) => {
+    calls.push(String(url));
+    if (calls.length === 1) return new Response(JSON.stringify({ access_token: "short-token" }), { status: 200 });
+    if (calls.length === 2) return new Response(JSON.stringify({ access_token: "long-user-token", expires_in: 5_000_000 }), { status: 200 });
+    return new Response(JSON.stringify({ data: [{
+      id: "123456789",
+      name: "昭梧",
+      access_token: "page-token",
+      instagram_business_account: { id: "987654321", username: "fkofflove", profile_picture_url: "https://example.com/a.jpg" },
+    }] }), { status: 200 });
+  };
+  const accounts = await exchangeMetaAuthorizationCode("code", env, fakeFetch);
+  assert.equal(accounts.length, 1);
+  assert.equal(accounts[0].pageName, "昭梧");
+  assert.equal(accounts[0].instagramUsername, "fkofflove");
+  assert.equal(accounts[0].accessToken, "page-token");
+});
+
+test("one Meta connection publishes to its Facebook Page and linked Instagram without exposing the token", async () => {
+  const calls = [];
+  const fakeFetch = async (url, init = {}) => {
+    calls.push({ url: String(url), method: init.method || "GET", values: Object.fromEntries(new URLSearchParams(String(init.body || ""))) });
+    if ((init.method || "GET") === "GET") return new Response(JSON.stringify({ username: "fkofflove" }), { status: 200 });
+    return new Response(JSON.stringify({ id: String(url).endsWith("media") ? "container" : "published" }), { status: 200 });
+  };
+  const results = await publishSocialPost({
+    text: "昭梧測試",
+    imageUrl: "https://zhao-wu.com/og-preview.png",
+    channels: ["instagram", "facebook"],
+  }, {}, fakeFetch, [], [{
+    id: "meta-1", pageId: "123", pageName: "昭梧", instagramUserId: "456", instagramUsername: "fkofflove", accessToken: "page-secret",
+  }]);
+  assert.equal(results.instagram.ok, true);
+  assert.equal(results.facebook.ok, true);
+  assert.ok(calls.some((call) => call.url.endsWith("/456/media")));
+  assert.ok(calls.some((call) => call.url.endsWith("/123/photos")));
+  assert.doesNotMatch(JSON.stringify(results), /page-secret/);
+});
+
+test("validation preserves platform-specific limits", () => {
+  assert.throws(
+    () => validateSocialPost({ text: "text only", channels: ["instagram"] }),
+    (error) => error?.code === "INSTAGRAM_IMAGE_REQUIRED",
+  );
+  assert.throws(
+    () => validateSocialPost({ text: "𠮷".repeat(126), channels: ["threads"] }),
+    (error) => error?.code === "THREADS_TEXT_TOO_LONG",
+  );
+  assert.throws(
+    () => validateSocialPost({ text: "hello", imageUrl: "http://localhost/private.png", channels: ["threads"] }),
+    (error) => error?.code === "INVALID_IMAGE_URL",
+  );
+  assert.deepEqual(
+    validateSocialPost({ text: " hello ", imageUrl: "https://stone-zhaowu-official.vercel.app/og-preview.png", channels: ["threads", "threads"] }).channels,
+    ["threads"],
+  );
+});
+
+test("one request creates and publishes one container per selected platform", async () => {
+  const calls = [];
+  const fakeFetch = async (url, init) => {
+    const values = Object.fromEntries(new URLSearchParams(String(init.body)));
+    calls.push({ url: String(url), values });
+    const isPublish = String(url).endsWith("_publish");
+    return new Response(JSON.stringify({ id: isPublish ? `published-${calls.length}` : `container-${calls.length}` }), {
+      status: 200,
+      headers: { "content-type": "application/json" },
+    });
+  };
+  const results = await publishSocialPost({
+    text: "昭梧測試",
+    imageUrl: "https://stone-zhaowu-official.vercel.app/og-preview.png",
+    altText: "昭梧",
+    channels: ["threads", "instagram"],
+  }, configuredEnv, fakeFetch);
+  assert.equal(results.threads.ok, true);
+  assert.equal(results.instagram.ok, true);
+  assert.equal(calls.length, 4);
+  assert.ok(calls.some((call) => call.url === "https://graph.threads.net/v1.0/threads-user/threads" && call.values.media_type === "IMAGE"));
+  assert.ok(calls.some((call) => call.url === "https://graph.threads.net/v1.0/threads-user/threads_publish" && call.values.creation_id));
+  assert.ok(calls.some((call) => call.url === "https://graph.facebook.com/v26.0/ig-user/media" && call.values.caption === "昭梧測試"));
+  assert.ok(calls.some((call) => call.url === "https://graph.facebook.com/v26.0/ig-user/media_publish" && call.values.creation_id));
+});
+
+test("one Threads publish can target multiple OAuth accounts without exposing tokens", async () => {
+  const calls = [];
+  const fakeFetch = async (url, init = {}) => {
+    calls.push({ url: String(url), method: init.method || "GET" });
+    if ((init.method || "GET") === "GET") {
+      const username = String(url).includes("thread-user-2") ? "second" : "first";
+      return new Response(JSON.stringify({ id: "profile", username }), { status: 200 });
+    }
+    return new Response(JSON.stringify({ id: String(url).endsWith("_publish") ? "published" : "container" }), { status: 200 });
+  };
+  const results = await publishSocialPost({ text: "昭梧", channels: ["threads"] }, {}, fakeFetch, [
+    { id: "account-1", userId: "thread-user-1", username: "first", accessToken: "secret-one" },
+    { id: "account-2", userId: "thread-user-2", username: "second", accessToken: "secret-two" },
+  ]);
+  assert.equal(results.threads.ok, true);
+  assert.deepEqual(results.threads.accounts.map((item) => item.username), ["first", "second"]);
+  assert.equal(calls.filter((call) => call.method === "POST").length, 4);
+  assert.doesNotMatch(JSON.stringify(results), /secret-one|secret-two/);
+});
+
+test("Threads OAuth state and stored tokens are authenticated and encrypted", () => {
+  const env = {
+    THREADS_APP_ID: "9988776655",
+    META_APP_ID: "1234567890",
+    THREADS_APP_SECRET: "threads-app-secret-for-unit-test-123456",
+    META_APP_SECRET: "app-secret-for-unit-test-123456",
+    ZHAOWU_OWNER_BRIDGE_SECRET: "bridge-secret-for-unit-test-123456",
+    PUBLIC_SITE_ORIGIN: "https://zhao-wu.com",
+  };
+  assert.equal(threadsOauthConfiguration({ META_APP_ID: env.META_APP_ID, META_APP_SECRET: env.META_APP_SECRET }).ready, false, "Threads must not silently use Facebook credentials");
+  const authorization = createThreadsAuthorization(env, 1_000_000, "sealed-owner-proof");
+  assert.equal(new URL(authorization.url).origin, "https://threads.com");
+  assert.equal(new URL(authorization.url).pathname, "/oauth/authorize");
+  assert.equal(new URL(authorization.url).searchParams.get("client_id"), env.THREADS_APP_ID);
+  assert.equal(new URL(authorization.url).searchParams.get("scope"), "threads_basic,threads_content_publish");
+  assert.equal(new URL(authorization.url).searchParams.get("redirect_uri"), "https://zhao-wu.com/api/owner-session?action=threads.callback");
+  const state = new URL(authorization.url).searchParams.get("state");
+  const cookieValue = decodeURIComponent(authorization.cookie.match(/=([^;]+)/)[1]);
+  const request = { headers: { cookie: `__Host-zhaowu_threads_oauth=${encodeURIComponent(cookieValue)}` } };
+  assert.equal(verifyThreadsAuthorization(request, state, env, 1_000_001), true);
+  assert.equal(threadsAuthorizationOwnerProof(request), "sealed-owner-proof");
+  assert.equal(verifyThreadsAuthorization(request, `${state}x`, env, 1_000_001), false);
+  const encrypted = encryptThreadsAccessToken("threads-user-token", env);
+  assert.match(encrypted, /^v1\./);
+  assert.doesNotMatch(encrypted, /threads-user-token/);
+  assert.equal(decryptThreadsAccessToken(encrypted, env), "threads-user-token");
+});
+
+test("locked target handles reject the wrong Meta account before any publish call", async () => {
+  const calls = [];
+  const env = {
+    ...configuredEnv,
+    META_TARGET_INSTAGRAM_USERNAME: "fkofflove",
+    META_TARGET_THREADS_USERNAME: "fkofflove",
+  };
+  const fakeFetch = async (url, init = {}) => {
+    calls.push({ url: String(url), method: init.method || "GET" });
+    if ((init.method || "GET") === "GET") {
+      const username = String(url).includes("graph.threads.net") ? "otherthreads" : "fkofflove";
+      return new Response(JSON.stringify({ id: "profile", username }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    }
+    return new Response(JSON.stringify({ id: "should-not-publish" }), {
+      status: 200,
+      headers: { "content-type": "application/json" },
+    });
+  };
+  const results = await publishSocialPost({
+    text: "test",
+    imageUrl: "https://stone-zhaowu-official.vercel.app/og-preview.png",
+    channels: ["threads"],
+  }, env, fakeFetch);
+  assert.equal(results.threads.ok, false);
+  assert.equal(results.threads.code, "META_ACCOUNT_MISMATCH");
+  assert.match(results.threads.message, /@otherthreads/);
+  assert.match(results.threads.message, /@fkofflove/);
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].method, "GET");
+});
+
+test("partial failures are explicit and tokens are scrubbed", async () => {
+  const fakeFetch = async (url, init) => {
+    const values = Object.fromEntries(new URLSearchParams(String(init.body)));
+    if (String(url).includes("graph.threads.net")) {
+      return new Response(JSON.stringify({ error: { message: `bad access_token=${values.access_token}` } }), {
+        status: 400,
+        headers: { "content-type": "application/json" },
+      });
+    }
+    return new Response(JSON.stringify({ id: String(url).endsWith("media_publish") ? "ig-post" : "ig-container" }), {
+      status: 200,
+      headers: { "content-type": "application/json" },
+    });
+  };
+  const results = await publishSocialPost({
+    text: "test",
+    imageUrl: "https://stone-zhaowu-official.vercel.app/og-preview.png",
+    channels: ["threads", "instagram"],
+  }, configuredEnv, fakeFetch);
+  assert.equal(results.instagram.ok, true);
+  assert.equal(results.threads.ok, false);
+  assert.doesNotMatch(results.threads.message, /threads-secret-token/);
+  assert.match(results.threads.message, /\[hidden\]/);
+});
+
+test("owner endpoint is protected, consolidated, and stays within the Hobby function cap", async () => {
+  const api = await source("api/owner-session.js");
+  const vercel = JSON.parse(await source("vercel.json"));
+  const apiFiles = (await readdir(new URL("api/", root))).filter((name) => name.endsWith(".js"));
+  assert.match(api, /authenticateOwner/);
+  assert.match(api, /requestIsSameOrigin/);
+  assert.match(api, /from ["']\.\.\/lib\/owner-auth\.js["']/);
+  assert.match(await source("lib/owner-session-cookie.js"), /timingSafeEqual/);
+  assert.match(api, /Cache-Control.*no-store/s);
+  assert.match(api, /social\.status/);
+  assert.match(api, /social\.publish/);
+  assert.match(api, /social\.threads\.connect/);
+  assert.match(api, /social\.meta\.connect/);
+  assert.match(api, /meta\.callback/);
+  assert.match(api, /threads\.callback/);
+  assert.equal(vercel.functions["api/owner-session.js"].maxDuration, 60);
+  assert.equal(vercel.functions["api/owner-social.js"], undefined);
+  assert.ok(apiFiles.length <= 12);
+});
+
+test("owner console retires broken in-site publishing and hands off to Metricool", async () => {
+  const account = await source("src/routes/account.tsx");
+  const overview = await source("src/components/owner/console-overview.tsx");
+  const route = await source("src/routes/social.tsx");
+  const vercel = JSON.parse(await source("vercel.json"));
+  assert.doesNotMatch(account, /<AutopublishPanel/);
+  assert.doesNotMatch(account, /"autopublish"/);
+  assert.doesNotMatch(overview, /readAutopublishOverview/);
+  assert.match(overview, /https:\/\/app\.metricool\.com\//);
+  assert.match(route, /data-external-social-handoff/);
+  assert.match(route, /user\?\.isOwner/);
+  assert.match(route, /https:\/\/app\.metricool\.com\//);
+  assert.doesNotMatch(route, /startThreadsConnection|publishOwnerSocialPost/);
+  assert.equal(vercel.crons, undefined);
+});
+
+test("the root no longer mounts the duplicate DOM-scanning owner console organizer", async () => {
+  const root = await source("src/routes/__root.tsx");
+  assert.doesNotMatch(root, /OwnerConsoleOrganizer/);
+});
+
+
+test("legacy /social keeps a safe owner-only external publishing handoff", async () => {
+  const route = await source("src/routes/social.tsx");
+  assert.match(route, /createFileRoute\("\/social"\)/);
+  assert.match(route, /user\?\.isOwner/);
+  assert.match(route, /https:\/\/app\.metricool\.com\//);
+  assert.doesNotMatch(route, /META_.*ACCESS_TOKEN|data-owner-social-publisher/);
+});
+
+test("Meta (Facebook/Instagram) token encryption is independent of the Threads app secret", async () => {
+  const { encryptMetaAccessToken, decryptMetaAccessToken } = await import("../lib/meta-oauth.js");
+  const base = { META_APP_SECRET: "meta-secret-for-key-isolation-123456", ZHAOWU_OWNER_BRIDGE_SECRET: "bridge-secret-for-key-isolation-123456" };
+  const sealed = encryptMetaAccessToken("page-token", base);
+  assert.equal(decryptMetaAccessToken(sealed, base), "page-token", "works with no Threads credentials configured");
+  assert.equal(decryptMetaAccessToken(sealed, { ...base, THREADS_APP_SECRET: "some-other-threads-secret-123456" }), "page-token", "Threads secret must not rekey Meta");
+  assert.throws(() => encryptMetaAccessToken("x", { ZHAOWU_OWNER_BRIDGE_SECRET: base.ZHAOWU_OWNER_BRIDGE_SECRET, THREADS_APP_SECRET: "threads-only-secret-123456" }), /THREADS_TOKEN_KEY_NOT_CONFIGURED/, "Threads secret alone must not unlock Meta");
+});

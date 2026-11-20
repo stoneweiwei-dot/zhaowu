@@ -1,0 +1,107 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import test from "node:test";
+
+const root = new URL("../", import.meta.url);
+const source = (path) => readFile(new URL(path, root), "utf8");
+
+test("owner music read and write APIs are physically split off the SPA rewrite", async () => {
+  const api = await source("api/owner-music.js");
+  const writeApi = await source("api/owner-music-write.js");
+  const publicRead = await source("lib/owner-music-public.js");
+  const git = await source("lib/owner-music-git.js");
+  const vercel = JSON.parse(await source("vercel.json"));
+  await assert.rejects(source("lib/owner-music-ssh.json"));
+  assert.match(api, /readOwnerMusicManifest/);
+  assert.doesNotMatch(api, /OWNER_KEY_SHA256|OWNER_REQUIRED|owner-music-git|isomorphic-git|ssh2/);
+  assert.match(writeApi, /from ["']\.\.\/lib\/owner-auth\.js["']/);
+  assert.match(writeApi, /OWNER_PASSWORD_REQUIRED/);
+  assert.match(writeApi, /saveOwnerMusicTrack/);
+  assert.match(writeApi, /OWNER_REQUIRED/);
+  assert.doesNotMatch(writeApi, /from ["']\.\.\/src\//);
+  assert.match(writeApi, /from ["']\.\.\/lib\/owner-music-git\.js["']/);
+  assert.match(publicRead, /readOwnerMusicManifest/);
+  assert.doesNotMatch(publicRead, /isomorphic-git|ssh2/);
+  assert.match(git, /owner-music/);
+  assert.match(git, /ZHAOWU_OWNER_MUSIC_GITHUB_TOKEN/);
+  assert.doesNotMatch(git, /decryptOwnerSshKey|owner-music-ssh|ssh2|BEGIN OPENSSH PRIVATE KEY|aes-256-gcm|createDecipheriv/);
+  assert.equal(vercel.functions["api/owner-music.js"].maxDuration, 30);
+  assert.equal(vercel.functions["api/owner-music-write.js"].maxDuration, 60);
+  assert.equal(vercel.functions["api/owner-music-write.js"].includeFiles, undefined);
+  assert.equal(vercel.functions["api/owner-music.js"].includeFiles, undefined);
+  assert.deepEqual(vercel.git.deploymentEnabled, { "**": false, main: true });
+  assert.match(vercel.ignoreCommand, /git diff --quiet/);
+  assert.ok(!vercel.rewrites.some((r) => r.source === "/((?!api/).*)"), "global SPA catch-all stays removed (soft-404 fix)");
+});
+
+test("owner key hash is rotated and the raw secret is not in the repo", async () => {
+  const login = await source("api/owner-login.js");
+  const session = await source("api/owner-session.js");
+  const server = await source("src/server/owner-auth.ts");
+  const music = await source("api/owner-music-write.js");
+  // Login, session and music-write now share one validator in lib/owner-session-cookie.js.
+  const shared = await source("lib/owner-session-cookie.js");
+  // Verifier digests are supplied at runtime (ZHAOWU_OWNER_KEY_SHA256); no digest literal may be committed.
+  const committedDigest = /["'][a-f0-9]{64}["']/i;
+  assert.match(shared, /ZHAOWU_OWNER_KEY_SHA256/);
+  assert.match(shared, /value\.length < 8/);
+  assert.match(server, /from ["']\.\.\/\.\.\/lib\/owner-session-cookie\.js["']/);
+  assert.doesNotMatch(shared, committedDigest);
+  assert.doesNotMatch(server, committedDigest);
+  // Login reads the cookie module directly; session and music-write go through the shared owner-auth module.
+  assert.match(login, /from ["']\.\.\/lib\/owner-session-cookie\.js["']/);
+  for (const api of [session, music]) assert.match(api, /from ["']\.\.\/lib\/owner-auth\.js["']/);
+  for (const api of [login, session, music]) {
+    assert.doesNotMatch(api, committedDigest);
+  }
+  assert.doesNotMatch(shared, /value\.length < 32/);
+  assert.doesNotMatch(shared, /BEGIN OPENSSH PRIVATE KEY/);
+  assert.doesNotMatch(login, /value\.length < 32/);
+  assert.doesNotMatch(login, /BEGIN OPENSSH PRIVATE KEY/);
+  assert.doesNotMatch(server, /BEGIN OPENSSH PRIVATE KEY/);
+});
+
+test("account console and player use owner music with browser-side format optimization", async () => {
+  const manager = await source("src/components/owner-background-music-manager.tsx");
+  const player = await source("src/components/background-music.tsx");
+  const account = await source("src/routes/account.tsx");
+  const client = await source("src/lib/owner-music-client.ts");
+  const transcoder = await source("src/lib/owner-music-transcode.ts");
+  assert.match(manager, /uploadOwnerMusic/);
+  assert.match(manager, /user\?\.isOwner \|\| !onAccount/);
+  assert.doesNotMatch(manager, /單檔最多 4 MB/);
+  assert.match(manager, /自動轉碼|自動轉換/);
+  assert.doesNotMatch(manager, /uploadBackgroundMusicResilient/);
+  assert.match(player, /loadOwnerMusic/);
+  assert.doesNotMatch(player, /zhaowu-background\.m4a/);
+  const rootRoute = await source("src/routes/__root.tsx");
+  assert.match(rootRoute, /<OwnerBackgroundMusicManager \/>/);
+  assert.doesNotMatch(rootRoute, /OwnerConsoleOrganizer/);
+  assert.match(client, /optimizeOwnerMusic/);
+  assert.match(client, /x-zhaowu-music-name/);
+  assert.match(client, /OWNER_MUSIC_WRITE_URL = "\/api\/owner-music-write"/);
+  assert.match(client, /zhaowu-music-change/);
+  assert.match(transcoder, /TARGET_UPLOAD_BYTES = 3_550_000/);
+  assert.match(transcoder, /MAX_OWNER_UPLOAD_BYTES = 12 \* 1024 \* 1024/);
+  assert.match(transcoder, /aac_low/);
+  assert.match(transcoder, /INITIAL_AAC_KBPS = 96/);
+  assert.match(transcoder, /MIN_AAC_KBPS = 64/);
+  assert.match(transcoder, /CORE_LOAD_TIMEOUT_MS = 90_000/);
+  assert.match(transcoder, /TRANSCODE_TIMEOUT_MS = 180_000/);
+  assert.match(transcoder, /MAX_SOURCE_BYTES = 200 \* 1024 \* 1024/);
+  assert.match(transcoder, /decodeOwnerAudioPcm/);
+  assert.match(transcoder, /isIosOwnerDevice/);
+  assert.match(transcoder, /本機壓縮音樂，避免 iPhone 卡住/);
+  assert.match(client, /x-zhaowu-music-upload-id/);
+});
+
+test("independent owner cookie does not get falsely sent back to login on gallery", async () => {
+  const gallery = await source("src/routes/gallery.tsx");
+  assert.doesNotMatch(gallery, /if \(!user \|\| !session\)/);
+  assert.match(gallery, /if \(!user\)/);
+  assert.match(gallery, /if \(!user\.isOwner\)/);
+  assert.match(gallery, /data-owner-gallery-data-offline/);
+  assert.match(gallery, /data-owner-gallery-data-offline/);
+  assert.doesNotMatch(gallery, /站主登入與其他後台功能仍正常|站主登录与其他后台功能仍正常/);
+  assert.match(gallery, /session \? \(/);
+});

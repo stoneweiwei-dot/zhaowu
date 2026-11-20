@@ -1,0 +1,151 @@
+const RELEASE = "__ZHAOWU_RELEASE__";
+const CACHE = `zhaowu-shell-${RELEASE.slice(0, 16)}`;
+const SHELL = [
+  "/",
+  "/manifest.webmanifest",
+  "/apple-touch-icon-r113.png",
+  "/brand-ui/header-gourd-wordmark-r113.png",
+  "/brand-ui/logo-horizontal.svg",
+  "/brand-ui/favicon.svg",
+];
+
+async function cacheFresh(path) {
+  const response = await fetch(path, { cache: "no-store" });
+  if (!response.ok) return;
+  const cache = await caches.open(CACHE);
+  await cache.put(path, response.clone());
+}
+
+async function clientAlreadyRunsRelease(client) {
+  return new Promise((resolve) => {
+    const channel = new MessageChannel();
+    const timer = setTimeout(() => resolve(false), 700);
+
+    channel.port1.onmessage = (event) => {
+      clearTimeout(timer);
+      resolve(
+        event.data?.type === "ZHAOWU_CLIENT_RELEASE" &&
+        event.data?.release === RELEASE,
+      );
+    };
+
+    try {
+      client.postMessage(
+        { type: "ZHAOWU_RELEASE_PROBE", release: RELEASE },
+        [channel.port2],
+      );
+    } catch {
+      clearTimeout(timer);
+      resolve(false);
+    }
+  });
+}
+
+async function navigateClientToRelease(client, hard = false) {
+  try {
+    const latestClient = await self.clients.get(client.id);
+    if (!latestClient) return null;
+    const target = new URL(latestClient.url);
+    if (target.origin !== self.location.origin) return null;
+    target.searchParams.set("zw_release", RELEASE);
+    if (hard) target.searchParams.set("zw_sw_reset", String(Date.now()));
+    return await latestClient.navigate(target.toString());
+  } catch {
+    return null;
+  }
+}
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(Promise.allSettled(SHELL.map((path) => cacheFresh(path))));
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(
+      keys
+        .filter((key) => key.startsWith("zhaowu-shell-") && key !== CACHE)
+        .map((key) => caches.delete(key)),
+    );
+    await self.clients.claim();
+    const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    for (const client of clients) {
+      // Probe first. A page that already runs this exact release answers through
+      // MessageChannel and must not be navigated again; this avoids racing normal
+      // Safari navigation and Playwright route transitions.
+      const observedUrl = client.url;
+      const alreadyCurrent = await clientAlreadyRunsRelease(client);
+      if (alreadyCurrent) {
+        client.postMessage({ type: "ZHAOWU_RELEASE_READY", release: RELEASE });
+        continue;
+      }
+
+      // Older installed iOS bundles may restore the same stale WebContent snapshot
+      // even after one successful navigation. First preserve the user's current route,
+      // then verify the client actually started the new release. If it did not, issue
+      // one second navigation with a unique reset token so the stale snapshot cannot win.
+      const latestBeforeNavigate = await self.clients.get(client.id);
+      if (!latestBeforeNavigate || latestBeforeNavigate.url !== observedUrl) continue;
+
+      const navigated = await navigateClientToRelease(latestBeforeNavigate, false);
+      if (!navigated) continue;
+
+      await sleep(1_500);
+      const latestAfterNavigate = await self.clients.get(client.id);
+      if (!latestAfterNavigate) continue;
+      const updated = await clientAlreadyRunsRelease(latestAfterNavigate);
+      if (!updated) {
+        await navigateClientToRelease(latestAfterNavigate, true);
+      }
+    }
+  })());
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
+});
+
+self.addEventListener("fetch", (event) => {
+  const request = event.request;
+  if (request.method !== "GET") return;
+
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return;
+
+  if (url.pathname === "/release.json") {
+    event.respondWith(fetch(request, { cache: "no-store" }));
+    return;
+  }
+
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request, { cache: "no-store" })
+        .then(async (response) => {
+          if (response.ok) {
+            const cache = await caches.open(CACHE);
+            await cache.put("/", response.clone());
+          }
+          return response;
+        })
+        .catch(async () => (await caches.match("/")) || Response.error()),
+    );
+    return;
+  }
+
+  if (SHELL.includes(url.pathname)) {
+    event.respondWith(
+      fetch(request, { cache: "no-store" })
+        .then(async (response) => {
+          if (response.ok) {
+            const cache = await caches.open(CACHE);
+            await cache.put(url.pathname, response.clone());
+          }
+          return response;
+        })
+        .catch(async () => (await caches.match(url.pathname)) || Response.error()),
+    );
+  }
+});

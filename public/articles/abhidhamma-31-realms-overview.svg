@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920" role="img" aria-label="三界三十一界">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2=".65" y2="1"><stop stop-color="#fffaf1"/><stop offset=".48" stop-color="#f7f3e9"/><stop offset="1" stop-color="#e7efea"/></linearGradient>
+ <radialGradient id="halo"><stop stop-color="#f6e7bd" stop-opacity=".75"/><stop offset="1" stop-color="#f6e7bd" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1080" height="1920" fill="url(#bg)"/>
+<rect x="44" y="44" width="992" height="1832" rx="14" fill="none" stroke="#c3ad83" stroke-opacity=".9" stroke-width="2"/>
+<rect x="55" y="55" width="970" height="1810" rx="8" fill="none" stroke="#b3a37d" stroke-opacity=".33"/>
+<circle cx="862" cy="286" r="255" fill="url(#halo)"/>
+<circle cx="860" cy="269" r="75" fill="#e9d7ab" fill-opacity=".65"/>
+<path d="M 112 330 c 60.50000000000001 -48.400000000000006 121.00000000000001 -48.400000000000006 177.10000000000002 0 c 33 -24.200000000000003 72.60000000000001 -19.8 107.80000000000001 0" fill="none" stroke="#8fa8a0" stroke-opacity=".32" stroke-width="3.3000000000000003" stroke-linecap="round"/><path d="M 640 410 c 33 -26.4 66 -26.4 96.6 0 c 18 -13.2 39.6 -10.799999999999999 58.8 0" fill="none" stroke="#8fa8a0" stroke-opacity=".32" stroke-width="1.7999999999999998" stroke-linecap="round"/>
+<path d="M-30 1450 Q160 1190 335 1375 T690 1360 T1120 1290 V1920 H-30Z" fill="#b6c9bd" fill-opacity=".38"/>
+ <path d="M-30 1600 Q185 1370 370 1550 T760 1520 T1120 1500 V1920 H-30Z" fill="#92afab" fill-opacity=".34"/>
+ <path d="M-30 1705 Q170 1600 410 1745 T800 1715 T1120 1600 V1920 H-30Z" fill="#557e78" fill-opacity=".20"/>
+ <path d="M0 1800 Q290 1730 540 1780 T1080 1770" fill="none" stroke="#879d8f" stroke-width="4" opacity=".6"/><g fill="none" stroke="#376e68" stroke-width="3" opacity=".28"><path d="M165 1340 Q320 1210 460 1340 T800 1350"/><path d="M220 1370 Q400 1280 570 1400 T920 1395"/></g>
+<g font-family="Noto Serif CJK TC, Noto Serif TC, Songti TC, PingFang TC, serif">
+<text x="83" y="135" fill="#915f4e" font-size="30" letter-spacing="5">昭梧 · 佛學圖鑑</text>
+<text x="83" y="261" fill="#263c38" font-size="84" font-weight="600">三界三十一界</text>
+<text x="87" y="319" fill="#376e68" font-size="30" letter-spacing="1.2">THE THIRTY-ONE PLANES OF EXISTENCE</text>
+<text x="87" y="395" fill="#5d746c" font-size="36" >阿毗達摩的生命境界分類</text>
+<g><rect x="83" y="460" width="914" height="250" rx="14" fill="#fbf8f1" fill-opacity=".92" stroke="#d8c6a5" stroke-width="1.4"/>
+       <path d="M110 484 H970" stroke="#b9a681" stroke-width="1.3" opacity=".4"/>
+       <text x="132" y="600" fill="#376e68" font-size="112" font-weight="600">04</text>
+       <text x="330" y="558" fill="#263c38" font-size="56" font-weight="600">無色界</text>
+       <text x="330" y="620" fill="#596c65" font-size="34" >與四種無色禪定相應</text>
+       
+       </g><g><rect x="83" y="732" width="914" height="250" rx="14" fill="#fbf8f1" fill-opacity=".92" stroke="#d8c6a5" stroke-width="1.4"/>
+       <path d="M110 756 H970" stroke="#b9a681" stroke-width="1.3" opacity=".4"/>
+       <text x="132" y="872" fill="#376e68" font-size="112" font-weight="600">16</text>
+       <text x="330" y="830" fill="#263c38" font-size="56" font-weight="600">色界</text>
+       <text x="330" y="892" fill="#596c65" font-size="34" >與色禪定相應</text>
+       
+       </g><g><rect x="83" y="1004" width="914" height="250" rx="14" fill="#fbf8f1" fill-opacity=".92" stroke="#d8c6a5" stroke-width="1.4"/>
+       <path d="M110 1028 H970" stroke="#b9a681" stroke-width="1.3" opacity=".4"/>
+       <text x="132" y="1144" fill="#376e68" font-size="112" font-weight="600">11</text>
+       <text x="330" y="1102" fill="#263c38" font-size="56" font-weight="600">欲界</text>
+       <text x="330" y="1164" fill="#596c65" font-size="34" >六欲天＋人間＋四惡趣</text>
+       
+       </g>
+<rect x="85" y="1787" width="907" height="1.5" fill="#a9a08b" opacity=".68"/>
+<text x="86" y="1841" fill="#525e57" font-size="28" >傳統教理模型 · 不是物理宇宙地圖</text>
+<text x="86" y="1875" fill="#a04f3f" font-size="25" letter-spacing="2">ZHAOWU  ·  STONE 原創</text>
+<text x="957" y="1875" fill="#a04f3f" font-size="25" text-anchor="end">01</text>
+</g></svg>

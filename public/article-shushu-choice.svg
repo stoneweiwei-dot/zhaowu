@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1600" viewBox="0 0 900 1600" role="img" aria-labelledby="title desc">
+  <title id="title">術數的最後，不是問天，而是決於人</title>
+  <desc id="desc">淡宣紙底上的山水、羅盤與分岔小徑，象徵術數照見局勢，而選擇仍由人完成。</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6f0df"/>
+      <stop offset="1" stop-color="#e9dfc7"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#d7b76a" stop-opacity=".92"/>
+      <stop offset="1" stop-color="#d7b76a" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+
+  <rect width="900" height="1600" fill="url(#paper)"/>
+  <circle cx="676" cy="258" r="190" fill="url(#sun)" filter="url(#soft)"/>
+
+  <g fill="none" stroke="#214c43" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" opacity=".88">
+    <path d="M80 760 C190 630 280 610 372 684 C434 734 500 730 566 654 C638 570 726 568 824 690"/>
+    <path d="M72 830 C170 740 254 728 342 786 C434 846 526 838 614 770 C684 716 756 720 832 798"/>
+    <path d="M94 920 C202 848 300 850 394 914 C474 968 562 970 652 920 C706 890 760 892 816 928"/>
+  </g>
+
+  <g transform="translate(450 520)">
+    <circle r="170" fill="#f6f0df" stroke="#b79b55" stroke-width="8"/>
+    <circle r="128" fill="none" stroke="#214c43" stroke-width="7" opacity=".9"/>
+    <circle r="68" fill="none" stroke="#214c43" stroke-width="5" opacity=".7"/>
+    <path d="M0-128V128M-128 0H128M-90-90L90 90M90-90L-90 90" stroke="#214c43" stroke-width="4" opacity=".48"/>
+    <path d="M0-118 L24-28 L0 0 L-24-28 Z" fill="#a83226"/>
+    <circle r="14" fill="#b79b55"/>
+  </g>
+
+  <path d="M450 980 C446 1100 430 1200 450 1310" fill="none" stroke="#8a7044" stroke-width="30" stroke-linecap="round"/>
+  <path d="M450 1110 C355 1160 282 1230 226 1328" fill="none" stroke="#8a7044" stroke-width="22" stroke-linecap="round"/>
+  <path d="M450 1110 C545 1160 618 1230 674 1328" fill="none" stroke="#8a7044" stroke-width="22" stroke-linecap="round"/>
+
+  <g transform="translate(450 1080)">
+    <circle cx="0" cy="-46" r="25" fill="#193d36"/>
+    <path d="M0-18 C-28 32 -25 86 0 132 C25 86 28 32 0-18Z" fill="#193d36"/>
+  </g>
+
+  <g fill="#a83226" opacity=".12">
+    <text x="62" y="150" font-family="serif" font-size="54">STONE 原創</text>
+    <text x="510" y="1510" font-family="serif" font-size="54">STONE 原創</text>
+  </g>
+
+  <g transform="translate(675 1248)">
+    <rect x="-72" y="-72" width="144" height="144" rx="14" fill="#a83226" opacity=".95"/>
+    <text x="0" y="-4" text-anchor="middle" font-family="serif" font-size="36" fill="#f6f0df">自</text>
+    <text x="0" y="42" text-anchor="middle" font-family="serif" font-size="36" fill="#f6f0df">決</text>
+  </g>
+</svg>

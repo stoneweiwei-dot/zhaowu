@@ -1,0 +1,22 @@
+name: Mythic image viewer
+on:
+  pull_request:
+    paths:
+      - 'src/routes/-mythic-image-viewer.*'
+      - 'src/routes/mythic-atlas.tsx'
+      - 'src/routes/-mythic-atlas-guaili.tsx'
+      - 'e2e/mythic-image-viewer.spec.ts'
+      - '.github/workflows/mythic-viewer.yml'
+  workflow_dispatch:
+jobs:
+  mobile-viewer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps webkit
+      - run: npx playwright test e2e/mythic-image-viewer.spec.ts --project=iphone-safari

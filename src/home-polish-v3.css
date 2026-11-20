@@ -1,0 +1,403 @@
+.zhaowu-tools-section {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(156, 112, 51, .27);
+  border-radius: 2rem;
+  padding: clamp(1.1rem, 4vw, 2.1rem);
+  background:
+    radial-gradient(circle at 92% 3%, rgba(216, 181, 125, .13), transparent 22%),
+    radial-gradient(circle at 7% 93%, rgba(74, 130, 116, .10), transparent 27%),
+    linear-gradient(150deg, rgba(255, 252, 245, .99), rgba(244, 235, 218, .97));
+  box-shadow: 0 22px 60px rgba(74, 55, 31, .10);
+}
+
+.zhaowu-tools-section::before {
+  content: "";
+  position: absolute;
+  inset: .62rem;
+  border: 1px solid rgba(198, 154, 75, .16);
+  border-radius: 1.45rem;
+  pointer-events: none;
+}
+
+.zhaowu-tools-section::after {
+  content: "術";
+  position: absolute;
+  right: -.04em;
+  bottom: -.24em;
+  color: rgba(104, 73, 38, .033);
+  font-family: var(--font-display, serif);
+  font-size: clamp(11rem, 34vw, 22rem);
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.zhaowu-tools-heading {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr);
+  gap: 1.15rem;
+  align-items: end;
+  margin-bottom: 1.15rem;
+  padding: .25rem .2rem 1rem;
+  border-bottom: 1px solid rgba(156, 112, 51, .22);
+}
+
+.zhaowu-tools-heading p {
+  color: #9b6b33;
+  font-size: .64rem;
+  font-weight: 750;
+  letter-spacing: .22em;
+}
+
+.zhaowu-tools-heading h2 {
+  margin-top: .3rem;
+  color: #292a26;
+  font-family: var(--font-display, serif);
+  font-size: clamp(1.75rem, 5vw, 2.65rem);
+  line-height: 1.08;
+  letter-spacing: .1em;
+}
+
+.zhaowu-tools-heading > span {
+  justify-self: end;
+  max-width: 29rem;
+  color: #69645b;
+  font-size: .78rem;
+  line-height: 1.78;
+  text-align: right;
+}
+
+.zhaowu-tools-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .9rem;
+}
+
+.zhaowu-tools-grid.is-single { grid-template-columns: minmax(0, 1fr); }
+.zhaowu-specialist-card.is-dual { min-height: 20rem; }
+.zhaowu-specialist-card.is-dual .zhaowu-specialist-content { max-width: min(70%, 43rem); }
+.zhaowu-specialist-mark.zhaowu-specialist-mark--dual-palm { right: 8.6rem; width: 8.2rem; opacity: .2; }
+
+.zhaowu-specialist-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  min-height: 23.2rem;
+  flex-direction: column;
+  border-radius: 1.6rem;
+  padding: 1.25rem;
+  isolation: isolate;
+  box-shadow: 0 16px 38px rgba(63, 45, 24, .10), inset 0 1px rgba(255,255,255,.60);
+}
+
+.zhaowu-specialist-card::before {
+  content: "";
+  position: absolute;
+  inset: .48rem;
+  border-radius: 1.18rem;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.zhaowu-specialist-card::after {
+  content: "";
+  position: absolute;
+  right: -4.5rem;
+  top: -4.25rem;
+  width: 13.5rem;
+  height: 13.5rem;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -2;
+}
+
+.zhaowu-specialist-card.is-palm {
+  border: 1px solid rgba(52, 123, 105, .28);
+  background:
+    linear-gradient(110deg, rgba(255,255,255,.55), transparent 42%),
+    radial-gradient(circle at 89% 17%, rgba(221, 151, 127, .13), transparent 30%),
+    radial-gradient(circle at 10% 95%, rgba(82, 137, 119, .12), transparent 30%),
+    linear-gradient(150deg, #fffdf8 0%, #f4ecdc 100%);
+}
+
+.zhaowu-specialist-card.is-palm::before { border: 1px solid rgba(52, 123, 105, .13); }
+.zhaowu-specialist-card.is-palm::after {
+  border: 1px solid rgba(68, 125, 108, .11);
+  box-shadow: 0 0 0 1.3rem rgba(68,125,108,.025), 0 0 0 2.6rem rgba(198,154,75,.018);
+}
+
+.zhaowu-specialist-card.is-tianji {
+  border: 1px solid rgba(110, 77, 137, .35);
+  color: #f8f1ff;
+  background:
+    radial-gradient(circle at 84% 16%, rgba(202, 155, 231, .19), transparent 28%),
+    radial-gradient(circle at 10% 94%, rgba(222, 181, 111, .13), transparent 27%),
+    linear-gradient(152deg, #2b123d 0%, #170823 62%, #100719 100%);
+}
+
+.zhaowu-specialist-card.is-tianji::before { border: 1px solid rgba(224, 193, 138, .14); }
+.zhaowu-specialist-card.is-tianji::after {
+  border: 1px solid rgba(224,193,138,.12);
+  box-shadow: 0 0 0 1.2rem rgba(188,135,226,.035), 0 0 0 2.4rem rgba(224,193,138,.02);
+}
+
+.zhaowu-specialist-card.is-tea {
+  border: 1px solid rgba(132, 86, 39, .34);
+  color: #342a22;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(158, 99, 52, .15), transparent 28%),
+    repeating-linear-gradient(7deg, rgba(91, 65, 37, .017) 0 1px, transparent 1px 7px),
+    linear-gradient(150deg, #f7efdd 0%, #dfcba8 100%);
+}
+
+.zhaowu-specialist-card.is-tea::before { border: 1px solid rgba(132, 86, 39, .16); }
+.zhaowu-specialist-card.is-tea::after {
+  border: 1px solid rgba(130, 84, 43, .12);
+  box-shadow: 0 0 0 1.2rem rgba(133, 88, 47, .025), 0 0 0 2.4rem rgba(71, 112, 82, .022);
+}
+
+.zhaowu-card-number {
+  position: absolute;
+  right: .9rem;
+  top: .62rem;
+  font-family: var(--font-display, serif);
+  font-size: 4.65rem;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.is-palm .zhaowu-card-number { color: rgba(52, 123, 105, .055); }
+.is-tianji .zhaowu-card-number { color: rgba(224, 193, 138, .075); }
+.is-tea .zhaowu-card-number { color: rgba(109, 70, 36, .07); }
+
+.zhaowu-specialist-mark {
+  position: absolute;
+  right: -.2rem;
+  top: 3.15rem;
+  width: 9.3rem;
+  height: 9.3rem;
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.zhaowu-specialist-mark--palm {
+  opacity: .92;
+  filter: saturate(.92) drop-shadow(0 10px 18px rgba(65, 45, 20, .12));
+}
+
+.zhaowu-specialist-mark--tianji {
+  opacity: .94;
+  filter: saturate(.96) brightness(1.03) drop-shadow(0 12px 24px rgba(6, 1, 12, .26));
+}
+
+.zhaowu-specialist-mark--tea {
+  right: .4rem;
+  top: 2.7rem;
+  width: 9rem;
+  height: 11.5rem;
+  opacity: .7;
+  object-fit: contain;
+  filter: sepia(.08) saturate(.82) drop-shadow(0 10px 18px rgba(67, 43, 22, .14));
+}
+
+.zhaowu-specialist-content {
+  position: relative;
+  z-index: 2;
+  max-width: 68%;
+}
+
+.zhaowu-specialist-eyebrow {
+  font-size: .61rem;
+  font-weight: 760;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.is-palm .zhaowu-specialist-eyebrow { color: #3b8777; }
+.is-tianji .zhaowu-specialist-eyebrow { color: #dfc592; }
+.is-tea .zhaowu-specialist-eyebrow { color: #87552f; }
+
+.zhaowu-specialist-card h3 {
+  margin-top: .72rem;
+  font-family: var(--font-display, serif);
+  font-size: clamp(1.38rem, 4.8vw, 2.05rem);
+  line-height: 1.18;
+  letter-spacing: .055em;
+}
+
+.is-palm h3 { color: #272823; }
+.is-tianji h3 { color: #fbf6ff; }
+.is-tea h3 { color: #302821; }
+
+.zhaowu-specialist-desc {
+  margin-top: .72rem;
+  max-width: 25rem;
+  font-size: .76rem;
+  line-height: 1.78;
+}
+
+.is-palm .zhaowu-specialist-desc { color: #645f56; }
+.is-tianji .zhaowu-specialist-desc { color: #d3c4de; }
+.is-tea .zhaowu-specialist-desc { color: #665c51; }
+
+.zhaowu-specialist-points {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: .42rem;
+  max-width: 82%;
+  margin-top: .82rem;
+  padding: 0;
+  list-style: none;
+}
+
+.zhaowu-specialist-points li {
+  position: relative;
+  padding-left: 1rem;
+  font-size: .66rem;
+  line-height: 1.55;
+}
+
+.zhaowu-specialist-points li::before {
+  content: "";
+  position: absolute;
+  left: .06rem;
+  top: .55em;
+  width: .36rem;
+  height: .36rem;
+  transform: rotate(45deg);
+  border: 1px solid currentColor;
+}
+
+.is-palm .zhaowu-specialist-points { color: #7b674e; }
+.is-tianji .zhaowu-specialist-points { color: #c8b598; }
+.is-tea .zhaowu-specialist-points { color: #745d47; }
+
+.zhaowu-specialist-meta {
+  display: flex;
+  align-items: center;
+  gap: .42rem;
+  margin-top: .82rem;
+  font-size: .61rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.zhaowu-specialist-meta span {
+  width: 1.6rem;
+  height: 1px;
+}
+
+.is-palm .zhaowu-specialist-meta { color: #8b7150; }
+.is-palm .zhaowu-specialist-meta span { background: rgba(139,113,80,.55); }
+.is-tianji .zhaowu-specialist-meta { color: #ad9bbd; }
+.is-tianji .zhaowu-specialist-meta span { background: rgba(216,188,136,.5); }
+.is-tea .zhaowu-specialist-meta { color: #816548; }
+.is-tea .zhaowu-specialist-meta span { background: rgba(129,101,72,.55); }
+
+.zhaowu-specialist-action {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  min-height: 3.2rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-top: auto;
+  border-radius: 999px;
+  padding: 0 1.05rem 0 1.25rem;
+  font-size: .8rem;
+  font-weight: 720;
+  letter-spacing: .05em;
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+
+.zhaowu-specialist-action:hover { transform: translateY(-1px); }
+.zhaowu-specialist-action b { font-size: 1.08rem; font-weight: 500; }
+
+.is-palm-action {
+  border: 1px solid rgba(52, 123, 105, .37);
+  color: #2f7465;
+  background: linear-gradient(180deg, rgba(255, 254, 249, .96), rgba(247, 240, 226, .96));
+  box-shadow: 0 9px 24px rgba(52, 123, 105, .09), inset 0 1px rgba(255,255,255,.82);
+}
+
+.is-tianji-action {
+  border: 1px solid rgba(231, 204, 153, .44);
+  color: #26152f;
+  background: linear-gradient(180deg, #efd9ad, #cda46e);
+  box-shadow: 0 11px 28px rgba(4, 1, 8, .28), inset 0 1px rgba(255,255,255,.4);
+}
+
+.is-tea-action {
+  border: 1px solid rgba(102, 62, 32, .35);
+  color: #fff9eb;
+  background: linear-gradient(180deg, #8f5836, #6d402b);
+  box-shadow: 0 11px 26px rgba(76, 45, 23, .17), inset 0 1px rgba(255,255,255,.18);
+}
+
+@media (max-width: 760px) {
+  .zhaowu-tools-section {
+    border-radius: 1.5rem;
+    padding: 1rem;
+  }
+
+  .zhaowu-tools-section::before { inset: .45rem; border-radius: 1.12rem; }
+
+  .zhaowu-tools-heading {
+    grid-template-columns: 1fr;
+    gap: .5rem;
+    padding: .15rem .1rem .85rem;
+  }
+
+  .zhaowu-tools-heading > span {
+    justify-self: start;
+    max-width: 31rem;
+    text-align: left;
+    font-size: .71rem;
+    line-height: 1.72;
+  }
+
+  .zhaowu-tools-grid { grid-template-columns: 1fr; gap: .85rem; }
+  .zhaowu-specialist-card.is-dual .zhaowu-specialist-content { max-width: 73%; }
+  .zhaowu-specialist-mark.zhaowu-specialist-mark--dual-palm { right: 5.4rem; width: 6.2rem; opacity: .16; }
+
+  .zhaowu-specialist-card {
+    min-height: 22rem;
+    border-radius: 1.3rem;
+    padding: 1.05rem;
+  }
+
+  .zhaowu-specialist-content { max-width: 67%; }
+  .zhaowu-specialist-mark { right: -.45rem; top: 3.2rem; width: 8.7rem; height: 8.7rem; }
+  .zhaowu-specialist-desc { font-size: .73rem; }
+  .zhaowu-specialist-points { max-width: 88%; gap: .38rem; }
+  .zhaowu-specialist-points li { font-size: .64rem; }
+}
+
+@media (max-width: 430px) {
+  .zhaowu-specialist-card { min-height: 22.5rem; }
+  .zhaowu-specialist-content { max-width: 69%; }
+  .zhaowu-specialist-card h3 { font-size: 1.32rem; }
+  .zhaowu-specialist-mark { width: 8rem; height: 8rem; top: 3.35rem; right: -.7rem; }
+  .zhaowu-specialist-desc { line-height: 1.67; }
+  .zhaowu-specialist-points { max-width: 92%; }
+}
+
+@media (max-width: 360px) {
+  .zhaowu-specialist-content { max-width: 72%; }
+  .zhaowu-specialist-mark { width: 7.3rem; height: 7.3rem; }
+  .zhaowu-specialist-points li { font-size: .61rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-specialist-action { transition: none; }
+}

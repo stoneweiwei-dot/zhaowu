@@ -1,0 +1,106 @@
+import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
+import { readFile } from "node:fs/promises";
+import test from "node:test";
+import { authorizeBridgeHeaders } from "../supabase/functions/zhaowu-owner-data/security.mjs";
+import ownerDataHandler from "../api/owner-data.js";
+import { OWNER_COOKIE, ownerCookieValue } from "../lib/owner-session-cookie.js";
+
+const root = new URL("../", import.meta.url);
+const source = (path) => readFile(new URL(path, root), "utf8");
+
+function bridgeHeaders({ bridge = "", owner = "", marker = "r162" }) {
+  return new Headers({
+    "x-zhaowu-server-bridge": marker,
+    "x-zhaowu-bridge-secret": bridge,
+    "x-zhaowu-owner-secret": owner,
+  });
+}
+
+test("edge authorization always verifies the owner secret", () => {
+  const owner = "test-owner-secret";
+  const ownerHash = createHash("sha256").update(owner, "utf8").digest("hex");
+  assert.equal(authorizeBridgeHeaders(bridgeHeaders({ owner }), "", ownerHash).ok, true);
+  assert.equal(authorizeBridgeHeaders(bridgeHeaders({ owner: "wrong" }), "", ownerHash).error, "OWNER_UNAUTHORIZED");
+  assert.equal(authorizeBridgeHeaders(bridgeHeaders({ owner, marker: "" }), "", ownerHash).error, "BRIDGE_REQUIRED");
+});
+
+test("a configured bridge secret is additionally required and compared", () => {
+  const owner = "test-owner-secret";
+  const ownerHash = createHash("sha256").update(owner, "utf8").digest("hex");
+  const bridge = "b".repeat(32);
+  assert.equal(authorizeBridgeHeaders(bridgeHeaders({ owner, bridge }), bridge, ownerHash).ok, true);
+  assert.equal(authorizeBridgeHeaders(bridgeHeaders({ owner, bridge: "x".repeat(32) }), bridge, ownerHash).error, "BRIDGE_UNAUTHORIZED");
+  assert.equal(authorizeBridgeHeaders(bridgeHeaders({ owner }), bridge, ownerHash).error, "BRIDGE_UNAUTHORIZED");
+});
+
+test("browser code contains no Supabase service credential and calls only the same-origin API", async () => {
+  const client = await source("src/lib/owner-data-client.ts");
+  const api = await source("api/owner-data.js");
+  const edge = await source("supabase/functions/zhaowu-owner-data/index.ts");
+  assert.doesNotMatch(client, /SUPABASE_SERVICE_ROLE_KEY|SUPABASE_SECRET_KEY|sb_secret_/);
+  assert.match(client, /fetch\("\/api\/owner-data"/);
+  assert.match(client, /credentials: "same-origin"/);
+  assert.match(api, /requestIsSameOrigin/);
+  assert.match(api, /authenticateOwner/);
+  assert.match(api, /ownerAuthHeaders/);
+  assert.match(await source("lib/owner-auth.js"), /X-Zhaowu-Owner-Secret/i);
+  // api/ is server-only on Vercel. The narrowly scoped site-skin recovery path may
+  // consume the server credential there; the browser client must never contain it.
+  assert.match(api, /SUPABASE_SERVICE_ROLE_KEY/);
+  assert.doesNotMatch(api, /sb_secret_[A-Za-z0-9_-]+|service_role\.[A-Za-z0-9_-]+/);
+  assert.match(edge, /SUPABASE_SERVICE_ROLE_KEY/);
+  assert.match(edge, /ALLOWED_ACTIONS/);
+});
+
+test("uploads are bound to signed tickets before database finalization", async () => {
+  const edge = await source("supabase/functions/zhaowu-owner-data/index.ts");
+  const security = await source("supabase/functions/zhaowu-owner-data/security.mjs");
+  assert.match(edge, /createSignedUploadUrl/);
+  assert.match(edge, /verifyStoredObject/);
+  assert.match(edge, /ZHAOWU_OWNER_UPLOAD_TICKET_SECRET[\s\S]*SUPABASE_SERVICE_ROLE_KEY/);
+  assert.match(security, /assertUploadTicketBinding/);
+  assert.match(security, /UPLOADED_OBJECT_SIZE_MISMATCH/);
+  assert.match(security, /UPLOADED_OBJECT_MIME_MISMATCH/);
+});
+
+const ownerTestSecret = "synthetic-owner-forwarding-test-secret";
+
+test("the Netlify bridge parses a Fetch Request body before forwarding it", async () => {
+  const keys = ["ZHAOWU_OWNER_KEY_SHA256", "ZHAOWU_OWNER_BRIDGE_SECRET"];
+  const previous = keys.map((key) => process.env[key]);
+  process.env.ZHAOWU_OWNER_KEY_SHA256 = createHash("sha256").update(ownerTestSecret).digest("hex");
+  process.env.ZHAOWU_OWNER_BRIDGE_SECRET = "synthetic-forwarding-bridge-key-0123456789";
+  const originalFetch = globalThis.fetch;
+  let forwarded = null;
+  globalThis.fetch = async (_url, init) => {
+    forwarded = JSON.parse(String(init?.body ?? "{}"));
+    return new Response(JSON.stringify({ message: "Storage quota exceeded" }), {
+      status: 402,
+      headers: { "content-type": "application/json" },
+    });
+  };
+
+  try {
+    const request = new Request("https://archive-stone-zhaowu-official.netlify.app/api/owner-data", {
+      method: "POST",
+      headers: {
+        origin: "https://archive-stone-zhaowu-official.netlify.app",
+        host: "archive-stone-zhaowu-official.netlify.app",
+        "sec-fetch-site": "same-origin",
+        cookie: `${OWNER_COOKIE}=${encodeURIComponent(ownerCookieValue(ownerTestSecret))}`,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ action: "report.list" }),
+    });
+    const response = await ownerDataHandler(request);
+    assert.deepEqual(forwarded, { action: "report.list" });
+    assert.equal(response.status, 402);
+  } finally {
+    globalThis.fetch = originalFetch;
+    keys.forEach((key, index) => {
+      if (previous[index] === undefined) delete process.env[key];
+      else process.env[key] = previous[index];
+    });
+  }
+});

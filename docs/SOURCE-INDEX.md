@@ -1,0 +1,125 @@
+# ZHAOWU Canonical Source Index
+
+Purpose: keep **pointers to authoritative or reusable sources** without copying their contents into a second knowledge base.
+
+This file is governed by `AGENTS.md` and `docs/AI-COORDINATION.md`. It contains no secrets and is not a replacement for `docs/INSTRUCTION-REGISTRY.md` or `docs/CURRENT-STATE.md`.
+
+## Authority order
+
+For conflicting project behavior, use the precedence already defined in `AGENTS.md`:
+
+**latest explicit owner instruction → current `main` / production truth → repository protocol + instruction registry + current contracts → older active docs/issues → stale chats/branches/deployments.**
+
+## Canonical sources
+
+### Source code
+- Name: ZHAOWU repository
+- Authority: PRIMARY — source code
+- Scope: accepted implementation state
+- Location: https://github.com/stoneweiwei-dot/zhaowu
+- Canonical branch: `main`
+- Freshness: inspect current `main` before implementation/status claims
+
+### Execution protocol
+- Name: `AGENTS.md`
+- Authority: PRIMARY — repository execution governance
+- Scope: all agents and website/project tasks
+- Location: https://github.com/stoneweiwei-dot/zhaowu/blob/main/AGENTS.md
+- Freshness: read current `main` before overlapping work
+
+### Active instruction registry
+- Name: `docs/INSTRUCTION-REGISTRY.md`
+- Authority: PRIMARY — active/superseded owner instructions
+- Scope: product behavior and instruction supersession
+- Location: https://github.com/stoneweiwei-dot/zhaowu/blob/main/docs/INSTRUCTION-REGISTRY.md
+- Freshness: read before changing an overlapping feature or workflow
+
+### Current project state
+- Name: `docs/CURRENT-STATE.md`
+- Authority: PRIMARY — maintained project state and backlog context
+- Scope: current architecture, known state, unresolved items
+- Location: https://github.com/stoneweiwei-dot/zhaowu/blob/main/docs/CURRENT-STATE.md
+- Freshness: re-check against current `main` and live services when the claim is runtime-sensitive
+
+### Multi-agent coordination
+- Name: `docs/AI-COORDINATION.md`
+- Authority: PRIMARY — agent concurrency/workflow rules
+- Scope: task locks, handoff, audit, link, weekly level-up
+- Location: https://github.com/stoneweiwei-dot/zhaowu/blob/main/docs/AI-COORDINATION.md
+- Freshness: read before agent implementation or handoff
+
+### Production
+- Name: Vercel `stone-zhaowu-official`
+- Authority: PRIMARY — live runtime state
+- Scope: only active production host
+- Location: https://zhao-wu.com/
+- Runtime release evidence: https://zhao-wu.com/release.json
+- Freshness: inspect only when runtime/live status is in scope; docs/governance-only work does not require production verification
+
+### Data/Auth/Storage
+- Name: Supabase project `plgpxusmemnmzckbwtiv`
+- Authority: PRIMARY — live database/storage state
+- Scope: ZHAOWU database, storage and related service state
+- Location: project identifier only; credentials are never stored here
+- Freshness: query live state only when the task actually depends on Supabase
+
+## External method references
+
+### 《怪力亂神》七卷原始母本與編輯校訂（2026-10-27）
+- Name: 《昭梧・黃泉紀：怪力亂神全書》七卷母本
+- Authority: OWNER MATERIAL — 本對話站主補齊的世界觀與角色設定；非古籍史料權威
+- Scope: `/mythic-atlas#guaili` 的七卷導讀、十二地支四態、十二流煞、十年災異編年、終章
+- Canonical archival note: https://github.com/stoneweiwei-dot/zhaowu/blob/main/docs/mythic-atlas/GUAILI-LUANSHEN-CANON-20261027.md
+- Runtime source: `src/routes/-mythic-atlas-guaili-data.ts` 與 `-mythic-atlas-guaili.tsx`
+- Series grouping (no duplicate body): https://zhao-wu.com/guaili-luanshen — links to the canonical `mythic-atlas` chapters
+- Rights: 自有敘事可公開；第三方現代二創線索仍需核權，未查證前不重製其表達
+- Freshness: 後續修改以站主最新明示版本及原始母本優先，對外考據另以可追溯文獻查核
+
+### 黃泉紀 · 左道旁門設定集（站主提供）
+- Name: 《黃泉紀 · 左道旁門設定集》草案與創作對話
+- Authority: OWNER MATERIAL — 世界觀與角色名錄的產品意圖；不是古籍或宗教史權威
+- Scope: `/mythic-atlas` 的標題、八大支系、三十五位角色、四條故事線與十二幅視覺參照
+- Locations: https://agentmore.chatglm.cn/shareFile/6adc4ab9a2dc192bebfc6f74 and https://agentmore.chatglm.cn/share/RFpo1NQk
+- Rights: 僅作站主授權的昭梧原創改寫；十二幅圖使用自製素材，不複製來源畫作或第三方浮水印
+- Freshness: 修改《黃泉紀》設定或對外宣稱來源前，重新核對站主最新指令與公開可驗證資料
+
+### AI-Partner
+- Name: Jaycheng1103/AI-Partner
+- Authority: REFERENCE ONLY
+- Scope: conceptual source for audit/link/level-up workflow patterns
+- Location: https://github.com/Jaycheng1103/AI-Partner
+- Imported behavior: methodology only; no package, runtime, memory store or framework dependency
+- Supersession: ZHAOWU's own `AGENTS.md` and `docs/AI-COORDINATION.md` are authoritative
+
+### Open-source adoption radar
+- Name: `docs/OPEN-SOURCE-RADAR.md`
+- Authority: REFERENCE — adoption decisions, not product/runtime truth
+- Scope: external GitHub projects, licence/security/fit triage and adoption status
+- Location: https://github.com/stoneweiwei-dot/zhaowu/blob/main/docs/OPEN-SOURCE-RADAR.md
+- Freshness: re-check a project's current repository/licence/security state before any actual adoption
+
+### 易經智慧精編講義（第二版）— 2026-10-20 owner upload
+- Name: 《易經智慧精編講義（第二版）》— 校勘與入庫裁決
+- Authority: REFERENCE ONLY — OWNER_MATERIAL / MODERN_INTERPRETATION; not classical or runtime truth
+- Scope: Bazi／盲派教學的來源界線、形式錯盤負例與去重規則
+- Location: [內部研究裁決](STONE-THEORY-LECTURE-V2-INGESTION-20261020.md); 原始 DOCX 為 2026-10-20 私人聊天附件，未在 repository 重製
+- Test: `node --test docs/theory-audit/lecture-v2-audit.test.mjs`（僅檢核負面樣本，不是正式引擎測試）
+- Rights: 來源明示未經許可不得轉載、改編、公開傳播或商用；作者／授權 UNKNOWN
+- Freshness: 要公開再利用、修改判讀規則或宣稱案例應驗之前，重新取得合法來源、核對原始記錄並重跑主鏈／證據 Gate
+- Supersession: R6.2.2 governance + R6.2.1 runtime + P2/P3 + 既有 12 組 TUC 優先；此來源不另立 active 盲派主判
+
+### Vercel Labs Skills CLI
+- Name: `vercel-labs/skills`
+- Authority: EXTERNAL REFERENCE — developer skill discovery/management only, not repository or runtime policy
+- Scope: sourcing, evaluating and updating Agent Skills; local adaptations in `.agents/skills/`
+- Location: https://github.com/vercel-labs/skills
+- Source inspected: `9197d919034d19010ae303cf96bf19ad087dd4be` (2026-11-05)
+- Freshness: re-check upstream SKILL.md, license, scripts and update diff before changing installed local skills
+
+### Vercel Labs Agent Skills
+- Name: `vercel-labs/agent-skills`
+- Authority: EXTERNAL REFERENCE — engineering methods; ZHAOWU-specific guards override generic deployment/upgrade recipes
+- Scope: React, composition, UI, writing, Vercel optimization and deployment guidance
+- Location: https://github.com/vercel-labs/agent-skills
+- Source inspected: `1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62` (2026-11-05)
+- Freshness: review upstream version, dependencies and security before any re-import; do not auto-update from main

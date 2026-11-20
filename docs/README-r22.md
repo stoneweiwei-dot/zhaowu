@@ -1,0 +1,1 @@
+r22 adds only the free Six Realms habit quiz and homepage entry. No locked BaZi, Palm, auth, payment, Supabase schema, Edge Function, or OpenAI provider files are intentionally changed.

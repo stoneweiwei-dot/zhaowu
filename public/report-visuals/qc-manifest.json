@@ -1,0 +1,289 @@
+{
+  "version": "ZW-REPORT-VISUAL-QC-1.0",
+  "reviewedAt": "2026-10-06",
+  "policy": {
+    "aspectRatio": "9:16",
+    "targetFullWidth": 1080,
+    "targetFullHeight": 1920,
+    "minimumGrandfatheredRuntimeWidth": 480,
+    "minimumGrandfatheredRuntimeHeight": 854,
+    "rule": "Any replacement below 1080px wide is rejected. Existing lower-resolution files are grandfathered only while their reviewed Git blob SHA stays unchanged. Face/head QC is bound to that exact blob."
+  },
+  "assets": {
+    "jia-wood": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "f7033b9a851d7b943f0373dfeb2d28de6e6ead66",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "f7033b9a851d7b943f0373dfeb2d28de6e6ead66"
+    },
+    "yi-wood": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "b6f13046e530894a038cd717ce47dcec068fe0e6",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "b6f13046e530894a038cd717ce47dcec068fe0e6"
+    },
+    "bing-fire": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "2f2bb289abb98dd303eca8a869cf08936e796dd4",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "2f2bb289abb98dd303eca8a869cf08936e796dd4"
+    },
+    "ding-fire": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "143dd5b6d45f9a8cf9286141617976059e3d96ba",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "143dd5b6d45f9a8cf9286141617976059e3d96ba"
+    },
+    "wu-earth": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "dc59c7405b27e56d2959321b6e1297b29596fb35",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "dc59c7405b27e56d2959321b6e1297b29596fb35"
+    },
+    "ji-earth": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "6b545edd3a4cc8be2b44f16a1013b8cd32785cc5",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "6b545edd3a4cc8be2b44f16a1013b8cd32785cc5"
+    },
+    "geng-metal": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "67a6386b229ab2b544c2aebacf50e7652144123a",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "67a6386b229ab2b544c2aebacf50e7652144123a"
+    },
+    "xin-metal": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "1ceccb8d594e9768dae78dee7d6fa54915bbee09",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "1ceccb8d594e9768dae78dee7d6fa54915bbee09"
+    },
+    "ren-water": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "b72fdc3f9de0b3d5045cf760b12d05f437ae8220",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "b72fdc3f9de0b3d5045cf760b12d05f437ae8220"
+    },
+    "gui-water": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "0d75a6e969c8c86b482e20b2bde639ea6a7a4290",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "0d75a6e969c8c86b482e20b2bde639ea6a7a4290"
+    },
+    "yin-spring": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "c6786b99971f22f35d4403d7ecfba3e24e1d6b4d",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "c6786b99971f22f35d4403d7ecfba3e24e1d6b4d"
+    },
+    "mao-spring": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "874b24a87a012f8c49a8cbbc2ba8165e7b391afb",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "874b24a87a012f8c49a8cbbc2ba8165e7b391afb"
+    },
+    "chen-spring": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "14227511dfa38799db16adf28a8c9c83a656826e",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "14227511dfa38799db16adf28a8c9c83a656826e"
+    },
+    "si-summer": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "f36dd85cafa9a538659dc937222e39ca8c737034",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "f36dd85cafa9a538659dc937222e39ca8c737034"
+    },
+    "wu-summer": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "2b16156a36ea8d1a7ed191c9d6f130ecbf532ea2",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "2b16156a36ea8d1a7ed191c9d6f130ecbf532ea2"
+    },
+    "wei-summer": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "d6c7aa6fe6998e346b731b90c427183f6d938e84",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "d6c7aa6fe6998e346b731b90c427183f6d938e84"
+    },
+    "shen-autumn": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "060d0b2971fc5aa769541ba0c93cf70997f2eb65",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "060d0b2971fc5aa769541ba0c93cf70997f2eb65"
+    },
+    "you-autumn": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "30a3f1b82c9f96a83ef90c2199467f6b890a5998",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "30a3f1b82c9f96a83ef90c2199467f6b890a5998"
+    },
+    "xu-autumn": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "97c0ad17034f773993db18f726eabdb8a768c8f3",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "97c0ad17034f773993db18f726eabdb8a768c8f3"
+    },
+    "hai-winter": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "4b7a97982fa55e955afeda7d60c0c7377d44fe0a",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "4b7a97982fa55e955afeda7d60c0c7377d44fe0a"
+    },
+    "zi-winter": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "9ed57de7fba58781976cee3e0094e1a776b928d0",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "9ed57de7fba58781976cee3e0094e1a776b928d0"
+    },
+    "chou-winter": {
+      "runtime": true,
+      "faceHeadQc": "pass",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 480,
+      "height": 854,
+      "blobSha": "1ff11f739146399e7dde3bd63a44b4522ba4e7b0",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "1ff11f739146399e7dde3bd63a44b4522ba4e7b0"
+    },
+    "overview": {
+      "runtime": true,
+      "faceHeadQc": "not-applicable",
+      "resolutionQc": "legacy-phone-safe",
+      "width": 700,
+      "height": 1244,
+      "blobSha": "c0282c572ebea6fde7d6b5eb321beb537265aaf1",
+      "legacyResolutionException": true,
+      "legacyBaselineBlobSha": "c0282c572ebea6fde7d6b5eb321beb537265aaf1"
+    },
+    "luck-wood": {
+      "runtime": false,
+      "faceHeadQc": "blocked-ghosting",
+      "resolutionQc": "blocked",
+      "width": 940,
+      "height": 1672,
+      "blobSha": "d4df8b60603f4cee19e651f78b4686811419d9b4",
+      "legacyResolutionException": false
+    },
+    "luck-fire": {
+      "runtime": false,
+      "faceHeadQc": "blocked-ghosting",
+      "resolutionQc": "blocked",
+      "width": 940,
+      "height": 1672,
+      "blobSha": "cb173ec0c6626d3297dc093b8ca5e84723732ecf",
+      "legacyResolutionException": false
+    },
+    "luck-earth": {
+      "runtime": false,
+      "faceHeadQc": "blocked-ghosting",
+      "resolutionQc": "blocked",
+      "width": 940,
+      "height": 1672,
+      "blobSha": "5cc6137b38aea7cc8601a39703da53eb97c085af",
+      "legacyResolutionException": false
+    },
+    "luck-metal": {
+      "runtime": false,
+      "faceHeadQc": "blocked-ghosting",
+      "resolutionQc": "blocked",
+      "width": 940,
+      "height": 1672,
+      "blobSha": "3251a977790d5718ef9a05b15d7072ea4d418e66",
+      "legacyResolutionException": false
+    },
+    "luck-water": {
+      "runtime": false,
+      "faceHeadQc": "blocked-ghosting",
+      "resolutionQc": "blocked",
+      "width": 940,
+      "height": 1672,
+      "blobSha": "1310e7639146a239a861eeb72078a689a77319a5",
+      "legacyResolutionException": false
+    }
+  }
+}

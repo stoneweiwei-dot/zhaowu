@@ -1,0 +1,471 @@
+import { useDisplayLanguage } from "@/lib/display-language";
+import { customerChrome, translateChromeObject } from "@/lib/customer-chrome";
+import { Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { lazy, Suspense, useState, useEffect } from "react";
+import { useAuthState } from "@/lib/auth/provider";
+import { ReportSaveStatus } from "@/components/report-save-status";
+import { AnalysisForm } from "@/components/analysis-form";
+import { PaintedHome } from "@/components/painted-home";
+import { DeepReadingHeroCard } from "@/components/deep-reading-hero-card";
+import { HomeScreenInstallPrompt } from "@/components/home-screen-install-prompt";
+import { HomeSectionBoundary } from "@/components/home-section-boundary";
+import { useI18n } from "@/lib/i18n";
+import { readLocalReports } from "@/lib/local-report-history";
+import { clearSharedBirthRecord, writeSharedBirthRecord } from "@/lib/shared-birth";
+import { useAppStore } from "@/lib/store";
+import "@/home-hero-v1.css";
+import "@/home-polish-v3.css";
+import "@/home-portals.css";
+import "@/home-portals-astrology.css";
+import "@/home-layout-r46.css";
+
+export const Route = createFileRoute("/")({ component: Home });
+
+type Section = "form" | "today" | "quiz" | "notes";
+
+/* ── Trilingual copy ───────────────────────────────────────── */
+function useCopy(locale: string) {
+  if (locale === "en") {
+    return {
+      kicker: "ZHAOWU · PERSONAL DESTINY BOOK",
+      title: "One birth record. One ZHAOWU Destiny Book.",
+      tagline: "Heaven counts to forty-nine — and leaves one line open.",
+      birthCta: "Start here: enter your birth date",
+      birthHint: "Free · no sign-up · about 1 minute",
+      moreTitle: "More features",
+      navBook:  "Create report",
+      navToday: "Today",
+      navQuiz:  "Explore",
+      navNotes: "Notes",
+      backHome: "Back to Home",
+      todayHint: "almanac, five-element dress and spirit slip",
+      quizHint: "optional self-discovery tests",
+      notesTitle: "Notes on Life",
+      notesHint: "essays and editorial archive",
+      scentTitle: "Five-Element Scent Map",
+      scentHint: "sensory preference vs. five-element symbolism",
+      cards: [
+        { href: "/quiz/divine-affinity",       title: "Divine Affinity Scan",           hint: "16 questions across Soul Pattern, Celestial Mandate" },
+        { href: "/quiz/cultivation-destiny",   title: "Cultivation Destiny Dossier",    hint: "spirit root, sect, paths + personal 9:16 dossier image" },
+        { href: "/brand-archetypes.html", title: "Twelve Brand Archetypes", hint: "12 brand scenarios reveal your primary and supporting archetypes" },
+        { href: "/fun-tests/earth-online",     title: "Earth Online · Classics Guide",  hint: "8 questions to match your stuck point with a Chinese classic" },
+        { href: "/fun-tests?test=animal",      title: "Inner Animal × Guardian Beast",  hint: "current personality strategy and instinctive response" },
+        { href: "/fun-tests?test=element",     title: "Five-Element Function Test",     hint: "which function you currently want to strengthen" },
+        { href: "/quiz/six-realms",            title: "Six Realms Habit Test",          hint: "which everyday habit pattern is strongest now" },
+        { href: "/quiz/five-element-overdrive", title: "Five-Element Overuse Test",     hint: "10 everyday situations: which strength you overuse into friction" },
+        { href: "/mythic-atlas", title: "Chronicle of the Yellow Springs", hint: "Explore twelve original plates, eight lineages and four connected chronicles" },
+      ],
+    };
+  }
+  if (locale === "zh-Hans") {
+    return {
+      kicker: "昭梧 · 个人命书",
+      title: "一份生辰，读成一本昭梧命书",
+      tagline: "天衍四九，其留与一。爱出者爱返，福往者福来。",
+      birthCta: "从这里开始：填写出生日期",
+      birthHint: "免费 · 免登录 · 约 1 分钟",
+      moreTitle: "其他功能",
+      navBook:  "排盘与报告",
+      navToday: "今日黄历",
+      navQuiz:  "测验",
+      navNotes: "观世录",
+      backHome: "返回首页",
+      todayHint: "黄历、五行穿衣、灵签各自展开",
+      quizHint: "可选的自我观察",
+      notesTitle: "观世录",
+      notesHint: "最新文章与完整内容档案",
+      scentTitle: "五行香气谱",
+      scentHint: "看嗅觉偏好与五行文化象意",
+      cards: [
+        { href: "/quiz/divine-affinity",       title: "仙佛渊源本缘测试",   hint: "16 题从魂格、象征脉象、天命六层交叉判读" },
+        { href: "/quiz/cultivation-destiny",   title: "修仙命格灵测",       hint: "推演灵根宗门道途并生成个人九比十六命测图" },
+        { href: "/brand-archetypes.html", title: "品牌十二原型 · 定位测评", hint: "序、寻、证、联四组动机，12 题探索品牌主副原型" },
+        { href: "/fun-tests/earth-online",     title: "地球 Online · 古籍攻略", hint: "8 道题看你现在卡在哪一关，推荐古籍" },
+        { href: "/fun-tests?test=animal",      title: "内在动物 × 命局瑞兽", hint: "看现在常用的人格策略与本能反应" },
+        { href: "/fun-tests?test=element",     title: "五行功能测验",        hint: "看现在主观上最想加强哪一种功能" },
+        { href: "/quiz/six-realms",            title: "六道习气测验",        hint: "看目前最明显的日常惯性" },
+        { href: "/quiz/five-element-overdrive", title: "五行优势内耗测验",    hint: "10 个日常情境，看你最容易把哪一种优势用成内耗" },
+        { href: "/mythic-atlas", title: "幽明万象录 · 原创设定集", hint: "十二幅原创图、八大支系与四条相连故事线" },
+      ],
+    };
+  }
+  /* 繁體中文 (default) */
+  return {
+    kicker: "昭梧 · 個人命書",
+    title: "一份生辰，讀成一本昭梧命書",
+    tagline: "天衍四九，其留與一。愛出者愛返，福往者福來。",
+    birthCta: "從這裡開始：填寫出生日期",
+    birthHint: "免費 · 免登入 · 約 1 分鐘",
+    moreTitle: "其他功能",
+    backHome: "返回主頁",
+    navBook:  "排盤與報告",
+    navToday: "今日黃曆",
+    navQuiz:  "趣味測驗",
+    navNotes: "觀世錄",
+    todayHint: "黃曆、五行穿衣、靈籤各自展開",
+    quizHint: "可選的自我觀察",
+    notesTitle: "觀世錄",
+    notesHint: "最新文章與完整內容檔案",
+    scentTitle: "五行香氣譜",
+    scentHint: "看嗅覺偏好與五行文化象意",
+    cards: [
+      { href: "/quiz/divine-affinity",       title: "仙佛淵源本緣測試",   hint: "16 題從魂格、象徵脈象、天命六層交叉判讀" },
+      { href: "/quiz/cultivation-destiny",   title: "修仙命格靈測",       hint: "推演靈根宗門道途並生成個人九比十六命測圖" },
+      { href: "/brand-archetypes.html", title: "品牌十二原型 · 定位測評", hint: "序、尋、證、聯四組動機，12 題探索你的品牌主副原型" },
+      { href: "/fun-tests/earth-online",     title: "地球 Online · 古籍攻略", hint: "8 道題看你現在卡在哪一關，推薦古籍" },
+      { href: "/fun-tests?test=animal",      title: "內在動物 × 命局瑞獸", hint: "看現在常用的人格策略與本能反應" },
+      { href: "/fun-tests?test=element",     title: "五行功能測驗",        hint: "看現在主觀上最想加強哪一種功能" },
+      { href: "/quiz/six-realms",            title: "六道習氣測驗",        hint: "看目前最明顯的日常慣性" },
+      { href: "/quiz/five-element-overdrive", title: "五行優勢內耗測驗",    hint: "10 個日常情境，看你最容易把哪一種優勢用成內耗" },
+      { href: "/mythic-atlas", title: "幽明萬象錄 · 原創設定集", hint: "十二幅原創圖、八大支系與四條相連故事線" },
+    ],
+  };
+}
+
+
+function heroUiCopy(locale: string) {
+  if (locale === "en") return {
+    gallery: "ZHAOWU artwork carousel",
+    controls: "Artwork controls",
+    previous: "Previous artwork",
+    next: "Next artwork",
+    pause: "Pause artwork rotation",
+    play: "Play artwork rotation",
+    reduced: "Automatic artwork rotation is disabled by Reduce Motion",
+    primaryNav: "Main features",
+    scentLoading: "Loading Five-Element Scent Map",
+    notesLoading: "Loading Notes on Life",
+    painting: (index: number, total: number, title: string) => `${index} of ${total}: ${title}`,
+  };
+  if (locale === "zh-Hans") return {
+    gallery: "昭梧画作轮播",
+    controls: "画作切换",
+    previous: "上一张画作",
+    next: "下一张画作",
+    pause: "暂停画作轮播",
+    play: "继续画作轮播",
+    reduced: "系统已开启减少动态效果，自动轮播已停用",
+    primaryNav: "主要功能",
+    scentLoading: "正在载入五行香气谱",
+    notesLoading: "正在载入观世录",
+    painting: (index: number, total: number, title: string) => `第 ${index} 张，共 ${total} 张：${title}`,
+  };
+  return {
+    gallery: "昭梧畫作輪播",
+    controls: "畫作切換",
+    previous: "上一張畫作",
+    next: "下一張畫作",
+    pause: "暫停畫作輪播",
+    play: "繼續畫作輪播",
+    reduced: "系統已開啟減少動態效果，自動輪播已停用",
+    primaryNav: "主要功能",
+    scentLoading: "正在載入五行香氣譜",
+    notesLoading: "正在載入觀世錄",
+    painting: (index: number, total: number, title: string) => `第 ${index} 張，共 ${total} 張：${title}`,
+  };
+}
+
+const LazyDailyAlmanacWidget = lazy(() =>
+  import("@/components/daily-almanac-widget").then((mod) => ({ default: mod.DailyAlmanacWidget })),
+);
+const LazySkyEventsHomeSection = lazy(() =>
+  import("@/components/sky-events-home-section").then((mod) => ({ default: mod.SkyEventsHomeSection })),
+);
+const LazyLifeViewHomeSection = lazy(() =>
+  import("@/components/life-view-home-section").then((mod) => ({ default: mod.LifeViewHomeSection })),
+);
+const LazyResultView = lazy(() =>
+  import("@/components/result-view").then((mod) => ({ default: mod.ResultView })),
+);
+const LazyScentFiveElementTest = lazy(() =>
+  import("@/components/scent-five-element-test").then((mod) => ({ default: mod.ScentFiveElementTest })),
+);
+
+/* ── Home ──────────────────────────────────────────────────── */
+function Home() {
+  const { locale } = useI18n();
+  const { language } = useDisplayLanguage();
+  const copy = translateChromeObject(language, useCopy(locale));
+  const heroUi = translateChromeObject(language, heroUiCopy(locale));
+  if (language !== "zh-Hant" && language !== "zh-Hans" && language !== "en") {
+    heroUi.painting = (index, total, title) => `${index} / ${total}: ${title}`;
+  }
+  const { user } = useAuthState();
+  const current = useAppStore((s) => s.current);
+  const setCurrent = useAppStore((s) => s.setCurrent);
+
+  const [activeSection, setActiveSection] = useState<Section | null>(null);
+  const [scentOpen, setScentOpen] = useState(false);
+  const [formExpanded, setFormExpanded] = useState(!current);
+  useEffect(() => { setFormExpanded(!current); }, [current?.id]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("report");
+    const saved = id ? readLocalReports().find(entry => entry.result.id === id) : null;
+    if (saved) {
+      if (saved.birth) writeSharedBirthRecord(saved.birth);
+      setCurrent(saved.result);
+      setActiveSection("form");
+    } else if (params.get("checkout") === "success") {
+      // A BaZi checkout can begin before a question/report ID exists. The birth
+      // record is already local, so return directly to its book stage.
+      setFormExpanded(true);
+      setActiveSection("form");
+      window.setTimeout(() => document.getElementById("bazi")?.scrollIntoView({ block: "start" }), 180);
+    }
+  }, [setCurrent]);
+
+  /* auto-open form if there's a cached analysis result */
+  useEffect(() => {
+    if (current && activeSection === null) setActiveSection("form");
+  }, [current]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const returnToHome = () => {
+    setActiveSection(null);
+    if (typeof window !== "undefined" && window.location.hash) {
+      window.history.pushState(null, "", window.location.pathname);
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const toggleSection = (id: Section) => {
+    if (id === "form") {
+      openBirthBook({ focusYear: true });
+      return;
+    }
+    setActiveSection((prev) => {
+      const next = prev === id ? null : id;
+      if (typeof window !== "undefined") {
+        if (next) {
+          window.history.pushState(null, "", `#${next}`);
+        } else {
+          window.history.pushState(null, "", window.location.pathname);
+        }
+      }
+      return next;
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const openBirthBook = (options?: { focusYear?: boolean }) => {
+    const shouldFocus = options?.focusYear ?? true;
+    setFormExpanded(true);
+    setActiveSection("form");
+    if (typeof window !== "undefined" && window.location.hash !== "#birth-form") {
+      window.history.pushState(null, "", "#birth-form");
+    }
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const target = document.getElementById("birth-form") ?? document.getElementById("analysis");
+        target?.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (shouldFocus) {
+          window.setTimeout(() => {
+            document.getElementById("birth-year")?.focus({ preventScroll: true });
+          }, 350);
+        }
+      });
+    });
+  };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const BIRTH_HASHES = ["#birth-form", "#analysis", "#analysisForm", "#birth-year", "#form"];
+    const TODAY_HASHES = ["#today", "#home-today-guide", "#almanac"];
+    const QUIZ_HASHES = ["#quiz", "#fun-tests", "#tests"];
+    const NOTES_HASHES = ["#notes", "#life-view", "#guanshi"];
+
+    const fromHash = () => {
+      const hash = window.location.hash;
+      if (hash === "#report") {
+        setActiveSection("form");
+        window.setTimeout(() => document.getElementById("report")?.scrollIntoView({ block: "start" }), 150);
+      } else if (hash === "#bazi") {
+        setFormExpanded(true);
+        setActiveSection("form");
+        window.setTimeout(() => document.getElementById("bazi")?.scrollIntoView({ block: "start" }), 150);
+      } else if (hash === "#analysis-reports") {
+        setActiveSection("form");
+        window.setTimeout(() => document.getElementById("analysis-reports")?.scrollIntoView({ block: "start" }), 150);
+      } else if (BIRTH_HASHES.includes(hash)) {
+        openBirthBook({ focusYear: false });
+      } else if (TODAY_HASHES.includes(hash)) {
+        setActiveSection("today");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else if (QUIZ_HASHES.includes(hash)) {
+        setActiveSection("quiz");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else if (NOTES_HASHES.includes(hash)) {
+        setActiveSection("notes");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else if (!hash || hash === "#" || hash === "#home") {
+        setActiveSection(null);
+      }
+    };
+    const fromEvent = () => openBirthBook({ focusYear: false });
+    fromHash();
+    window.addEventListener("hashchange", fromHash);
+    window.addEventListener("popstate", fromHash);
+    window.addEventListener("zhaowu:open-birth-form", fromEvent);
+    return () => {
+      window.removeEventListener("hashchange", fromHash);
+      window.removeEventListener("popstate", fromHash);
+      window.removeEventListener("zhaowu:open-birth-form", fromEvent);
+    };
+  }, []);
+
+  const navLabels: Record<Section, string> = {
+    form:  copy.navBook,
+    today: copy.navToday,
+    quiz:  copy.navQuiz,
+    notes: copy.navNotes,
+  };
+
+  return (
+    <main className="zw-hero-home">
+
+      {activeSection === null && <PaintedHome onOpen={section => section === "form" ? openBirthBook() : toggleSection(section)} />}
+
+      {/* ── SUBVIEW TOPBAR: RETURN TO 4 BIG PORTALS ──────────── */}
+      {activeSection !== null && (
+        <div className="zw-subview-topbar" data-subview-header>
+          <button
+            type="button"
+            className="zw-subview-back-btn"
+            data-subview-back
+            onClick={returnToHome}
+          >
+            <span className="zw-subview-back-arrow" aria-hidden>←</span>
+            <span>{copy.backHome}</span>
+          </button>
+          <span className="zw-subview-title">{navLabels[activeSection]}</span>
+        </div>
+      )}
+
+      {/* ── DEDICATED VIEW: TODAY GUIDE ─────────────────────── */}
+      {activeSection === "today" && (
+        <div className="zw-hero-secondary-panel zw-subview-panel">
+          <section id="home-today-guide" className="zw-home-today-priority" aria-label={copy.navToday}>
+            <Suspense
+              fallback={
+                <div className="zw-home-today-skeleton" role="status" aria-label={customerChrome("正在載入今日指引", "正在载入今日指引", "Loading Today Guide")}>
+                  <span />
+                  <strong />
+                  <i />
+                </div>
+              }
+            >
+              <LazyDailyAlmanacWidget embedded />
+              <LazySkyEventsHomeSection />
+            </Suspense>
+          </section>
+        </div>
+      )}
+
+      {/* ── FORM & DESTINY BOOK: inline on the home page, and as the "form" subview ── */}
+      {activeSection === "form" && (
+        <>
+          {activeSection === "form" ? <section className="zw-report-wayfinding">
+            <h2>{current ? customerChrome("你的報告已生成", "你的报告已生成", "Your report is ready") : customerChrome("開始排盤與提問", "开始排盘与提问", "Create your report")}</h2>
+            <Link to="/history">{customerChrome("查看我的報告", "查看我的报告", "My saved reports")}</Link>
+            {current ? <a href="#report">{customerChrome("直接看本次答案", "直接看本次答案", "Read this answer")}</a> : null}
+            {user?.isOwner ? <p className="zw-owner-access-note">{locale === "en" ? "Owner access: all report content is available without payment." : locale === "zh-Hans" ? "站主已登入：所有报告内容免费阅读，无需购买。" : "站主已登入：所有報告內容免費閱讀，無需購買。"}</p> : null}
+          </section> : null}
+          <details className="zw-report-edit" open={formExpanded} onToggle={event => setFormExpanded(event.currentTarget.open)}>
+            <summary hidden={!current}>{customerChrome("出生資料與問題（點此修改）", "出生资料与问题（点此修改）", "Birth details and question")}</summary>
+          <HomeSectionBoundary
+            id="analysis"
+            locale={locale}
+            onRecover={() => { clearSharedBirthRecord(); window.location.reload(); }}
+          >
+            <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--primary relative">
+              <AnalysisForm />
+            </div>
+          </HomeSectionBoundary>
+
+          </details>
+
+          {/* Result view visible when there's an active result */}
+          {current && (
+            <>
+              <HomeSectionBoundary
+                id="report"
+                locale={locale}
+                onRecover={() => { setCurrent(null); window.location.reload(); }}
+              >
+                <div id="report" className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--result">
+                  <ReportSaveStatus />
+                  <Suspense fallback={<div role="status">{locale === "en" ? "Loading your report…" : locale === "zh-Hans" ? "正在载入报告…" : "正在載入報告…"}</div>}>
+                    <LazyResultView result={current} />
+                  </Suspense>
+                </div>
+              </HomeSectionBoundary>
+              <HomeSectionBoundary id="hero" locale={locale}>
+                <DeepReadingHeroCard />
+              </HomeSectionBoundary>
+            </>
+          )}
+        </>
+      )}
+
+      {/* ── DEDICATED VIEW: QUIZ ────────────────────────────── */}
+      {activeSection === "quiz" && (
+        <div className="zw-hero-secondary-panel zw-subview-panel">
+          <div className="zhaowu-home-fun-grid" style={{ padding: "0 16px" }}>
+            {copy.cards.map((card) => {
+              const [cardTo, cardQuery] = card.href.split("?");
+              const cardSearch = cardQuery ? Object.fromEntries(new URLSearchParams(cardQuery)) : undefined;
+              return (
+              <Link key={card.title} to={cardTo} search={cardSearch} className="zhaowu-home-fun-card" aria-label={card.title}>
+                <span className="min-w-0">
+                  <strong>{card.title}</strong>
+                  <small>{card.hint}</small>
+                </span>
+                <span className="zhaowu-home-fun-arrow" aria-hidden>›</span>
+              </Link>
+              );
+            })}
+            <button
+              type="button"
+              className="zhaowu-home-fun-card text-left"
+              aria-expanded={scentOpen}
+              aria-controls="home-scent-test"
+              onClick={() => setScentOpen((v) => !v)}
+            >
+              <span className="min-w-0">
+                <strong>{copy.scentTitle}</strong>
+                <small>{copy.scentHint}</small>
+              </span>
+              <span className="zhaowu-home-fun-arrow" aria-hidden>{scentOpen ? "⌃" : "›"}</span>
+            </button>
+          </div>
+          <div id="home-scent-test" data-scent-panel hidden={!scentOpen}>
+            {scentOpen ? (
+              <Suspense fallback={<div className="zw-home-inline-loading" role="status">{heroUi.scentLoading}</div>}>
+                <LazyScentFiveElementTest result={current} />
+              </Suspense>
+            ) : null}
+          </div>
+        </div>
+      )}
+
+      {/* ── DEDICATED VIEW: NOTES ───────────────────────────── */}
+      {activeSection === "notes" && (
+        <div className="zw-hero-secondary-panel zw-subview-panel">
+          <Suspense fallback={<div className="zw-home-inline-loading" role="status">{heroUi.notesLoading}</div>}>
+            <LazyLifeViewHomeSection />
+          </Suspense>
+        </div>
+      )}
+
+      {/* ── INSTALL PROMPT ──────────────────────────────────── */}
+      <HomeSectionBoundary id="install" locale={locale}>
+        <div className="zhaowu-home-stage">
+          <HomeScreenInstallPrompt />
+        </div>
+      </HomeSectionBoundary>
+
+    </main>
+  );
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "language": "th",
+    "chunk": "th-n8Rj7YRM.js",
+    "bytes": 17883,
+    "uniqueDictionaryPayload": true,
+    "preloadedByHtml": false
+  },
+  {
+    "language": "id",
+    "chunk": "id-QJ8_QsNJ.js",
+    "bytes": 9166,
+    "uniqueDictionaryPayload": true,
+    "preloadedByHtml": false
+  },
+  {
+    "language": "vi",
+    "chunk": "vi-DBLSLc1u.js",
+    "bytes": 10256,
+    "uniqueDictionaryPayload": true,
+    "preloadedByHtml": false
+  }
+]

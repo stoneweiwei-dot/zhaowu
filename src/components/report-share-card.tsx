@@ -1,0 +1,182 @@
+import "./report-share-landscape.css";
+import { useEffect, useMemo, useState } from "react";
+import type { AnalysisResult } from "@/lib/bazi/types";
+import { useI18n, type Locale } from "@/lib/i18n";
+import { ImageViewer, viewerCopy } from "@/components/image-viewer";
+import { BrandIcon } from "@/components/brand-icon";
+import { buildShareCardModel, renderShareCardPng, renderLandscapeShareCardPng } from "@/lib/report/share-card";
+
+const COPY: Record<Locale, {
+  kicker: string;
+  title: string;
+  lead: string;
+  make: string;
+  making: string;
+  share: string;
+  remake: string;
+  previewAlt: string;
+  fallback: string;
+  guideTip: string;
+  failed: string;
+}> = {
+  "zh-Hant": {
+    kicker: "ZHAOWU · SHARE CARD",
+    title: "分享我的命象",
+    lead: "以命盤內容製作分享圖，選擇直版或橫版。",
+    make: "製作分享圖",
+    making: "正在製作…",
+    share: "分享／儲存",
+    remake: "重新製作",
+    previewAlt: "昭梧個人命象分享圖預覽",
+    fallback: "若手機不支援系統分享，會改為下載 PNG。",
+    guideTip: "提示：在 iPhone Safari 可點「分享／儲存」後選「儲存影像」；若於微信等內建瀏覽器無法直接下載，可點預覽圖放大後長按儲存。",
+    failed: "分享圖製作失敗，原報告不受影響。",
+  },
+  "zh-Hans": {
+    kicker: "ZHAOWU · SHARE CARD",
+    title: "分享我的命象",
+    lead: "以命盘内容制作分享图，选择直版或横版。",
+    make: "制作分享图",
+    making: "正在制作…",
+    share: "分享／保存",
+    remake: "重新制作",
+    previewAlt: "昭梧个人命象分享图预览",
+    fallback: "若手机不支持系统分享，会改为下载 PNG。",
+    guideTip: "提示：在 iPhone Safari 可点“分享／保存”后选“存储图像”；若在微信等内置浏览器无法直接下载，可点预览图放大后长按保存。",
+    failed: "分享图制作失败，原报告不受影响。",
+  },
+  en: {
+    kicker: "ZHAOWU · SHARE CARD",
+    title: "Share my snapshot",
+    lead: "Create a portrait or landscape image from your chart.",
+    make: "Create share image",
+    making: "Creating…",
+    share: "Share / save",
+    remake: "Recreate",
+    previewAlt: "Zhaowu personal share-card preview",
+    fallback: "If system sharing is unavailable, the PNG will download instead.",
+    guideTip: "Tip: In iPhone Safari, tap 'Share / save' then choose 'Save Image'; in WeChat or other in-app browsers, tap the preview to open full screen and long-press to save.",
+    failed: "The share image could not be created. Your report is unaffected.",
+  },
+};
+
+function safeFilename(locale: Locale) {
+  return locale === "en" ? "zhaowu-share-card.png" : locale === "zh-Hans" ? "昭梧-命象分享图.png" : "昭梧-命象分享圖.png";
+}
+
+export function ReportShareCard({ result }: { result: AnalysisResult }) {
+  const { locale } = useI18n();
+  const copy = COPY[locale];
+  const model = useMemo(() => buildShareCardModel(result, locale), [result, locale]);
+  const [blob, setBlob] = useState<Blob | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [cardFormat, setCardFormat] = useState<"portrait" | "landscape">("portrait");
+  const [error, setError] = useState(false);
+  const [openPreview, setOpenPreview] = useState(false);
+
+  useEffect(() => {
+    setBlob(null);
+    setError(false);
+    setPreviewUrl((old) => {
+      if (old) URL.revokeObjectURL(old);
+      return null;
+    });
+  }, [result.id, locale]);
+
+  useEffect(() => () => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+  }, [previewUrl]);
+
+  async function createCard(format: "portrait" | "landscape" = "portrait") {
+    if (busy) return;
+    setBusy(true);
+    setError(false);
+    try {
+      // 橫版只放訪客可見的日柱與既有關鍵詞，不上傳生辰或報告。
+      const dayPillar = result.chart.pillars.find((pillar) => pillar.key === "day")?.ganZhi ?? "";
+      const nextBlob = format === "landscape" ? await renderLandscapeShareCardPng(model, dayPillar, locale) : await renderShareCardPng(model);
+      const nextUrl = URL.createObjectURL(nextBlob);
+      setCardFormat(format);
+      setBlob(nextBlob);
+      setPreviewUrl((old) => {
+        if (old) URL.revokeObjectURL(old);
+        return nextUrl;
+      });
+    } catch {
+      setError(true);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function shareCard() {
+    if (!blob) return;
+    const file = new File([blob], safeFilename(locale), { type: "image/png" });
+    try {
+      if (typeof navigator.share === "function" && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+        await navigator.share({ files: [file], title: model.brand });
+        return;
+      }
+    } catch (shareError) {
+      if (shareError instanceof DOMException && shareError.name === "AbortError") return;
+    }
+
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = safeFilename(locale);
+    anchor.rel = "noopener";
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  return (
+    <section className="zhaowu-share-card-panel" aria-labelledby="zhaowu-share-card-title">
+      <header>
+        <p>{copy.kicker}</p>
+        <h4 id="zhaowu-share-card-title">{copy.title}</h4>
+        <span>{copy.lead}</span>
+      </header>
+
+      {previewUrl ? (
+        <div className="zhaowu-share-preview" data-format={cardFormat}>
+          <button type="button" className="zhaowu-sprite-open" aria-label={`${copy.previewAlt} · ${viewerCopy(locale).hint}`} onClick={() => setOpenPreview(true)}>
+            <img src={previewUrl} alt={copy.previewAlt} />
+            <span className="zhaowu-image-viewer-hint">{viewerCopy(locale).hint}</span>
+          </button>
+        </div>
+      ) : (
+        <div className="zhaowu-share-placeholder" aria-hidden="true">
+          <div>
+            <small>{model.brand}</small>
+            <b>{model.title}</b>
+            <span>{model.keywords.join(" · ")}</span>
+          </div>
+        </div>
+      )}
+
+      <div className="zhaowu-share-actions">
+        <button type="button" className="zhaowu-share-primary" onClick={previewUrl ? shareCard : () => createCard()} disabled={busy}>
+          {previewUrl ? <BrandIcon name="share" /> : <BrandIcon name="insight" />}
+          {busy ? copy.making : previewUrl ? copy.share : copy.make}
+        </button>
+        {previewUrl ? <button type="button" className="zhaowu-share-secondary" onClick={() => createCard()} disabled={busy}>{copy.remake}</button> : null}
+        <button type="button" className="zhaowu-share-secondary" onClick={() => createCard("landscape")} disabled={busy}>{locale === "en" ? "Create landscape card" : locale === "zh-Hans" ? "制作横版分享图" : "製作橫版分享圖"}</button>
+      </div>
+
+      <p className="zhaowu-share-fallback">{error ? copy.failed : copy.fallback}</p>
+      <p className="zhaowu-share-guide-tip" data-share-guide-tip>{copy.guideTip}</p>
+      {openPreview && previewUrl ? (
+        <ImageViewer
+          items={[{ id: "share-card", alt: copy.previewAlt, thumbnailUrl: previewUrl, fullImageUrl: previewUrl }]}
+          index={0}
+          onClose={() => setOpenPreview(false)}
+          onIndexChange={() => undefined}
+        />
+      ) : null}
+    </section>
+  );
+}

@@ -1,0 +1,28 @@
+.zw-ink-board .zw-ink-sacred-roster {
+  margin: 8px 0;
+  padding: 12px 16px;
+  border: 1px solid var(--ink-line);
+  border-radius: 10px;
+  color: var(--ink-text);
+}
+.zw-ink-board .zw-ink-sacred-roster summary { cursor: pointer; font-weight: 700; line-height: 1.5; }
+.zw-ink-board .zw-ink-sacred-roster p { margin: 10px 0; font-size: 13px; line-height: 1.6; }
+.zw-ink-board .zw-ink-sacred-roster__groups { display: grid; gap: 8px; }
+.zw-ink-board .zw-ink-sacred-roster__groups > details { padding: 8px 10px; border: 1px solid var(--ink-line); border-radius: 7px; }
+.zw-ink-board .zw-ink-sacred-roster__groups ul { list-style: none; padding: 0; margin: 8px 0 0; max-height: 45vh; overflow-y: auto; }
+.zw-ink-board .zw-ink-sacred-roster__groups li {
+  display: grid;
+  grid-template-columns: minmax(85px, auto) 1fr;
+  gap: 10px;
+  padding: 6px 0;
+  border-top: 1px solid var(--ink-line);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.zw-ink-board .zw-ink-sacred-roster__groups time { white-space: nowrap; opacity: .8; }
+.zw-ink-board[data-variant="jade"] .zw-ink-sacred-roster {
+  grid-column: 1 / -1;
+  order: 3;
+  color: var(--j-ink);
+  border-color: var(--j-line);
+}

@@ -1,0 +1,48 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import test from "node:test";
+import { customerCopy } from "../src/lib/report/customer-copy.ts";
+
+const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+
+test("D60 uses geocentric positions including the Sun and receives the active birth as a prop", () => {
+  const d60 = source("src/components/d60-karma-section.tsx");
+  const engine = source("src/lib/indian-astrology/engine.ts");
+  assert.match(d60, /calculateD60/);
+  assert.match(engine, /api\.Ecliptic\(api\.GeoVector\(key, date, true\)\)\.elon/);
+  assert.doesNotMatch(engine, /api\.EclipticLongitude\(/);
+  assert.match(d60, /reportBirth === undefined \? eventBirth : reportBirth/);
+  const page = source("src/components/specialist-system-page.tsx");
+  assert.match(page, /D60ReliabilityGate/);
+  assert.match(page, /!birth.timeUnknown && birth.city/);
+  assert.match(page, /reportBirth=\{birth && !birth.timeUnknown && birth.city \? \{ year: birth.year, month: birth.month, day: birth.day, hour: birth.hour, minute: birth.minute, city: birth.city \} : null\}/);
+});
+
+test("master numbers are interpreted inside the personal numerology result, not the article area", () => {
+  assert.doesNotMatch(source("src/components/life-view-home-section.tsx"), /NumerologyHomeSection/);
+  const numerology = source("src/routes/numerology.tsx");
+  assert.match(numerology, /isMaster=MASTER_NUMBERS\.has\(result\.number\)/);
+  assert.match(numerology, /base=isMaster\?sumDigits\(result\.number\):null/);
+  assert.match(numerology, /不是較高等級/);
+  assert.match(numerology, /Master Number/);
+});
+
+test("internal timing traces are removed without losing the following year's answer", () => {
+  const text = "2026 屬於可做、但要挑月份的年份。歲運作用鏈：大運乙丑 → 流年丙午；流月層：酉酉自刑 2027 屬於可做、但要挑月份的年份。";
+  const clean = customerCopy(text);
+  assert.match(clean, /2026/);
+  assert.match(clean, /2027/);
+  assert.doesNotMatch(clean, /歲運作用鏈|酉酉自刑|大運層|流年層|流月層|排序依序核對/);
+  assert.match(customerCopy("2026 属于可做的年份。岁运作用链：乙丑 2027 属于可做的年份。"), /2027/);
+  assert.doesNotMatch(
+    customerCopy("較順的窗口：9月。排序依序核對原局、大運、流年、流月；不把任何單一關係當作結果保證。"),
+    /排序依序核對|結果保證/,
+  );
+});
+
+test("share artwork contains the whole panel and bootstrap uses the r148 poster fallback", () => {
+  assert.match(source("src/lib/report/share-card.ts"), /Math.min\(width \/ sourceWidth, height \/ sourceHeight\)/);
+  assert.match(source("src/components/intro-gate.tsx"), /data-intro-fallback-mode="r148-poster"/);
+  assert.match(source("src/components/intro-gate.tsx"), /zhaowu-opening-r148\.jpg/);
+  assert.doesNotMatch(source("src/components/intro-gate.tsx"), /<svg/);
+});

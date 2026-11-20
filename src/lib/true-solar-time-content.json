@@ -1,0 +1,569 @@
+{
+  "path": "/knowledge/true-solar-time",
+  "datePublished": "2026-10-23",
+  "dateModified": "2026-10-23",
+  "examples": [
+    {
+      "id": "syd-dst",
+      "place": {
+        "zh-Hant": "雪梨（夏令時）",
+        "zh-Hans": "悉尼（夏令时）",
+        "en": "Sydney (DST)"
+      },
+      "timezone": "Australia/Sydney",
+      "longitude": 151.2093,
+      "civil": {
+        "year": 1990,
+        "month": 1,
+        "day": 15,
+        "hour": 12,
+        "minute": 0
+      },
+      "utcOffset": 11,
+      "longitudeMinutes": -55.2,
+      "eotMinutes": -9.3,
+      "shiftMinutes": -65,
+      "civilStamp": "1990-01-15 12:00",
+      "trueSolarStamp": "1990-01-15 10:55"
+    },
+    {
+      "id": "syd-std",
+      "place": {
+        "zh-Hant": "雪梨（標準時間）",
+        "zh-Hans": "悉尼（标准时间）",
+        "en": "Sydney (standard time)"
+      },
+      "timezone": "Australia/Sydney",
+      "longitude": 151.2093,
+      "civil": {
+        "year": 1990,
+        "month": 7,
+        "day": 15,
+        "hour": 12,
+        "minute": 0
+      },
+      "utcOffset": 10,
+      "longitudeMinutes": 4.8,
+      "eotMinutes": -5.6,
+      "shiftMinutes": -1,
+      "civilStamp": "1990-07-15 12:00",
+      "trueSolarStamp": "1990-07-15 11:59"
+    },
+    {
+      "id": "syd-midnight",
+      "place": {
+        "zh-Hant": "雪梨（凌晨跨日）",
+        "zh-Hans": "悉尼（凌晨跨日）",
+        "en": "Sydney (crosses midnight)"
+      },
+      "timezone": "Australia/Sydney",
+      "longitude": 151.2093,
+      "civil": {
+        "year": 1990,
+        "month": 1,
+        "day": 15,
+        "hour": 0,
+        "minute": 30
+      },
+      "utcOffset": 11,
+      "longitudeMinutes": -55.2,
+      "eotMinutes": -9.3,
+      "shiftMinutes": -65,
+      "civilStamp": "1990-01-15 00:30",
+      "trueSolarStamp": "1990-01-14 23:25"
+    },
+    {
+      "id": "taipei",
+      "place": {
+        "zh-Hant": "台北",
+        "zh-Hans": "台北",
+        "en": "Taipei"
+      },
+      "timezone": "Asia/Taipei",
+      "longitude": 121.5654,
+      "civil": {
+        "year": 1990,
+        "month": 1,
+        "day": 15,
+        "hour": 12,
+        "minute": 0
+      },
+      "utcOffset": 8,
+      "longitudeMinutes": 6.3,
+      "eotMinutes": -9.3,
+      "shiftMinutes": -3,
+      "civilStamp": "1990-01-15 12:00",
+      "trueSolarStamp": "1990-01-15 11:56"
+    },
+    {
+      "id": "beijing",
+      "place": {
+        "zh-Hant": "北京",
+        "zh-Hans": "北京",
+        "en": "Beijing"
+      },
+      "timezone": "Asia/Shanghai",
+      "longitude": 116.4074,
+      "civil": {
+        "year": 1990,
+        "month": 1,
+        "day": 15,
+        "hour": 12,
+        "minute": 0
+      },
+      "utcOffset": 8,
+      "longitudeMinutes": -14.4,
+      "eotMinutes": -9.3,
+      "shiftMinutes": -24,
+      "civilStamp": "1990-01-15 12:00",
+      "trueSolarStamp": "1990-01-15 11:36"
+    },
+    {
+      "id": "london-bst",
+      "place": {
+        "zh-Hant": "倫敦（夏令時）",
+        "zh-Hans": "伦敦（夏令时）",
+        "en": "London (BST)"
+      },
+      "timezone": "Europe/London",
+      "longitude": -0.1278,
+      "civil": {
+        "year": 1990,
+        "month": 7,
+        "day": 15,
+        "hour": 12,
+        "minute": 0
+      },
+      "utcOffset": 1,
+      "longitudeMinutes": -60.5,
+      "eotMinutes": -5.6,
+      "shiftMinutes": -66,
+      "civilStamp": "1990-07-15 12:00",
+      "trueSolarStamp": "1990-07-15 10:53"
+    },
+    {
+      "id": "shanghai-1988",
+      "place": {
+        "zh-Hant": "上海（1988 年夏令時）",
+        "zh-Hans": "上海（1988 年夏令时）",
+        "en": "Shanghai (1988 DST)"
+      },
+      "timezone": "Asia/Shanghai",
+      "longitude": 121.4737,
+      "civil": {
+        "year": 1988,
+        "month": 7,
+        "day": 15,
+        "hour": 12,
+        "minute": 0
+      },
+      "utcOffset": 9,
+      "longitudeMinutes": -54.1,
+      "eotMinutes": -5.7,
+      "shiftMinutes": -60,
+      "civilStamp": "1988-07-15 12:00",
+      "trueSolarStamp": "1988-07-15 11:00"
+    }
+  ],
+  "locales": {
+    "zh-Hant": {
+      "eyebrow": "昭梧方法論 · 計算說明",
+      "h1": "真太陽時怎麼算：經度差、均時差與夏令時",
+      "lead": "八字的日柱與時柱取決於出生當地的太陽時間，而不是手錶上的民用時間。本頁逐項說明昭梧排盤引擎實際使用的校正公式、計算實例（含南半球與夏令時）、這個校正會改變命盤的哪些部分，以及它的誤差與限制。",
+      "basis": "本頁數值由昭梧排盤引擎的實際程式計算產出，並有自動化測試與程式逐項比對。最後更新：2026-10-23。",
+      "what": {
+        "h": "校正什麼：把鐘面時間換算成當地太陽時間",
+        "p": "民用時間以整個時區的標準經線為準，同一時區內不同城市的太陽位置並不相同。昭梧把你輸入的出生地當地鐘面時間，校正成出生地的真太陽時，校正量由三部分組成：",
+        "items": [
+          [
+            "經度差",
+            "出生地經度與該日實際生效的時區標準經線之差，每相差 1° 為 4 分鐘。位於標準經線以東，太陽較早到，校正為正；以西則為負。"
+          ],
+          [
+            "均時差",
+            "地球公轉軌道為橢圓、地軸又傾斜，使真太陽日的長度逐日不同；全年的累積差約在 −14 分到 +16 分之間（2 月中旬最低、11 月初最高）。"
+          ],
+          [
+            "夏令時",
+            "不另設「減一小時」的規則：系統直接取出生當天當地實際生效的 UTC 偏移代入經度差，夏令時期間偏移多 1 小時，經度差便自然少算 60 分鐘。"
+          ]
+        ],
+        "after": "你只需填寫出生證明上的當地時間並選擇出生城市，不必自行減去夏令時。"
+      },
+      "formula": {
+        "h": "昭梧使用的公式",
+        "lines": [
+          "校正量（分鐘）＝ 4 × (L − 15 × Z) ＋ EoT",
+          "EoT ＝ 9.87·sin 2B − 7.53·cos B − 1.5·sin B，　B ＝ 2π × (N − 81) ÷ 365",
+          "真太陽時 ＝ 民用出生時間 ＋ 校正量"
+        ],
+        "notes": [
+          "L：出生地經度（東經為正）。Z：出生日當地實際生效的 UTC 偏移（小時，含夏令時），由時區資料庫逐日取得。N：出生日在當年的序數（1 月 1 日為 1）。",
+          "EoT 以出生日整天取同一個值，不隨時刻變動。校正後的時刻取到分鐘（秒捨去）；顯示的校正量為四捨五入的整分鐘。"
+        ]
+      },
+      "table": {
+        "h": "實例：同一個正午，在不同地點與季節的真太陽時",
+        "intro": "下表由引擎實際計算。除第三列為凌晨 00:30 外，其餘都是當地鐘面 12:00。分項已四捨五入至 0.1 分，合計以引擎的整分鐘值為準。",
+        "cols": [
+          "地點",
+          "民用時間",
+          "UTC 偏移",
+          "經度差（分）",
+          "均時差（分）",
+          "校正量（分）",
+          "真太陽時"
+        ],
+        "notes": [
+          "第三列：悉尼 1 月 15 日凌晨 00:30，校正 −65 分後落到前一日 23:25，日柱改按前一日計。",
+          "最後一列：中國曾於 1986–1991 年實施夏令時，1988 年 7 月的偏移為 UTC+9，系統依時區資料庫取得該年的實際偏移。"
+        ]
+      },
+      "effects": {
+        "h": "校正之後，命盤哪些部分會變",
+        "items": [
+          [
+            "日柱與時柱",
+            "以校正後的時刻判定。日柱在校正後的 00:00 換日；23:00–23:59 記為子時，仍屬當日。"
+          ],
+          [
+            "年柱與月柱",
+            "以節（立春、驚蟄等月令交接點）的絕對時刻判定，不受校正量影響。校正移動的是當地鐘面，不是節氣發生的那一瞬間。"
+          ],
+          [
+            "跨界提示",
+            "若校正後跨過時辰或日界，系統標示「需要核對出生時間」，並同時列出民用時間與真太陽時兩組候選的日柱、時柱；主盤暫按真太陽時，正式定盤應以出生記錄與有明確年份的已發生事件反證。"
+          ],
+          [
+            "不校正的情況",
+            "出生時辰未定時不做校正。出生地未確認時，按北京標準時間（UTC+8）計算、不做經度差與均時差校正，並明確標示，資料等級最高為 B。"
+          ]
+        ]
+      },
+      "south": {
+        "h": "南半球與夏令時：公式不變，變的是夏令時落在哪半年",
+        "p": [
+          "公式沒有半球之分。南半球（如澳洲）的特點是夏令時跨越年底：同在悉尼、同為正午，1990 年 1 月 15 日（UTC+11）校正 −65 分，同年 7 月 15 日（UTC+10）只校正 −1 分；兩者相差約 64 分鐘，其中 60 分鐘來自夏令時。",
+          "四柱不因南北半球反轉：月令仍依節氣的天文時刻判定。昭梧對南半球只在解讀中附註環境校正，不反轉月令與四柱。",
+          "夏令時的起訖日依年份與地區而異，系統逐年取時區資料庫的實際規則，不使用固定日期。"
+        ]
+      },
+      "limits": {
+        "h": "誤差與限制（解讀前請先讀完）",
+        "items": [
+          [
+            "均時差是近似公式",
+            "對 NOAA 參考算法，於 1950、1990、2026、2060 四個年份逐日比對，最大差 1.01 分、均方根 0.50 分。校正後落在時辰交界前後 2 分鐘內者，不應視為定論。"
+          ],
+          [
+            "出生時間本身的誤差通常更大",
+            "資料等級（A／B／C）依出生時間來源與出生地是否確認而定；接近節的交接時，另行評估月柱風險。"
+          ],
+          [
+            "夏令時轉換日有歧義",
+            "回撥日重複出現的小時，與撥前日不存在的小時，實測（悉尼 1991-03-03 02:30、1990-10-28 02:30）系統皆取 UTC+10 的標準時間一側。這類時刻須以出生記錄核對。"
+          ],
+          [
+            "歷史時區依賴時區資料庫",
+            "標準時區制度建立之前的日期，資料庫給的是當地平均時偏移（實測：上海 1895 年為 UTC+8:05:43、悉尼 1890 年為 UTC+10:04:52）。這類久遠日期未逐一以檔案紀錄驗證。"
+          ],
+          [
+            "流派差異",
+            "部分流派只計經度差、不計均時差，或完全不做真太陽時。昭梧在出生地已確認時預設兩者皆計，並在結果跨界時提示核對。"
+          ]
+        ]
+      },
+      "faq": {
+        "h": "常見問題",
+        "items": [
+          [
+            "八字一定要用真太陽時嗎？",
+            "各流派並不一致。日柱與時柱取決於出生當地的太陽時間，校正可能改變時柱，跨過子時界線時還會改變日柱；年柱與月柱取決於節氣的絕對時刻，不受校正影響。昭梧在出生地已確認時預設採用，並在校正跨界時提示核對。"
+          ],
+          [
+            "夏令時出生要怎麼填？",
+            "照出生證明填當地鐘面時間即可，不必自行減一小時。系統依出生地時區資料庫取得當天實際的 UTC 偏移，代入公式。"
+          ],
+          [
+            "南半球出生（如澳洲）的計算與北半球不同嗎？",
+            "公式相同。差別只在夏令時落在哪半年：悉尼 1990 年 1 月 15 日正午校正 −65 分，同年 7 月 15 日只校正 −1 分，差異主要來自夏令時的 60 分鐘。"
+          ],
+          [
+            "出生地不確定怎麼辦？",
+            "系統會按北京標準時間（UTC+8）計算，不做真太陽時校正並明確標示，資料等級最高為 B。確認出生城市後重新排盤，可得到完整校正。"
+          ]
+        ]
+      },
+      "cta": {
+        "label": "用你的出生地與時間排盤",
+        "back": "返回知識庫"
+      }
+    },
+    "zh-Hans": {
+      "eyebrow": "昭梧方法论 · 计算说明",
+      "h1": "真太阳时怎么算：经度差、均时差与夏令时",
+      "lead": "八字的日柱与时柱取决于出生当地的太阳时间，而不是手錶上的民用时间。本页逐项说明昭梧排盘引擎实际使用的校正公式、计算实例（含南半球与夏令时）、这个校正会改变命盘的哪些部分，以及它的误差与限制。",
+      "basis": "本页数值由昭梧排盘引擎的实际程式计算产出，并有自动化测试与程式逐项比对。最后更新：2026-10-23。",
+      "what": {
+        "h": "校正什么：把钟面时间换算成当地太阳时间",
+        "p": "民用时间以整个时区的标准经线为准，同一时区内不同城市的太阳位置并不相同。昭梧把你输入的出生地当地钟面时间，校正成出生地的真太阳时，校正量由三部分组成：",
+        "items": [
+          [
+            "经度差",
+            "出生地经度与该日实际生效的时区标准经线之差，每相差 1° 为 4 分钟。位于标准经线以东，太阳较早到，校正为正；以西则为负。"
+          ],
+          [
+            "均时差",
+            "地球公转轨道为椭圆、地轴又倾斜，使真太阳日的长度逐日不同；全年的累积差约在 −14 分到 +16 分之间（2 月中旬最低、11 月初最高）。"
+          ],
+          [
+            "夏令时",
+            "不另设「减一小时」的规则：系统直接取出生当天当地实际生效的 UTC 偏移代入经度差，夏令时期间偏移多 1 小时，经度差便自然少算 60 分钟。"
+          ]
+        ],
+        "after": "你只需填写出生证明上的当地时间并选择出生城市，不必自行减去夏令时。"
+      },
+      "formula": {
+        "h": "昭梧使用的公式",
+        "lines": [
+          "校正量（分钟）＝ 4 × (L − 15 × Z) ＋ EoT",
+          "EoT ＝ 9.87·sin 2B − 7.53·cos B − 1.5·sin B，　B ＝ 2π × (N − 81) ÷ 365",
+          "真太阳时 ＝ 民用出生时间 ＋ 校正量"
+        ],
+        "notes": [
+          "L：出生地经度（东经为正）。Z：出生日当地实际生效的 UTC 偏移（小时，含夏令时），由时区资料库逐日取得。N：出生日在当年的序数（1 月 1 日为 1）。",
+          "EoT 以出生日整天取同一个值，不随时刻变动。校正后的时刻取到分钟（秒舍去）；显示的校正量为四舍五入的整分钟。"
+        ]
+      },
+      "table": {
+        "h": "实例：同一个正午，在不同地点与季节的真太阳时",
+        "intro": "下表由引擎实际计算。除第三列为凌晨 00:30 外，其余都是当地钟面 12:00。分项已四舍五入至 0.1 分，合计以引擎的整分钟值为准。",
+        "cols": [
+          "地点",
+          "民用时间",
+          "UTC 偏移",
+          "经度差（分）",
+          "均时差（分）",
+          "校正量（分）",
+          "真太阳时"
+        ],
+        "notes": [
+          "第三列：悉尼 1 月 15 日凌晨 00:30，校正 −65 分后落到前一日 23:25，日柱改按前一日计。",
+          "最后一列：中国曾于 1986–1991 年实施夏令时，1988 年 7 月的偏移为 UTC+9，系统依时区资料库取得该年的实际偏移。"
+        ]
+      },
+      "effects": {
+        "h": "校正之后，命盘哪些部分会变",
+        "items": [
+          [
+            "日柱与时柱",
+            "以校正后的时刻判定。日柱在校正后的 00:00 换日；23:00–23:59 记为子时，仍属当日。"
+          ],
+          [
+            "年柱与月柱",
+            "以节（立春、惊蟄等月令交接点）的绝对时刻判定，不受校正量影响。校正移动的是当地钟面，不是节气发生的那一瞬间。"
+          ],
+          [
+            "跨界提示",
+            "若校正后跨过时辰或日界，系统标示「需要核对出生时间」，并同时列出民用时间与真太阳时两组候选的日柱、时柱；主盘暂按真太阳时，正式定盘应以出生记录与有明确年份的已发生事件反证。"
+          ],
+          [
+            "不校正的情况",
+            "出生时辰未定时不做校正。出生地未确认时，按北京标准时间（UTC+8）计算、不做经度差与均时差校正，并明确标示，资料等级最高为 B。"
+          ]
+        ]
+      },
+      "south": {
+        "h": "南半球与夏令时：公式不变，变的是夏令时落在哪半年",
+        "p": [
+          "公式没有半球之分。南半球（如澳洲）的特点是夏令时跨越年底：同在悉尼、同为正午，1990 年 1 月 15 日（UTC+11）校正 −65 分，同年 7 月 15 日（UTC+10）只校正 −1 分；两者相差约 64 分钟，其中 60 分钟来自夏令时。",
+          "四柱不因南北半球反转：月令仍依节气的天文时刻判定。昭梧对南半球只在解读中附註环境校正，不反转月令与四柱。",
+          "夏令时的起訖日依年份与地区而异，系统逐年取时区资料库的实际规则，不使用固定日期。"
+        ]
+      },
+      "limits": {
+        "h": "误差与限制（解读前请先读完）",
+        "items": [
+          [
+            "均时差是近似公式",
+            "对 NOAA 参考算法，于 1950、1990、2026、2060 四个年份逐日比对，最大差 1.01 分、均方根 0.50 分。校正后落在时辰交界前后 2 分钟内者，不应视为定论。"
+          ],
+          [
+            "出生时间本身的误差通常更大",
+            "资料等级（A／B／C）依出生时间来源与出生地是否确认而定；接近节的交接时，另行评估月柱风险。"
+          ],
+          [
+            "夏令时转换日有歧义",
+            "回拨日重复出现的小时，与拨前日不存在的小时，实测（悉尼 1991-03-03 02:30、1990-10-28 02:30）系统皆取 UTC+10 的标准时间一侧。这类时刻须以出生记录核对。"
+          ],
+          [
+            "历史时区依赖时区资料库",
+            "标准时区制度建立之前的日期，资料库给的是当地平均时偏移（实测：上海 1895 年为 UTC+8:05:43、悉尼 1890 年为 UTC+10:04:52）。这类久远日期未逐一以档案纪录验证。"
+          ],
+          [
+            "流派差异",
+            "部分流派只计经度差、不计均时差，或完全不做真太阳时。昭梧在出生地已确认时预设两者皆计，并在结果跨界时提示核对。"
+          ]
+        ]
+      },
+      "faq": {
+        "h": "常见问题",
+        "items": [
+          [
+            "八字一定要用真太阳时吗？",
+            "各流派并不一致。日柱与时柱取决于出生当地的太阳时间，校正可能改变时柱，跨过子时界线时还会改变日柱；年柱与月柱取决于节气的绝对时刻，不受校正影响。昭梧在出生地已确认时预设采用，并在校正跨界时提示核对。"
+          ],
+          [
+            "夏令时出生要怎么填？",
+            "照出生证明填当地钟面时间即可，不必自行减一小时。系统依出生地时区资料库取得当天实际的 UTC 偏移，代入公式。"
+          ],
+          [
+            "南半球出生（如澳洲）的计算与北半球不同吗？",
+            "公式相同。差别只在夏令时落在哪半年：悉尼 1990 年 1 月 15 日正午校正 −65 分，同年 7 月 15 日只校正 −1 分，差异主要来自夏令时的 60 分钟。"
+          ],
+          [
+            "出生地不确定怎么办？",
+            "系统会按北京标准时间（UTC+8）计算，不做真太阳时校正并明确标示，资料等级最高为 B。确认出生城市后重新排盘，可得到完整校正。"
+          ]
+        ]
+      },
+      "cta": {
+        "label": "用你的出生地与时间排盘",
+        "back": "返回知识库"
+      }
+    },
+    "en": {
+      "eyebrow": "ZHAOWU METHODOLOGY · HOW IT IS CALCULATED",
+      "h1": "How true solar time is calculated: longitude, equation of time and DST",
+      "lead": "In BaZi, the day and hour pillars depend on the sun's time at the birthplace, not on the civil time on a watch. This page sets out the correction formula the ZHAOWU engine actually uses, worked examples (including the Southern Hemisphere and daylight saving), which parts of a chart the correction changes, and where its error and limits lie.",
+      "basis": "The figures on this page are produced by the ZHAOWU chart engine's own code and checked against it by an automated test. Last updated: 2026-10-23.",
+      "what": {
+        "h": "What is corrected: clock time becomes local solar time",
+        "p": "Civil time follows the standard meridian of a whole time zone, but the sun's position differs from city to city inside it. ZHAOWU converts the local clock time you enter for the birthplace into true solar time at that place. The correction has three parts:",
+        "items": [
+          [
+            "Longitude difference",
+            "The gap between the birthplace longitude and the standard meridian in force on that date: 4 minutes per degree. East of the meridian the sun arrives earlier, so the correction is positive; west of it, negative."
+          ],
+          [
+            "Equation of time",
+            "Earth's elliptical orbit and tilted axis make the length of the true solar day vary through the year. The accumulated difference runs from about −14 to +16 minutes (lowest in mid-February, highest in early November)."
+          ],
+          [
+            "Daylight saving",
+            "There is no separate 'subtract one hour' rule. The engine takes the UTC offset actually in force at the birthplace on the birth date and feeds it into the longitude term; during daylight saving the offset is one hour larger, so the longitude term is automatically 60 minutes smaller."
+          ]
+        ],
+        "after": "You only enter the local time on the birth record and choose the birth city; do not subtract daylight saving yourself."
+      },
+      "formula": {
+        "h": "The formula ZHAOWU uses",
+        "lines": [
+          "correction (min) = 4 × (L − 15 × Z) + EoT",
+          "EoT = 9.87·sin 2B − 7.53·cos B − 1.5·sin B,   B = 2π × (N − 81) / 365",
+          "true solar time = civil birth time + correction"
+        ],
+        "notes": [
+          "L: birthplace longitude (east positive). Z: the UTC offset in force at the birthplace on the birth date, in hours, including daylight saving, taken per date from the time-zone database. N: day number of the birth date within the year (1 January = 1).",
+          "EoT takes one value for the whole birth date and does not vary within the day. The corrected time is cut to the minute (seconds dropped); the displayed correction is rounded to whole minutes."
+        ]
+      },
+      "table": {
+        "h": "Worked examples: the same noon, different places and seasons",
+        "intro": "Computed by the engine itself. Every row is 12:00 local clock time except the third, which is 00:30. Components are rounded to 0.1 minute; the total is the engine's whole-minute value.",
+        "cols": [
+          "Place",
+          "Civil time",
+          "UTC offset",
+          "Longitude (min)",
+          "Equation of time (min)",
+          "Correction (min)",
+          "True solar time"
+        ],
+        "notes": [
+          "Row 3: Sydney at 00:30 on 15 January falls to 23:25 on the previous day after −65 minutes, so the day pillar is taken from the previous day.",
+          "Last row: China observed daylight saving in 1986–1991; July 1988 was UTC+9, an offset the engine takes from the time-zone database for that year."
+        ]
+      },
+      "effects": {
+        "h": "What the correction changes in a chart",
+        "items": [
+          [
+            "Day and hour pillars",
+            "Decided from the corrected time. The day changes at 00:00 of the corrected time; 23:00–23:59 counts as the zi hour and still belongs to that day."
+          ],
+          [
+            "Year and month pillars",
+            "Decided from the absolute instant of the solar term (Lichun, Jingzhe and so on), unaffected by the correction. The correction moves the local clock face, not the moment the term occurs."
+          ],
+          [
+            "Boundary warning",
+            "If the corrected time crosses an hour or day boundary, the chart is flagged 'birth time needs verification' and shows both candidate day and hour pillars (civil and true solar). The main chart temporarily follows true solar time; a final chart should be fixed against the birth record and dated past events."
+          ],
+          [
+            "When no correction is made",
+            "No correction is made when the birth hour is unknown. When the birthplace is unverified, the chart uses Beijing standard time (UTC+8) with no longitude or equation-of-time correction, says so explicitly, and the data grade is capped at B."
+          ]
+        ]
+      },
+      "south": {
+        "h": "Southern Hemisphere and daylight saving: same formula, different half of the year",
+        "p": [
+          "The formula does not depend on hemisphere. What is distinctive in the Southern Hemisphere (Australia, for example) is that daylight saving spans the turn of the year: in Sydney at noon, 15 January 1990 (UTC+11) is corrected by −65 minutes while 15 July 1990 (UTC+10) is corrected by only −1 minute. The two differ by about 64 minutes, 60 of which come from daylight saving.",
+          "The four pillars are not reversed for the Southern Hemisphere: the month pillar still follows the astronomical instant of the solar term. ZHAOWU only adds an environmental note to the reading for the Southern Hemisphere and does not reverse the month command or the four pillars.",
+          "Daylight-saving start and end dates vary by year and region; the engine uses the time-zone database's actual rule for each year, not fixed dates."
+        ]
+      },
+      "limits": {
+        "h": "Error and limits (read before interpreting)",
+        "items": [
+          [
+            "The equation of time is an approximation",
+            "Compared day by day with the NOAA reference algorithm over 1950, 1990, 2026 and 2060, the largest difference is 1.01 minutes and the RMS difference 0.50 minutes. A corrected time within 2 minutes of an hour boundary should not be treated as settled."
+          ],
+          [
+            "The birth time itself is usually the larger error",
+            "The data grade (A/B/C) depends on how the birth time is sourced and whether the birthplace is verified; near a solar-term boundary the month pillar risk is assessed separately."
+          ],
+          [
+            "Daylight-saving transition days are ambiguous",
+            "For the repeated hour on the clock-back day and the skipped hour on the clock-forward day, measured cases (Sydney 1991-03-03 02:30 and 1990-10-28 02:30) both resolve to the UTC+10 standard-time side. Such times must be checked against the birth record."
+          ],
+          [
+            "Historical time zones rely on the time-zone database",
+            "Before standard time zones existed, the database returns local mean time offsets (measured: Shanghai in 1895 is UTC+8:05:43, Sydney in 1890 is UTC+10:04:52). Such early dates have not been verified individually against archival records."
+          ],
+          [
+            "Schools differ",
+            "Some schools apply only the longitude difference, omit the equation of time, or do not use true solar time at all. When the birthplace is verified, ZHAOWU applies both by default and flags results that cross a boundary."
+          ]
+        ]
+      },
+      "faq": {
+        "h": "Frequently asked questions",
+        "items": [
+          [
+            "Does BaZi always require true solar time?",
+            "Schools differ. The day and hour pillars depend on the sun's time at the birthplace, so the correction can change the hour pillar and, across the zi-hour boundary, the day pillar; the year and month pillars depend on the absolute instant of the solar term and are unaffected. ZHAOWU applies it by default when the birthplace is verified and flags results that cross a boundary."
+          ],
+          [
+            "How do I enter a birth time during daylight saving?",
+            "Enter the local clock time exactly as on the birth record; do not subtract an hour yourself. The engine takes the UTC offset actually in force that day from the time-zone database and feeds it into the formula."
+          ],
+          [
+            "Is the calculation different for a Southern Hemisphere birth such as Australia?",
+            "No, the formula is the same. Only the half of the year in which daylight saving falls differs: Sydney at noon on 15 January 1990 is corrected by −65 minutes and on 15 July by only −1 minute, mostly because of the 60 minutes of daylight saving."
+          ],
+          [
+            "What if the birthplace is uncertain?",
+            "The chart uses Beijing standard time (UTC+8) with no true-solar correction, says so explicitly, and the data grade is capped at B. Once the birth city is confirmed, recalculate to get the full correction."
+          ]
+        ]
+      },
+      "cta": {
+        "label": "Calculate a chart with your birthplace and time",
+        "back": "Back to the knowledge base"
+      }
+    }
+  }
+}

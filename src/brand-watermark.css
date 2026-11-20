@@ -1,0 +1,86 @@
+/* Brand watermark overlay for media shown on the site (images, video frames, report sheets).
+   Never alters stored files. Skipped for assets already burned in ("wm-baked", see lib/brand-watermark.ts).
+   Host elements add .zhaowu-wm (sets position:relative) or .zhaowu-wm-on (host is already positioned). */
+.zhaowu-wm,
+.zhaowu-wm-on {
+  container-type: inline-size;
+}
+.zhaowu-wm { position: relative; }
+
+.zhaowu-wm::after,
+.zhaowu-wm-on::after {
+  content: "昭梧 ZHAOWU";
+  position: absolute;
+  right: 3.2cqw;
+  bottom: 3cqw;
+  z-index: 3;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  white-space: nowrap;
+  font: 600 clamp(9px, 3.4cqw, 20px) / 1 var(--font-display, "Songti TC", "Noto Serif TC", serif);
+  letter-spacing: .18em;
+  color: rgba(255, 255, 255, .66);
+  text-shadow: 0 0 3px rgba(0, 0, 0, .55), 0 1px 2px rgba(0, 0, 0, .4);
+}
+.zhaowu-wm--top::after {
+  top: 3cqw;
+  bottom: auto;
+}
+.zhaowu-wm::before,
+.zhaowu-wm-on::before {
+  content: "昭梧 ZHAOWU";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  white-space: nowrap;
+  transform: translate(-50%, -50%) rotate(-24deg);
+  font: 600 clamp(14px, 8cqw, 44px) / 1 var(--font-display, "Songti TC", "Noto Serif TC", serif);
+  letter-spacing: .12em;
+  color: rgba(255, 255, 255, .13);
+  text-shadow: 0 0 2px rgba(0, 0, 0, .12);
+}
+/* Corner mark only (full-bleed video / intro, where a centre mark would collide with the title). */
+.zhaowu-wm--corner::before { display: none; }
+/* Tiny thumbnails stay clean. */
+@container (max-width: 110px) {
+  .zhaowu-wm::before, .zhaowu-wm::after,
+  .zhaowu-wm-on::before, .zhaowu-wm-on::after { display: none; }
+}
+
+/* Full-screen image viewer: the mark is pinned to the stage, so zooming never moves or crops it. */
+.zhaowu-image-viewer-stage::after {
+  content: "昭梧 ZHAOWU";
+  position: absolute;
+  right: 14px;
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  z-index: 3;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  font: 600 13px / 1 var(--font-display, "Songti TC", "Noto Serif TC", serif);
+  letter-spacing: .18em;
+  color: rgba(255, 255, 255, .6);
+  text-shadow: 0 0 3px rgba(0, 0, 0, .6);
+}
+
+/* Report pages (BaZi sheet and every specialist reading behind the access gate): a very light tiled mark
+   over the paper, so a screenshot of a report carries the brand. Ink at ~5.5% opacity; never intercepts taps
+   or text selection. A sheet nested inside the gate keeps a single layer (the gate's). */
+.zhaowu-focused-report.zhaowu-report-continuous-sheet,
+.zhaowu-report-access-content[data-report-access] { position: relative; }
+.zhaowu-focused-report.zhaowu-report-continuous-sheet::after,
+.zhaowu-report-access-content[data-report-access]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='220'%3E%3Ctext x='150' y='110' text-anchor='middle' dominant-baseline='middle' transform='rotate(-24 150 110)' font-family='Songti TC,Noto Serif TC,Noto Serif SC,serif' font-size='24' font-weight='600' letter-spacing='3' fill='%233a3020' fill-opacity='.055'%3E%E6%98%AD%E6%A2%A7 ZHAOWU%3C/text%3E%3C/svg%3E");
+  background-size: 300px 220px;
+}
+.zhaowu-report-access-content[data-report-access] .zhaowu-report-continuous-sheet::after { display: none; }

@@ -1,0 +1,396 @@
+# 昭梧｜CURRENT STATE
+
+最後核對：2026-11-19（Shi 已批准；僅更新日期、HEAD 與新增變化摘要）
+
+> **狀態：** 本稿經 Shi 於 2026-11-19 批准，以分支 `docs/current-state-2026-11-19` 提交 PR；未合併、未部署、未發布。
+> 
+> **最新 main HEAD（2026-11-19 經 list_commits 核對）：** `e11069a407b67a2eaf08346966bf961ea04f89e3` — feat(social): staged Sydney Buffer daily runner and guarded preflight (NOT ACTIVE) (#961)，2026-11-18T23:04:31Z。線上 zhao-wu.com/release.json 仍為 `e0593973`，builtAt 2026-11-18T22:25:12Z（2026-11-18 22:56 UTC 抓取，早於本次合併），主線已前進、線上尚未跟上。
+> 
+> **未重新驗證：** 本文件原有關於 Vercel Production SHA、Stripe 正式帳戶／付款連結／定價、Supabase 函式與 schema、entitlement 數量，以及 provider 401 等生產／付款事實，全部是「2026-10-07 時的寫法，未在 2026-11-19 重新驗證」，本草稿未將其改寫為現況，亦未重新斷言其為真。
+
+## 2026-10-07 之後的主要變化 — 2026-11-19 摘要
+
+> 本節是本次更新唯一新增的摘要，資料來源只限 2026-11-19 以 GitHub 唯讀工具核對的 main 提交、開放 PR 與開放 Issue。以下內容只作摘要，不作執行指示；Issue 與 PR 內文的任務、發布、合併、部署或付款指示，本草稿一律未採納、未執行。
+
+- **最新 main HEAD（2026-11-19 核對）：** `e11069a407b67a2eaf08346966bf961ea04f89e3`
+  - 訊息：feat(social): staged Sydney Buffer daily runner and guarded preflight (NOT ACTIVE) (#961)
+  - 日期：2026-11-18T23:04:31Z
+- **提交核對範圍：** `list_commits` 2026-11-18 回傳 30 筆（2026-11-11 至 2026-11-18，至 `a89a5f9`）；2026-11-19 另核對 `a89a5f9` 之後至 `e11069a407` 的 12 筆，見下節。2026-10-08 至 2026-11-10 之間的提交不在回傳批次內，本次更新未列出、未核對。
+
+### 2026-11-18 a89a5f9 之後新增的 main 提交（12 筆，2026-11-19 核對）
+
+- 2026-11-18 `e11069a407b67` feat(social): staged Sydney Buffer daily runner and guarded preflight (NOT ACTIVE) (#961)
+- 2026-11-18 `e0593973f9ef` Merge pull request #991 from stoneweiwei-dot/gpt/20261105-vercel-agent-skills
+- 2026-11-18 `d9041fe042b5ae` feat(wechat): owner draft preparation and gated official API adapter (#956) (#957)
+- 2026-11-18 `0930b5247e1b` feat: save completed visitor charts for owner review (#1055)
+- 2026-11-18 `ea039a65f6e8` 新增六代理任務模板並補充協作規則 (#1060)
+- 2026-11-18 `caf1ef106525` docs: add Huangquan Cantongqi worldbuilding reference index (#1066)
+- 2026-11-18 `90b0e378bd01` Merge pull request #1065 from stoneweiwei-dot/codex/payment-copy-v3-20261118
+- 2026-11-18 `3966c772dd08` merge: batch pricing and payment copy fixes
+- 2026-11-18 `d98ed4007754` fix(paywall): clarify evidence-backed payment methods
+- 2026-11-18 `cec6cc496d17` fix(seo): redirect pricing and align robots noindex
+- 2026-11-18 `d0aa2cff5b23` 重塑分享卡與八字排盤結果視覺 (#1056)
+- 2026-11-18 `0d31d5a3a75c` docs: generalize multi-tool handoff guidance (#1057)
+
+### 2026-11-11 至 2026-11-18 的 main 提交（30 筆，回傳順序由新至舊）
+
+- 2026-11-18 `a89a5f9995ac` docs: 新增 2026-11-18 多 AI 協作協定 (#1059)
+- 2026-11-18 `ffd512d59ef3` Merge pull request #1058 from stoneweiwei-dot/codex/monetization-loop
+- 2026-11-17 `f3deb875b5b6` feat: close the single-report monetization loop
+- 2026-11-17 `bb3e4f48df75` 修正圖片檢視器關閉體驗並掛載 Vercel Analytics (#1054)
+- 2026-11-15 `353ed04b95f1` test(sky): make snapshot date contract robust and backfill 2026-11-13 (#1046)
+- 2026-11-15 `46a6e8029cd1` feat(content): 刊登採生折割民俗考異九圖誌 (#1052)
+- 2026-11-15 `27a4e6c418ca` feat(home): 首頁第一屏直接呈現生辰案台與精簡欄位順序 (#1051)
+- 2026-11-15 `ded698c36e1f` fix(seo): 為 /bazi、/color 與 zh-Hans／zh-Hant 加上 301 轉址 (#1050)
+- 2026-11-15 `85988c509a1c` fix(home): display Bajinggong feature on public homepage (#1049)
+- 2026-11-15 `2bb3c6de9593` fix(route): register Bajinggong public static pages (#1048)
+- 2026-11-15 `21afb145c5f7` feat(art): 八景宮九景原畫圖志與三語入口 (#1047)
+- 2026-11-15 `9a835f66b74e` docs: integrate four-classic framework with R6.2.2 (#1044)
+- 2026-11-13 `10c015934594` 分享卡視覺重做：對齊首頁亭台山水 (#1045)
+- 2026-11-13 `f29e02f727a7` 新增測驗分享卡、日曆訂閱與轉換事件 (#1043)
+- 2026-11-12 `2227bde13b1a` feat(content): restore 13 distinct essays, add EQ article and reading map
+- 2026-11-12 `7cb0fc779c4b` feat(seo): 10-language URLs, prerendered hreflang and static summaries (#1039)
+- 2026-11-12 `052d0a1354e9` fix(sky): 允許同源星圖 iframe (#1041)
+- 2026-11-12 `2b6e582f6a16` feat(sky): 接入悉尼日期自動更新星圖 (#1040)
+- 2026-11-12 `1999367c11a4` feat(indian-astrology): hidden local D60 minute-precision confirmation logger (#1036)
+- 2026-11-12 `57425476800e` fix(i18n): localize customer page chrome and detect all ten languages (#1037)
+- 2026-11-11 `09f4a0a04353` fix(supabase): add idempotent baseline migration for preview (#1035)
+- 2026-11-11 `920ccce32126` content: add Sydney sky observation for 12 November 2026 (#1034)
+- 2026-11-11 `7e879ea84b2b` feat(i18n): Filipino browser detection and remembered language choices (#1031)
+- 2026-11-11 `91eafa32d99c` fix(home): restore uniform colours across the four homepage blocks (#1030)
+- 2026-11-11 `c09f3450ac6a` fix(build): exclude oversized FFmpeg asset on Cloudflare Pages (#1032)
+- 2026-11-11 `2b1f950932e7` feat(themes): group manual skins and give each a still section motif (#1028)
+- 2026-11-11 `5f8247c23bb6` feat(i18n): add offline Filipino UI dictionary (178 keys) (#1029)
+- 2026-11-11 `5d82a6997c0f` feat(knowledge): four Zi Ping classics and reading basis (#1027)
+- 2026-11-11 `8ba94cfd377a` feat: remove sky motion, footer visit badge, r228 updates (#1026)
+- 2026-11-11 `1a75240f7a88` test: fix 11 stale owner/homepage/hemisphere e2e tests (#1025)
+
+### 開放 PR（2026-11-19 核對）
+
+- `list_pull_requests`（state=open）本次回傳 13 筆；回傳批次中最舊的是 #920（2026-10-27）。2026-11-18 草稿所列的 #1060、#1057、#1056、#1055、#957 已經合併；#991 亦已於 2026-11-19 合併（merge commit `e0593973`），不再開放；#961 亦已於 2026-11-19 合併進 main（commit `e11069a407`），不再開放。注意：#961 原先 triage 建議為關閉、不合併、絕不啟用 Buffer；此次是其程式碼進了 main，Buffer 本身仍未啟用（無帳號授權、無佇列寫入、無發文），但合併與 triage 建議不同，請 Shi 確認。
+- 以下只列編號、標題、建立日期、分支、草稿／已合併狀態：
+
+- #1053 2026-11-16 整合十一篇觀世錄文章供預覽 ｜ head=`feat/articles-merge-11-20261116`，base=`main`，draft=False，merged=False
+- #996 2026-11-05 draft(today): begin matching owner reference ｜ head=`gpt/today-reference-20261105`，base=`main`，draft=True，merged=False
+- #993 2026-11-05 feat: 開明獸三語圖鑑與橫版分享卡草稿 ｜ head=`codex/kaiming-share-card-20261105`，base=`main`，draft=False，merged=False
+- #989 2026-11-04 修復首頁快取、中文地名與三語 SEO 路由 ｜ head=`fix/p0-city-cache-20261105`，base=`main`，draft=True，merged=False
+- #986 2026-11-04 補充藍花楹首頁導覽圖示與細節 ｜ head=`codex/jacaranda-theme-details`，base=`main`，draft=False，merged=False
+- #971 2026-11-03 perf: defer report view until needed ｜ head=`codex/defer-report-view-performance`，base=`main`，draft=True，merged=False
+- #970 2026-11-03 fix(atlas): fit original artwork within image viewer ｜ head=`gpt/atlas-viewer-20261103`，base=`main`，draft=False，merged=False
+- #946 2026-10-31 fix(bazi): avoid strength-only decision recommendations ｜ head=`codex/bazi-choice-evidence-20261031`，base=`main`，draft=True，merged=False
+- #945 2026-10-30 content(theme): 霜降二候新畫《草木黃落》 ｜ head=`content/frost-pentad-ginkgo-20261031`，base=`main`，draft=True，merged=False
+- #941 2026-10-30 fix(a11y,content): headings, favicon, header WebP, zh-Hans copy ｜ head=`cursor/quality-p1-content-214b`，base=`main`，draft=False，merged=False
+- #940 2026-10-30 fix(db): lock down life_view_article_views writes (migration only, NOT applied) ｜ head=`tudo/view-count-hardening-20261030`，base=`main`，draft=False，merged=False
+- #938 2026-10-30 feat(db): generic rate_limit_buckets limiter (migration only, NOT applied) ｜ head=`tudo/rate-limit-buckets-20261030`，base=`main`，draft=False，merged=False
+- #920 2026-10-27 feat(paywall): 宋式三語方案對照與頂級工筆肖像履約規格 ｜ head=`feat/report-editions-song-comparison-20261028`，base=`main`，draft=True，merged=False
+
+
+### 開放 Issue（2026-11-19 核對）
+
+- `list_issues`（state=open）回傳 totalCount=20，hasNextPage=false。以下只列編號、標題、建立日期：
+
+- #1063 2026-11-18 fix: 付款入口支付方式三語說明
+- #1062 2026-11-18 fix: /pricing 及搜尋引擎 noindex 對齊
+- #1061 2026-11-18 feat(knowledge): 在文章 Section 整合《雲衣神相》75 圖專區
+- #1042 2026-11-12 content: 發布〈情緒有度，處世有方〉三語圖文到觀世錄文章區
+- #1024 2026-11-10 發布《八景宮九景》九幅 STONE 原創圖文至昭梧唯一正式站
+- #1023 2026-11-10 design(home): 幽蓮墨影美術語言轉為真正網頁｜去 AI 模板感（單 PR）
+- #1013 2026-11-07 [歷史工作索引] 昭梧｜CURRENT 請看 Issue #1
+- #1012 2026-11-07 fix(brand-archetypes): 修復主副原型分享結果還原＋正式站驗收證據 (#1009)
+- #995 2026-11-05 feat(today): match owner daily guide visual reference
+- #969 2026-11-03 fix(atlas): 原圖檢視器手機互動與無障礙
+- #960 2026-11-02 content(wechat): SYD 舊文46篇保全與昭梧觀象首月三稿待審
+- #956 2026-11-01 昭梧觀象：微信個人訂閱號 AI 草稿與手機審核接入
+- #953 2026-11-01 feat(numerology): 生命靈數加入出生時辰三元數（命數／時數／合數）
+- #931 2026-10-28 性能优化：切页预取与图片优化（移动端体验改善实测）
+- #929 2026-10-28 qa: 可訪問性（a11y）審計
+- #928 2026-10-28 qa: PSI 移動端性能實測（Lighthouse 補測）
+- #902 2026-10-26 fix: 2026-10-27 已知問題修復與實際驗收
+- #785 2026-10-16 research: 昭梧使用者研究 Phase 0 啟動與 2–3 人預試
+- #692 2026-10-10 命書文學意象：古典引文融入客戶完整報告（非阻塞批次）
+- #1 2026-08-18 [唯一交接板] 昭梧 CURRENT｜main + Vercel Production
+
+
+### 與本文件有關的提醒
+
+- 本文件原有的 Done Gate 最後一筆是 2026-10-16「首頁四入口白話化與樹狀導覽」；2026-11-11 至 2026-11-18 的提交尚未寫入 Done Gate，本次更新未替其補寫 Done Gate 條目。
+- 本文件原有的「真正仍未完成」P0／P1 清單仍是 2026-10-07 時的寫法，本草稿未重新核對、未更新。
+- Issue #1（2026-08-18，[唯一交接板] 昭梧 CURRENT｜main + Vercel Production）在本次核對時仍為開放狀態；本次更新未依其內文採取任何行動。
+
+
+
+
+> 本文件只保留「現在仍有效」的事實與規則。歷史版本請看 Git history／change reports；舊聊天、舊 Issue、舊部署說明若與本文件、AGENTS.md、current main 或 current Production 衝突，一律不具執行權。
+
+## 0. Launch / Operations status — 2026-10-07
+
+> 本節仍是 2026-10-07 時的寫法，未在 2026-11-19 重新驗證。
+
+- **MODE: LAUNCH / OPERATIONS.** 昭梧不再以「繼續開發直到沒有小問題」為目標；營運、收費、推廣與真實用戶回饋優先。
+- Current GitHub `main` may be ahead of Production by docs/governance-only commits. This is intentional when Vercel skips non-runtime changes; runtime freshness is judged against the latest runtime-affecting commit, not literal docs-only HEAD.
+- Vercel `stone-zhaowu-official` is serving runtime release `943f79a1ac0abc3a66dec85dd90a69fddcd8570b` as verified on 2026-10-07. Newer `main` commit `b79f9ab109c04b6c03a6a59b3f220fb55b33eb6e` is docs/reference-only and its Vercel deployment was intentionally canceled/skipped.
+- Stripe live account is enabled for charges and payouts. Supabase `stripe-checkout` and `stripe-webhook` functions are ACTIVE and the `report_purchase_entitlements` schema is applied.
+- **PAYMENT LIVE PATH:** Stripe live account is enabled for charges/payouts. The public paid flow uses 13 live Stripe Payment Links under the 2026-10-19 fixed multi-currency pricing (manual `currency_options`, no live FX; USD/AUD/CNY chosen by browser locale/timezone, fallback USD): five standard single-system links (七政/西占/印度/一掌/生命靈數) at US$9.90 / A$14.90 / ¥68, BaZi and Zi Wei deep single-system links at US$16.90 / A$24.90 / ¥108, and six six-system bundle links (excluding BaZi) at US$26.90 / A$39.90 / ¥168. Superseded links (including the US$1.99/4.99/9.99 and US$19.99 generations) are inactive in Stripe and stay registered in the webhook only so already-opened or completed old payments still resolve; they are no longer sales entry points. Each link returns directly to the originating report route with `{CHECKOUT_SESSION_ID}`; `client_reference_id` carries only the browser access key. Stripe sends completed/async payment events to the Supabase `stripe-webhook`, which accepts only the private high-entropy endpoint token, known live Payment Link IDs, exact per-currency fixed amount (USD/AUD/CNY), and a valid access key before writing the server-only entitlement. The browser can only query entitlement state through `stripe-checkout`.
+- Pre-launch entitlement count was 0 paid / 0 pending / 0 failed, so there is no existing-customer migration problem. The new entitlement lookup endpoint was smoke-tested in Production Supabase and returns `200` without requiring a Stripe server API key. The first real paid order is the final operational proof of Stripe→webhook delivery, not a pre-launch blocker.
+- Instagram / Threads automatic publishing remains optional and depends on Meta credentials; it is not a launch blocker.
+
+Launch triage follows `AGENTS.md`: P0 blocks revenue/core operation; P1 is batched conversion/trust work; P2 is backlog-only polish.
+
+- 2026-10-15：開場影片 60 秒內完整播放；全站預設 English（中文瀏覽器才預設中文）；首頁版本更新與站主入口移至頁尾；換頁淡入；付費區新增優惠碼（`promo-code` Edge Function，與 Stripe 分離）。細節見 Instruction Registry 同日條目。
+- 2026-10-16：測驗結果圖改接圖庫——`/quiz/divine-affinity` 依答案（主本緣＋次本緣＋作答序列的穩定雜湊）從 `public/quiz-art/divine/` 已審核畫像挑圖，五行測驗（`/fun-tests?test=element`）依主元素接已通過 QC 的天干畫作；線條 SVG 只在圖片載入失敗時作備援。動物測驗（`/fun-tests?test=animal`）圖庫沒有真實動物畫像，改用 8 種動物圖騰（`src/components/animal-totem-art.tsx`），不再顯示人臉 SVG；六道測驗改用 6 個象徵圖（`src/components/realm-emblem-art.tsx`），不再顯示人臉 SVG。選圖邏輯在 `src/lib/quiz-result-art.ts`。
+- 2026-10-15：中國大陸可讀取／可登入基礎——Production 訪客端 Supabase 請求經同網域 `/sb/*` Vercel rewrite，站主背景音樂經同網域 `/api/owner-music?track=<id>` 代理串流，天文腳本自家託管（細節見 Instruction Registry）。2026-10-17 正式 canonical 改為 `zhao-wu.com`，並納入同源 Supabase 代理白名單；舊 `.vercel.app` 入口保留。
+- 2026-10-30：站主音樂寫入不再使用已提交的加密 SSH 金鑰或 `ssh2`。寫入憑證改為伺服器環境變數 `ZHAOWU_OWNER_MUSIC_GITHUB_TOKEN`；未設定時寫入失敗關閉。公開播放路徑不變。舊 deploy key 需在新權杖於 Production 生效後由站主撤銷。Git 歷史不在本次改寫。
+- 2026-10-27：新增 `/sample-report` 三語公開命書示例，所有人物與資料均為虛構；分享網址固定加入 `utm_source=zhaowu&utm_medium=share`，原 query／hash（含付款與 access token）仍全部丟棄。站點採單一路徑即時切換繁／簡／英，故不建立指向同一 URL 的虛假 `hreflang` alternate；canonical 仍由每個公開路由自指。jsDelivr 僅保留給站主專用 ffmpeg core 的自家託管失敗備援，不屬公開訪客必要依賴。
+
+
+## 0.1 Complex question answering — 2026-10-07
+
+- **ACTIVE deterministic upgrade:** complex / long-tail questions are parsed into a question graph covering people, relationship roles, domains, subquestions, comparison/conditional/timing modes, third-party boundaries and high-stakes boundaries.
+- **ACTIVE first-screen fallback:** complex questions now get a deterministic multi-part synthesis before any provider call. It combines the existing Decision Report, question-relevant topic readings, timing and risk boundaries; it does not calculate a second chart or invent new metaphysical facts.
+- **Coverage catalogue:** `docs/COMPLEX-QUESTION-REASONING.md` defines 40+ person/relationship roles and broad question families including work, business, money, love, family, social relationships, timing, A/B decisions, home/property, migration, travel, health, fertility, legal, investment, pets, retrospective validation and symbolic/spiritual questions.
+- **OPTIONAL AI enhancement:** `answer-reasoner` exists as a bounded fact-synthesis layer. It is allowed to connect/prioritise only deterministic fact IDs and must fail closed to deterministic output.
+- **PROVIDER STATUS:** on 2026-10-07 both the existing `answer-writer` and the new `answer-reasoner` returned provider HTTP 401 from the currently configured OpenAI key. Their `site_settings` switches are therefore disabled to avoid useless provider calls. This does **not** disable deterministic customer answers or the new complex-question synthesis.
+- AI enhancement must not be re-enabled until a valid provider credential is installed through a secure secret-management path and a real invocation returns an accepted, fact-cited answer.
+
+## 五音、五氣與五行功能訓練教學
+
+- ACTIVE：`/knowledge/five-elements-tone-qi` 以繁中／簡中／英文說明五色、五音、氣候語境的五氣，以及功能卡點如何轉成可觀察的日常練習。
+- 僅作傳統象義教學；不從元素數量推個人缺項，不作診斷或治療，也不承諾顏色、音樂或物件能改命。
+- 正式個人化行動仍以完整報告已判定的「五行功能訓練」為準；入口位於既有 `/knowledge` 命理教學區。
+
+## Release Ledger CI boundary
+
+- 普通 PR／一般 main CI 執行功能、引擎、UI、合約與建置檢查；不執行嚴格 release ledger 校驗。
+- 一般功能 PR 不必先競逐版本號、不必為了通過日常 CI 改 `site-stats.ts`／`updateNumber`／驗證常數／編號更新報告。
+- 嚴格校驗只在 `v*` 或 `release-*` tag，以及 main 手動執行 release ledger workflow 時運行。
+- 正式發版仍需一致版本、更新序號、驗證常數與對應變更報告；Production 驗證後再寫入 Supabase `release_history`。
+- 該檢查目前由 `scripts/release-ledger.release.mjs` 承載，不得重新加入一般 build／engine 測試清單。
+
+
+## 1. 唯一 Production
+
+- GitHub：`stoneweiwei-dot/zhaowu`
+- Branch：`main`
+- current main：以 GitHub `main` 即時 SHA 為準；不得把文件內固定 SHA 當永久 CURRENT。
+- Hosting：Vercel
+- Project：`stone-zhaowu-official`
+- Production URL / canonical：`https://zhao-wu.com/`（`stone-zhaowu-official.vercel.app` 保留為同專案相容入口）
+- current Production：以 Vercel `stone-zhaowu-official` Production 即時 SHA 為準。
+- 發布前必須確認 Production SHA = current main SHA。
+- Vercel Git policy：只有 `main` 可觸發 Production；`deploymentEnabled` 以 `**: false + main: true` 覆蓋含 `/` 的分支名，`ignoreCommand` 再用 `VERCEL_GIT_COMMIT_REF != main` 作第二道硬擋；純 docs/Markdown／GitHub workflow 變更亦跳過。
+- Netlify：archive only；不得作 Production／canonical／fallback truth。
+- AppDeploy／Sites／Floot／Dropbox：只可作開發、管理、資產或備份工具，不得成為訪客 runtime 必要依賴。
+
+## 2. 公開產品 CURRENT
+
+最終產品收線為「昭梧命書」。
+
+不再以增加流派入口、首頁卡片或獨立工具作為產品主線。
+
+唯一公開主流程：
+
+**出生資料 → 四柱與基礎解釋 → 單一完整報告 → 可選追問**
+
+- 公開不存在路由使用昭梧雙語 404 引導頁，提供返回首頁與查看最新更新；Vite SPA fallback 仍由 TanStack Router 判定 client-side not found。
+- 公開回應由 Vercel 全域補上 `X-Content-Type-Options: nosniff` 與 `Referrer-Policy: strict-origin-when-cross-origin`；HSTS 為 `max-age=63072000; includeSubDomains`（不 preload），頁面與靜態檔的 `ACAO` 覆寫為 `https://zhao-wu.com`（2026-10-30 金曜 r1）。
+
+- 紫微、七政、西占、印度古法、一掌經／前世今生、生命靈數六類專卷的基本盤與計算落位公開；盤後文字解讀按次付費（快速讀為免費迎新、不再出售；標準單盤 US$9.90／A$14.90／¥68；八字與紫微深度單盤 US$16.90／A$24.90／¥108；六盤全讀 US$26.90／A$39.90／¥168，不含八字），均一次性付款、不自動續費。依據 `docs/INSTRUCTION-REGISTRY.md` 2026-10-19「固定多幣別報告定價」與 `src/lib/report-access.ts`。
+- 天機雙盤／星宮等未納入六類公開產品的內部 routes 仍維持 owner-only。
+- 首頁吉象圖鑑入口隱藏；獨立頁與站主圖庫保留。
+- 完整報告第一屏只保留原問題、1–3 句直接答案與最多一個現實下一步；可信度、最大變數、命盤與完整分析過程不得與主答案並排。
+- 完整 reasons／risks／timing／actions、技術盤與證據依據一律收進最下方的「判斷備註」；主閱讀不再顯示優先重點卡。
+- 新報告持久化契約仍為 `summary / body`；完整報告固定在同一張連續紙面呈現「直接回答 → 總體概括 → 身體需要注意的地方」，不復活九頁／四卡／多 session。身體段每種題型都顯示傳統象義觀察及非醫療診斷界線。
+- r189 的「一盤一景」敘事保留於歷史資料與非主流程；現行報告主閱讀不再以多欄／多卡敘事取代總體概括和身體段。
+- 現行完整報告敘事契約為 `docs/PAID-REPORT-STYLE-v2.0.md`；v1.0 只作歷史參考。時辰未知時不得補造固定法器、晚景或精細應期。
+- 圖片／provider／背景失敗不得阻塞文字答案。
+- 身體內容只作傳統象義提醒，不作醫療診斷。
+
+唯一報告契約：`docs/FOCUSED-REPORT.md`。
+
+## 3. Login／身份
+
+- 公開訪客：guest-first，本機保存生辰與一般使用狀態；核心問答不要求會員帳號。
+- `/login`：目前是 **owner-only login**。
+- 站主登入：獨立 owner cookie／owner session，不依賴 Supabase Auth。
+- 不得復活公開 Email／OAuth／註冊 active path，除非站主另行明確下令。
+
+## 4. 語言
+
+公開 selector 只有：
+
+- 繁體中文
+- 简体中文
+- English
+
+ko／hi／ja 原始碼或相容 bridge 可保留，但不得出現在公開 selector，也不得阻塞 Production 驗收。
+
+## 5. 視覺權威
+
+- `src/main.tsx` 全域 CSS 載入順序：
+  1. `styles.css`
+  2. `legacy-visual-compat.css`
+  3. `zhaowu-design-system.css`
+- `zhaowu-design-system.css` 是最後 visual authority。
+- 不再新增新的 `visual-hotfix-rXXX.css` 全域入口。
+- SiteShell 語言列不得用 inline style 與 canonical CSS 打架。
+- iPhone 優先；主要 touch target >=44px；表單控制文字 16px，避免 Safari auto zoom。
+- 青玉小龍已退出公開 runtime；音樂與網站導覽整合為同一個低干擾 paper utility dock，只保留兩個帶文字的 44px+ 入口，不得再疊第二套 mascot／music 浮層。
+- 手機頁面不得要求左右拖動。
+- 2026-10-03 起同一框架新增全域圖像預設：暖紙／絹肌理、柔霧礦物粉彩、細墨線、克制淡金、大景小敘事與 9:16 單張成畫；所有生成圖預設遵循，文化題材保留其自身畫風。
+- 2026-09-29 起 `docs/ZHAOWU-SONG-AESTHETIC-FRAMEWORK.md` 為主體審美框架：核心是「豐盛後的收斂」。留白必須有分組作用，遠山必須可辨識，暖紙閱讀面不得被做成空洞洗白；全站維持單一宋式編輯骨架。
+- 介面以暖米紙與深墨維持閱讀基礎；深松綠建立主層級，礦物金作細線，朱砂作少量提示。圖像生成另預設融入天青／湖藍／青綠／淡紫／藕粉等柔和礦物粉彩、紙絹肌理、細墨線與舒展留白，詳見 `docs/ZHAOWU-SONG-AESTHETIC-FRAMEWORK.md` 的「全域生成圖像預設」。介面幾何仍為低圓角、薄線、極弱紙面陰影，禁止卡片牆、膠囊堆疊與玻璃擬態。
+- r185 起夜間模式必須按「表面」配色：米白／宣紙卡保持深墨正文；只有深松綠等暗色承載面使用月白字。禁止再用全域 night 文字變亮覆蓋整個 result flow。
+- r186 起首頁視覺採單一「宋式編輯排版」權威：禁止以大膠囊、大圓角卡片牆、深綠大色塊作主要資訊架構；Header 為細字導覽，Hero 以宋體＋留白＋細線構成，Disclosure 以分隔列呈現。
+- r186 核心閱讀面（生辰／命盤／問題／報告）統一為低圓角暖紙；Night mode 為墨色背景＋暖紙正文，不把整頁染成暗綠。
+- 2026-10-07 起青玉小龍公開入口取消；原有音樂與網站指引能力由 `SiteUtilityDock` 承接，視覺只保留「音樂／導覽」兩個有文字標示的低干擾入口。
+- r187 起 English 是獨立排版系統，不得把中文尺寸直接換成英文字符串：Latin 標題使用 Iowan Old Style／Baskerville／Georgia fallback，UI 使用 Avenir Next／SF Pro／system sans；手機 English Header 分成品牌／更新／語言與外觀三列，禁止長字串互相交叉或壓住。
+- r187 起站主後台執行「資訊減法」：分區下方不再放教學式／解釋式 helper copy；只保留標題、狀態、操作與必要資料。任何 Storage 狀態只用單行 short status。
+- r188 起新增「宋式小漫畫翻譯層」：宋式仍是唯一視覺骨架；漫畫只允許出現在首頁「今日一格」、命書核心底盤後單一白話插頁、命書末端分享一格。不得擴張成新工具入口、卡片牆或第二套品牌視覺。
+- r188 漫畫角色只用本機 React／SVG，依五行切換柔和色系；不得為漫畫層新增 Supabase Storage 寫入或付費圖片 provider。漫畫只翻譯概念，不得修改排盤／格局／用神／吉凶 truth。
+- r190 起首頁完整命盤細節採 lazy mount：只有使用者展開後才掛載完整命書；核心生辰錄入、四柱與基礎解釋必須先 fail-open。
+- r191 起命書新增「結構不是平衡表」治理：五行不以平均為目標、十干無先天高下；「使命／為何而生」只轉譯為結構功能與反覆課題；圖像／神獸／漫畫只能由既有主判向下翻譯，禁止反推格局、喜用或吉凶。
+- r192 起完整報告執行客戶文案減法：不再顯示 `PERSONAL ANALYSIS`、`YOUR QUESTION`、`Reasoning notes`、`Chart basics` 等 prompt／dashboard 式標題；只保留問題、答案、補充、四柱、附註、依據與下一步等成品語言。
+- r192 起 `STONE-R6.2.2-CURRENT-MASTER.md` 為 CURRENT governance/evidence master；deterministic runtime 仍為 R6.2.1 + P2 + P3（含 r191 結構增補），不得把治理版本號冒充排盤核心重寫。
+- r192 起首頁漫畫、生辰流程與安裝提示各自有 fail-open boundary；單一區塊或舊本機資料異常不得再拖垮整頁。
+- r192 手機閱讀面收至最寬 560px，採暖紙／青玉／朱砂節制配色與小圓角；這只是正式站的視覺層，不引入 Lite 站的獨立流程、登入或 Storage 寫入。
+- r193 修正正式站實測發現的夜間對比回歸：英文 Header 切換、延伸入口主／次文字與暖紙內容面第二步標題必須保持可讀；只改 CSS，不改功能或命理核心。
+- 2026-10-03 起首頁不再渲染獨立「今日一格」漫畫；r188 的漫畫翻譯能力只保留在命書／分享等仍有語義價值的位置。首頁「今日」直接置於前段，黃曆／五行穿衣／靈籤為三個同時可見、垂直獨立段落，不再以頁籤疊放；黃曆使用深潭墨綠單一曆書面，不再拼成小卡牆。靈籤首頁直接顯示籤題、核心籤句與籤意；完整籤面固定使用 repo 本地 9:16 宋式礦物淡彩背景，不再查詢或隨機抽取圖庫圖片。
+- 2026-10-03 起首頁安裝提示完全改為 opt-in：不再於進站後自動彈出，也不保留 fixed 浮動按鈕；只在首頁底部顯示「存到桌面」入口，點擊後才打開對應裝置的安裝步驟。PWA manifest、Service Worker 與版本更新機制不變。
+
+## 6. Loading／Login animation
+
+r219 依站主最新明確指令（2026-09-28，見 `docs/INSTRUCTION-REGISTRY.md`）修正，取代 r161／r191 對首頁的限制：
+
+- 首頁掛載一次性 `IntroGate`（`SiteShell` 內 `isHome ? <IntroGate /> : null`）：以 `zhaowu.intro.seen.public.v1` 記錄，同一瀏覽器只播一次（非每日），播完或逾時後改用靜態 poster，不阻塞頁面其他內容；一般分區、報告頁與返回導覽仍不掛載。
+- `/login` 仍是 owner-only login，但公開呈現改為固定宋式畫作背景 `/hero-gallery/dragon-scholar.webp`；不再播放登入影片，也不再顯示登入動畫的聲音／跳過控制。站主 cookie／session 與 owner-only 身份邊界不變。
+- `IntroGate` 元件與 policy（`src/components/intro-gate.tsx`、`src/lib/intro-gate-policy.ts`）現為公開 runtime 的一部分，不再只是回歸／相容參照。
+
+r220 依站主最新明確指令（2026-09-29，見 `docs/INSTRUCTION-REGISTRY.md`）修正後台素材管理的對應範圍：
+
+- `/gallery` 的「開場影片」分頁（元件 `src/components/owner-login-visuals-manager.tsx`，內部識別碼與 `data-*` 屬性維持 `login-visuals` 不變）現在管理的是**首頁 `IntroGate` 的開場影片**，不是 `/login` 的登入畫面。站主在此上傳、標記 `is_primary`（`category=loading`、標記 `login-background`）的影片，透過新的公開唯讀端點 `src/lib/intro-visual-source.ts`（匿名金鑰、單一 row、~450ms 逾時、任何失敗一律 fail-open 回到內建預設 `zhaowu-opening-r148.mp4`）被首頁的 `IntroGate` 讀取使用。
+- `/login` 不再消費 `LoginStageBackdrop`／`LOGIN_VISUAL_CATALOG`；後台「開場影片」仍只管理首頁 `IntroGate` 的公開開場素材，與 owner-only login 背景解耦。
+- 後台分頁只列出具有 `login-background` 標記的 MP4／WebM；普通圖片、背景圖及封面圖不會成為候選，新增上傳也只接受影片檔。
+- r194 起 Supabase Pro 已由站主明確批准，舊 r181 Free 容量寫入凍結退出 active path；runtime 的既有 same-origin fallback 保留。
+- r194 的影片格式／TUS 上傳能力保留給首頁 `IntroGate` 素材管理；2026-10-07 起 `/login` 本身固定使用靜態宋式畫作，不再消費登入影片 runtime。
+- r196：完整綜合報告新增「完整命書／漫畫 Lite」雙閱讀模式，預設漫畫 Lite 六格；每格可展開同一份完整報告原文。這是呈現層，不新增 calculation、Storage、AI provider 或 payment gate。\n- r197：站主 `/gallery` 素材後台改為「登入影片／內容圖片」二選一分頁，一次只渲染一個管理器；登入影片、總圖庫、背景與報告的批量工具列只有先勾選項目後才顯示。功能、Owner 權限、Storage 寫入與資料結構不變。\n- r197：已安裝 PWA 以 release metadata + service worker 前景檢查吸收新正式版本，不要求刪除 App 重裝。
+
+## 7. Supabase
+
+主專案：`plgpxusmemnmzckbwtiv`。
+
+- Database 專案可讀；站主登入不走 Supabase Auth。
+- 2026-09-24 已完成第一輪安全清理：39 個確認零引用的物件經 Storage API 刪除，共回收 160,741,199 bytes。r197 收官實測為 **552 objects / 1,033,390,182 bytes（約 0.962 GiB）**：audio 1／3,869,936 bytes、backgrounds 291／627,245,539、gallery 250／371,049,622、report images 10／31,225,085。組織為站主批准的 Pro，包含 100 GB Storage；現有用量約 1.033%，尚有約 98.97 GB 包含額度。
+- Storage／Edge 曾回 402 `exceed_storage_size_quota`。
+- r194 起背景、站主圖庫、登入素材與命誥圖寫入恢復；舊 r181 Free-plan write freeze 已被站主最新 Pro 指令取代。
+- r174 已把 Supabase 從公開站 startup critical path 移除：資料服務失敗時首頁／命盤／問答必須 fail-open。
+- 不得直接 SQL DELETE `storage.objects` 冒充刪除檔案。
+- 本次已刪清單原始 manifest SHA-256 = `e73337b3bc7119f78a014fd557f0970306e5cab04f792496a8995cbea8d5396e`；14 audio／2 gallery／23 report images 的當前欄位、歷史 JSON、blueprint 與 settings 引用均已於刪除前核對。此 manifest 已用完，不得再次當作待刪清單。
+- 2026-09-23 的 402 為清理前歷史阻塞；2026-09-24 額度解除後才完成正式 Storage API 刪除。一次性精確路徑 policy 已撤銷；`admin-storage-cleanup-execute-once` 現行 v17 為 `verify_jwt=true` 的 410 retired stub。
+- 剩餘同內容物件的 eTag 理論去重上限約 56,245,616 bytes；它們可能同時受背景、圖庫或私人報告引用。即使 Pro 容量充足，任何後續清理仍須重新核對用途與引用，用 Storage API 刪除並復算容量。
+- 先前僅按 `background_assets` 判定出的 4 個「background orphan」其實仍被 `gallery_assets(bucket_id='zhaowu-backgrounds')` 以 enabled 資產引用，**禁止刪除**。
+- `admin-storage-cleanup-execute-once` v7 的候選解析漏掉上述 cross-bucket `gallery_assets` 引用；不得再啟用 v7 邏輯。現行 v17 為 410 retired stub 並要求 JWT；Owner dry-run audit 已補上 cross-bucket reference。
+- 刪除前 live 實體基線為 1,196,144,352 bytes：backgrounds 291 objects／627,245,539 bytes、gallery 249／370,798,037、report images 33／116,286,938、audio 15／81,813,838。279 個 `background_assets` metadata row 目前全為 enabled=true；禁止整包刪。未完成搬遷／引用核對前，不刪 private report images、仍被任何 metadata reference 的資產或 rollback 必要原件。
+
+- 2026-09-29（r220 全站清理）：全庫排查 27 個 Edge Functions，其中 22 個（`admin-clear-backgrounds-once`、`gallery-canva-probe-once`、`admin-import-background-music-once`、`admin-audio-diagnostic-once`、`admin-firestorage-probe-once`、`admin-import-background-music-firestorage-once`、`admin-audio-delivery-verify-once`、`temp-r57-firestorage-probe`、`admin-import-report-visuals-r57-once`、`temp-r59-firestorage-inspect`、`temp-r59-brand-import`、`temp-r61-brand-import`、`admin-import-report-luck-r59-once`、`admin-import-report-overview-r62-once`、`admin-import-logo-once`、`admin-media-export-once`、`admin-storage-cleanup-audit`、`admin-gallery-reconcile-r143`、`gallery-vision-audit`、`gallery-pixel-audit`、`gallery-pixel-audit-batch-runner`、`gallery-ingest-finalize`）經確認在 `src/`、`api/`、其餘 Edge Functions、docs、scripts 皆零引用，已比照既有 `admin-storage-cleanup-execute-once` 的做法，逐一改部署為 `verify_jwt=true` 的 410 retired stub（見 AGENTS.md §D「Temporary / probe / *-once Edge Functions … must be audited and retired from the active surface when safe」）。保留原 slug／JWT 要求以維持稽核軌跡，不做 hard delete（Supabase MCP 工具目前不提供刪除 Edge Function 的操作）。仍在使用中、不受影響：`zhaowu-owner-data`、`generate-decree-image`、`view-decree-image`、`site-guide`、`prepare-paid-visual`。
+
+第二個 Supabase project `zhaowu-core` 目前 INACTIVE；不得擅自切 Production 過去。
+
+## 8. Floot／Dropbox
+
+- Floot `Zhaowu Media Vault` 可作媒體外移目標，但目前 workspace asset upload 已回 `storage quota exceeded`；不得宣稱 Supabase→Floot 遷移完成。
+- Floot 不得成為訪客 runtime 必要依賴。
+- Dropbox 目前不在 Production runtime；只可作冷備份／人工資產保存。
+
+## 9. 已鎖核心
+
+沒有明確新需求與完整 regression，不改：
+
+- `src/lib/palm/engine.ts`
+- `src/lib/core/method.ts`
+- `src/lib/bazi/calendar.ts`
+- `src/lib/bazi/chart.ts`
+- `src/lib/bazi/interpret.ts` 的核心分類順序
+- auth／payment／Supabase schema
+
+子時規則保持 current 實作：23:00–23:59:59 按出生地當地當日；00:00 後次日，並處理時區／DST／真太陽時。不得復活舊「23:00 直接換日」。
+
+## 10. 真正仍未完成
+
+### P0
+- 每次 runtime 發布都必須確認 Vercel Production SHA = 該次 runtime main SHA；最新 exact SHA 與 deployment ID 以唯一交接板 Issue #1 為 live evidence，不在本文件硬鎖易過期 SHA。
+- 2026-10-06 站主已取消 GitHub required checks／branch protection 依賴；Deploy gate、Engine suite、iPhone Safari、Visual regression 不再是完成或發布條件，也不再要求代理默認查詢。需要時僅作手動診斷。
+- 站主登入後的 /account／/gallery 真實視覺驗收仍缺已驗證 owner session；r197 已完成 source contract、HTTP、CI 與 Production exact-SHA 證據，不得把「缺憑證的人工視覺」冒充已跑。
+- Supabase release_history 已寫入 r197／197，source commit = 9fd7c6e6d72925b385ed05e8cd803e92f871033a，verification = READY_MAIN_SHA_MATCH。
+- 《菜根譚》APP 截圖 37 條已完成逐條校勘並結案：28 條升為 verified direct quote；1 條確認誤歸《菜根譚》（實出《圍爐夜話》）；8 條因關鍵字／詞序／漏字與可靠底本不一致，保留截圖轉錄但改為 not_applicable，不進古籍直引池。全庫現況為 **38 verified / 0 pending / 15 not_applicable**，且非 verified 卻標 direct quote 的筆數為 0。
+- Supabase Security Advisor 的 5 個 rls_enabled_no_policy 為 service_role-only 表（含付款 entitlement）；anon／authenticated 無 table grants，現況是 deny-by-default，不得為消除 INFO 提示而新增寬鬆 policy。Auth 目前有 8 個 Supabase users，Leaked Password Protection 仍為平台設定 WARN；現有 MCP 無 Auth Password Security 寫入能力，禁止用 SQL 假裝已開啟。
+- Supabase 組織目前為 Pro；Storage 實測 1,033,390,182 bytes / 100 GB 包含額度，寫入已恢復。仍須避免重複素材；任何刪除繼續先核對引用並只用 Storage API。
+
+- r199：站主背景音樂後台完成資訊減法；常駐教學文案移除，批量工具列只在已有選取時顯示。公開 /api/owner-music 讀取改為直接讀 owner-music branch raw manifest，避開 Node 24 DEP0169 的舊 URL parser 路徑；寫入／Owner Cookie／SSH push 邏輯不變。
+- r200：r199 部署後真實呼叫仍觸發 DEP0169；根因確認為 `lib/owner-music-git.js` 頂層靜態載入 Node Git HTTP adapter。r200 改為只在 `withRepo()`（站主寫入）中動態載入，公開 `/api/owner-music` GET 不再評估該 adapter。
+
+### P1 / Backlog
+- STO-14 可選命誥圖真 provider 維持 Backlog；未重啟前不得消耗 provider 額度。
+- 自訂子域名只有在站主重新指定並完成 DNS/SSL 後才取代 Vercel URL；目前 canonical 不變。
+
+## 11. Done Gate
+
+不得再使用「基本完成／差最後一步／可以收官」作完成判定。
+
+完成判定改以目前實際產品狀態為主：
+
+1. current `main` 已包含要求的變更；
+2. 需要正式發布時，Vercel Production 已到目標 main SHA；
+3. 使用者實際回報的核心路徑沒有已知阻斷問題；
+4. 沒有尚未處理且與本次要求直接相關的已知回歸。
+
+GitHub Production CI、Deploy gate、Engine suite、iPhone Safari、Visual regression、PR check 狀態均不是默認 Done Gate。除非站主明確要求，不主動查、不等待、不因紅叉／黃點／skip 判定工作未完成。
+
+
+### r182 趣味測驗｜修仙命格靈測
+- 首頁「昭梧 · 心境小測」新增 `/quiz/cultivation-destiny`。
+- 來源：裝置既有生辰 → 現行 `buildChart()` 八字／五行 truth；MBTI 可選且低權重。
+- 輸出：靈根／品階、宗門峰脈、入門身份、六維、九大道途、諸宗適性、三句機驗、修行命途與 9:16 個人命測圖。
+- 命測圖完全在瀏覽器本機生成，不新增 Supabase Storage 寫入，不使用付費圖片 provider；此成本隔離契約與 r194 恢復其他 owner Storage 寫入相容。
+- 邊界：仙俠結果只作趣味世界觀，不修改正式命盤；紫微未經校驗時不補造盤面。
+
+
+### r205｜盲派理論單元測試與 runtime 補充
+- 新增 `docs/STONE-THEORY-UNIT-CASES-v0.1.md` 與 12 個 synthetic theory-unit cases；只測規則一致性，不算 EVP 成功證據。
+- 新增 `ZW-BAZI-BLIND-THEORY-OPERATIONAL-0.1`：宮位定領域、十神定功能；有字不等於有效；合來／合絆／合閉分判；沖庫不預設開庫；重大事件維持原局→大運→流年→流月。
+- 來源固定為 `OWNER_MATERIAL`，不得冒充古籍權威；R6.2.2 governance、R6.2.1 deterministic runtime、P2/P3 仍具更高優先級。
+- 本次不改 deterministic 排盤、auth、payment 或 Supabase schema；Supabase 僅用於正式 release evidence。
+
+### r207｜五行認知／十干性格梗／四庫速查
+- 站主 2026-09-27 截圖材料已整理為 `OWNER_MATERIAL`，接入 `ZW-OWNER-FIVE-ELEMENT-COGNITION-1.0`。
+- 五行五常採金義、木仁、水智、火禮、土信作文化／功能教學；禁止由「缺某五行」或元素數量直接判人格。
+- 十干一句話性格只作 social shorthand、趣味測驗／漫畫翻譯，不進正式人格主判。
+- 四庫新增教學標籤：辰濕土／水庫、丑濕寒土／金庫、未燥土／木庫、戌燥土／火庫；藏干仍以 deterministic calendar 為準。
+- 材料中的住所／事業／感情／家庭等沖庫場景只作候選象意；正式事件仍需宮位、十神、原局種子、大運／流年／流月與病藥、ODL、FC、承載共同成立。
+- 本輪不改 deterministic 排盤、auth、payment、Supabase schema 或 Storage。
+
+### r208｜命理核心最後一次收口
+- `docs/STONE-R6.2.2-CURRENT-MASTER-DECLARATION.md`：R6.2.2 正式宣告為唯一 CURRENT MASTER，綁定站主指定五層模型（L1 CORE ZI-PING／L2 STRUCTURAL PATCH／L3 TEMPORAL-EVENT／L4 EVIDENCE-AUXILIARY／L5 OPERATIONAL INFRASTRUCTURE）。Code-level engine identifier 依既有規則繼續為 `R6.2.1`。
+- `docs/STONE-R6.2.2-SIX-PATCHES.md`（`ACTIVE RUNTIME PATCH`）：GF-13 擴展、ODL→FC→CAPACITY、時間層 Evidence Gap、Data Evidence Boundary、Event Chain Separation、年度機制獨立＋VAL-C 回溯降級；runtime 綁定 `src/lib/bazi/six-patches-instruction.ts`（`ZW-R6.2.2-SIX-PATCHES-1.0`，priority 0）。
+- Supabase `classic_sources` 新增 4 筆子平核心來源（滴天髓、三命通會、子平真詮、窮通寶鑑），`source_nature='classic'`；`classic_passages` 既有 verified=38／not_applicable=15／pending=0／rejected=0 核對後未變動（未插入任何段落列）。
+- 完整報告「判斷備註」收合層新增三語（繁中／簡中／英文）方法論披露，含可折疊「了解方法」（`src/components/paid-report-pages.tsx` 的 `MethodologyDisclosure`）。
+- 本次不改 deterministic 排盤、R6.2.1／P2／P3 既有判法全文、auth、payment 或 Supabase 用戶資料結構。
+
+
+### r211｜五行認知與四庫內容進入完整報告
+- r207 已接入的五行五常、十干趣味側寫與四庫速查，現已真正進入 `composeFocusedReport` 的完整報告文字，而非只停留在 instruction registry。
+- 報告最多新增三條低負擔內容：五行功能、天干一面、四庫提示（只有命盤實際出現辰戌丑未時才顯示）。
+- 五行功能只作主判後白話翻譯；天干一句話固定標示為趣味側寫；四庫提示明示「庫不等於財庫」，不改寫既有四庫主判。
+- 英文報告使用純英文 stem／branch 名稱，不混入漢字。
+- 本輪不新增第三個 report session／卡片，不改 deterministic 排盤、auth、payment、Supabase schema 或 Storage。
+
+
+### r212｜EP01 木／EP02 火缺象進入完整報告
+- 目前只接入已發布的 EP01 木、EP02 火；土／金／水未發布，不自行類推。
+- 木缺象只按作者明示「無甲乙寅卯」；火缺象只按「無丙丁巳午」。時辰未知時不得把前三柱無字直接當整局確定缺象。
+- 來源性格句只作可能表現：木偏直接、少迂迴、執行快；火偏冷靜、穩定、耐心、不偏焦點。是否屬優點、代價或真缺仍由 CURRENT 主鏈喜忌／結構判定。
+- 綠色、植物、木質物、紅橙紫、日照、主動表達等只稱象義練習，不稱改命／治療／硬補五行。
+- 肝膽、筋骨、毛髮、心、血液、視力只保留來源傳統對應，不作醫療判斷。
+
+### 2026-10-16｜首頁四入口白話化與樹狀導覽
+- 首頁四入口改為「我的命盤／今日指引／趣味測驗／文章專欄」，點開在原地展開子項（`src/components/home-tree.tsx`），預設全收起、單開。
+- 預設主題底部「青玉小龍」面板已換成「不知道從哪開始？」導覽入口；雲山青綠主題的 Q 版小龍插圖已移除。

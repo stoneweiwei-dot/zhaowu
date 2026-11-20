@@ -1,0 +1,164 @@
+/* ============================================================================
+ * ZHAOWU theme skins — full style sets. Loaded after theme-skins.css.
+ * theme-skins.css gives each skin its colours + hero art; this file gives each skin its own *set*:
+ * background texture, card frame, button, heading, nav pills and hero frame. Every rule needs html[data-zws];
+ * with no skin selected this file changes nothing. Textures are inline SVG/CSS gradients, so they stay sharp on any screen.
+ * ========================================================================== */
+
+/* ── generic consumers (fallbacks keep a skin that sets no variable exactly as before) ───────────────── */
+html[data-zws] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--zws-pattern, none);
+  background-size: var(--zws-pattern-size, 220px);
+  opacity: var(--zws-pattern-opacity, .55);
+}
+html[data-zws] body :is(.zw-hero-nav-item.zw-hero-card, .zw-birth-entry-ticket, .seal-border, .zhaowu-result-card, .zhaowu-customer-record) {
+  box-shadow: var(--zws-card-frame, var(--zws-shadow)) !important;
+}
+html[data-zws] body .zw-hero-nav-item.zw-hero-card { border-radius: var(--zws-card-radius, var(--zws-radius)) !important; }
+html[data-zws] body :is(button[type="submit"], .bg-cinnabar, .zhaowu-primary-button) {
+  background: var(--zws-btn-bg, var(--zws-accent)) !important;
+  border-radius: var(--zws-btn-radius, 999px) !important;
+}
+html[data-zws] body .zw-journey-nav a { border-radius: var(--zws-pill-radius, 999px) !important; }
+html[data-zws] body .zw-hero-inscription-title {
+  font-weight: var(--zws-title-weight, 520);
+  letter-spacing: var(--zws-title-track, .055em);
+  text-shadow: var(--zws-title-shadow, none);
+}
+html[data-zws] body .zw-hero-inscription-title::after {
+  content: "";
+  display: block;
+  width: var(--zws-rule-w, 56px);
+  height: var(--zws-rule-h, 2px);
+  margin: 10px auto 0;
+  background: var(--zws-rule, linear-gradient(90deg, transparent, var(--zws-gold), transparent));
+  border-radius: 2px;
+}
+html[data-zws] body main:is(.zw-hero-home, .zhaowu-home-layout)::before {
+  border: var(--zws-hero-border, 1px solid var(--zws-line));
+  box-shadow: var(--zws-hero-frame, var(--zws-shadow));
+  border-radius: var(--zws-hero-radius, var(--zws-radius));
+}
+
+/* ── 蓮舟山水 · 宣紙、水波、金線雙框 ─────────────────────────────────────────────────────────────── */
+html[data-zws="lotus-boat"] {
+  --zws-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='40'%3E%3Cpath d='M0 20 Q20 8 40 20 T80 20 T120 20 T160 20' fill='none' stroke='%23b8934d' stroke-width='.8' stroke-opacity='.35'/%3E%3C/svg%3E");
+  --zws-pattern-size: 160px 40px; --zws-pattern-opacity: .45;
+  --zws-card-frame: 0 8px 22px rgba(60, 46, 24, .10), inset 0 0 0 4px var(--zws-card), inset 0 0 0 5px rgba(184, 147, 77, .5);
+  --zws-btn-bg: linear-gradient(180deg, #2f5b4d, #204238); --zws-pill-radius: 14px; --zws-title-track: .09em;
+  --zws-hero-frame: 0 10px 26px rgba(60, 46, 24, .14), 0 0 0 4px var(--zws-page), 0 0 0 5px rgba(184, 147, 77, .6);
+}
+
+/* ── 雲山青綠 · 留白、青玉細線、方正 ─────────────────────────────────────────────────────────────── */
+html[data-zws="cloud-jade"] {
+  --zws-pattern: radial-gradient(ellipse 60px 18px at 30px 18px, rgba(43, 85, 69, .06), transparent 70%);
+  --zws-pattern-size: 120px 60px; --zws-pattern-opacity: 1;
+  --zws-card-frame: 0 1px 0 rgba(255, 255, 255, .8), 0 6px 16px rgba(36, 58, 50, .07), inset 0 -3px 0 rgba(43, 85, 69, .5);
+  --zws-card-radius: 12px; --zws-btn-bg: #2b5545; --zws-btn-radius: 10px; --zws-pill-radius: 10px; --zws-title-weight: 600;
+  --zws-rule: linear-gradient(90deg, transparent, #2b5545, transparent); --zws-rule-w: 40px;
+  --zws-hero-radius: 12px; --zws-hero-frame: 0 8px 20px rgba(36, 58, 50, .12), inset 0 0 0 1px rgba(255, 255, 255, .35);
+}
+
+/* ── 金鳳朝陽 · 旭日放射、雙層金框 ───────────────────────────────────────────────────────────────── */
+html[data-zws="golden-phoenix"] {
+  --zws-pattern: repeating-conic-gradient(from 188deg at 92% -8%, rgba(255, 205, 110, .30) 0 3deg, transparent 3deg 10deg);
+  --zws-pattern-size: 100% 70vh; --zws-pattern-opacity: .6;
+  --zws-card-frame: 0 0 0 1px rgba(201, 162, 79, .9), 0 0 0 4px rgba(201, 162, 79, .16), 0 10px 24px rgba(130, 90, 10, .14);
+  --zws-btn-bg: linear-gradient(180deg, #2c5646, #1d3d31); --zws-title-track: .07em;
+  --zws-rule: linear-gradient(90deg, transparent, #c9a24f 30%, #c9a24f 70%, transparent); --zws-rule-w: 72px; --zws-rule-h: 3px;
+  --zws-hero-frame: 0 0 0 1px #c9a24f, 0 0 0 5px rgba(201, 162, 79, .2), 0 12px 28px rgba(130, 90, 10, .18);
+}
+
+/* ── 水墨飛龍 · 濃墨、粗體大字、利落 ─────────────────────────────────────────────────────────────── */
+html[data-zws="ink-dragon"] {
+  --zws-pattern: radial-gradient(circle at 12% 18%, rgba(29, 26, 22, .05), transparent 40%), radial-gradient(circle at 90% 70%, rgba(63, 95, 88, .07), transparent 38%);
+  --zws-pattern-size: 100% 100%; --zws-pattern-opacity: 1;
+  --zws-card-frame: 0 6px 16px rgba(29, 26, 22, .10), inset 0 -3px 0 #1d1a16;
+  --zws-card-radius: 8px; --zws-btn-bg: #1d1a16; --zws-btn-radius: 6px; --zws-pill-radius: 6px; --zws-title-weight: 800; --zws-title-track: .04em;
+  --zws-rule: #1d1a16; --zws-rule-w: 64px; --zws-rule-h: 4px;
+  --zws-hero-radius: 8px; --zws-hero-frame: 0 10px 24px rgba(29, 26, 22, .22), inset 0 0 0 2px rgba(29, 26, 22, .85);
+}
+
+/* ── 龍蓮日卷 · 金邊卷軸卡片（上下卷軸桿） ───────────────────────────────────────────────────────── */
+html[data-zws="dragon-lotus"] {
+  --zws-card-radius: 10px;
+  --zws-card-frame: 0 0 0 1px rgba(196, 162, 99, .85), 0 0 0 4px rgba(196, 162, 99, .18), 0 10px 24px rgba(90, 64, 20, .14);
+  --zws-btn-bg: linear-gradient(180deg, #2a5a4c, #1b3f35); --zws-pill-radius: 10px; --zws-title-track: .08em;
+  --zws-hero-radius: 10px; --zws-hero-frame: 0 0 0 1px #c4a263, 0 0 0 6px rgba(196, 162, 99, .22), 0 12px 28px rgba(90, 64, 20, .18);
+}
+html[data-zws="dragon-lotus"] body :is(.zw-hero-nav-item.zw-hero-card, .zw-birth-entry-ticket) {
+  background:
+    linear-gradient(180deg, #d9bd84, #a8843f) top / 100% 7px no-repeat,
+    linear-gradient(180deg, #a8843f, #d9bd84) bottom / 100% 7px no-repeat,
+    var(--zws-card) !important;
+}
+
+/* ── 夜・龍吟 · 深海夜藍、金色按鈕、星點與藍光 ───────────────────────────────────────────────────── */
+html[data-zws="night-flute"] {
+  --zws-pattern: radial-gradient(circle, rgba(241, 232, 208, .55) 0 1px, transparent 1.5px);
+  --zws-pattern-size: 46px 46px; --zws-pattern-opacity: .22;
+  --zws-card-frame: 0 0 0 1px rgba(224, 190, 128, .4), 0 0 26px rgba(70, 140, 205, .20), 0 12px 30px rgba(0, 0, 0, .45);
+  --zws-title-shadow: 0 0 18px rgba(120, 190, 235, .35); --zws-btn-radius: 999px;
+  --zws-hero-frame: 0 0 0 1px rgba(224, 190, 128, .55), 0 0 34px rgba(70, 140, 205, .35), 0 14px 32px rgba(0, 0, 0, .5);
+}
+
+/* ── 日・龍吟 · 霧白、深藍、同一幅畫的日間版 ────────────────────────────────────────────────────── */
+html[data-zws="day-flute"] {
+  --zws-pattern: linear-gradient(180deg, rgba(255, 255, 255, .6), transparent 22%, transparent 70%, rgba(120, 170, 200, .12));
+  --zws-pattern-size: 100% 100%; --zws-pattern-opacity: 1;
+  --zws-card-frame: 0 0 0 1px rgba(15, 64, 89, .16), 0 10px 24px rgba(15, 64, 89, .10);
+  --zws-btn-bg: linear-gradient(180deg, #14577a, #0d3a54); --zws-btn-radius: 12px; --zws-pill-radius: 12px;
+  --zws-rule: linear-gradient(90deg, transparent, #0f4059, transparent); --zws-rule-w: 48px;
+  --zws-hero-frame: 0 0 0 1px rgba(15, 64, 89, .35), 0 12px 28px rgba(15, 64, 89, .22);
+}
+
+/* ── 夜・宮闕 · 寬幅夜景、雕花邊框（四角金飾） ───────────────────────────────────────────────────── */
+html[data-zws="night-palace"] {
+  --zws-card-radius: 6px; --zws-btn-radius: 6px; --zws-pill-radius: 6px; --zws-title-track: .1em;
+  --zws-card-frame: 0 0 0 1px rgba(224, 190, 128, .5), 0 12px 30px rgba(0, 0, 0, .5);
+  --zws-hero-radius: 6px; --zws-hero-frame: 0 0 0 1px #e0be80, 0 0 0 5px rgba(7, 18, 26, .9), 0 0 0 6px rgba(224, 190, 128, .6), 0 14px 32px rgba(0, 0, 0, .55);
+}
+html[data-zws="night-palace"] body :is(.zw-hero-nav-item.zw-hero-card, .zw-birth-entry-ticket) {
+  background:
+    linear-gradient(#e0be80, #e0be80) top 7px left 7px / 16px 1.5px no-repeat,
+    linear-gradient(#e0be80, #e0be80) top 7px left 7px / 1.5px 16px no-repeat,
+    linear-gradient(#e0be80, #e0be80) top 7px right 7px / 16px 1.5px no-repeat,
+    linear-gradient(#e0be80, #e0be80) top 7px right 7px / 1.5px 16px no-repeat,
+    linear-gradient(#e0be80, #e0be80) bottom 7px left 7px / 16px 1.5px no-repeat,
+    linear-gradient(#e0be80, #e0be80) bottom 7px left 7px / 1.5px 16px no-repeat,
+    linear-gradient(#e0be80, #e0be80) bottom 7px right 7px / 16px 1.5px no-repeat,
+    linear-gradient(#e0be80, #e0be80) bottom 7px right 7px / 1.5px 16px no-repeat,
+    var(--zws-card) !important;
+}
+
+/* ── 青松簡約 · 墨字大標、深綠實心、無陰影 ───────────────────────────────────────────────────────── */
+html[data-zws="pine-ink"] {
+  --zws-pattern: repeating-linear-gradient(90deg, rgba(23, 43, 37, .035) 0 1px, transparent 1px 38px);
+  --zws-pattern-size: auto; --zws-pattern-opacity: 1;
+  --zws-card-frame: 0 0 0 1px rgba(23, 43, 37, .14); --zws-card-radius: 10px;
+  --zws-btn-bg: #1f4a3a; --zws-btn-radius: 8px; --zws-pill-radius: 8px; --zws-title-weight: 800; --zws-title-track: .03em;
+  --zws-rule: #1f4a3a; --zws-rule-w: 36px; --zws-rule-h: 3px;
+  --zws-hero-radius: 10px; --zws-hero-frame: 0 0 0 1px rgba(23, 43, 37, .2);
+}
+
+/* ── 粉彩錦鯉 · 魚鱗紋、輕盈細字、全圓角 ─────────────────────────────────────────────────────────── */
+html[data-zws="pastel-koi"] {
+  --zws-accent: #4f807e;
+  --zws-pattern: radial-gradient(circle at 50% 100%, transparent 0 10px, rgba(111, 154, 152, .16) 11px 12px, transparent 13px);
+  --zws-pattern-size: 26px 13px; --zws-pattern-opacity: .6;
+  --zws-card-frame: 0 10px 26px rgba(170, 140, 170, .14), inset 0 0 0 1px rgba(255, 255, 255, .8);
+  --zws-btn-bg: linear-gradient(180deg, #5f8f8c, #467573); --zws-title-weight: 400; --zws-title-track: .08em;
+  --zws-rule: linear-gradient(90deg, #e9c1c8, #b7c9e8); --zws-rule-w: 54px;
+  --zws-hero-radius: 26px; --zws-hero-frame: 0 12px 28px rgba(170, 140, 170, .2), inset 0 0 0 2px rgba(255, 255, 255, .7);
+}
+
+/* ── readability shared by every skin ──────────────────────────────────────────────────────────────── */
+html[data-zws] body .zw-hero-inscription-tagline { color: var(--zws-soft) !important; }
+html[data-zws] body .zhaowu-site-footer :is(p, span, a) { color: var(--zws-soft) !important; }
+/* dark skins: the portal-card arrow chip is a gold ring, not a pale disc with a pale arrow */
+html[data-zws-mode="dark"] body .zw-hero-card-arrow { background: rgba(224, 190, 128, .16) !important; border: 1px solid rgba(224, 190, 128, .55) !important; color: var(--zws-gold) !important; }

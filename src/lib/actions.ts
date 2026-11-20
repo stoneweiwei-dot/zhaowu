@@ -1,0 +1,275 @@
+import { foodPreferenceAnswer } from "@/lib/report/food-preference-answer";
+import { FEATURED_CITIES, filterFeatured } from "@/lib/bazi/cities";
+import { searchBirthPlaces } from "@/lib/geo/city-search";
+import type { AnalysisResult, AnalyzeInput, CityHit, RelationPref } from "@/lib/bazi/types";
+import { buildChart, currentAlmanac } from "@/lib/bazi/chart";
+import { assessDataGrade } from "@/lib/bazi/data-grade";
+import { effectiveTimeSource, normalizeTimeSource } from "@/lib/bazi/time-source";
+import { classifyQuestion, interpret } from "@/lib/bazi/interpret";
+import { applyMonthStageFeedbackPolicy } from "@/lib/bazi/month-stage-feedback";
+import { applyFourTombsRuntimePolicy } from "@/lib/bazi/four-tombs-runtime";
+import { applyTenGodFiveElementRuntimePolicy } from "@/lib/bazi/ten-god-five-element-runtime";
+import { applyKinshipRuntimePolicy } from "@/lib/bazi/kinship-runtime";
+import { applyThreeYuanAuxiliaryPolicy } from "@/lib/bazi/three-yuan-runtime";
+import { buildPalm } from "@/lib/palm/engine";
+import { routeMethods } from "@/lib/core/method";
+import { inferQuestionKind } from "@/lib/core/answer-contract";
+import { composeFocusedReportText } from "@/lib/report/focused-report";
+import { finalizeReading } from "@/lib/report/final-reading";
+import { enforceDirectAnswerGuard } from "@/lib/qa/direct-answer-guard";
+import { localizeReading } from "@/lib/report/reading-locale";
+import { trackAnswerError, trackAnswerResult } from "@/lib/observability/answer-quality-telemetry";
+
+function newId(): string {
+  return crypto.randomUUID();
+}
+
+function isCity(value: unknown): value is CityHit {
+  if (!value || typeof value !== "object") return false;
+  const c = value as CityHit;
+  return (
+    typeof c.name === "string" &&
+    typeof c.display === "string" &&
+    typeof c.timezone === "string" &&
+    Number.isFinite(c.latitude) &&
+    Number.isFinite(c.longitude)
+  );
+}
+
+function parseInput(raw: AnalyzeInput): AnalyzeInput {
+  if (!raw.question?.trim()) throw new Error("請先寫下你真正想問的問題。");
+  const year = Number(raw.year);
+  const month = Number(raw.month);
+  const day = Number(raw.day);
+  const hour = Number(raw.hour);
+  const minute = Number.isFinite(Number(raw.minute)) ? Math.round(Number(raw.minute)) : 0;
+  if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) {
+    throw new Error("請分別填寫出生年、月、日。");
+  }
+  if (year < 1900 || year > 2100 || month < 1 || month > 12) {
+    throw new Error("出生日期不正確，請檢查年、月、日。");
+  }
+  const lastDay = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  if (day < 1 || day > lastDay) throw new Error("出生日期不正確，請檢查年、月、日。");
+  if (!isCity(raw.city)) throw new Error("請填寫出生城市與國家。");
+  if (!raw.timeUnknown && (!Number.isInteger(hour) || hour < 0 || hour > 23 || minute < 0 || minute > 59)) {
+    throw new Error("出生時間請使用 24 小時格式。");
+  }
+  return {
+    ...raw,
+    year,
+    month,
+    day,
+    hour: raw.timeUnknown ? 12 : hour,
+    question: raw.question.trim().slice(0, 400),
+    minute: raw.timeUnknown ? 0 : minute,
+    liveCity: raw.liveCity && isCity(raw.liveCity) ? raw.liveCity : null,
+    ziPolicy: "midnight",
+    // Verified places always use the locked true-solar path. The only exception
+    // is the explicit fail-open placeholder created when place search is unavailable.
+    useTrueSolar: raw.city.standardTimeFallback !== true,
+    relation: raw.relation === "hetero" || raw.relation === "same" || raw.relation === "any" ? raw.relation : "unset",
+    timeSource: raw.timeUnknown ? undefined : normalizeTimeSource(raw.timeSource),
+  };
+}
+
+/** Client-safe deterministic runtime. Critical analysis modules are bundled up front. */
+export async function getAlmanac() {
+  return currentAlmanac(new Date());
+}
+
+export async function searchCities({ data }: { data: string }): Promise<CityHit[]> {
+  // Owner 2026-10-08: birthplace search must find small towns. Delegates to the
+  // merged local + GeoNames + OSM search; timezone-less hits are resolved on select.
+  try {
+    return await searchBirthPlaces(String(data ?? ""));
+  } catch {
+    const query = String(data ?? "").trim();
+    const local = filterFeatured(query);
+    return query ? local : FEATURED_CITIES.slice(0, 6);
+  }
+}
+
+function finishReading(question: string, chart: AnalysisResult["chart"], reading: AnalysisResult["reading"], locale?: AnalysisResult["locale"]) {
+  // docs/I18N-JA-KO-STATUS.md: zh-Hans is withdrawn from the UI and any saved
+  // zh-Hans preference folds to zh-Hant. followUpLife()/writeFullReport() can
+  // pass through an undefined locale from a stale/legacy stored base report
+  // (AnalysisResult.locale was not always populated), and localizeReading()
+  // below only converts Simplified source text to Traditional when its
+  // locale argument is exactly "zh-Hant" — an undefined locale silently skips
+  // that conversion instead of falling back to the real default. Resolve the
+  // fallback once here so every caller of finishReading gets it consistently.
+  const effectiveLocale = locale ?? "zh-Hant";
+  const food = foodPreferenceAnswer(question, effectiveLocale);
+  if (food) return { ...reading, directAnswer: food.answer, action: food.nextAction };
+  const auxiliaryReading = applyThreeYuanAuxiliaryPolicy(question, chart, reading, effectiveLocale);
+  return localizeReading(enforceDirectAnswerGuard(question, chart, auxiliaryReading, effectiveLocale), effectiveLocale);
+}
+
+export async function analyzeLife({ data: raw }: { data: AnalyzeInput }): Promise<AnalysisResult> {
+  const startedAt = Date.now();
+  try {
+    const data = parseInput(raw);
+    const chart = buildChart(data);
+    const palm = buildPalm({
+      year: data.year,
+      month: data.month,
+      day: data.day,
+      hour: data.hour,
+      timeUnknown: data.timeUnknown,
+      gender: data.gender,
+    });
+    const kind = inferQuestionKind(data.question, classifyQuestion(data.question));
+    const methodProtocol = routeMethods(kind, {
+      palmReady: palm.ready,
+      palmMissing: palm.missing,
+    });
+    const rawReading = applyFourTombsRuntimePolicy(
+      chart,
+      applyMonthStageFeedbackPolicy(
+        data.question,
+        chart,
+        interpret(data.question, chart, data.relation, palm),
+      ),
+    );
+    const finalizedReading = finalizeReading(data.question, chart, rawReading, data.locale);
+    const kinshipReading = applyKinshipRuntimePolicy(
+      data.question,
+      chart,
+      data.relation,
+      finalizedReading,
+      data.locale,
+    );
+    const policyReading = applyTenGodFiveElementRuntimePolicy(
+      chart,
+      kinshipReading,
+      data.locale,
+    );
+    const reading = finishReading(data.question, chart, policyReading, data.locale);
+
+    const result: AnalysisResult = {
+      id: newId(),
+      locale: data.locale,
+      question: data.question,
+      chart,
+      reading,
+      createdAt: new Date().toISOString(),
+      methodProtocol,
+      palm,
+      dataGrade: assessDataGrade(data, effectiveTimeSource(data), chart),
+    };
+    trackAnswerResult({ result, expectedKind: kind, startedAt, source: "initial" });
+    return result;
+  } catch (error) {
+    trackAnswerError({ question: raw.question ?? "", source: "initial", error, startedAt });
+    throw error;
+  }
+}
+
+export async function followUpLife({
+  data,
+}: {
+  data: {
+    question: string;
+    base: AnalysisResult;
+    relation?: RelationPref;
+  };
+}): Promise<AnalysisResult> {
+  const startedAt = Date.now();
+  const question = String(data.question ?? "").trim().slice(0, 400);
+  try {
+    if (!question) throw new Error("請先寫下你想繼續問的問題。");
+    const palm = data.base.palm ?? null;
+    const kind = inferQuestionKind(question, classifyQuestion(question));
+    const methodProtocol = routeMethods(kind, {
+      palmReady: Boolean(palm?.ready),
+      palmMissing: palm?.missing ?? [],
+    });
+    const relation = data.relation ?? "unset";
+    const rawReading = applyFourTombsRuntimePolicy(
+      data.base.chart,
+      applyMonthStageFeedbackPolicy(
+        question,
+        data.base.chart,
+        interpret(question, data.base.chart, relation, palm),
+      ),
+    );
+    const finalizedReading = finalizeReading(question, data.base.chart, rawReading, data.base.locale);
+    const kinshipReading = applyKinshipRuntimePolicy(
+      question,
+      data.base.chart,
+      relation,
+      finalizedReading,
+      data.base.locale,
+    );
+    const policyReading = applyTenGodFiveElementRuntimePolicy(
+      data.base.chart,
+      kinshipReading,
+      data.base.locale,
+    );
+    const reading = finishReading(question, data.base.chart, policyReading, data.base.locale);
+    const result: AnalysisResult = {
+      id: newId(),
+      locale: data.base.locale,
+      question,
+      chart: data.base.chart,
+      reading,
+      createdAt: new Date().toISOString(),
+      methodProtocol,
+      palm,
+      dataGrade: data.base.dataGrade,
+    };
+    trackAnswerResult({ result, expectedKind: kind, startedAt, source: "follow-up" });
+    return result;
+  } catch (error) {
+    trackAnswerError({ question, source: "follow-up", error, startedAt });
+    throw error;
+  }
+}
+
+export async function writeFullReport({
+  data,
+}: {
+  data: {
+    question: string;
+    chart: AnalysisResult["chart"];
+    reading: AnalysisResult["reading"];
+    palm?: AnalysisResult["palm"];
+    locale?: AnalysisResult["locale"];
+  };
+}) {
+  const startedAt = Date.now();
+  try {
+    const governedReading = applyFourTombsRuntimePolicy(
+      data.chart,
+      applyMonthStageFeedbackPolicy(data.question, data.chart, data.reading),
+    );
+    const policyReading = applyTenGodFiveElementRuntimePolicy(
+      data.chart,
+      finalizeReading(data.question, data.chart, governedReading, data.locale),
+      data.locale,
+    );
+    const reading = finishReading(data.question, data.chart, policyReading, data.locale);
+    const palm = data.palm ?? null;
+    const methodProtocol = routeMethods(reading.kind, {
+      palmReady: Boolean(palm?.ready),
+      palmMissing: palm?.missing ?? [],
+    });
+    const result: AnalysisResult = {
+      id: newId(),
+      locale: data.locale,
+      question: data.question,
+      chart: data.chart,
+      reading,
+      createdAt: new Date().toISOString(),
+      methodProtocol,
+      palm,
+    };
+    const text = composeFocusedReportText(result);
+    trackAnswerResult({ result, expectedKind: reading.kind, startedAt, source: "report" });
+    return { text, source: "rule" as const };
+  } catch (error) {
+    trackAnswerError({ question: data.question, source: "report", error, startedAt });
+    throw error;
+  }
+}

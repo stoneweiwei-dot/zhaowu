@@ -1,0 +1,47 @@
+/* rpt0001 — six-system hub and formal-report details.
+   Kept in its own file (not the shared design-system sheet) so it never collides with other work. */
+
+/* Each system card carries a full one-sentence conclusion; do not cut it mid-sentence. */
+.zhaowu-unified-birth-report .zhaowu-specialist-hub__card p {
+  display: block !important;
+  overflow: visible !important;
+  -webkit-line-clamp: unset !important;
+  font-size: 13.5px !important;
+  line-height: 1.7 !important;
+  color: var(--zw-ink-soft, var(--zw-muted)) !important;
+}
+
+.zhaowu-unified-birth-report .zhaowu-specialist-hub__card .zhaowu-specialist-free-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.zhaowu-unified-birth-report .zhaowu-specialist-hub__note {
+  margin: 12px 2px 0;
+  color: var(--zw-muted);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+/* A one-sentence conclusion needs width: single column on phones. */
+@media (max-width: 640px) {
+  .zhaowu-unified-birth-report .zhaowu-specialist-hub__grid { grid-template-columns: minmax(0, 1fr) !important; }
+}
+
+/* Stage 02 / 04 summaries may be longer than the old two-line teaser. */
+.zhaowu-unified-fold > summary .zhaowu-unified-fold__teaser {
+  -webkit-line-clamp: 3;
+}
+
+.zhaowu-unified-fold__group { margin-top: 14px; }
+.zhaowu-unified-fold__group:first-child { margin-top: 4px; }
+.zhaowu-unified-fold__group > h5 {
+  margin: 0 0 4px !important;
+  color: var(--zw-ink);
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  line-height: 1.5 !important;
+}

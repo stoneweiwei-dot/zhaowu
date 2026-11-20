@@ -1,0 +1,21 @@
+# AI-training crawlers only (search/answer-engine bots stay allowed): content is copyright ZHAOWU (see /copyright).
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+User-agent: CCBot
+User-agent: Google-Extended
+User-agent: Bytespider
+User-agent: Applebot-Extended
+User-agent: cohere-ai
+Disallow: /
+
+# Private page routes (/login /account /member /history /gallery /social) are
+# deliberately crawlable so their X-Robots-Tag: noindex header (vercel.json) is
+# actually seen by search bots; a robots.txt Disallow would hide that signal.
+# Only non-HTML endpoints stay disallowed.
+User-agent: *
+Allow: /
+Disallow: /auth/
+Disallow: /api/
+
+Sitemap: https://zhao-wu.com/sitemap.xml
