@@ -85,13 +85,13 @@ export async function handle(req: Request, env: Runtime = runtimeFromDeno(), adm
 
   const { data, error } = await admin
     .from("report_purchase_entitlements")
-    .select("product_id,system_id,status")
+    .select("product_id,system_id,status,created_at,updated_at")
     .eq("checkout_session_id", sessionId)
     .maybeSingle();
 
   if (error) return json(req, env, { ok: false, error: { code: "PAYMENT_STORE_ERROR" } }, 502);
   if (!data) return json(req, env, { ok: true, paid: false, pending: true });
-  if (data.status === "refunded") return json(req, env, { ok: true, paid: false, revoked: true, reason: "refunded" });
+  if (data.status === "refunded") return json(req, env, { ok: true, paid: false, revoked: true, reason: "refunded", createdAt: data.created_at, updatedAt: data.updated_at });
 
   // The webhook's entitlement row is the fallback when Stripe cannot be queried.
   // If Stripe is available, keep checking for later refunds and disputes.
@@ -109,9 +109,10 @@ export async function handle(req: Request, env: Runtime = runtimeFromDeno(), adm
         const intent = typeof stripeSession.payment_intent === "object" ? stripeSession.payment_intent : null;
         const charge = intent && typeof intent.latest_charge === "object" ? intent.latest_charge : null;
         if (charge?.refunded || (charge?.amount_refunded ?? 0) > 0 || charge?.disputed) {
-          return json(req, env, { ok: true, paid: false, revoked: true, reason: charge.disputed ? "disputed" : "refunded" });
+          return json(req, env, { ok: true, paid: false, revoked: true, reason: charge.disputed ? "disputed" : "refunded", createdAt: data.created_at, updatedAt: data.updated_at });
         }
         if (stripeSession.payment_status !== "paid") return json(req, env, { ok: true, paid: false, pending: true });
+        return json(req, env, { ok: true, paid: true, pending: false, product: data.product_id, system: data.system_id, createdAt: data.created_at, updatedAt: data.updated_at, live: true });
       }
     } catch {
       // Fall back to the paid entitlement already recorded by the webhook.
@@ -124,6 +125,8 @@ export async function handle(req: Request, env: Runtime = runtimeFromDeno(), adm
     pending: data.status === "pending",
     product: data.product_id,
     system: data.system_id,
+    createdAt: data.created_at,
+    updatedAt: data.updated_at,
   });
 }
 
