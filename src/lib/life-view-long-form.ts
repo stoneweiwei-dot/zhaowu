@@ -1,3 +1,4 @@
+import { GUANYIN_DRAGON_KINGS_FERRY_ARTICLE } from "@/lib/life-view-long-form/guanyin-dragon-kings-ferry-20261117";
 import { IMPERMANENCE_LIFE_ARTICLE } from "@/lib/life-view-long-form/impermanence-life-20261030";
 import { CAUSE_ACTION_KINDNESS_ARTICLE } from "@/lib/life-view-long-form/cause-action-kindness";
 import type { LifeViewArticle } from "@/lib/life-view";
@@ -23,6 +24,7 @@ import { YELLOW_SPRINGS_AND_BUDDHIST_REBIRTH_LONG_FORM } from "@/lib/life-view-l
  * 傳統／传统宗教與修行材料只作文化、哲學與歷史脈絡整理；未經驗證的主張不得包裝成科學事實。
  */
 export const LIFE_VIEW_LONG_FORM_ARTICLES: LifeViewArticle[] = [
+  GUANYIN_DRAGON_KINGS_FERRY_ARTICLE,
   IMPERMANENCE_LIFE_ARTICLE,
   CAUSE_ACTION_KINDNESS_ARTICLE,
   SUDHANA_FIFTY_THREE_VISITS_ARTICLE,

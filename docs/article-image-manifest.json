@@ -342,6 +342,38 @@
       "source": "stone-original",
       "status": "approved",
       "note": "2026-11-16 站主授權本篇九圖隨文章發布，繁體中文字圖；WebP 916×1717，301800 bytes，SHA-256 ad8126ea7a1b48baa56f46ce104cd748e634690de0b869b737d6cc11ade3635b。"
+    },
+    {
+      "src": "/articles/guanyin-dragon-kings-ferry/01-hongliu-due.webp",
+      "article": "guanyin-dragon-kings-ferry-20261117",
+      "kind": "painting",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "2026-11-20 站主提供四聯原圖並要求拆分加入文章；此張為「洪流渡厄」獨立裁切。WebP 496×793，190920 bytes，SHA-256 7bdca5c27dce05b430f63f5c6629ba794e00fd7ecddb6199f2ead34c49dcfaff。"
+    },
+    {
+      "src": "/articles/guanyin-dragon-kings-ferry/02-hufa-lindu.webp",
+      "article": "guanyin-dragon-kings-ferry-20261117",
+      "kind": "painting",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "2026-11-20 站主提供四聯原圖並要求拆分加入文章；此張為「護法臨渡」獨立裁切。WebP 496×793，183190 bytes，SHA-256 c91b35309f9150b84de3c57889a5715472114cbc38d206c3ad7a09abb4291878。"
+    },
+    {
+      "src": "/articles/guanyin-dragon-kings-ferry/03-eight-dragon-kings.webp",
+      "article": "guanyin-dragon-kings-ferry-20261117",
+      "kind": "painting",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "2026-11-20 站主提供四聯原圖並要求拆分加入文章；此張為「八大龍王」獨立裁切。WebP 496×793，184466 bytes，SHA-256 3d4fdc3f2589d4dacaf2c8000828eeebb3bd8f496d551baaf42bab0ab5ae17e2。"
+    },
+    {
+      "src": "/articles/guanyin-dragon-kings-ferry/04-guanyin-duyuan.webp",
+      "article": "guanyin-dragon-kings-ferry-20261117",
+      "kind": "painting",
+      "source": "stone-original",
+      "status": "approved",
+      "note": "2026-11-20 站主提供四聯原圖並要求拆分加入文章；此張為「觀音度緣」獨立裁切。WebP 495×793，157080 bytes，SHA-256 16714418b776bfe03c8c670e37470e1810c1b2a09ceb24b65f0a5748f9e4610c。"
     }
   ]
 }
