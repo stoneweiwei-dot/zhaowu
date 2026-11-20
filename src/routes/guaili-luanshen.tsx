@@ -1,4 +1,3 @@
-import type { Locale } from "@/lib/i18n";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 import { GUAILI_PART_TWO, GUAILI_VOLUMES } from "./-mythic-atlas-guaili-data";
