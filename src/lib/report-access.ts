@@ -71,6 +71,7 @@ type Verification = {
   ok?: boolean;
   paid?: boolean;
   pending?: boolean;
+  revoked?: boolean;
   product?: ReportAccessProduct | "bundle";
   system?: ReportSystemId | null;
   error?: { code?: string } | string;
@@ -208,12 +209,15 @@ export async function resolveReportAccess(system: ReportSystemId) {
   let level: ReportAccessLevel = "quick";
   let pending = false;
   let stripeGranted = false;
+  let revoked = false;
+  const revokedSessionIds: string[] = [];
   for (const sessionId of [...new Set([query, ...storedSessions()].filter(Boolean))]) {
     try {
       // The checkout session ID is the high-entropy return capability. Verification
       // must also work when Stripe opens the success URL in a different browser whose
       // localStorage cannot contain the original client reference key.
       const verification = await verifySession(sessionId);
+      if (verification.revoked) { revoked = true; revokedSessionIds.push(sessionId); continue; }
       pending ||= verification.pending === true;
       const candidate = levelFor(verification, system);
       if (candidate === "system") stripeGranted = true;
@@ -223,6 +227,13 @@ export async function resolveReportAccess(system: ReportSystemId) {
       // Continue checking other sessions; the bounded watcher may retry this one.
       pending = true;
     }
+  }
+  if (revoked) {
+    try {
+      const revokedIds = new Set(revokedSessionIds);
+      localStorage.setItem(SESSION_STORAGE, JSON.stringify(storedSessions().filter((sessionId) => !revokedIds.has(sessionId))));
+      localStorage.setItem("zhaowu.report-access-revoked.v1", "refunded");
+    } catch { /* best effort cache cleanup */ }
   }
   {
     try {
@@ -241,6 +252,7 @@ export async function resolveReportAccess(system: ReportSystemId) {
     trackConversion("zhaowu_purchase_confirmed", { system });
     trackConversion("unlock_paid", { system });
   }
+  if (stripeGranted && !revoked) try { localStorage.removeItem("zhaowu.report-access-revoked.v1"); } catch { /* optional marker */ }
   return { level, pending, owner: false };
 }
 

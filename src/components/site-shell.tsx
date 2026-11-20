@@ -287,6 +287,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get("session_id") || "";
     if (params.get("checkout") !== "success" || !/^cs_live_[A-Za-z0-9]{10,200}$/.test(sessionId)) return;
+    // Preserve a non-secret UI flag before async verification and URL cleanup.
+    try { sessionStorage.setItem("zhaowu.checkout-success-visible.v1", "1"); } catch { /* UI confirmation is best effort */ }
     let reportId = "";
     try {
       reportId = localStorage.getItem("zhaowu.pending-bazi-report.v1") || "";
