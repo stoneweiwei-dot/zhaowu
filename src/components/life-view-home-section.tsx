@@ -128,7 +128,6 @@ const READING_MAP_GROUPS = [
 // Thumbnails are editorial cues: use an article's own art only when it depicts
 // the subject. Entries without matching art use a restrained topic glyph.
 const ARTICLE_THUMBNAILS: Record<string, { src: string; alt: string }> = {
-  "emotional-intelligence-four-practices-20261112": { src: "/articles/face-mind-cultivation-2026-09-14.webp", alt: "觀心與修習" },
   "bazi-health-symbolism": { src: "/articles/bazi-health-five-phases.svg", alt: "五行與身體象徵" },
   "a-day-with-incense": { src: "/today/almanac-mist-v1.webp", alt: "香事與日常" },
   "time-is-it-really-faster": { src: "/articles/time-objective-subjective.webp", alt: "時間" },
@@ -151,12 +150,18 @@ function articleThumbnail(article: IllustratedArticle) {
 
 function TopicThumbnail({ article, compact = false }: { article: IllustratedArticle; compact?: boolean }) {
   const thumb = articleThumbnail(article);
+  const [imageFailed, setImageFailed] = useState(false);
   const size = compact ? "h-14 w-12" : "h-20 w-16 sm:h-24 sm:w-[4.5rem]";
-  return thumb.kind === "image" ? (
-    <img src={thumb.src} alt={thumb.alt} width={941} height={1672} loading="lazy" decoding="async" className={`${size} shrink-0 rounded-lg object-cover`} />
+  const glyph = article.id.includes("five-elements") || article.id.includes("money-needs") ? "五" : article.id.includes("boundar") || article.id.includes("sensitivity") || article.id.includes("relationship") ? "界" : article.id.includes("practice") || article.id.includes("effort") ? "行" : "觀";
+  const tileClass = `${size} flex shrink-0 items-center justify-center overflow-hidden rounded-lg border border-cinnabar/20 bg-cream font-display text-xl text-cinnabar`;
+  return thumb.kind === "image" && !imageFailed ? (
+    <span aria-label={thumb.alt || undefined} className={`${tileClass} relative`}>
+      <span aria-hidden="true" className="absolute inset-0 flex items-center justify-center">{glyph}</span>
+      <img src={thumb.src} alt={thumb.alt} width={941} height={1672} loading={compact ? "lazy" : "eager"} decoding="async" onError={() => setImageFailed(true)} className="relative h-full w-full object-cover" />
+    </span>
   ) : (
-    <span aria-hidden="true" className={`${size} flex shrink-0 items-center justify-center rounded-lg border border-cinnabar/20 bg-cream font-display text-xl text-cinnabar`}>
-      {article.id.includes("five-elements") || article.id.includes("money-needs") ? "五" : article.id.includes("boundar") || article.id.includes("sensitivity") || article.id.includes("relationship") ? "界" : article.id.includes("practice") || article.id.includes("effort") ? "行" : "觀"}
+    <span aria-hidden="true" className={tileClass}>
+      {glyph}
     </span>
   );
 }
