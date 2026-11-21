@@ -303,7 +303,11 @@ export async function resolveReportAccess(system: ReportSystemId) {
     trackConversion("unlock_paid", { system });
   }
   if (stripeGranted && !revoked) try { localStorage.removeItem(markerKey); } catch { /* optional marker */ }
-  return { level, pending, owner: false, revoked };
+  // A verified refund is authoritative for the latest entitlement. An absent
+  // access-key row may still report pending while the refunded session is
+  // present in the success URL/storage; that lookup must not keep the UI in
+  // its payment-confirmation state after the refund is already known.
+  return { level, pending: revoked ? false : pending, owner: false, revoked };
 }
 
 export async function startReportCheckout(product: ReportAccessProduct, system: ReportSystemId, reportId?: string) {
