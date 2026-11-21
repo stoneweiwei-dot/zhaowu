@@ -33,7 +33,7 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: npm run check
       - run: node --test scripts/cloudflare-pages-config.test.mjs
-      - run: npm run build
+      - run: npm run build --ignore-scripts
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://gyisxbkjzvdretbqzeuw.supabase.co' }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
