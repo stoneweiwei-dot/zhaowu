@@ -76,20 +76,27 @@ export async function handle(req: Request, env: Runtime = runtimeFromDeno(), adm
 
   const url = new URL(req.url);
   const sessionId = url.searchParams.get("session_id") || "";
-  if (!/^cs_(?:live|test)_[A-Za-z0-9]{10,200}$/.test(sessionId)) {
+  const accessKey = url.searchParams.get("access_key") || "";
+  const byAccessKey = !sessionId && /^[A-Za-z0-9-]{20,100}$/.test(accessKey);
+  if (!byAccessKey && !/^cs_(?:live|test)_[A-Za-z0-9]{10,200}$/.test(sessionId)) {
     return json(req, env, { ok: false, error: { code: "BAD_VERIFICATION_REQUEST" } }, 400);
   }
 
   const admin = adminOverride ?? adminClient(env);
   if (!admin) return json(req, env, { ok: false, error: { code: "PAYMENT_STORE_NOT_CONFIGURED" } }, 503);
 
-  const { data, error } = await admin
+  let entitlementQuery = admin
     .from("report_purchase_entitlements")
-    .select("product_id,system_id,status,created_at,updated_at")
-    .eq("checkout_session_id", sessionId)
-    .maybeSingle();
+    .select("product_id,system_id,status,created_at,updated_at");
+  entitlementQuery = byAccessKey
+    ? entitlementQuery.eq("access_key", accessKey).order("created_at", { ascending: false }).limit(1)
+    : entitlementQuery.eq("checkout_session_id", sessionId);
+  const { data: rows, error } = byAccessKey
+    ? await entitlementQuery
+    : await entitlementQuery.maybeSingle();
 
   if (error) return json(req, env, { ok: false, error: { code: "PAYMENT_STORE_ERROR" } }, 502);
+  const data = byAccessKey ? rows?.[0] : rows;
   if (!data) return json(req, env, { ok: true, paid: false, pending: true });
   if (data.status === "refunded") return json(req, env, { ok: true, paid: false, revoked: true, reason: "refunded", createdAt: data.created_at, updatedAt: data.updated_at });
 
