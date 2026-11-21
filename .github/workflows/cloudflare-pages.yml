@@ -84,6 +84,7 @@ jobs:
       - name: Install pinned Wrangler
         if: steps.credentials.outputs.available == 'true'
         run: npm install --global wrangler@4.45.0
+      # Direct upload avoids consuming the Git-integrated zhaowu project’s 500 builds/month allowance.
       - name: Deploy production after merge
         if: steps.credentials.outputs.available == 'true' && github.event_name == 'push'
         env:
