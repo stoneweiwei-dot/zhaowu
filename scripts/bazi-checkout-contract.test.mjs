@@ -60,6 +60,24 @@ test("a refunded Stripe session is returned as revoked and cannot leave paid acc
   } finally { browser.restore(); }
 });
 
+test("a verified refunded session clears pending even if access-key lookup has no entitlement", async () => {
+  const browser = browserFixture({ paid: false, revoked: true, reason: "refunded", updatedAt: "2026-11-20T10:00:00Z" });
+  try {
+    globalThis.fetch = async (url) => {
+      if (url === "/api/owner-session") return Response.json({ authenticated: false });
+      const target = new URL(String(url));
+      if (target.searchParams.has("session_id")) return Response.json({ ok: true, paid: false, revoked: true, reason: "refunded", updatedAt: "2026-11-20T10:00:00Z" });
+      if (target.searchParams.has("access_key")) return Response.json({ ok: true, paid: false, pending: true });
+      if (String(url).includes("/functions/v1/promo-code")) return Response.json({ ok: true, paid: false });
+      throw new Error("unexpected request");
+    };
+    const access = await resolveReportAccess("bazi");
+    assert.equal(access.level, "quick");
+    assert.equal(access.revoked, true);
+    assert.equal(access.pending, false);
+  } finally { browser.restore(); }
+});
+
 test("a refunded session is still reported when the access key is missing", async () => {
   const browser = browserFixture({ paid: false, revoked: true, reason: "refunded" });
   try {
