@@ -33,8 +33,9 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: npm run check
       - run: node --test scripts/cloudflare-pages-config.test.mjs
-      - run: npm run build --ignore-scripts
+      - run: npm run build
         env:
+          ZHAOWU_SKIP_LIVE_PRIVACY: "1"
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://gyisxbkjzvdretbqzeuw.supabase.co' }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
           VITE_POSTHOG_KEY: ${{ secrets.VITE_POSTHOG_KEY }}
