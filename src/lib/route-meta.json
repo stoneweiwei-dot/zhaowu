@@ -591,44 +591,44 @@
     },
     "/guaili-luanshen": {
       "zh-Hant": {
-        "title": "三界異聞錄｜昭梧幽明萬象錄七卷獨立書目・十二地支與八災",
-        "description": "獨立《三界異聞錄》系列分組，按七卷原書、十二地支四態及黃泉曆十年災異編年導航至昭梧原始正文。古籍與原創清楚分層。"
+        "title": "三界異聞錄・黃泉紀｜卷一至二十七連續閱讀・終章補記",
+        "description": "閱讀卷一至二十七與終章補記，依一條完整故事線連續展開。提供故事提要與對應館藏原畫，並區分古籍、民俗和昭梧架空設定。"
       },
       "zh-Hans": {
-        "title": "三界异闻录｜昭梧幽明万象录七卷独立书目・十二地支与八灾",
-        "description": "独立《三界异闻录》系列分组，按七卷原书、十二地支四态及黄泉历十年灾异编年导航至昭梧原始正文。古籍与原创清楚分层。"
+        "title": "三界异闻录・黄泉纪｜卷一至二十七连续阅读・终章补记",
+        "description": "按一条完整故事线连续阅读卷一至二十七与终章补记。提供故事提要与对应馆藏原画，并区分古籍、民俗和昭梧架空设定。"
       },
       "en": {
-        "title": "Tales of the Three Realms · Seven-Volume Series Index | ZHAOWU",
-        "description": "Explore all seven volumes of the Tales of the Three Realms, twelve zodiac aspects and the ten-year calamity chronicle. An original series index linking to the published mythic archive."
+        "title": "Tales of the Three Realms · Yellow Springs | Volumes 1–27",
+        "description": "Read volumes 1–27 and the afterword in one connected sequence. Story outlines and matched archive paintings distinguish classical sources, folk traditions and ZHAOWU fiction."
       },
       "ja": {
-        "title": "怪力乱神・七巻の書目案内 | ZHAOWU",
-        "description": "七巻、十二支の姿、十年の災厄年代記への入口。本文は公開済みの神話図録の同じ章へ案内します。"
+        "title": "三界異聞録・黄泉紀｜全二十七巻を順に読む | ZHAOWU",
+        "description": "第一巻から第二十七巻、終章補記までを一つの物語として順に読めます。各巻のあらすじと対応する館蔵画を掲載し、古典・民俗・昭梧の創作を区別します。"
       },
       "ko": {
-        "title": "괴력난신·일곱 권의 목차 | ZHAOWU",
-        "description": "일곱 권, 열두 띠의 모습, 십 년의 재난 연대기로 안내합니다. 본문은 기존 신화 자료실의 같은 장으로 연결합니다."
+        "title": "삼계이문록·황천기｜1–27권 연속 읽기 | ZHAOWU",
+        "description": "1권부터 27권과 후기를 하나의 이야기 흐름으로 읽습니다. 줄거리 요약과 관련 소장화를 함께 보여 주며 고전 자료, 민속, 昭梧의 창작을 구분합니다."
       },
       "hi": {
-        "title": "अद्भुत कथाएँ·सात खंडों की विषय सूची | ZHAOWU",
-        "description": "सात खंड, बारह राशिचिह्नों के रूप और दस वर्षों के संकट का सूचकांक। सभी कड़ियाँ प्रकाशित मिथक संग्रह के उसी मूल पाठ पर जाती हैं।"
+        "title": "तीन लोकों की कथाएँ · पीली धाराएँ | खंड 1–27",
+        "description": "खंड 1–27 और उपसंहार को एक जुड़ी हुई कहानी के क्रम में पढ़ें। कथासार और संबंधित संग्रह-चित्र दिए गए हैं; शास्त्रीय स्रोत, लोकपरंपरा और ZHAOWU की कल्पना अलग रखी गई है।"
       },
       "th": {
-        "title": "เรื่องพิสดาร·สารบัญเจ็ดเล่ม | ZHAOWU",
-        "description": "ทางเข้าสู่เจ็ดเล่ม รูปทั้งสิบสองนักษัตรและพงศาวดารภัยพิบัติสิบปี เชื่อมไปยังเนื้อหาต้นฉบับเดียวในคลังเทพนิยาย"
+        "title": "ตำนานสามภพ · หวงเฉวียน | เล่ม 1–27",
+        "description": "อ่านเล่ม 1–27 และบทส่งท้ายต่อเนื่องเป็นเรื่องเดียว มีเรื่องย่อและภาพจากคลังที่ตรงกับเนื้อหา พร้อมแยกแหล่งคลาสสิก คติชน และเรื่องแต่งของ ZHAOWU"
       },
       "id": {
-        "title": "Kisah Ajaib·Indeks Tujuh Jilid | ZHAOWU",
-        "description": "Jelajahi tujuh jilid, dua belas wujud zodiak dan kronik bencana sepuluh tahun. Indeks ini menuju teks asli yang sama di arsip mitos."
+        "title": "Kisah Tiga Alam · Mata Air Kuning | Jilid 1–27",
+        "description": "Baca jilid 1–27 beserta epilog sebagai satu alur cerita. Tersedia ringkasan dan lukisan arsip yang sesuai, dengan pemisahan sumber klasik, tradisi rakyat, dan fiksi ZHAOWU."
       },
       "vi": {
-        "title": "Quái Lực Loạn Thần·Mục lục bảy quyển | ZHAOWU",
-        "description": "Khám phá bảy quyển, mười hai hình thái con giáp và biên niên tai biến mười năm. Mục lục dẫn về cùng bản gốc trong kho thần thoại."
+        "title": "Truyện Tam Giới · Hoàng Tuyền | Tập 1–27",
+        "description": "Đọc tập 1–27 và phần kết như một mạch truyện liền. Có tóm tắt và tranh lưu trữ phù hợp; tư liệu cổ điển, dân gian và hư cấu của ZHAOWU được phân biệt."
       },
       "fil": {
-        "title": "Mga Kakaibang Kuwento·Talaan ng Pitong Tomo | ZHAOWU",
-        "description": "Tuklasin ang pitong tomo, labindalawang anyo ng zodiak at sampung taong kronika ng sakuna. Talaan ito patungo sa iisang nailathalang arkibo ng mito."
+        "title": "Mga Kuwento ng Tatlong Daigdig · Yellow Springs | Tomo 1–27",
+        "description": "Basahin ang tomo 1–27 at pangwakas bilang iisang kuwento. May buod at angkop na mga likhang nasa arkibo, habang malinaw na pinag-iiba ang klasikong sanggunian, tradisyong-bayan, at kathang-isip ng ZHAOWU."
       }
     },
     "/updates": {
