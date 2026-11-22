@@ -9421,6 +9421,7 @@ html body .zw-ink-board[data-variant="day"] {
   --ink-navy: #1d3550;
   --ink-navy-2: #2c4c70;
   --ink-cream: #fbf7ee;
+  --ink-panel: rgba(251, 247, 238, .94);
   gap: 12px;
   padding: 10px;
   background:

@@ -32,7 +32,7 @@ if (typeof window !== 'undefined' && window.location.hostname === 'zhao-wu.com')
 }
 
 
-const router = createRouter({ rewrite: createLanguageRewrite(() => parseLanguagePath(window.location.pathname).language), routeTree, scrollRestoration: true, defaultPreload: "viewport" });
+const router = createRouter({ rewrite: createLanguageRewrite(() => parseLanguagePath(window.location.pathname).language), routeTree, scrollRestoration: true, defaultPreload: "viewport", defaultPendingComponent: () => <div className="zw-home-inline-loading" style={{ minHeight: "60vh" }} role="status" aria-label="載入中" /> });
 router.subscribe('onBeforeLoad', () => syncDisplayLanguageFromUrl());
 declare module '@tanstack/react-router' { interface Register { router: typeof router; } }
 declare const __ZHAOWU_RELEASE_ID__: string;
@@ -328,7 +328,14 @@ if ('serviceWorker' in navigator) {
       .catch(() => undefined);
   };
 
-  refreshServiceWorker();
+  // Defer the first service-worker refresh until the browser is idle (or 5s),
+  // so the release check never competes with first paint. Later triggers
+  // (pageshow / focus / online / 60s interval) still call it immediately.
+  if (typeof window.requestIdleCallback === "function") {
+    window.requestIdleCallback(() => refreshServiceWorker(), { timeout: 5000 });
+  } else {
+    window.setTimeout(() => refreshServiceWorker(), 1000);
+  }
   window.addEventListener('pageshow', refreshServiceWorker);
   window.addEventListener('focus', refreshServiceWorker);
   window.addEventListener('online', refreshServiceWorker);

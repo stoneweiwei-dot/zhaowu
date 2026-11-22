@@ -166,7 +166,7 @@ function FiveElementsToneQiArticle() {
           )}</p>
         </div>
         <a href="/#birth-form" className="mt-5 inline-flex min-h-11 items-center rounded-full border border-cinnabar/25 bg-paper px-4 py-2 text-sm text-cinnabar">
-          {tr(locale, "查看命盤與功能訓練", "查看命盘与功能训练", "Open chart and functional training")} →
+          {tr(locale, "查看命盤", "查看命盘", "Open chart")} →
         </a>
       </section>
 

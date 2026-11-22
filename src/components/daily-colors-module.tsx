@@ -75,7 +75,6 @@ export function DailyColorsModule({ variant, date }: { variant: Variant; date?: 
   const activeId = selectedId ?? almanac.recommendedId;
   const active = dailyColorById(activeId);
   const copy = active.copy[locale];
-  const recommended = dailyColorById(almanac.recommendedId).copy[locale];
   const isUserOverride = selectedId !== null && selectedId !== almanac.recommendedId;
   const [subscribeMessage, setSubscribeMessage] = useState("");
   const compact = variant === "embed";
@@ -88,6 +87,7 @@ export function DailyColorsModule({ variant, date }: { variant: Variant; date?: 
     if (variant === "page" && typeof window !== "undefined" && !isLocal) {
       trackConversion("calendar_subscribe_clicked", { locale, method: "webcal" });
       window.location.href = subscribeUrl.replace(/^https:/, "webcal:");
+      setSubscribeMessage(locale === "en" ? "Opening your calendar app to subscribe…" : locale === "zh-Hans" ? "正在打开手机日历订阅…" : "正在開啟手機行事曆訂閱…");
       return;
     }
     trackConversion("calendar_subscribe_clicked", { locale, method: "copy" });
@@ -135,13 +135,13 @@ export function DailyColorsModule({ variant, date }: { variant: Variant; date?: 
       <header>
         <p data-daily-colors-date>{formatDailyColorDate(almanac.date, locale)}</p>
         <h2>{compact ? customerChrome("今日穿衣", "今日穿衣", "Today's dress colour") : page.title}</h2>
-        <p>{compact ? `${page.todaySuit}：${recommended.name} · ${recommended.colorsLabel}` : page.subtitle}</p>
+        <p>{compact ? `${page.todaySuit}：${copy.name} · ${copy.colorsLabel}` : page.subtitle}</p>
       </header>
 
       {compact ? null : (
         <article data-daily-colors-today aria-live="polite">
           <p>
-            {page.todaySuit}：{recommended.name}
+            {page.todaySuit}：{copy.name}
           </p>
           <p>
             {page.element} {copy.elementLabel}

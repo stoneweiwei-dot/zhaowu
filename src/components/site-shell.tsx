@@ -248,6 +248,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const isLogin = pathname === "/login" || pathname === "/auth/callback";
   const isOwnerWorkspace = Boolean(user?.isOwner && (pathname === "/account" || pathname === "/gallery" || pathname === "/social"));
   const [stats, setStats] = useState<PublicSiteStats>(EMPTY_STATS);
+  const [statsLoaded, setStatsLoaded] = useState(false);
   const [wallpaperUrl, setWallpaperUrl] = useState("");
 
   useEffect(() => {
@@ -338,7 +339,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
     runLocalHousekeeping();
     let alive = true;
     void recordVisit().catch(() => undefined).finally(() => {
-      void getPublicSiteStats().then((value) => { if (alive) setStats(value); }).catch(() => undefined);
+      void getPublicSiteStats().then((value) => { if (alive) { setStats(value); setStatsLoaded(true); } }).catch(() => undefined);
     });
     return () => {
       alive = false;
@@ -371,6 +372,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
   // Owner 2026-10-01 / 2026-11-11: cumulative visit counts must always be visible in the footer as legacy base + new DB count.
   const displayedTotal = LEGACY_VISITS_BASE + (stats.totalVisits > 0 ? stats.totalVisits : 0);
   const cumulativeVisitsNumber = formatCumulativeVisitsNumber(displayedTotal, language);
+  const displayedVisitsNumber = statsLoaded ? cumulativeVisitsNumber : "—";
+  const todayDate = new Intl.DateTimeFormat(intlTagFor(language), { year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
   const cumulativeVisitsLabel = formatCumulativeVisitsLabel(language);
   const latestLabel = displayShellText(language, "最新更新", "最新更新", "Latest update", "最新更新", "최신 업데이트", "नवीनतम अपडेट");
   const siteControlsLabel = displayShellText(language, "網站控制", "网站控制", "Site controls", "サイト操作", "사이트 메뉴", "साइट नियंत्रण");
@@ -525,11 +528,12 @@ export function SiteShell({ children }: { children: ReactNode }) {
         <p
           className="zhaowu-site-views"
           data-site-views
-          aria-label={`${cumulativeVisitsLabel} ${cumulativeVisitsNumber}`}
+          aria-label={`${cumulativeVisitsLabel} ${displayedVisitsNumber}`}
         >
           <span className="zhaowu-site-views__total">
-            <strong className="zhaowu-site-views__number" data-site-views-number>{cumulativeVisitsNumber}</strong>
+            <strong className="zhaowu-site-views__number" data-site-views-number>{displayedVisitsNumber}</strong>
             <span className="zhaowu-site-views__label" data-site-views-label>{cumulativeVisitsLabel}</span>
+            <span className="zhaowu-site-views__date">{todayDate}</span>
           </span>
         </p>
         {isHome ? (

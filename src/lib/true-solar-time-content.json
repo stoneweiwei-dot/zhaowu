@@ -204,7 +204,7 @@
       },
       "table": {
         "h": "實例：同一個正午，在不同地點與季節的真太陽時",
-        "intro": "下表由引擎實際計算。除第三列為凌晨 00:30 外，其餘都是當地鐘面 12:00。分項已四捨五入至 0.1 分，合計以引擎的整分鐘值為準。",
+        "intro": "下表由引擎實際計算。除第三列為凌晨 00:30 外，其餘都是當地鐘面 12:00。分項已四捨五入至 0.1 分；真太陽時＝民用時間＋精確校正量（未先取整），再捨去秒數；校正量欄僅為四捨五入的整分鐘顯示。",
         "cols": [
           "地點",
           "民用時間",
@@ -337,7 +337,7 @@
       },
       "table": {
         "h": "实例：同一个正午，在不同地点与季节的真太阳时",
-        "intro": "下表由引擎实际计算。除第三列为凌晨 00:30 外，其余都是当地钟面 12:00。分项已四舍五入至 0.1 分，合计以引擎的整分钟值为准。",
+        "intro": "下表由引擎实际计算。除第三列为凌晨 00:30 外，其余都是当地钟面 12:00。分项已四舍五入至 0.1 分；真太阳时＝民用时间＋精确校正量（未先取整），再舍去秒数；校正量栏仅为四舍五入的整分钟显示。",
         "cols": [
           "地点",
           "民用时间",
@@ -470,7 +470,7 @@
       },
       "table": {
         "h": "Worked examples: the same noon, different places and seasons",
-        "intro": "Computed by the engine itself. Every row is 12:00 local clock time except the third, which is 00:30. Components are rounded to 0.1 minute; the total is the engine's whole-minute value.",
+        "intro": "Computed by the engine itself. Every row is 12:00 local clock time except the third, which is 00:30. Components are rounded to 0.1 minute. True solar time = civil time + the exact, unrounded correction, with seconds then dropped; the correction column is the rounded whole-minute display value.",
         "cols": [
           "Place",
           "Civil time",

@@ -20,7 +20,8 @@ function KnowledgePage() {
   const { locale } = useI18n();
   useDisplayLanguage((state) => state.language);
   const pathname = useRouterState({ select: (state) => state.location.pathname });
-  if (pathname.startsWith("/knowledge/")) return <Outlet />;
+  const isKnowledgeIndex = pathname === "/knowledge" || pathname === "/knowledge/";
+  if (!isKnowledgeIndex) return <Outlet />;
 
   return (
     <main className="mx-auto max-w-4xl space-y-5 pb-16">
