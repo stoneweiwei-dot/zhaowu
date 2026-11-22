@@ -125,6 +125,7 @@ export function SiteUtilityDock() {
       <div className="zhaowu-site-utility-buttons">
         <button
           type="button"
+          data-background-music-control
           className={panel === "music" ? "is-active" : ""}
           aria-expanded={panel === "music"}
           onClick={() => setPanel((current) => current === "music" ? null : "music")}
