@@ -1,3 +1,9 @@
+# NOTE: 200-rewrite targets must be "/" (or a locale directory like "/en/"),
+# NOT "/index.html". Cloudflare Pages 308-redirects /index.html to its
+# directory, and that normalisation applies to rewrite targets too, so
+# "/login /index.html 200" sent every deep link home. Rewrite to "/" serves
+# the same file without the redirect.
+
 /guide/* /?guide=1 302
 /bazi / 301
 /bazi/ / 301
@@ -13,33 +19,33 @@
 /sb/rest/v1/* https://gyisxbkjzvdretbqzeuw.supabase.co/rest/v1/:splat 200
 /sb/functions/v1/* https://gyisxbkjzvdretbqzeuw.supabase.co/functions/v1/:splat 200
 /sb/storage/v1/object/public/* https://gyisxbkjzvdretbqzeuw.supabase.co/storage/v1/object/public/:splat 200
-/login /index.html 200
-/login/* /index.html 200
-/account /index.html 200
-/account/* /index.html 200
-/member /index.html 200
-/member/* /index.html 200
-/history /index.html 200
-/history/* /index.html 200
-/auth/callback /index.html 200
-/auth/callback/* /index.html 200
-/gallery /index.html 200
-/gallery/* /index.html 200
-/social /index.html 200
-/social/* /index.html 200
-/mythic-atlas /index.html 200
-/mythic-atlas/* /index.html 200
-/tianji-dual /index.html 200
-/tianji-dual/* /index.html 200
-/tianji-xinggong /index.html 200
-/tianji-xinggong/* /index.html 200
-/zh-hans/* /zh-hans/index.html 200
-/en/* /en/index.html 200
-/ja/* /ja/index.html 200
-/ko/* /ko/index.html 200
-/hi/* /hi/index.html 200
-/th/* /th/index.html 200
-/id/* /id/index.html 200
-/vi/* /vi/index.html 200
-/fil/* /fil/index.html 200
-/* /index.html 200
+/login / 200
+/login/* / 200
+/account / 200
+/account/* / 200
+/member / 200
+/member/* / 200
+/history / 200
+/history/* / 200
+/auth/callback / 200
+/auth/callback/* / 200
+/gallery / 200
+/gallery/* / 200
+/social / 200
+/social/* / 200
+/mythic-atlas / 200
+/mythic-atlas/* / 200
+/tianji-dual / 200
+/tianji-dual/* / 200
+/tianji-xinggong / 200
+/tianji-xinggong/* / 200
+/zh-hans/* /zh-hans/ 200
+/en/* /en/ 200
+/ja/* /ja/ 200
+/ko/* /ko/ 200
+/hi/* /hi/ 200
+/th/* /th/ 200
+/id/* /id/ 200
+/vi/* /vi/ 200
+/fil/* /fil/ 200
+/* / 200
