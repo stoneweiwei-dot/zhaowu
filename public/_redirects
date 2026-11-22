@@ -1,8 +1,9 @@
-# NOTE: 200-rewrite targets must be "/" (or a locale directory like "/en/"),
-# NOT "/index.html". Cloudflare Pages 308-redirects /index.html to its
-# directory, and that normalisation applies to rewrite targets too, so
-# "/login /index.html 200" sent every deep link home. Rewrite to "/" serves
-# the same file without the redirect.
+# Per-route 200 rewrites point at "/" (or a locale directory like "/en/"), NOT
+# "/index.html": Cloudflare Pages 308-redirects /index.html to its directory,
+# and that normalisation applies to rewrite targets too, so "/login /index.html
+# 200" sent every deep link home. Rewrite to "/" serves the same file.
+# The /* catch-all MUST stay "/index.html": a catch-all rewrite to "/" serves
+# the app shell for every static file (JS, images, sw.js) instead of the file.
 
 /guide/* /?guide=1 302
 /bazi / 301
@@ -48,4 +49,4 @@
 /id/* /id/ 200
 /vi/* /vi/ 200
 /fil/* /fil/ 200
-/* / 200
+/* /index.html 200
