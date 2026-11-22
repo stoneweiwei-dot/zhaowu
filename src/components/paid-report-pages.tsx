@@ -13,6 +13,7 @@ import { IllustratedDestinyPanel, IllustratedShareCard } from "@/components/illu
 import { DayStemPortrait } from "@/components/day-stem-portrait";
 import { MobileReadingGuide } from "@/components/mobile-reading-guide";
 import { BranchScenery } from "@/components/branch-scenery";
+import { ReportFourViews } from "@/components/report-four-views";
 
 const COPY = {
   "zh-Hant": {
@@ -47,6 +48,7 @@ const COPY = {
     methodologyExpanded: "分析先看原局定下的結構，再看大運帶來的十年條件，然後流年觸發當年的具體事件，流月只用來縮小時間範圍。每一層證據都會標記是否確定、屬於較高概率、合理推論，還是暫時無法判定，避免用單一線索得出結論。",
     subfoldChart: "展開四柱、圖解與五行練習",
     subfoldMethod: "展開佐證資料與推演方法",
+    fourViews: "四個視圖",
   },
   "zh-Hans": {
     title: "完整报告",
@@ -80,6 +82,7 @@ const COPY = {
     methodologyExpanded: "分析先看原局定下的结构，再看大运带来的十年条件，然后流年触发当年的具体事件，流月只用来缩小时间范围。每一层证据都会标记是否确定、属于较高概率、合理推论，还是暂时无法判定，避免用单一线索得出结论。",
     subfoldChart: "展开四柱、图解与五行练习",
     subfoldMethod: "展开佐证资料与推演方法",
+    fourViews: "四个视图",
   },
   en: {
     title: "Full report",
@@ -113,6 +116,7 @@ const COPY = {
     methodologyExpanded: "The reading starts with the structure set at birth, then looks at how the current ten-year cycle shapes what's available, then how a given year can trigger something specific, with the month only narrowing the timing further. Each layer of evidence is marked as confirmed, more likely, a reasonable inference, or simply undetermined, so no conclusion rests on a single clue.",
     subfoldChart: "Expand chart, illustrations & five-element practice",
     subfoldMethod: "Expand supporting evidence & methodology",
+    fourViews: "Four views",
   },
 } as const;
 
@@ -410,6 +414,7 @@ export function FocusedReportSections({ sections, result, showChartArtwork = tru
         <span><b>02</b>{copy.visual}</span>
         <span><b>03</b>{copy.body}</span>
         <span><b>04</b>{copy.detail}</span>
+        <span><b>05</b>{copy.fourViews}</span>
       </nav>
 
       {overviewLines.length ? (
@@ -473,6 +478,8 @@ export function FocusedReportSections({ sections, result, showChartArtwork = tru
           </div>
         </details>
       ) : null}
+
+      {result ? <ReportFourViews result={result} /> : null}
       </div>
       </details>
     </section>
