@@ -14,7 +14,7 @@ test('Pages redirects retain app routes, Supabase proxy and canonical guide redi
   }
   assert.match(redirects, /^\/guide\/\* \/\?guide=1 302$/m);
   assert.match(redirects, /^\/sb\/rest\/v1\/\* https:\/\/gyisxbkjzvdretbqzeuw\.supabase\.co\/rest\/v1\/:splat 200$/m);
-  assert.match(redirects, /^\/\* \/ 200$/m);
+  assert.match(redirects, /^\/\* \/index\.html 200$/m);
 });
 
 test('Pages headers and runtime handlers are present', () => {
