@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useI18n, type Locale } from "@/lib/i18n";
-import type { AnalysisResult, Element } from "@/lib/bazi/types";
+import type { Chart, Element } from "@/lib/bazi/types";
 
 type ScentKey =
   | "white-tea"
@@ -168,7 +168,7 @@ const COPY: Record<Locale, {
   },
 };
 
-export function ScentFiveElementTest({ result }: { result: AnalysisResult | null }) {
+export function ScentFiveElementTest({ chart }: { chart: Chart | null }) {
   const { locale } = useI18n();
   const copy = COPY[locale];
   const [selected, setSelected] = useState<ScentKey[]>([]);
@@ -203,8 +203,8 @@ export function ScentFiveElementTest({ result }: { result: AnalysisResult | null
     setRevealed(false);
   }
 
-  const useful = result?.chart.useful ?? [];
-  const comparison = !result
+  const useful = chart?.useful ?? [];
+  const comparison = !chart
     ? copy.noBazi
     : useful.includes(primary)
       ? copy.baziSame
@@ -275,7 +275,7 @@ export function ScentFiveElementTest({ result }: { result: AnalysisResult | null
           <article className="rounded-2xl border border-line bg-cream p-4">
             <h4 className="font-display text-lg text-ink">{copy.bazi}</h4>
             <p className="mt-2 text-sm leading-7 text-ink-soft">{comparison}</p>
-            {result?.chart.usefulProvisional ? <p className="mt-2 text-xs leading-6 text-ink-mute">{copy.provisional}</p> : null}
+            {chart?.usefulProvisional ? <p className="mt-2 text-xs leading-6 text-ink-mute">{copy.provisional}</p> : null}
           </article>
         </div>
       ) : null}
