@@ -2,7 +2,7 @@ import { useDisplayLanguage } from "@/lib/display-language";
 import { customerChrome, translateChromeObject } from "@/lib/customer-chrome";
 import { Link } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
-import { lazy, Suspense, useState, useEffect } from "react";
+import { lazy, Suspense, useState, useEffect, useMemo } from "react";
 import { useAuthState } from "@/lib/auth/provider";
 import { ReportSaveStatus } from "@/components/report-save-status";
 import { AnalysisForm } from "@/components/analysis-form";
@@ -14,6 +14,8 @@ import { useI18n } from "@/lib/i18n";
 import { readLocalReports } from "@/lib/local-report-history";
 import { clearSharedBirthRecord, writeSharedBirthRecord } from "@/lib/shared-birth";
 import { useAppStore } from "@/lib/store";
+import { readBirthDraft, draftToAnalyzeSlice } from "@/lib/birth-draft";
+import { buildChart } from "@/lib/bazi/chart";
 import "@/home-hero-v1.css";
 import "@/home-polish-v3.css";
 import "@/home-portals.css";
@@ -193,6 +195,13 @@ function Home() {
   }
   const { user } = useAuthState();
   const current = useAppStore((s) => s.current);
+  const scentChart = useMemo(() => {
+    if (current?.chart) return current.chart;
+    const draft = readBirthDraft();
+    const slice = draft ? draftToAnalyzeSlice(draft) : null;
+    if (!slice) return null;
+    try { return buildChart({ ...slice, question: "", locale }); } catch { return null; }
+  }, [current, locale]);
   const setCurrent = useAppStore((s) => s.setCurrent);
 
   const [activeSection, setActiveSection] = useState<Section | null>(null);
@@ -443,7 +452,7 @@ function Home() {
           <div id="home-scent-test" data-scent-panel hidden={!scentOpen}>
             {scentOpen ? (
               <Suspense fallback={<div className="zw-home-inline-loading" role="status">{heroUi.scentLoading}</div>}>
-                <LazyScentFiveElementTest result={current} />
+                <LazyScentFiveElementTest chart={scentChart} />
               </Suspense>
             ) : null}
           </div>
