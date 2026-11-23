@@ -23,9 +23,12 @@ import "./hepan-page.css";
  * two real bazi charts out (the same buildChart the report flow uses),
  * then the hepan pair model scores what the site actually has rules for.
  * Only bazi has a pair score today; ziwei, 一掌經 and 七政 are shown as
- * qualitative comparisons from their own engines (never scored), and the
- * remaining four systems are shown as pending and contribute nothing
- * to the index.
+ * qualitative comparisons from their own engines (never scored) — each
+ * person read by single-person rules, placed side by side. That is the
+ * permanent method: Shi has confirmed she has no pair data anywhere
+ * and none will arrive, so these sections are not placeholders waiting
+ * for pair instructions. Numerology has no single-person data at all
+ * and stays out of hepan for now.
  *
  * Visual: the v6 language merged in #1091 — warm paper, gold frame,
  * thin-line sections, Songti headings, no card walls. 390px first.
@@ -73,7 +76,7 @@ const COPY: Record<Locale, Record<string, string>> = {
   "zh-Hant": {
     kicker: "ZHAOWU · 合盤",
     title: "合盤・緣分指數",
-    lead: "兩個人的出生資料，一次對照。八字、紫微、生命靈數、西方占星、印度占星、一掌經、七政、手相——站上有的系統都在這裡一起看；有合盤規則的才計分，沒有的明說沒有，不造分、不補零。",
+    lead: "兩個人的出生資料，一次對照。八字、紫微、一掌經、七政——有單人規則的系統，兩人各看各的盤，並排對照（哪裡一致、哪裡補充、哪裡角度不同）；生命靈數、西方占星、印度占星、手相目前沒有合盤欄位。八字有分數，其他系統只作定性對照，不造分、不補零。",
     referenceOnly: "僅供參考：分數是契合順暢度，不是命定 verdict。相處從來不是一串數字說了算。",
     formTitle: "兩位當事人",
     personA: "甲",
@@ -114,13 +117,13 @@ const COPY: Record<Locale, Record<string, string>> = {
     evidenceTitle: "證據",
     methodTitle: "怎麼算的",
     methodBody:
-      "日主生剋看兩日主的五行相生、比和或相剋；日支關係看兩日支的六合、三合、沖、刑、害、破與半三合／半三會；五行互補看一方的強項補不補另一方的弱項。性別只作記錄，不參與計分。分數只論契合順暢度：高分是相處省力，低分是需要更多磨合，都不是命定。",
+      "日主生剋看兩日主的五行相生、比和或相剋；日支關係看兩日支的六合、三合、沖、刑、害、破與半三合／半三會；五行互補看一方的強項補不補另一方的弱項。性別只作記錄，不參與計分。分數只論契合順暢度：高分是相處省力，低分是需要更多磨合，都不是命定。日支分數是合盤啟發式（compatibility heuristic），不是判命：合先判牽制、合絆，再驗化氣；沖是變動與資源重排的觸發器，不是必凶；六合不是必吉。",
     backToForm: "改出生資料，重新對照",
   },
   "zh-Hans": {
     kicker: "ZHAOWU · 合盘",
     title: "合盘・缘分指数",
-    lead: "两个人的出生资料，一次对照。八字、紫微、生命灵数、西方占星、印度占星、一掌经、七政、手相——站上有的系统都在这里一起看；有合盘规则的才计分，没有的明说没有，不造分、不补零。",
+    lead: "两个人的出生资料，一次对照。八字、紫微、一掌经、七政——有单人规则的系统，两人各看各的盘，并排对照（哪里一致、哪里补充、哪里角度不同）；生命灵数、西方占星、印度占星、手相目前没有合盘栏位。八字有分数，其他系统只作定性对照，不造分、不补零。",
     referenceOnly: "仅供参考：分数是契合顺畅度，不是命定 verdict。相处从来不是一串数字说了算。",
     formTitle: "两位当事人",
     personA: "甲",
@@ -161,13 +164,13 @@ const COPY: Record<Locale, Record<string, string>> = {
     evidenceTitle: "证据",
     methodTitle: "怎么算的",
     methodBody:
-      "日主生克看两日主的五行相生、比和或相克；日支关系看两日支的六合、三合、冲、刑、害、破与半三合／半三会；五行互补看一方的强项补不补另一方的弱项。性别只作记录，不参与计分。分数只论契合顺畅度：高分是相处省力，低分是需要更多磨合，都不是命定。",
+      "日主生克看两日主的五行相生、比和或相克；日支关系看两日支的六合、三合、冲、刑、害、破与半三合／半三会；五行互补看一方的强项补不补另一方的弱项。性别只作记录，不参与计分。分数只论契合顺畅度：高分是相处省力，低分是需要更多磨合，都不是命定。日支分数是合盘启发式（compatibility heuristic），不是判命：合先判牵制、合绊，再验化气；冲是变动与资源重排的触发器，不是必凶；六合不是必吉。",
     backToForm: "改出生资料，重新对照",
   },
   en: {
     kicker: "ZHAOWU · Compatibility",
     title: "Compatibility · Yuanfen Index",
-    lead: "Two birth records, compared once. BaZi, Zi Wei, numerology, Western astrology, Vedic astrology, One-Palm, Seven Luminaries and palmistry — every system on the site, together. Only systems with a defined pair method are scored; the rest say so plainly. No invented scores, no silent zeros.",
+    lead: "Two birth records, compared once. BaZi, Zi Wei, One-Palm and Seven Luminaries — every system with single-person rules is read person by person and placed side by side (where they agree, where they supplement, where the angle differs); numerology, Western astrology, Vedic astrology and palmistry have no compatibility section for now. Only BaZi is scored; the rest are qualitative comparisons. No invented scores, no silent zeros.",
     referenceOnly: "For reference only: the score measures how smoothly two charts meet, not a fated verdict. No relationship is decided by one number.",
     formTitle: "The two people",
     personA: "A",
@@ -208,7 +211,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     evidenceTitle: "Evidence",
     methodTitle: "How it is calculated",
     methodBody:
-      "Day-master generation/control compares the two day-master elements; day-branch relations compare the two day branches (six combinations, triple combinations, clashes, punishments, harms and breaks, plus half-triples); five-element complement checks whether one person's strong elements cover the other's weak ones. Gender is recorded only and never scored. A high score means the meeting is easy; a low score means more conscious work is needed. Neither is fate.",
+      "Day-master generation/control compares the two day-master elements; day-branch relations compare the two day branches (six combinations, triple combinations, clashes, punishments, harms and breaks, plus half-triples); five-element complement checks whether one person's strong elements cover the other's weak ones. Gender is recorded only and never scored. A high score means the meeting is easy; a low score means more conscious work is needed. Neither is fate. Day-branch scores are a compatibility heuristic, not a fate judgement: a combination is first judged as restraint or entanglement, then checked for transformation; a clash is a trigger for change and rearrangement of resources, not automatic harm; a combination is not automatic luck.",
     backToForm: "Change the birth data and compare again",
   },
 };

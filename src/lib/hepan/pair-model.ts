@@ -14,11 +14,18 @@ import { palmFromChart } from "@/lib/yizhangjing/engine";
  * One scoring system exists today: bazi. Three more systems are shown
  * as qualitative對照 (displayed from their own engines, never scored):
  * ziwei (夫妻宮主星 + 生年四化), 一掌經 (四宮星曜 + 六道),
- * 七政 (宮主制 method + the honest engine limitation). The remaining
- * four (numerology, western, vedic, palm) have a real single-person
- * engine on the site but NO pair method in code or in any instruction
- * Shi has given, so each is reported as pending and contributes
- * nothing to the index. Nothing is scored by invention, nothing is
+ * 七政 (宮主制 method + the honest engine limitation). Permanent
+ * method (Shi, 2026-11-23): she has NO pair/compatibility data
+ * anywhere — not from her, not from her other AIs — only single-person
+ * data, and none will arrive. So these three sections are NOT
+ * placeholders waiting for pair instructions: each person is read by
+ * single-person rules, placed side by side, and compared for where
+ * they agree, where they supplement, and where the angle differs. No
+ * pair score is ever invented. The remaining four are pending and
+ * contribute nothing: numerology has no single-person data at all from
+ * Shi, so it stays out of hepan for now; western, vedic and palm have
+ * single-person engines but no pair method, and Shi has confirmed none
+ * will be supplied. Nothing is scored by invention, nothing is
  * silently scored zero, and a pending system never drags the index down.
  *
  * Bazi pair method (defined for this page, from the engine's own tables
@@ -57,6 +64,28 @@ import { palmFromChart } from "@/lib/yizhangjing/engine";
  * verdict. No single verdict like 天生一對 is ever produced; the page
  * labels the index 僅供參考 and flags disagreements instead of hiding
  * them behind one number.
+ *
+ * Authority: this page follows 《九頁綜合命理商業報告指令 V1.0》.
+ * 《昭梧命理研究院一體化命理總指令 R6.2.2-UA1》 is REVIEW_DRAFT only
+ * (master_version "R6.2.2-UA1 | REVIEW_DRAFT", section J): an
+ * integration review draft, NOT an approved execution master and NOT
+ * website production rules (R6.1-P3 remains the only current master
+ * per CURRENT.md 2026-09-19; UA1 section J: adoption needs approval,
+ * version freeze, regression and deployment verification, and a website
+ * switch additionally needs a check of the GitHub/production rules).
+ * UA1 is referenced here only for two guardrails, not as production rules.
+ *
+ * UA1 C11 (地支動態關係): 合先判牽制／合絆再驗化氣；沖是變動、資源
+ * 重排或破壞的結構觸發器；禁止一沖必凶、一合必吉. The bazi
+ * day-branch scores below (六合 90 / 六沖 40 etc.) are a compatibility
+ * heuristic （合盤啟發式）, not UA1 命判: 六合 is scored as restraint
+ * and convergence, never as 必吉； 沖 is scored as a trigger, never as
+ * 必凶. The reading notes say so on the page too.
+ *
+ * UA1 E03 (六組分級不可混用: L1/L2/L3, G0–G4, SRC-A～E, VAL-A～C,
+ * AUX-C, ODL-LABEL): SSS／稀有度／五星命格一律不得使用. The index is
+ * rendered as a number + per-system breakdown + 僅供參考 only — never
+ * as stars, grades, tiers or rarity. The test guards this.
  */
 
 export type HepanReadingId = "day-master" | "day-branch" | "elements";
@@ -122,6 +151,11 @@ const EVEN_SHARE = 20;
 
 const DAY_MASTER_SCORES = { generates: 85, same: 70, controls: 45 } as const;
 
+/** Compatibility heuristic scores (UA1 C11: 合先判牽制／合絆再驗化氣；
+ *  沖是變動、資源重排或破壞的觸發器；禁止一沖必凶、一合必吉）.
+ *  These numbers measure how smoothly two day branches meet — they are
+ *  NOT a fate judgement, and 六合 90 is never "必吉", 六沖 40 never
+ *  "必凶". */
 const BRANCH_SCORES: Record<string, number> = {
   六合: 90,
   半三合: 80,
@@ -163,16 +197,19 @@ const SAN_HUI: { branches: [string, string, string]; transformation: string }[] 
   { branches: ["亥", "子", "丑"], transformation: "水" },
 ];
 
-/** Still pending: no pair method in code or in any instruction from Shi. */
+/** Still pending: no pair method, and Shi has confirmed none will be
+ *  supplied (she has no pair data anywhere, only single-person data).
+ *  Numerology has no single-person data at all, so it stays out of
+ *  hepan for now. Nothing here promises a future instruction. */
 export const HEPAN_PENDING_REASONS: Record<"numerology" | "western" | "vedic" | "palm", string> = {
   numerology:
-    "生命靈數目前只有單人計算；站內沒有兩人合盤的配對規則，本欄不計分。需要站主的靈數合盤指令才會加入。",
+    "生命靈數連單人資料都沒有（站主手上沒有靈數指令文件），先不進合盤，本欄不計分。",
   western:
-    "西方占星模組指令只定義了單人全盤落宮統計與行星相位，沒有雙人合盤（synastry）方法，本欄不計分。需要站主的西占合盤指令才會加入。",
+    "西方占星模組指令只定義了單人全盤落宮統計與行星相位，沒有雙人合盤（synastry）方法；站主已確認沒有合盤資料，本欄不計分。",
   vedic:
-    "吠陀模組指令只定義了單人 D1／D12／Dasha，沒有雙人婚配對照方法，本欄不計分。需要站主的吠陀合盤指令才會加入。",
+    "吠陀模組指令只定義了單人 D1／D12／Dasha，沒有雙人婚配對照方法；站主已確認沒有合盤資料，本欄不計分。",
   palm:
-    "手相是單人掌宮呈現；站內沒有兩人合盤方法，本欄不計分。需要站主的手相合盤指令才會加入。",
+    "手相是單人掌宮呈現；沒有兩人合盤方法，站主已確認沒有合盤資料，本欄不計分。",
 };
 
 /** Fallback when buildHepanIndex is called without the qualitative
@@ -343,7 +380,7 @@ export function buildZiweiPairSection(
     }
   }
   lines.push(
-    "讀法（《九頁綜合命理商業報告指令 V1.0》第七頁）：紫微只作現象層驗證。【與八字一致】指紫微現象與八字結構說到同一處；【紫微補充的新資訊】指主星與四化落宮多出來的場景；【兩套系統觀察角度不同】指兩套系統層面不同、不得強行統一。本欄只列現象，不替你判定是哪一種。",
+    "比法：兩人各看各的單人盤，並排對照。讀法（《九頁綜合命理商業報告指令 V1.0》第七頁）：紫微只作現象層驗證。【與八字一致】指紫微現象與八字結構說到同一處；【紫微補充的新資訊】指主星與四化落宮多出來的場景；【兩套系統觀察角度不同】指兩套系統層面不同、不得強行統一。本欄只列現象，不編配對分數，不替你判定是哪一種。",
   );
   lines.push(
     `以站內紫微設定檔 ${ZHAOWU_ZIWEI_CALCULATION_PROFILE.id} 排出（四化 south_iztro_v1；曆法：子時當日、閏月同月、農曆年界）。研究報告提到的 zw_fullbook_sanhe_v1 設定檔尚未寫入站內程式碼，本欄不用它。`,
@@ -355,7 +392,7 @@ export function buildZiweiPairSection(
     score: null,
     weight: null,
     detail:
-      "夫妻宮主星與生年四化並排對照，只作現象層驗證，不計分（同一份指令禁軟件評分，也沒有定義紫微合盤分數）。",
+      "兩人各自的夫妻宮並排對照（主星＋生年四化），只作現象層驗證，不計分。沒有合盤算法——站主已確認沒有合盤資料，本欄永久用單人規則去比：哪裡一致、哪裡補充、哪裡角度不同。",
     lines,
   };
 }
@@ -420,7 +457,7 @@ export function buildPalmPairSection(
     }
   }
   lines.push(
-    "【一掌經象徵】四宮星曜與六道只作生命象徵；【文化象意】前因／今果／後種是文化敘事；【精神課題】看同一課題在兩人身上如何互相照見——不是已證實的前世歷史。",
+    "【一掌經象徵】四宮星曜與六道只作生命象徵；【文化象意】前因／今果／後種是文化敘事；【精神課題】看同一課題在兩人身上如何互相照見——不是已證實的前世歷史，也不編配對分數。",
   );
   lines.push("此為民俗命理分類，不是可驗證的歷史前世或宗教裁決。");
   return {
@@ -430,7 +467,7 @@ export function buildPalmPairSection(
     score: null,
     weight: null,
     detail:
-      "四宮星曜與六道並排對照，只作象徵與精神課題，不計分（同一份指令禁軟件評分，也沒有定義一掌經合盤分數）。",
+      "兩人各自的四宮星曜與六道並排對照，只作象徵與精神課題，不計分。沒有合盤算法——站主已確認沒有合盤資料，本欄永久用單人規則去比。",
     lines,
   };
 }
@@ -481,7 +518,7 @@ export function buildQizhengPairSection(
     status: "qualitative",
     score: null,
     weight: null,
-    detail: "七政沒有十二宮可排，夫妻宮宮主暫時算不出來；本欄只寫方法與限制，不計分。",
+    detail: "七政沒有十二宮可排，夫妻宮宮主算不出來；本欄只寫方法與限制，不計分。沒有合盤算法——站主已確認沒有合盤資料。",
     lines,
   };
 }
@@ -579,7 +616,7 @@ function scoreDayBranch(a: Chart, b: Chart): HepanReading {
       title: "日支六合／三合／沖",
       score: 60,
       evidence: [...evidence, "兩日支之間無六合、三合、沖、刑、害、破：沒有直接拉扯，也沒有現成助力。"],
-      note: "無關係就是中性：日支不拉不扯，相處的順與逆由日主與五行去看。",
+      note: "無關係就是中性：日支不拉不扯，相處的順與逆由日主與五行去看。（合盤啟發式，不是判命。）",
     };
   }
   candidates.sort(
@@ -596,10 +633,10 @@ function scoreDayBranch(a: Chart, b: Chart): HepanReading {
     ],
     note:
       headline.kind === "六合"
-        ? "六合只論牽制、收束與互相改變，不直接判合化。"
+        ? "六合只論牽制、收束與互相改變，不直接判合化。（合盤啟發式：合先判牽制、合絆，再驗化氣；六合不是必吉。）"
         : headline.kind === "六沖"
-          ? "沖先論位置被引動、對立與位移；沖不等於必凶，也不等於一定開庫。"
-          : "關係只論結構傾向，不直接外推具體事件。",
+          ? "沖先論位置被引動、對立與位移；沖不等於必凶，也不等於一定開庫。（合盤啟發式：沖是變動與資源重排的觸發器，不是必凶。）"
+          : "關係只論結構傾向，不直接外推具體事件。（合盤啟發式，不是判命。）",
   };
 }
 

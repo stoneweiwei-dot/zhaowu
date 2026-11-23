@@ -408,3 +408,55 @@ test("index with qualitative sections: still bazi only, weights renormalized", (
     ["bazi", "ziwei", "numerology", "western", "vedic", "yizhangjing", "qizheng", "palm"],
   );
 });
+
+test("heuristic guard: day-branch notes label the scores a compatibility heuristic, never 必吉/必凶 (UA1 C11)", () => {
+  const liuheA = makeChart("壬", "子", EVEN);
+  const liuheB = makeChart("癸", "丑", EVEN);
+  const liuhe = buildBaziPair(liuheA, liuheB).readings[1];
+  assert.equal(liuhe.score, 90);
+  assert.match(liuhe.note, /合盤啟發式/);
+  assert.match(liuhe.note, /六合不是必吉/);
+
+  const clashA = makeChart("壬", "子", EVEN);
+  const clashB = makeChart("甲", "午", EVEN);
+  const clash = buildBaziPair(clashA, clashB).readings[1];
+  assert.equal(clash.score, 40);
+  assert.match(clash.note, /合盤啟發式/);
+  assert.match(clash.note, /不是必凶/);
+});
+
+test("rendering guard: the index never renders as stars, grades or rarity (UA1 E03)", () => {
+  const { chartA, chartB, civilA, civilB } = demoPair();
+  const result = buildHepanIndex(chartA, chartB, {
+    ziwei: buildZiweiPairSection(chartA, civilA, chartB, civilB),
+    yizhangjing: buildPalmPairSection(chartA, civilA, chartB, civilB),
+    qizheng: buildQizhengPairSection(chartA, civilA, chartB, civilB),
+  });
+  const text = JSON.stringify(result);
+  assert.doesNotMatch(text, /★|☆|✦|✧/);
+  assert.doesNotMatch(text, /SSS|SSR|稀有度|五星命格/);
+  assert.doesNotMatch(text, /六合必吉|六沖必凶|一沖必凶|一合必吉/);
+});
+
+test("permanent framing: qualitative sections never promise pair instructions that will not arrive", () => {
+  const { chartA, chartB, civilA, civilB } = demoPair();
+  const sections = [
+    buildZiweiPairSection(chartA, civilA, chartB, civilB),
+    buildPalmPairSection(chartA, civilA, chartB, civilB),
+    buildQizhengPairSection(chartA, civilA, chartB, civilB),
+  ];
+  for (const section of sections) {
+    assert.equal(section.status, "qualitative");
+    const text = [section.detail, ...(section.lines ?? [])].join("\n");
+    assert.doesNotMatch(text, /待補|才會加入|需要站主.*指令/);
+    assert.match(text, /不計分/);
+    assert.match(text, /沒有合盤算法/);
+  }
+  // Numerology has no single-person data at all: it stays out of hepan,
+  // and its reason no longer promises a future instruction either.
+  assert.match(HEPAN_PENDING_REASONS.numerology, /先不進合盤/);
+  assert.doesNotMatch(HEPAN_PENDING_REASONS.numerology, /才會加入/);
+  for (const id of ["western", "vedic", "palm"]) {
+    assert.doesNotMatch(HEPAN_PENDING_REASONS[id], /才會加入/);
+  }
+});
