@@ -768,3 +768,33 @@
 @media (prefers-reduced-motion: reduce) {
   .zhaowu-paid-personal-profile__pager button { transition: none; }
 }
+
+
+/* Fix 2026-11-24: the giant "Zhao" watermark sat under the footer note, so the
+   disclaimer text ran into the glyph and read as spilling out of its box.
+   Shrink + lift the glyph, and give the note its own layer and wrapping. */
+.zhaowu-paid-personal-profile::after {
+  right: -8px;
+  bottom: -38px;
+  font-size: 120px;
+}
+
+.zhaowu-paid-personal-profile__foot p {
+  position: relative;
+  z-index: 1;
+  overflow-wrap: break-word;
+}
+
+.zhaowu-paid-personal-card > strong,
+.zhaowu-paid-personal-pillars b,
+.zhaowu-paid-personal-swatches b {
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 560px) {
+  .zhaowu-paid-personal-profile::after {
+    right: -6px;
+    bottom: -24px;
+    font-size: 84px;
+  }
+}
