@@ -27,6 +27,17 @@
     overscroll-behavior-y: contain;
     touch-action: pan-x pan-y pinch-zoom;
   }
+
+  /* 2026-11-23 · Fixed utility-dock clearance (390px): the fixed bottom-right
+     Music/Guide dock (~98px tall incl. the home-indicator safe area) covered
+     the footer copyright and the bottom edge of full-width buttons on phones.
+     The home page already reserves 100px below its footer (painted-home.css);
+     give every page the same clearance so all content can scroll fully clear
+     of the dock. !important overrides Tailwind's pb-8 on the footer and the
+     home-only 100px rule. Desktop (>700px) is untouched. */
+  html body .zhaowu-site-footer {
+    padding-bottom: calc(112px + env(safe-area-inset-bottom)) !important;
+  }
 }
 
 /* =========================================================================
