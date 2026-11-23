@@ -20,3 +20,6 @@
 /* Keep branch album leaves square inside the former 9:16 personal-art slot. */
 .zhaowu-personal-art .zhaowu-branch-scenery img { aspect-ratio: 1 / 1; height: auto; width: min(100%, 20rem); }
 .zhaowu-personal-art .zhaowu-branch-scenery figcaption { padding-top: 0; }
+
+/* 2026-11-23 · 亥「在天」label must not wrap mid-word on phones. */
+.zhaowu-branch-scenery__facts dt { white-space: nowrap; flex-shrink: 0; }
