@@ -8950,6 +8950,102 @@ html body .zhaowu-result-card h2 { font-size: 1.55rem !important; font-weight: 7
 html body .zhaowu-answer-step strong[data-decision-verdict] { font-size: 1.3rem !important; font-weight: 700 !important; line-height: 1.7 !important; }
 html body .zhaowu-focused-report .zhaowu-report-copy--notes p { font-size: 16px !important; font-weight: 400 !important; line-height: 1.85 !important; }
 
+/* v6 report page chrome: the report keeps its warm-paper system and gains a fine-gold page frame. */
+html body .zhaowu-v6-report-pages {
+  position: relative;
+  padding: 18px 14px 0 !important;
+  border: 1px solid rgba(177, 143, 76, .72) !important;
+  background: rgba(251, 247, 238, .94) !important;
+  box-shadow: inset 0 0 0 3px rgba(177, 143, 76, .10);
+}
+html body .zhaowu-v6-report-pages .zhaowu-professional-report__body { padding-inline: 2px; }
+html body .zhaowu-v6-report-pages .zhaowu-report-summary-block,
+html body .zhaowu-v6-report-pages .zhaowu-report-body-block,
+html body .zhaowu-v6-report-pages .zhaowu-report-stage-fold__body { position: relative; }
+html body .zhaowu-v6-report-pages .zhaowu-report-summary-block::after,
+html body .zhaowu-v6-report-pages .zhaowu-report-body-block::after {
+  content: "";
+  display: block;
+  min-height: 6px;
+  margin: 15px -2px 0;
+  border: 1px solid rgba(196, 160, 73, .35);
+  background: linear-gradient(90deg, rgba(245, 226, 163, .25), rgba(248, 233, 188, .72), rgba(245, 226, 163, .25));
+}
+html body .zhaowu-v6-report-pages .zhaowu-report-copy p {
+  padding: 0 2px;
+  letter-spacing: .035em !important;
+}
+html body .zhaowu-v6-report-pages .zhaowu-report-summary-block .zhaowu-report-copy p:first-child::first-line {
+  color: #8b3d43;
+  font-weight: 700;
+}
+.zhaowu-v6-float-nav {
+  position: sticky;
+  z-index: 5;
+  top: max(10px, env(safe-area-inset-top));
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  height: 0;
+  overflow: visible;
+  transform: translateY(-4px);
+}
+.zhaowu-v6-float-nav a,
+.zhaowu-v6-float-nav summary {
+  display: inline-flex;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 13px;
+  border: 1px solid rgba(255,255,255,.72);
+  border-radius: 2px;
+  color: #fff !important;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(40,30,20,.14);
+}
+.zhaowu-v6-float-nav .zhaowu-v6-together { background: #c64d69; }
+.zhaowu-v6-float-nav .zhaowu-v6-contents { background: #477fa8; list-style: none; cursor: pointer; }
+.zhaowu-v6-float-nav .zhaowu-v6-contents::-webkit-details-marker { display: none; }
+.zhaowu-v6-toc { position: relative; }
+.zhaowu-v6-toc-menu {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  display: grid;
+  min-width: 148px;
+  padding: 5px;
+  border: 1px solid rgba(177, 143, 76, .55);
+  background: #fbf7ee;
+  box-shadow: 0 4px 14px rgba(40,30,20,.14);
+}
+.zhaowu-v6-toc-menu a { min-height: 44px; justify-content: flex-start; border: 0; border-bottom: 1px solid rgba(177,143,76,.18); border-radius: 0; background: transparent; color: #302c25 !important; box-shadow: none; }
+.zhaowu-v6-page-footer {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin: 18px -14px 0;
+  padding: 5px 14px;
+  border-top: 1px solid rgba(255,255,255,.8);
+  background: linear-gradient(90deg, #efd4cf, #f4e3cc 54%, #efd4cf);
+  color: #594c43;
+  font: 600 12px/1.4 var(--font-display, serif);
+  letter-spacing: .08em;
+}
+.zhaowu-v6-footer-cat { width: 27px; height: 22px; flex: 0 0 auto; }
+.zhaowu-v6-page-number { margin-left: auto; font: 700 15px/1 Georgia, serif; color: #7d5148; }
+@media (max-width: 430px) {
+  html body .zhaowu-v6-report-pages { padding-inline: 10px !important; }
+  .zhaowu-v6-page-footer { margin-inline: -10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zhaowu-v6-float-nav a { scroll-behavior: auto; }
+}
+
 /* (4) 今日黃曆 · ink board ────────────────────────────────────────────────── */
 html body .zw-ink-board {
   --ink-bg: #10262a;
