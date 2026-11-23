@@ -1,0 +1,329 @@
+/* Hepan 合盤・緣分指數 page styles.
+ * v6 language from #1091: warm paper, gold frame, thin-line sections,
+ * Songti headings, no card walls. 390px first; nothing here may cause
+ * horizontal overflow at 390px. Tokens come from zhaowu-design-system.css. */
+
+.hepan-page {
+  box-sizing: border-box;
+  max-width: var(--zw-readable);
+  margin: 0 auto;
+  padding: 0 var(--zw-mobile-inline) 3rem;
+}
+
+.hepan-page *,
+.hepan-page *::before,
+.hepan-page *::after {
+  box-sizing: border-box;
+}
+
+.hepan-reference-only {
+  margin: 1rem 0 0;
+  padding: 0.75rem 1rem;
+  background: rgba(247, 236, 200, 0.55);
+  border-left: 3px solid var(--zw-gold);
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--zw-ink-soft);
+}
+
+.hepan-form {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--zw-line);
+}
+
+.hepan-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 720px) {
+  .hepan-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.hepan-person {
+  padding-top: 1rem;
+  border-top: 2px solid var(--zw-gold);
+}
+
+.hepan-person h3 {
+  font-family: var(--zw-font-heading);
+  font-size: 1.35rem;
+  margin: 0 0 1rem;
+  color: var(--zw-ink);
+}
+
+.hepan-person label {
+  display: block;
+  margin-bottom: 0.9rem;
+}
+
+.hepan-person label > span {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--zw-ink-soft);
+}
+
+.hepan-person input[type="text"],
+.hepan-person input[type="date"],
+.hepan-person input[type="time"],
+.hepan-person select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--zw-line);
+  border-radius: var(--zw-control-radius);
+  background: var(--zw-paper-strong);
+  color: var(--zw-ink);
+  font-size: 1rem;
+}
+
+.hepan-person input:disabled {
+  opacity: 0.55;
+}
+
+.hepan-time-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.hepan-time-row > label:first-child {
+  flex: 1;
+  margin-bottom: 0.9rem;
+}
+
+.hepan-time-unknown {
+  display: flex !important;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+  padding-bottom: 0.9rem;
+  margin-bottom: 0.9rem;
+}
+
+.hepan-time-unknown > span {
+  margin-bottom: 0 !important;
+}
+
+.hepan-hint {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--zw-muted);
+  margin: 0.25rem 0 0.9rem;
+}
+
+.hepan-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 1.25rem;
+}
+
+.hepan-form-actions button[type="submit"] {
+  min-height: 48px;
+  padding: 0.7rem 1.6rem;
+  border: none;
+  border-radius: var(--zw-control-radius);
+  background: var(--zw-cinnabar);
+  color: #fdf9f0;
+  font-family: var(--zw-font-heading);
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
+.hepan-demo-button {
+  min-height: 48px;
+  padding: 0.7rem 0.5rem;
+  border: none;
+  background: transparent;
+  color: var(--zw-jade);
+  font-size: 0.95rem;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.hepan-error {
+  margin: 1rem 0 0;
+  color: var(--zw-cinnabar);
+  font-weight: 600;
+}
+
+.hepan-result {
+  margin-top: 2.5rem;
+}
+
+.hepan-index__number {
+  font-family: var(--zw-font-heading);
+  font-size: 3.4rem;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--zw-cinnabar);
+  margin: 0.75rem 0 0;
+}
+
+.hepan-index__denominator {
+  font-size: 1.1rem;
+  color: var(--zw-muted);
+  font-weight: 400;
+}
+
+.hepan-weights {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+
+.hepan-weights li {
+  padding: 0.35rem 0;
+  border-top: 1px solid var(--zw-line);
+}
+
+.hepan-day-strips {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+@media (min-width: 720px) {
+  .hepan-day-strips {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.hepan-day-strip {
+  padding: 1rem 0.5rem 0.75rem;
+  text-align: center;
+  border-top: 2px solid var(--zw-gold);
+  border-bottom: 1px solid var(--zw-line);
+}
+
+.hepan-day-strip__who {
+  margin: 0 0 0.25rem;
+  font-size: 0.9rem;
+  color: var(--zw-ink-soft);
+}
+
+.hepan-day-strip__pillar {
+  margin: 0;
+  font-family: var(--zw-font-heading);
+  font-size: 2.6rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--zw-cinnabar);
+}
+
+.hepan-day-strip__meta {
+  margin: 0.35rem 0 0;
+  font-size: 0.88rem;
+  color: var(--zw-muted);
+  line-height: 1.6;
+}
+
+.hepan-charts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+@media (min-width: 760px) {
+  .hepan-charts {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.hepan-chart {
+  min-width: 0;
+}
+
+.hepan-chart > h3 {
+  font-family: var(--zw-font-heading);
+  font-size: 1.2rem;
+  margin: 0 0 0.75rem;
+}
+
+/* Day pillar in cinnabar inside the reused chart display. The chart
+ * component colours stems/branches inline by element, so the override
+ * needs !important; it is scoped to this page only. */
+.hepan-chart [data-pillar="day"] {
+  border-top: 2px solid var(--zw-cinnabar);
+}
+
+.hepan-chart [data-pillar="day"] [data-ganzhi-part] {
+  color: var(--zw-cinnabar) !important;
+}
+
+.hepan-reading summary {
+  cursor: pointer;
+}
+
+.hepan-reading ul {
+  margin: 0.5rem 0;
+  padding-left: 1.1rem;
+  line-height: 1.75;
+}
+
+.hepan-systems {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hepan-system {
+  padding: 1rem 0;
+  border-top: 1px solid var(--zw-line);
+}
+
+.hepan-system:first-child {
+  border-top: none;
+}
+
+.hepan-system[data-status="pending"] {
+  color: var(--zw-ink-soft);
+}
+
+.hepan-system h3 {
+  font-family: var(--zw-font-heading);
+  font-size: 1.15rem;
+  margin: 0 0 0.4rem;
+  color: var(--zw-ink);
+}
+
+.hepan-system__badge {
+  display: inline-block;
+  margin-left: 0.6rem;
+  font-family: var(--zw-font-body);
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--zw-muted);
+}
+
+.hepan-system[data-status="scored"] .hepan-system__badge {
+  color: var(--zw-cinnabar);
+  font-weight: 600;
+}
+
+.hepan-system p {
+  margin: 0;
+  line-height: 1.75;
+  font-size: 0.95rem;
+}
+
+.hepan-conflicts {
+  margin: 0.5rem 0;
+  padding-left: 1.1rem;
+  line-height: 1.75;
+}
+
+.hepan-conflicts li {
+  color: var(--zw-cinnabar);
+}
