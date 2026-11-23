@@ -72,6 +72,9 @@ export function BaziChartContent({ chart, locale, showHeader = true, expandDetai
         <h2>{c.title}</h2>
         <p>{c.lead}</p>
       </header> : null}
+      <p data-true-solar-line>
+        {locale === "en" ? `True solar time ${chart.trueSolarStamp} · clock time ${chart.civilStamp}` : `真太陽時 ${chart.trueSolarStamp} · 鐘錶時間 ${chart.civilStamp}`}
+      </p>
       {chart.timeUnknown ? <p className="zhaowu-time-warning">{UNKNOWN_TIME_COPY[locale]}</p> : null}
       {chart.locationFallback ? <p className="zhaowu-time-warning" data-location-fallback>{c.fallbackNote}</p> : null}
       {review?.required && review.civil && review.trueSolar ? (

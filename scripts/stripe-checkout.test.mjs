@@ -103,10 +103,29 @@ test("the browser can only query server-side entitlements; it cannot create paym
   assert.match(checkout, /PAYMENT_LINKS_ONLY/);
   assert.match(checkout, /report_purchase_entitlements/);
   assert.match(checkout, /\.eq\("checkout_session_id", sessionId\)/);
-  assert.doesNotMatch(checkout, /\.eq\("access_key", accessKey\)/);
+  assert.match(checkout, /\.eq\("access_key", accessKey\)/);
   assert.doesNotMatch(startCheckoutFn, /searchParams\.set\("access_key"/);
   assert.doesNotMatch(startCheckoutFn, /npm:stripe|STRIPE_(?:SECRET|RESTRICTED)_KEY|checkout\.sessions\.create/);
   assert.doesNotMatch(checkout, /checkout\.sessions\.create/);
+});
+
+test("latest access-key entitlement lookup returns only safe entitlement fields", async () => {
+  const admin = {
+    from(table) {
+      assert.equal(table, "report_purchase_entitlements");
+      return {
+        select(fields) { assert.equal(fields, "product_id,system_id,status,created_at,updated_at"); return this; },
+        eq(column, value) { assert.equal(column, "access_key"); assert.equal(value, "12345678-1234-4234-8234-123456789abc"); return this; },
+        order() { return this; }, limit() { return this; },
+        async then(resolve) { resolve({ data: [{ product_id: "system", system_id: "bazi", status: "refunded" }], error: null }); },
+      };
+    },
+  };
+  const response = await handle(new Request("https://zhao-wu.com/functions/v1/stripe-checkout?access_key=12345678-1234-4234-8234-123456789abc"), { supabaseUrl: "https://mock.supabase.co", supabaseSecretKey: "service_role_mock_only" }, admin);
+  const body = await response.json();
+  assert.equal(body.revoked, true);
+  assert.equal(JSON.stringify(body).includes("access_key"), false);
+  assert.equal(JSON.stringify(body).includes("session_id"), false);
 });
 
 test("paid entitlement checks revalidate Stripe refunds and disputes before returning access", () => {
@@ -119,7 +138,7 @@ test("paid entitlement checks revalidate Stripe refunds and disputes before retu
   assert.match(checkout, /data\.status === "refunded"/);
   assert.match(checkout, /paid: data\.status === "paid"/);
   assert.match(client, /if \(verification\.revoked\) revoked = true/);
-  assert.match(client, /return \{ level, pending, owner: false, revoked \}/);
+  assert.match(client, /return \{ level, pending: revoked \? false : pending, owner: false, revoked \}/);
   assert.doesNotMatch(client, /storedSessions\(\)\.filter\(\(sessionId\).*revoked/);
   assert.match(resultUi, /此訂單已退款/);
 });

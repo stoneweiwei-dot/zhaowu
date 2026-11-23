@@ -1,7 +1,7 @@
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 
 const VISITOR_KEY = "zhaowu.visitor.v1";
-const PUBLIC_DATA_TIMEOUT_MS = 900;
+const PUBLIC_DATA_TIMEOUT_MS = 5000;
 const PUBLIC_DATA_COOLDOWN_MS = 5 * 60_000;
 let publicDataBlockedUntil = 0;
 

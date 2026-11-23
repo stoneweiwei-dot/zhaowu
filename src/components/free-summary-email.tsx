@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Locale } from "@/lib/i18n";
+import { oncePerSession, trackConversion } from "@/lib/observability/conversion-telemetry";
 
 const EMAIL_STORAGE_KEY = "zhaowu:free-summary-email.v1";
 // Same shape check as the existing visitor-signup validation.
@@ -27,6 +28,10 @@ export function FreeSummaryEmail({ locale }: { locale: Locale }) {
     } catch {
       // Storage unavailable: the field still works for this visit.
     }
+  }, []);
+  useEffect(() => {
+    // Mounted only with the free summary, so mounting == free summary shown.
+    if (oncePerSession("answer:bazi")) trackConversion("zhaowu_answer_shown", { system: "bazi" });
   }, []);
   const text = (hant: string, hans: string, en: string) =>
     locale === "en" ? en : locale === "zh-Hans" ? hans : hant;

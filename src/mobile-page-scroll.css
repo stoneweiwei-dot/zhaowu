@@ -27,6 +27,17 @@
     overscroll-behavior-y: contain;
     touch-action: pan-x pan-y pinch-zoom;
   }
+
+  /* 2026-11-23 · Fixed utility-dock clearance (390px): the fixed bottom-right
+     Music/Guide dock (~98px tall incl. the home-indicator safe area) covered
+     the footer copyright and the bottom edge of full-width buttons on phones.
+     The home page already reserves 100px below its footer (painted-home.css);
+     give every page the same clearance so all content can scroll fully clear
+     of the dock. !important overrides Tailwind's pb-8 on the footer and the
+     home-only 100px rule. Desktop (>700px) is untouched. */
+  html body .zhaowu-site-footer {
+    padding-bottom: calc(112px + env(safe-area-inset-bottom)) !important;
+  }
 }
 
 /* =========================================================================
@@ -177,5 +188,137 @@ html[data-zws-mode="dark"] .mobile-scroll-container.has-edge-fades::after {
   .mobile-scroll-container .zhaowu-cycle-list > li {
     flex: 0 0 88px !important;
     min-width: 88px !important;
+  }
+}
+
+/* =========================================================================
+   2026-11-23 · Phone layout fix (Shi's phone check ~20:09 AEDT, live da5251e8)
+   Override-only: no markup, no engine, no pricing, no gating changes.
+   Desktop (>700px) untouched.
+   ========================================================================= */
+
+/* --- 1c root-cause guard: --zws-on-accent has NO fallback in the base tokens
+   (design-system.css :where(html[data-zws]) defines --zws-accent but NOT
+   --zws-on-accent; only ~12 skin blocks in theme-skins.css define it).
+   With a stale/unknown saved skin id, `color: var(--zws-on-accent)` in the
+   skin button rules is dropped and the button renders dark ink on a dark
+   green accent background. Zero-specificity fallback: any real skin value
+   (specificity >= 0,1,1) still wins. --- */
+:where(html[data-zws]) {
+  --zws-on-accent: #fffaf0;
+}
+
+/* --- 1c: unlock + follow-up buttons — cream text, always. Matches the
+   「生成我的命書」 submit button, which is protected by an ID-scoped rule
+   in layered-styles.css. The quad [data-zws] prefix outranks the skin rule
+   (theme-skins-full.css:759-770, specificity 0,5,2) so the !important holds. --- */
+html[data-zws][data-zws][data-zws][data-zws] body [data-bazi-reading-locked] button,
+html[data-zws][data-zws][data-zws][data-zws] body [data-guest-follow-up="true"] button[type="submit"] {
+  color: #fffaf0 !important;
+  -webkit-text-fill-color: #fffaf0 !important;
+}
+
+/* --- 1d: selected gender capsule — force cream text on the dark accent.
+   (No overriding rule was found in source; forced override follows the
+   wardrobe dark-button precedent in layered-styles.css.) --- */
+html body .zhaowu-gender-capsule.is-active {
+  background: #345e50 !important;
+  color: #fffaf0 !important;
+  -webkit-text-fill-color: #fffaf0 !important;
+  border-color: #345e50 !important;
+}
+
+@media (max-width: 700px) {
+  /* --- 1a: the hero intro sits directly on the fixed painting where it is
+     darkest (the mist wash fades out above it). Give the intro its own
+     light paper wash so both lines stay readable. --- */
+  html body #root .zw-painted-home.zw-v2-home .zw-v2-intro {
+    background: linear-gradient(90deg, rgba(250, 247, 239, 0.94), rgba(250, 247, 239, 0.82));
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+
+  /* --- 1b: the footer scrolls over the fixed painting; give it a paper band
+     on the home page so ink text never sits on the dark part of the painting.
+     Legal links get an explicit readable green (the pine CTA and member links
+     keep their own colours). --- */
+  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-footer {
+    background: rgba(250, 247, 239, 0.95);
+    color: #23302d;
+  }
+  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-footer .zhaowu-footer-legal a {
+    color: #315e50;
+  }
+
+  /* --- 3: the v2-home header is a floating overlay whose only live control
+     is the 繁體 pill; on phones let the header scroll away with the page
+     instead of floating over content. Nav stays reachable via the dock
+     導覽 button and the journey nav. Home page only. --- */
+  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header {
+    position: static !important;
+  }
+
+  /* --- 4: nav portal cards — the is-bazi diagonal two-tone split crosses
+     the subtitle mid-line. Single tone, same family as the base portal. --- */
+  html body .zhaowu-home-portal.is-bazi {
+    background: rgba(250, 243, 230, 0.92) !important;
+  }
+  /* Portal art cards (.ph-portal): the image edge can still cross the hint
+     text — give the copy a white glow so it reads over any image tone. */
+  html body #root .zw-painted-home .ph-portal strong,
+  html body #root .zw-painted-home .ph-portal small {
+    text-shadow: 0 1px 6px #fffaf0, 0 0 10px #fffaf0;
+  }
+
+  /* --- 3: shrink the floating dock buttons on phones so they cover less
+     content. #1110's 112px footer padding already lets the page end scroll
+     clear. (A fixed dock always covers the viewport's bottom-right while
+     scrolling; fully eliminating that needs a hide-on-scroll JS change —
+     not in this PR.) --- */
+  html body .zhaowu-site-utility-buttons {
+    gap: 6px !important;
+    padding: 6px !important;
+  }
+  html body .zhaowu-site-utility-buttons > button {
+    min-height: 40px !important;
+  }
+
+  /* --- 2: the scroll hint bar must sit ABOVE the edge fades (z-index 3)
+     and read clearly. --- */
+  .mobile-scroll-hint-bar {
+    position: relative;
+    z-index: 4;
+  }
+  .mobile-scroll-hint {
+    color: #4a4238;
+    background: rgba(115, 93, 67, 0.14);
+    border-color: rgba(115, 93, 67, 0.32);
+  }
+  /* Softer, narrower edge fades so they never wash out the last cell. */
+  .mobile-scroll-container.has-edge-fades::before,
+  .mobile-scroll-container.has-edge-fades::after {
+    width: 14px;
+  }
+  .mobile-scroll-container.has-edge-fades::before {
+    background: linear-gradient(to right, rgba(255, 250, 241, 0.8), transparent);
+  }
+  .mobile-scroll-container.has-edge-fades::after {
+    background: linear-gradient(to left, rgba(255, 250, 241, 0.8), transparent);
+  }
+}
+
+@media (max-width: 520px) {
+  /* --- 2: four pillars must fit the phone width instead of overflowing.
+     Available width inside the nested cards is ~310px at 390px; the old
+     min-width 328px pushed 時柱 off-screen. Same selector + !important as
+     the rule above, later in the file, so this wins. --- */
+  .mobile-scroll-container .zhaowu-pillar-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    min-width: 0 !important;
+  }
+  /* DaYun year ranges must not wrap mid-range ("2017–" / "2026"). */
+  .mobile-scroll-container .zhaowu-cycle-list > li strong,
+  .mobile-scroll-container .zhaowu-cycle-list > li span {
+    white-space: nowrap !important;
   }
 }

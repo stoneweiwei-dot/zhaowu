@@ -11,7 +11,7 @@ import type { AnalyzeInput, BirthTimeSource, CityHit } from "@/lib/bazi/types";
 import { assessBirthRecord } from "@/lib/bazi/data-grade";
 import { useI18n } from "@/lib/i18n";
 import { useAppStore } from "@/lib/store";
-import { trackConversion } from "@/lib/observability/conversion-telemetry";
+import { oncePerSession, trackConversion } from "@/lib/observability/conversion-telemetry";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { createEngineReportRecord, saveVisitorChart, updateBirthData } from "@/lib/supabase-rest";
 import { UNKNOWN_TIME_COPY } from "@/lib/bazi/presentation";
@@ -248,6 +248,12 @@ export function AnalysisForm() {
     setDetailsOpen(false);
     if (!localRecord && serverRecord) writeSharedBirthRecord(serverRecord);
   }, [user?.id, user?.birthData]);
+
+  useEffect(() => {
+    // Funnel step 1: the birth form is shown. Once per session, so a
+    // remount or a return visit does not inflate the count.
+    if (oncePerSession("form:bazi")) trackConversion("zhaowu_form_opened", { system: "bazi" });
+  }, []);
 
   const draftBirth = useMemo(() => gender && birthCity && !birthCity.standardTimeFallback ? sharedBirthFromUnknown({
     year,

@@ -20,7 +20,8 @@ function KnowledgePage() {
   const { locale } = useI18n();
   useDisplayLanguage((state) => state.language);
   const pathname = useRouterState({ select: (state) => state.location.pathname });
-  if (pathname.startsWith("/knowledge/")) return <Outlet />;
+  const isKnowledgeIndex = pathname === "/knowledge" || pathname === "/knowledge/";
+  if (!isKnowledgeIndex) return <Outlet />;
 
   return (
     <main className="mx-auto max-w-4xl space-y-5 pb-16">
@@ -61,13 +62,26 @@ function KnowledgePage() {
           </p>
         </div>
 
+        <a href="/yunyi-shenxiang" className="seal-border flex min-h-[132px] items-center gap-4 rounded-xl border border-[#a3815940] bg-[#fffaf1]/90 p-4 shadow-sm transition hover:border-cinnabar/40 focus-visible:outline-2 focus-visible:outline-offset-2 sm:gap-6 sm:p-6">
+          <img src="/articles/yunyi-shenxiang/01.webp" alt="" width={941} height={1672} fetchPriority="high" className="h-24 w-20 shrink-0 rounded-lg object-cover sm:h-32 sm:w-24" />
+          <span className="min-w-0">
+          <p className="text-xs tracking-[0.2em] text-cinnabar">{tr(locale,"昭梧原創圖志 · 三卷 75 圖","昭梧原创图志 · 三卷 75 图","ZHAOWU ORIGINAL ATLAS · 75 WORKS IN THREE VOLUMES")}</p>
+          <h3 className="mt-1 font-display text-xl leading-snug text-ink sm:text-2xl">{tr(locale,"《雲衣神相》：封神、九歌與上古四時","《云衣神相》：封神、九歌与上古四时","Yunyi Shenxiang: Investiture, Nine Songs & the Four Seasons")}</h3>
+          <p className="mt-2 text-sm leading-6 text-ink-soft">{tr(locale,"三卷原創人物與神話畫作，附簡明故事和古典來源。","三卷原创人物与神话画作，附简明故事和古典来源。","Three volumes of original mythic portraits, with plain-language stories and source notes.")}</p>
+          <span className="mt-2 inline-block text-sm text-cinnabar underline underline-offset-4">{tr(locale,"瀏覽 75 張作品 →","浏览 75 张作品 →","Explore all 75 artworks →")}</span>
+          </span>
+        </a>
+
         <LifeViewHomeSection archiveMode />
-        <article className="seal-border rounded-xl bg-cream p-5 sm:p-7">
+        <a href="/bajinggong" className="seal-border flex min-h-[132px] items-center gap-4 rounded-xl border border-[#a3815940] bg-[#fffaf1]/90 p-4 shadow-sm transition hover:border-cinnabar/40 focus-visible:outline-2 focus-visible:outline-offset-2 sm:gap-6 sm:p-6">
+          <img src="/bajinggong/01-hanhai-cangming.webp" alt="" width={941} height={1672} loading="lazy" className="h-24 w-20 shrink-0 rounded-lg object-cover sm:h-32 sm:w-24" />
+          <span className="min-w-0">
           <p className="text-xs tracking-[0.2em] text-cinnabar">{tr(locale,"文化考據 · 原創圖志","文化考据 · 原创图志","CULTURAL SOURCES · ORIGINAL ART")}</p>
           <h3 className="mt-2 font-display text-2xl text-ink">{tr(locale,"八景宮九景：古典仙境與當代藝術演繹","八景宫九景：古典仙境与当代艺术演绎","Nine Visions of Bajinggong")}</h3>
           <p className="mt-3 text-sm leading-7 text-ink-soft">{tr(locale,"九幅9:16原畫，逐景介紹畫風與意象，並區分古籍記載與現代整理。","九幅9:16原画，逐景介绍画风与意象，并区分古籍记载与现代整理。","Nine portrait paintings with descriptions and clear distinctions between classical sources and modern interpretations.")}</p>
-          <a className="mt-3 inline-block underline underline-offset-4" href="/bajinggong">{tr(locale,"閱讀完整九景圖志","阅读完整九景图志","Explore the illustrated feature")}</a>
-        </article>
+          <span className="mt-2 inline-block text-sm text-cinnabar underline underline-offset-4">{tr(locale,"瀏覽九景圖志 →","浏览九景图志 →","Explore all nine visions →")}</span>
+          </span>
+        </a>
       </section>
 
       <RealityPatchSection />

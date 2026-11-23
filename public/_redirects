@@ -1,1 +1,52 @@
-/*    /index.html   200
+# Per-route 200 rewrites point at "/" (or a locale directory like "/en/"), NOT
+# "/index.html": Cloudflare Pages 308-redirects /index.html to its directory,
+# and that normalisation applies to rewrite targets too, so "/login /index.html
+# 200" sent every deep link home. Rewrite to "/" serves the same file.
+# The /* catch-all MUST stay "/index.html": a catch-all rewrite to "/" serves
+# the app shell for every static file (JS, images, sw.js) instead of the file.
+
+/guide/* /?guide=1 302
+/bazi / 301
+/bazi/ / 301
+/color /daily-colors 301
+/color/ /daily-colors 301
+/zh-Hans /zh-hans 301
+/zh-Hans/* /zh-hans/:splat 301
+/zh-Hant / 301
+/zh-Hant/* /:splat 301
+/pricing /sample-report 301
+/api/gallery-ingest-finalize https://gyisxbkjzvdretbqzeuw.supabase.co/functions/v1/gallery-ingest-finalize 200
+/sb/auth/v1/* https://gyisxbkjzvdretbqzeuw.supabase.co/auth/v1/:splat 200
+/sb/rest/v1/* https://gyisxbkjzvdretbqzeuw.supabase.co/rest/v1/:splat 200
+/sb/functions/v1/* https://gyisxbkjzvdretbqzeuw.supabase.co/functions/v1/:splat 200
+/sb/storage/v1/object/public/* https://gyisxbkjzvdretbqzeuw.supabase.co/storage/v1/object/public/:splat 200
+/login / 200
+/login/* / 200
+/account / 200
+/account/* / 200
+/member / 200
+/member/* / 200
+/history / 200
+/history/* / 200
+/auth/callback / 200
+/auth/callback/* / 200
+/gallery / 200
+/gallery/* / 200
+/social / 200
+/social/* / 200
+/mythic-atlas / 200
+/mythic-atlas/* / 200
+/tianji-dual / 200
+/tianji-dual/* / 200
+/tianji-xinggong / 200
+/tianji-xinggong/* / 200
+/zh-hans/* /zh-hans/ 200
+/en/* /en/ 200
+/ja/* /ja/ 200
+/ko/* /ko/ 200
+/hi/* /hi/ 200
+/th/* /th/ 200
+/id/* /id/ 200
+/vi/* /vi/ 200
+/fil/* /fil/ 200
+/* /index.html 200

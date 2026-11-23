@@ -2,7 +2,7 @@
  * conversion-telemetry.ts — Issue #1 §6「推廣前的工程前置」转化漏斗埋点
  *
  * 漏斗事件序列（在 PostHog 里按此建 funnel）：
- *   zhaowu_birth_submitted → zhaowu_answer_shown → zhaowu_paywall_viewed
+ *   zhaowu_form_opened → zhaowu_birth_submitted → zhaowu_answer_shown → zhaowu_paywall_viewed
  *   → zhaowu_checkout_clicked → zhaowu_purchase_confirmed
  *   （旁路：zhaowu_promo_redeemed）
  *
@@ -55,6 +55,7 @@ function sessionId() {
 }
 
 export type ConversionEvent =
+  | "zhaowu_form_opened"
   | "zhaowu_birth_submitted"
   | "zhaowu_answer_shown"
   | "zhaowu_paywall_viewed"

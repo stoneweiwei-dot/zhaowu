@@ -2,6 +2,10 @@ import { createHash, timingSafeEqual } from "node:crypto";
 
 const encoder = new TextEncoder();
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+// One-way verifier for the Cloudflare/Vercel bridge rotation. The high-entropy
+// plaintext remains only in hosting secrets; keeping the verifier in source lets
+// Supabase accept the rotation even though its legacy secret is not exportable.
+const ROTATED_BRIDGE_SHA256 = "fcf12be8bab887bf2fe563fc76349bb089dc529d54ca201f874e0ea8afd18f40";
 function ownerKeyHash() {
   if (typeof Deno !== "undefined") return Deno.env.get("ZHAOWU_OWNER_KEY_SHA256") ?? "";
   return typeof process !== "undefined" ? process.env.ZHAOWU_OWNER_KEY_SHA256 ?? "" : "";
@@ -35,6 +39,21 @@ function constantTimeEqual(actual, expected) {
   return timingSafeEqual(actual, expected);
 }
 
+function bridgeMatches(value, legacySecret, expectedHash = ROTATED_BRIDGE_SHA256) {
+  const actual = text(value);
+  const legacy = text(legacySecret);
+  if (legacy.length >= 32 && actual.length === legacy.length) {
+    let diff = 0;
+    for (let index = 0; index < actual.length; index += 1) diff |= actual.charCodeAt(index) ^ legacy.charCodeAt(index);
+    if (diff === 0) return true;
+  }
+  if (actual.length < 32) return false;
+  const expected = expectedHashBytes(expectedHash);
+  if (expected.length !== 32) return false;
+  const candidate = createHash("sha256").update(actual, "utf8").digest();
+  return constantTimeEqual(candidate, expected);
+}
+
 function isValidOwnerSecret(value, expectedHash = ownerKeyHash()) {
   const secret = text(value);
   if (secret.length < 8 || secret.length > 256) return false;
@@ -66,13 +85,7 @@ export function authorizeBridgeHeaders(headers, expectedSecret, expectedOwnerHas
     return { ok: false, status: 403, error: "BRIDGE_REQUIRED" };
   }
   const actual = text(headers?.get?.("x-zhaowu-bridge-secret"));
-  const expected = text(expectedSecret);
-  if (expected.length >= 32) {
-    if (actual.length !== expected.length) return { ok: false, status: 401, error: "BRIDGE_UNAUTHORIZED" };
-    let diff = 0;
-    for (let index = 0; index < actual.length; index += 1) diff |= actual.charCodeAt(index) ^ expected.charCodeAt(index);
-    if (diff !== 0) return { ok: false, status: 401, error: "BRIDGE_UNAUTHORIZED" };
-  }
+  if (!bridgeMatches(actual, expectedSecret)) return { ok: false, status: 401, error: "BRIDGE_UNAUTHORIZED" };
 
   const ownerSecret = text(headers?.get?.("x-zhaowu-owner-secret"));
   if (isValidOwnerSecret(ownerSecret, expectedOwnerHash)) return { ok: true, mode: "secret" };
@@ -90,13 +103,10 @@ export function authorizeBridgeHeaders(headers, expectedSecret, expectedOwnerHas
 export function authorizeBridgeOnly(headers, expectedSecret) {
   const bridgeVersion = text(headers?.get?.("x-zhaowu-server-bridge"));
   if (bridgeVersion !== "r162") return { ok: false, status: 403, error: "BRIDGE_REQUIRED" };
-  const expected = text(expectedSecret);
-  if (expected.length < 32) return { ok: false, status: 503, error: "BRIDGE_NOT_CONFIGURED" };
   const actual = text(headers?.get?.("x-zhaowu-bridge-secret"));
-  if (actual.length !== expected.length) return { ok: false, status: 401, error: "BRIDGE_UNAUTHORIZED" };
-  let diff = 0;
-  for (let index = 0; index < actual.length; index += 1) diff |= actual.charCodeAt(index) ^ expected.charCodeAt(index);
-  return diff === 0 ? { ok: true } : { ok: false, status: 401, error: "BRIDGE_UNAUTHORIZED" };
+  return bridgeMatches(actual, expectedSecret)
+    ? { ok: true }
+    : { ok: false, status: 401, error: "BRIDGE_UNAUTHORIZED" };
 }
 
 export async function createUploadTicket(fields, secret, nowSeconds = Math.floor(Date.now() / 1000), ttlSeconds = 7200) {

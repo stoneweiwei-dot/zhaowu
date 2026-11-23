@@ -60,6 +60,60 @@ test("a refunded Stripe session is returned as revoked and cannot leave paid acc
   } finally { browser.restore(); }
 });
 
+test("a verified refunded session clears pending even if access-key lookup has no entitlement", async () => {
+  const browser = browserFixture({ paid: false, revoked: true, reason: "refunded", updatedAt: "2026-11-20T10:00:00Z" });
+  try {
+    globalThis.fetch = async (url) => {
+      if (url === "/api/owner-session") return Response.json({ authenticated: false });
+      const target = new URL(String(url));
+      if (target.searchParams.has("session_id")) return Response.json({ ok: true, paid: false, revoked: true, reason: "refunded", updatedAt: "2026-11-20T10:00:00Z" });
+      if (target.searchParams.has("access_key")) return Response.json({ ok: true, paid: false, pending: true });
+      if (String(url).includes("/functions/v1/promo-code")) return Response.json({ ok: true, paid: false });
+      throw new Error("unexpected request");
+    };
+    const access = await resolveReportAccess("bazi");
+    assert.equal(access.level, "quick");
+    assert.equal(access.revoked, true);
+    assert.equal(access.pending, false);
+  } finally { browser.restore(); }
+});
+
+test("a refunded session is still reported when the access key is missing", async () => {
+  const browser = browserFixture({ paid: false, revoked: true, reason: "refunded" });
+  try {
+    browser.data.delete("zhaowu.report-access-key.v1");
+    const access = await resolveReportAccess("bazi");
+    assert.equal(access.level, "quick");
+    assert.equal(access.revoked, true);
+  } finally { browser.restore(); }
+});
+
+test("a cleared session list recovers a refund through the access key", async () => {
+  const browser = browserFixture({ paid: false, revoked: true, reason: "refunded", product: "system", system: "bazi", createdAt: "2026-11-20T10:00:00Z" });
+  try {
+    browser.data.delete("zhaowu.report-access-sessions.v1");
+    globalThis.fetch = async (url) => {
+      if (url === "/api/owner-session") return Response.json({ authenticated: false });
+      if (String(url).includes("access_key=")) return Response.json({ ok: true, paid: false, revoked: true, product: "system", system: "bazi", createdAt: "2026-11-20T10:00:00Z" });
+      throw new Error("unexpected request");
+    };
+    const access = await resolveReportAccess("bazi");
+    assert.equal(access.level, "quick");
+    assert.equal(access.revoked, true);
+  } finally { browser.restore(); }
+});
+
+test("a later paid entitlement after a refund unlocks and clears revoked state", async () => {
+  const browser = browserFixture({ paid: true, product: "system", system: "bazi", createdAt: "2026-11-21T10:00:00Z" });
+  try {
+    browser.data.set("zhaowu.report-access-revoked.v1", "refunded");
+    const access = await resolveReportAccess("bazi");
+    assert.equal(access.level, "system");
+    assert.equal(access.revoked, false);
+    assert.equal(browser.data.has("zhaowu.report-access-revoked.v1"), false);
+  } finally { browser.restore(); }
+});
+
 test("a valid paid session remains authorized and does not show refunded state", async () => {
   const browser = browserFixture({ paid: true, product: "system", system: "bazi" });
   try {

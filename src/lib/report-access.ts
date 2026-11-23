@@ -139,6 +139,13 @@ async function verifySession(sessionId: string): Promise<Verification> {
   return payloadOf(response);
 }
 
+async function verifyLatestEntitlement(accessKey: string): Promise<Verification> {
+  const url = new URL(ACCESS_ENDPOINT);
+  url.searchParams.set("access_key", accessKey);
+  const response = await fetch(url, { headers: apiHeaders(), cache: "no-store" });
+  return payloadOf(response);
+}
+
 async function verifyPromo(accessKey: string, system: ReportSystemId): Promise<Verification> {
   const url = new URL(PROMO_ENDPOINT);
   url.searchParams.set("access_key", accessKey);
@@ -206,7 +213,12 @@ export async function resolveReportAccess(system: ReportSystemId) {
   // access key could be minted or any session verifies. Paid "system" access
   // is earned strictly through verified Stripe sessions
   // below and only ever raises this free floor, never lowers it.
-  if (!accessKey) return { level: "quick" as ReportAccessLevel, pending: false, owner: false };
+  const markerKey = "zhaowu.report-access-revoked.v1";
+  if (!accessKey) {
+    let revoked = false;
+    try { revoked = localStorage.getItem(markerKey) === "refunded"; } catch { /* optional marker */ }
+    return { level: "quick" as ReportAccessLevel, pending: false, owner: false, revoked };
+  }
   const query = typeof window === "undefined" ? "" : new URLSearchParams(window.location.search).get("session_id") || "";
   if (query) rememberSession(query);
   let level: ReportAccessLevel = "quick";
@@ -241,16 +253,39 @@ export async function resolveReportAccess(system: ReportSystemId) {
       pending = true;
     }
   }
+  // The access-key lookup recovers the latest same-browser entitlement after
+  // session storage or the success URL has been cleared. It never returns IDs.
+  if (accessKey) {
+    try {
+      const verification = await verifyLatestEntitlement(accessKey);
+      const candidate = levelFor(verification, system);
+      if (candidate === "system" || verification.revoked) {
+        const timestamp = Math.max(Date.parse(verification.createdAt || "") || 0, Date.parse(verification.updatedAt || "") || 0);
+        if (verification.live && candidate === "system") livePaid = true;
+        if (timestamp >= latestEntitlementAt) {
+          latestEntitlementAt = timestamp;
+          latestEntitlementRevoked = verification.revoked === true;
+        }
+      }
+    } catch {
+      pending ||= Boolean(accessKey);
+    }
+  }
   if (latestEntitlementRevoked) level = "quick";
   else if (latestEntitlementAt > -Infinity) level = "system";
   if (livePaid) level = "system";
   stripeGranted = level === "system";
+  let storedRefund = false;
+  try { storedRefund = localStorage.getItem(markerKey) === "refunded"; } catch { /* optional marker */ }
   revoked = latestEntitlementRevoked && !livePaid;
+  // If no newer authoritative entitlement was found, retain the confirmed
+  // refund message across visits where the key or sessions are unavailable.
+  if (!latestEntitlementRevoked && latestEntitlementAt === -Infinity && storedRefund) revoked = true;
   try {
-    if (revoked) localStorage.setItem("zhaowu.report-access-revoked.v1", "refunded");
-    else localStorage.removeItem("zhaowu.report-access-revoked.v1");
+    if (revoked) localStorage.setItem(markerKey, "refunded");
+    else if (latestEntitlementAt > -Infinity && !latestEntitlementRevoked || livePaid) localStorage.removeItem(markerKey);
   } catch { /* optional refund marker */ }
-  {
+  if (accessKey) {
     try {
       // Server-authoritative, same as a Stripe session: the access key alone never grants
       // access locally. A promo redemption only ever raises the floor, never lowers it.
@@ -267,8 +302,12 @@ export async function resolveReportAccess(system: ReportSystemId) {
     trackConversion("zhaowu_purchase_confirmed", { system });
     trackConversion("unlock_paid", { system });
   }
-  if (stripeGranted && !revoked) try { localStorage.removeItem("zhaowu.report-access-revoked.v1"); } catch { /* optional marker */ }
-  return { level, pending, owner: false, revoked };
+  if (stripeGranted && !revoked) try { localStorage.removeItem(markerKey); } catch { /* optional marker */ }
+  // A verified refund is authoritative for the latest entitlement. An absent
+  // access-key row may still report pending while the refunded session is
+  // present in the success URL/storage; that lookup must not keep the UI in
+  // its payment-confirmation state after the refund is already known.
+  return { level, pending: revoked ? false : pending, owner: false, revoked };
 }
 
 export async function startReportCheckout(product: ReportAccessProduct, system: ReportSystemId, reportId?: string) {

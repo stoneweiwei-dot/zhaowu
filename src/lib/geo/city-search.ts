@@ -21,6 +21,16 @@ import { fuzzyChinaPlaces, isKnownPlace, localizeChinaPlace, searchChinaPlaces }
 const CJK = /[㐀-鿿豈-﫿]/u;
 const cache = new Map<string, CityHit[]>();
 
+const CJK_ALIASES: Record<string, string> = {
+  台北: "Taipei", 臺北: "Taipei", 高雄: "Kaohsiung", 新竹: "Hsinchu",
+  上海: "Shanghai", 廣州: "Guangzhou", 广州: "Guangzhou", 香港: "Hong Kong",
+  雪梨: "Sydney", 悉尼: "Sydney", 東京: "Tokyo", 东京: "Tokyo",
+};
+
+function latinAlias(q: string) {
+  return CJK_ALIASES[q.normalize("NFKC")] ?? "";
+}
+
 export function needsTimezone(city: CityHit) {
   return !city.timezone || (city.timezone === "UTC" && Math.abs(city.longitude) > 7.5);
 }
@@ -140,14 +150,26 @@ export async function searchBirthPlaces(query: string, signal?: AbortSignal): Pr
   const controller = new AbortController();
   const abort = () => controller.abort();
   signal?.addEventListener("abort", abort, { once: true });
-  const timer = setTimeout(abort, 6000);
+  const timer = setTimeout(abort, 1800);
   try {
-    const [meteo, osm] = await Promise.all([
-      openMeteo(q, controller.signal).catch(() => [] as CityHit[]),
-      // Photon fills the CJK small-place gap; for Latin queries it is a secondary source.
-      photon(q, controller.signal).catch(() => [] as CityHit[]),
+    const alias = latinAlias(q);
+    const upstream = (request: (query: string, signal: AbortSignal) => Promise<CityHit[]>, query: string) => {
+      const requestController = new AbortController();
+      const abortRequest = () => requestController.abort();
+      controller.signal.addEventListener("abort", abortRequest, { once: true });
+      const timer = setTimeout(abortRequest, 1500);
+      return request(query, requestController.signal).catch(() => [] as CityHit[]).finally(() => {
+        clearTimeout(timer);
+        controller.signal.removeEventListener("abort", abortRequest);
+      });
+    };
+    const [meteo, osm, aliasMeteo, aliasOsm] = await Promise.all([
+      upstream(openMeteo, q),
+      // Photon often recognizes local names directly; keep the original CJK query.
+      upstream(photon, q),
+      ...(alias ? [upstream(openMeteo, alias), upstream(photon, alias)] : [Promise.resolve([] as CityHit[]), Promise.resolve([] as CityHit[])]),
     ]);
-    const remote = CJK.test(q) ? [...osm, ...meteo] : [...meteo, ...osm];
+    const remote = CJK.test(q) ? [...osm, ...aliasOsm, ...aliasMeteo, ...meteo] : [...meteo, ...osm];
     // Remote rows that merely re-state a gazetteer city (e.g. "洛阳市") add nothing.
     const extra = remote.filter((r) => !isKnownPlace(r.name, r.latitude, r.longitude));
     const merged = dedupe([...local, ...extra]).slice(0, 12);

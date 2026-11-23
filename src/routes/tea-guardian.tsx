@@ -4,6 +4,8 @@ import { TeaPortraitCard } from "@/components/tea-guardian-report";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { recommendTea, teaQuizComplete, type TeaQuizAnswers, type TeaRecommendation } from "@/lib/tea-guardian";
 import { useAppStore } from "@/lib/store";
+import { readBirthDraft, draftToAnalyzeSlice } from "@/lib/birth-draft";
+import { buildChart } from "@/lib/bazi/chart";
 
 export const Route = createFileRoute("/tea-guardian")({ component: TeaGuardianPage });
 
@@ -110,7 +112,13 @@ const COPY = {
 function TeaGuardianPage() {
   const { locale } = useI18n();
   const current = useAppStore((state) => state.current);
-  const chart = current?.chart ?? null;
+  const chart = useMemo(() => {
+    if (current?.chart) return current.chart;
+    const draft = readBirthDraft();
+    const slice = draft ? draftToAnalyzeSlice(draft) : null;
+    if (!slice) return null;
+    try { return buildChart({ ...slice, question: "", locale }); } catch { return null; }
+  }, [current, locale]);
   const copy = COPY[locale];
   const [answers, setAnswers] = useState<TeaQuizAnswers>({});
   const [result, setResult] = useState<TeaRecommendation | null>(null);
