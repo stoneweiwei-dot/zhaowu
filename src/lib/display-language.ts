@@ -1,7 +1,7 @@
-import { parseLanguagePath, languagePath } from "./language-routing.js";
+import { LANGUAGES, parseLanguagePath, languagePath } from "./language-routing.js";
 import { create } from "zustand";
 import { applyManifestLocale } from "@/lib/manifest-locale";
-import { useI18n, type CopyKey, type Locale } from "@/lib/i18n";
+import { detectBrowserLanguage, useI18n, type CopyKey, type Locale } from "@/lib/i18n";
 
 export type DisplayLanguage = Locale | "ja" | "ko" | "hi" | "th" | "id" | "vi" | "fil";
 
@@ -588,7 +588,19 @@ export function intlTagFor(language: DisplayLanguage) {
 
 // Indexed URLs always win over saved preferences and browser detection.
 function readDisplayLanguage(): DisplayLanguage {
-  return typeof window === "undefined" ? "zh-Hant" : parseLanguagePath(window.location.pathname).language;
+  if (typeof window === "undefined") return "zh-Hant";
+  const parsed = parseLanguagePath(window.location.pathname);
+  // A language prefix in the URL is authoritative when present.
+  if (parsed.rest !== window.location.pathname) return parsed.language;
+  // A saved manual choice wins over auto-detection.
+  try {
+    const saved = window.localStorage.getItem("zhaowu.display-language");
+    if (saved && (LANGUAGES as readonly string[]).includes(saved)) return saved as DisplayLanguage;
+  } catch {
+    /* ignore */
+  }
+  // Otherwise detect from the visitor's phone/browser language setting.
+  return detectBrowserLanguage();
 }
 
 type LazyLanguage = "th" | "id" | "vi" | "fil";
