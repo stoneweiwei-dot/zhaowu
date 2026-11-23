@@ -7,9 +7,18 @@ import { FEATURED_CITIES } from "../src/lib/bazi/cities.ts";
 import {
   buildBaziPair,
   buildHepanIndex,
+  buildPalmPairSection,
+  buildQizhengPairSection,
+  buildZiweiPairSection,
+  HEPAN_BASE_WEIGHTS,
   HEPAN_PENDING_REASONS,
   HEPAN_SYSTEM_TITLES,
+  QIZHENG_PALACE_LORDS,
 } from "../src/lib/hepan/pair-model.ts";
+import { palmFromChart } from "../src/lib/yizhangjing/engine.ts";
+import { normalizeZiweiCalendarBirth } from "../src/lib/ziwei/calendar-normalization.ts";
+import { buildZiweiCoreChart } from "../src/lib/ziwei/core.ts";
+import { ZHAOWU_ZIWEI_CALCULATION_PROFILE } from "../src/lib/ziwei/profiles.ts";
 
 // Verified fixture: 1990-06-15 10:30 Sydney male.
 // Correct pillars 庚午／壬午／辛亥／癸巳, day master 辛金 (true solar 10:34).
@@ -65,7 +74,7 @@ const EVEN = { 木: 20, 火: 20, 土: 20, 金: 20, 水: 20 };
 
 const SYDNEY = FEATURED_CITIES.find((city) => city.display === "雪梨，澳洲");
 
-function realInput(year, month, day, hour, minute, gender) {
+function realInput(year, month, day, hour, minute, gender, timeUnknown = false) {
   return {
     question: "",
     locale: "zh-Hant",
@@ -74,7 +83,7 @@ function realInput(year, month, day, hour, minute, gender) {
     day,
     hour,
     minute,
-    timeUnknown: false,
+    timeUnknown,
     gender,
     relation: "any",
     city: SYDNEY,
@@ -83,6 +92,39 @@ function realInput(year, month, day, hour, minute, gender) {
     useTrueSolar: true,
     timeSource: "family-memory",
   };
+}
+
+function civilOf(year, month, day, hour, minute) {
+  return { year, month, day, hour, minute };
+}
+
+function demoPair() {
+  const chartA = buildChart(realInput(1990, 6, 15, 10, 30, "male"));
+  const chartB = buildChart(realInput(1992, 3, 8, 8, 15, "female"));
+  return {
+    chartA,
+    chartB,
+    civilA: civilOf(1990, 6, 15, 10, 30),
+    civilB: civilOf(1992, 3, 8, 8, 15),
+  };
+}
+
+function buildZiweiFor(civil) {
+  const normalized = normalizeZiweiCalendarBirth({
+    civilDate: { ...civil },
+    timeConfidence: "certain",
+    profile: {
+      id: ZHAOWU_ZIWEI_CALCULATION_PROFILE.id,
+      lateZiPolicy: ZHAOWU_ZIWEI_CALCULATION_PROFILE.calendar.lateZiPolicy,
+      leapMonthPolicy: ZHAOWU_ZIWEI_CALCULATION_PROFILE.calendar.leapMonthPolicy,
+      yearBoundary: ZHAOWU_ZIWEI_CALCULATION_PROFILE.calendar.yearBoundary,
+    },
+  });
+  assert.ok(normalized.coreInput);
+  return buildZiweiCoreChart(normalized.coreInput, {
+    mutagenProfile: ZHAOWU_ZIWEI_CALCULATION_PROFILE.mutagen,
+    kuiYueProfile: ZHAOWU_ZIWEI_CALCULATION_PROFILE.kuiYue,
+  });
 }
 
 test("real engine fixture: 1990-06-15 10:30 Sydney builds 庚午／壬午／辛亥／癸巳", () => {
@@ -116,9 +158,25 @@ test("real pair: index equals bazi sub-score while only bazi has rules", () => {
   );
   assert.equal(result.bazi.subScore, subMean);
   assert.match(result.formula, /歸一/);
+  assert.match(result.formula, /70%/);
+  assert.match(result.formula, /20%/);
+  assert.match(result.formula, /10%/);
 });
 
-test("pending systems: seven systems score null and say plainly they have no pair method", () => {
+test("weights: base weights are bazi 70 / ziwei 20 / yizhangjing 10, others zero", () => {
+  assert.deepEqual(HEPAN_BASE_WEIGHTS, {
+    bazi: 0.7,
+    ziwei: 0.2,
+    numerology: 0,
+    western: 0,
+    vedic: 0,
+    yizhangjing: 0.1,
+    qizheng: 0,
+    palm: 0,
+  });
+});
+
+test("pending systems: without qualitative sections, seven systems score null and say plainly they have no pair method", () => {
   const a = buildChart(realInput(1990, 6, 15, 10, 30, "male"));
   const b = buildChart(realInput(1992, 3, 8, 8, 15, "female"));
   const result = buildHepanIndex(a, b);
@@ -131,7 +189,9 @@ test("pending systems: seven systems score null and say plainly they have no pai
     assert.equal(system.score, null);
     assert.equal(system.weight, null);
     assert.match(system.detail, /不計分/);
-    assert.equal(system.detail, HEPAN_PENDING_REASONS[system.id]);
+    if (system.id in HEPAN_PENDING_REASONS) {
+      assert.equal(system.detail, HEPAN_PENDING_REASONS[system.id]);
+    }
   }
   assert.equal(Object.keys(HEPAN_SYSTEM_TITLES).length, 8);
 });
@@ -223,4 +283,128 @@ test("conflicts: a 45-point spread inside bazi is flagged, a 10-point spread is 
     [70, 60, 60],
   );
   assert.equal(calm.conflicts.length, 0);
+});
+
+test("qizheng palace lords: all twelve branches map per 《五星合格》", () => {
+  assert.equal(Object.keys(QIZHENG_PALACE_LORDS).length, 12);
+  assert.deepEqual(QIZHENG_PALACE_LORDS["亥"], { lord: "歲星", element: "木" });
+  assert.deepEqual(QIZHENG_PALACE_LORDS["寅"], { lord: "歲星", element: "木" });
+  assert.deepEqual(QIZHENG_PALACE_LORDS["巳"], { lord: "辰星", element: "水" });
+  assert.deepEqual(QIZHENG_PALACE_LORDS["申"], { lord: "辰星", element: "水" });
+  assert.deepEqual(QIZHENG_PALACE_LORDS["午"], { lord: "太陽", element: "—" });
+  assert.deepEqual(QIZHENG_PALACE_LORDS["未"], { lord: "太陰", element: "—" });
+  assert.deepEqual(QIZHENG_PALACE_LORDS["子"], { lord: "鎮星", element: "土" });
+  assert.deepEqual(QIZHENG_PALACE_LORDS["辰"], { lord: "太白", element: "金" });
+});
+
+test("ziwei pair: real engine shows spouse palace stars and mutagens, no score", () => {
+  const { chartA, chartB, civilA, civilB } = demoPair();
+  const section = buildZiweiPairSection(chartA, civilA, chartB, civilB);
+  assert.equal(section.status, "qualitative");
+  assert.equal(section.score, null);
+  assert.equal(section.weight, null);
+  assert.match(section.detail, /不計分/);
+  const text = (section.lines ?? []).join("\n");
+  assert.match(text, /夫妻宮在/);
+  assert.match(text, /生年祿/);
+  assert.match(text, /生年忌/);
+  assert.match(text, /與八字一致/);
+  assert.match(text, /紫微補充的新資訊/);
+  assert.match(text, /兩套系統觀察角度不同/);
+  assert.match(text, /zhaowu_ziwei_v0\.5\.2/);
+  // The spouse branch named in the section matches the chart's own SPOUSE palace.
+  for (const civil of [civilA, civilB]) {
+    const chart = buildZiweiFor(civil);
+    const spouse = chart.palaces.find((p) => p.id === "SPOUSE");
+    assert.ok(spouse);
+    assert.ok(text.includes(`夫妻宮在${spouse.branch}`));
+  }
+});
+
+test("ziwei pair: unknown birth time refuses with 不得使用", () => {
+  const chartA = buildChart(realInput(1990, 6, 15, 12, 0, "male", true));
+  const chartB = buildChart(realInput(1992, 3, 8, 8, 15, "female"));
+  assert.equal(chartA.timeUnknown, true);
+  const section = buildZiweiPairSection(
+    chartA,
+    civilOf(1990, 6, 15, 12, 0),
+    chartB,
+    civilOf(1992, 3, 8, 8, 15),
+  );
+  assert.equal(section.status, "pending");
+  assert.equal(section.score, null);
+  assert.match(section.detail, /不得使用/);
+});
+
+test("palm pair: real engine shows four palaces and six realms, no score, no past-life fact", () => {
+  const { chartA, chartB, civilA, civilB } = demoPair();
+  const palmA = palmFromChart(chartA, civilA);
+  assert.equal(palmA.palaces.length, 4);
+  assert.equal(palmA.ready, true);
+  const section = buildPalmPairSection(chartA, civilA, chartB, civilB);
+  assert.equal(section.status, "qualitative");
+  assert.equal(section.score, null);
+  assert.equal(section.weight, null);
+  assert.match(section.detail, /不計分/);
+  const text = (section.lines ?? []).join("\n");
+  for (const palace of ["年宮", "月宮", "日宮", "時宮"]) {
+    assert.ok(text.includes(palace), `missing ${palace}`);
+  }
+  assert.match(text, /一掌經象徵/);
+  assert.match(text, /文化象意/);
+  assert.match(text, /精神課題/);
+  assert.match(text, /不是可驗證的歷史前世/);
+  assert.doesNotMatch(text, /一定曾經是|冤親債主|帶業障|一定要出家/);
+});
+
+test("palm pair: unknown birth time leaves the hour palace unjudged", () => {
+  const chartA = buildChart(realInput(1990, 6, 15, 12, 0, "male", true));
+  const chartB = buildChart(realInput(1992, 3, 8, 8, 15, "female"));
+  const section = buildPalmPairSection(
+    chartA,
+    civilOf(1990, 6, 15, 12, 0),
+    chartB,
+    civilOf(1992, 3, 8, 8, 15),
+  );
+  assert.equal(section.status, "qualitative");
+  const text = (section.lines ?? []).join("\n");
+  assert.match(text, /時宮：因缺出生時辰，不作判定/);
+});
+
+test("qizheng pair: palace-lord method shown, no spouse lord computed, no status claim", () => {
+  const { chartA, chartB, civilA, civilB } = demoPair();
+  const section = buildQizhengPairSection(chartA, civilA, chartB, civilB);
+  assert.equal(section.status, "qualitative");
+  assert.equal(section.score, null);
+  assert.equal(section.weight, null);
+  const text = (section.lines ?? []).join("\n");
+  assert.match(text, /宮主制/);
+  assert.match(text, /歲星/);
+  assert.match(text, /辰星/);
+  assert.match(text, /不排十二宮/);
+  assert.match(text, /算不出來/);
+  // The deleted sentence appears exactly once, inside its own disavowal —
+  // quoted to forbid it, never asserted as a reading.
+  assert.match(text, /「對方一定有地位和資源」這句話核驗文件已指出證據不足，本頁不寫/);
+  assert.equal((text.match(/對方一定有地位/g) ?? []).length, 1);
+});
+
+test("index with qualitative sections: still bazi only, weights renormalized", () => {
+  const { chartA, chartB, civilA, civilB } = demoPair();
+  const result = buildHepanIndex(chartA, chartB, {
+    ziwei: buildZiweiPairSection(chartA, civilA, chartB, civilB),
+    yizhangjing: buildPalmPairSection(chartA, civilA, chartB, civilB),
+    qizheng: buildQizhengPairSection(chartA, civilA, chartB, civilB),
+  });
+  assert.equal(result.presentCount, 1);
+  assert.equal(result.index, result.bazi.subScore);
+  assert.deepEqual(result.appliedWeights, [{ system: "bazi", weight: 1 }]);
+  assert.deepEqual(
+    result.systems.map((s) => s.status),
+    ["scored", "qualitative", "pending", "pending", "pending", "qualitative", "qualitative", "pending"],
+  );
+  assert.deepEqual(
+    result.systems.map((s) => s.id),
+    ["bazi", "ziwei", "numerology", "western", "vedic", "yizhangjing", "qizheng", "palm"],
+  );
 });

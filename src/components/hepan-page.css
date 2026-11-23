@@ -312,6 +312,18 @@
   font-weight: 600;
 }
 
+.hepan-system[data-status="qualitative"] .hepan-system__badge {
+  color: var(--zw-jade);
+  font-weight: 600;
+}
+
+.hepan-system-lines {
+  margin: 0.5rem 0 0;
+  padding-left: 1.1rem;
+  line-height: 1.75;
+  font-size: 0.95rem;
+}
+
 .hepan-system p {
   margin: 0;
   line-height: 1.75;

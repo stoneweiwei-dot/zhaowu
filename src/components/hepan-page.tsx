@@ -4,7 +4,15 @@ import { CityPicker } from "@/components/city-picker";
 import { buildChart } from "@/lib/bazi/chart";
 import { FEATURED_CITIES } from "@/lib/bazi/cities";
 import type { AnalyzeInput, Chart, CityHit, Gender } from "@/lib/bazi/types";
-import { buildHepanIndex, HEPAN_SYSTEM_TITLES, type HepanIndex } from "@/lib/hepan/pair-model";
+import {
+  buildHepanIndex,
+  buildPalmPairSection,
+  buildQizhengPairSection,
+  buildZiweiPairSection,
+  HEPAN_SYSTEM_TITLES,
+  type HepanCivilInput,
+  type HepanIndex,
+} from "@/lib/hepan/pair-model";
 import { useI18n, type Locale } from "@/lib/i18n";
 import "./hepan-page.css";
 
@@ -14,8 +22,10 @@ import "./hepan-page.css";
  * Free, no login, no price/payment/auth changes. Two birth records in,
  * two real bazi charts out (the same buildChart the report flow uses),
  * then the hepan pair model scores what the site actually has rules for.
- * Only bazi has a pair method today; the other seven live systems are
- * shown as pending and contribute nothing to the index.
+ * Only bazi has a pair score today; ziwei, 一掌經 and 七政 are shown as
+ * qualitative comparisons from their own engines (never scored), and the
+ * remaining four systems are shown as pending and contribute nothing
+ * to the index.
  *
  * Visual: the v6 language merged in #1091 — warm paper, gold frame,
  * thin-line sections, Songti headings, no card walls. 390px first.
@@ -77,7 +87,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     dateLabel: "出生日期",
     timeLabel: "出生時間",
     timeUnknownLabel: "不知道時間",
-    timeUnknownNote: "不知道時間也可以對照：時柱未定，但日主、日支與五行對照不受影響。",
+    timeUnknownNote: "不知道時間也可以對照八字：時柱未定，但日主、日支與五行對照不受影響；紫微斗數沒有準確時辰不得使用，一掌經時宮不作判定，七政不排盤。",
     cityLabel: "出生城市",
     cityPh: "請輸入出生城市與國家",
     popularCities: "常用城市",
@@ -97,6 +107,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     conflictsTitle: "分歧要先看",
     noConflicts: "暫無分歧可標：八字三項分數相差不到 30 分，且目前只有一個系統計分，尚無系統間分歧。",
     pendingBadge: "尚無合盤方法 · 不計分",
+    qualitativeBadge: "定性對照 · 不計分",
     scoredBadge: "已計分",
     dayPillarTitle: "日柱對照",
     dayMaster: "日主",
@@ -123,7 +134,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     dateLabel: "出生日期",
     timeLabel: "出生时间",
     timeUnknownLabel: "不知道时间",
-    timeUnknownNote: "不知道时间也可以对照：时柱未定，但日主、日支与五行对照不受影响。",
+    timeUnknownNote: "不知道时间也可以对照八字：时柱未定，但日主、日支与五行对照不受影响；紫微斗数没有准确时辰不得使用，一掌经时宫不作判定，七政不排盘。",
     cityLabel: "出生城市",
     cityPh: "请输入出生城市与国家",
     popularCities: "常用城市",
@@ -143,6 +154,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     conflictsTitle: "分歧要先看",
     noConflicts: "暂无分歧可标：八字三项分数相差不到 30 分，且目前只有一个系统计分，尚无系统间分歧。",
     pendingBadge: "尚无合盘方法 · 不计分",
+    qualitativeBadge: "定性对照 · 不计分",
     scoredBadge: "已计分",
     dayPillarTitle: "日柱对照",
     dayMaster: "日主",
@@ -169,7 +181,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     dateLabel: "Birth date",
     timeLabel: "Birth time",
     timeUnknownLabel: "Birth time unknown",
-    timeUnknownNote: "You can still compare without a birth time: the hour pillar stays unset, but the day-master, day-branch and five-element comparisons are unaffected.",
+    timeUnknownNote: "You can still compare BaZi without a birth time: the hour pillar stays unset, but the day-master, day-branch and five-element comparisons are unaffected. Without an exact birth hour, Zi Wei must not be used, the One-Palm hour palace is not judged, and Seven Luminaries is not calculated.",
     cityLabel: "Birth city",
     cityPh: "Enter birth city and country",
     popularCities: "Popular cities",
@@ -189,6 +201,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     conflictsTitle: "Disagreements first",
     noConflicts: "Nothing to flag yet: the three BaZi readings are within 30 points of each other, and only one system is scored, so there is no cross-system disagreement.",
     pendingBadge: "No pair method yet · not scored",
+    qualitativeBadge: "Qualitative comparison · not scored",
     scoredBadge: "Scored",
     dayPillarTitle: "Day pillars, side by side",
     dayMaster: "Day master",
@@ -398,7 +411,29 @@ export function HepanPage() {
     try {
       const chartA = buildChart(inputA);
       const chartB = buildChart(inputB);
-      setResult({ chartA, chartB, index: buildHepanIndex(chartA, chartB) });
+      const civilA: HepanCivilInput = {
+        year: inputA.year,
+        month: inputA.month,
+        day: inputA.day,
+        hour: inputA.hour,
+        minute: inputA.minute,
+      };
+      const civilB: HepanCivilInput = {
+        year: inputB.year,
+        month: inputB.month,
+        day: inputB.day,
+        hour: inputB.hour,
+        minute: inputB.minute,
+      };
+      setResult({
+        chartA,
+        chartB,
+        index: buildHepanIndex(chartA, chartB, {
+          ziwei: buildZiweiPairSection(chartA, civilA, chartB, civilB),
+          yizhangjing: buildPalmPairSection(chartA, civilA, chartB, civilB),
+          qizheng: buildQizhengPairSection(chartA, civilA, chartB, civilB),
+        }),
+      });
     } catch {
       setError(copy.buildFailed);
     }
@@ -537,10 +572,19 @@ export function HepanPage() {
                     <span className="hepan-system__badge">
                       {system.status === "scored"
                         ? `${copy.scoredBadge} · ${system.score}`
-                        : copy.pendingBadge}
+                        : system.status === "qualitative"
+                          ? copy.qualitativeBadge
+                          : copy.pendingBadge}
                     </span>
                   </h3>
                   <p>{system.detail}</p>
+                  {system.lines?.length ? (
+                    <ul className="hepan-system-lines">
+                      {system.lines.map((line, i) => (
+                        <li key={i}>{line}</li>
+                      ))}
+                    </ul>
+                  ) : null}
                 </li>
               ))}
             </ul>
