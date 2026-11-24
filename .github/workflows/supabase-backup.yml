@@ -29,22 +29,17 @@
 # platform backups / PITR, which can only be confirmed and enabled in the
 # Supabase dashboard (see supabase/verify-rls-backup.sql query 8).
 
-
 name: Manual Supabase backup (zhaowu-core)
-
 
 on:
   workflow_dispatch:
 
-
 permissions:
   contents: read
-
 
 concurrency:
   group: supabase-manual-backup
   cancel-in-progress: false
-
 
 jobs:
   dump:
@@ -56,12 +51,10 @@ jobs:
         with:
           fetch-depth: 1
 
-
       - name: Set up Supabase CLI
         uses: supabase/setup-cli@v1
         with:
           version: latest
-
 
       - name: Dump live database (schema + data)
         env:
@@ -73,3 +66,15 @@ jobs:
           test -n "$SUPABASE_PROJECT_REF"
           supabase db dump \
             --db-url "postgres://postgres.${SUPABASE_PROJECT_REF}:${SUPABASE_DB_PASSWORD}@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres" \
+            -f "zhaowu-backup-${SUPABASE_PROJECT_REF}-$(date -u +%Y%m%d-%H%M%S).sql"
+          test -s zhaowu-backup-*.sql
+          grep -c "CREATE TABLE" zhaowu-backup-*.sql
+          ls -la zhaowu-backup-*.sql
+
+      - name: Upload dump for manual cold-storage
+        uses: actions/upload-artifact@v4
+        with:
+          name: supabase-backup-${{ github.run_id }}
+          if-no-files-found: error
+          retention-days: 7
+          path: zhaowu-backup-*.sql
