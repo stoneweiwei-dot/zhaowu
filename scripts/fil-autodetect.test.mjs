@@ -17,7 +17,7 @@ const bootstrap = html.match(/<script>\s*(\(function \(\) \{\s*try \{\s*\/\/ URL
 function browser(languages, language = languages[0] ?? 'tl-PH') {
   Object.defineProperty(globalThis, 'navigator', { configurable: true, value: { languages, language } });
 }
-test('browser detector remains available for a future opt-in hint, without changing URLs', () => {
+test('browser detector maps phone/browser language tags to a display language', () => {
   for (const [tags, expected] of [
     [['zh-Hans-HK'], 'zh-Hans'], [['zh-Hant-CN'], 'zh-Hant'], [['zh-TW'], 'zh-Hant'], [['zh-HK'], 'zh-Hant'],
     [['zh-CN'], 'zh-Hans'], [['zh'], 'zh-Hans'], [['zh-Hans'], 'zh-Hans'], [['zh-Hant'], 'zh-Hant'],
@@ -31,9 +31,9 @@ test('browser detector remains available for a future opt-in hint, without chang
     assert.equal(detectDefaultLocale(), expected.startsWith('zh-') ? expected : 'en');
   }
 });
-test('all URL languages beat saved choices and browser preferences in bootstrap and hydration', () => {
+test('prefixed URL languages beat saved choices and browser preferences in bootstrap and hydration', () => {
   browser(['en-AU']);
-  for (const language of LANGUAGES) {
+  for (const language of LANGUAGES.filter((item) => item !== 'zh-Hant')) {
     location.pathname = languagePath('/about', language);
     location.href = `https://example.test${location.pathname}`;
     storage.clear(); storage.set('zhaowu.display-language', 'ko'); storage.set('zhaowu.locale', 'zh-Hans');
@@ -44,6 +44,35 @@ test('all URL languages beat saved choices and browser preferences in bootstrap 
     runInNewContext(bootstrap, { window, navigator, localStorage: window.localStorage, document });
     assert.equal(document.documentElement.lang, language);
     assert.equal(storage.get('zhaowu.display-language'), 'ko', 'automatic URL hydration must not persist a manual choice');
+  }
+});
+
+test('bare URL falls back to a saved choice, then to the visitor phone/browser language', () => {
+  // zh-Hant has no URL prefix, so the bare URL itself carries no language choice.
+  location.pathname = '/about';
+  location.href = 'https://example.test/about';
+
+  // A saved manual choice wins over the browser setting.
+  storage.clear(); storage.set('zhaowu.display-language', 'ko');
+  browser(['en-AU']);
+  hydrateDisplayLanguage();
+  assert.equal(useDisplayLanguage.getState().language, 'ko');
+
+  // With no saved choice, the phone/browser language decides the first visit.
+  for (const [tags, expected] of [
+    [['en-AU'], 'en'],
+    [['zh-Hans-CN'], 'zh-Hans'],
+    [['zh-Hant-TW'], 'zh-Hant'],
+    [['ja-JP'], 'ja'],
+    [['ko-KR'], 'ko'],
+    [['tl-PH'], 'fil'],
+    [['fr-FR'], 'en'],
+  ]) {
+    storage.clear();
+    browser(tags);
+    hydrateDisplayLanguage();
+    assert.equal(useDisplayLanguage.getState().language, expected, `browser ${tags} on a bare URL`);
+    assert.equal(useI18n.getState().locale, expected.startsWith('zh-') ? expected : 'en');
   }
 });
 test('manual URL switch preserves exact search and hash and Filipino dictionary loads', async () => {

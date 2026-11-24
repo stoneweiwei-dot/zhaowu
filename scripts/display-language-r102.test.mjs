@@ -33,12 +33,18 @@ test("global language selector exposes all ten native language options", async (
   assert.match(css, /min-height: 44px/);
 });
 
-test("indexed URL language wins over browser and saved display choices", async () => {
+test("prefixed URL language wins; bare URL falls back to saved choice, then browser detection", async () => {
   const [indexHtml, layer] = await Promise.all([source("index.html"), source("src/lib/display-language.ts")]);
   assert.match(indexHtml, /window.location.pathname.split/);
-  assert.match(layer, /parseLanguagePath\(window.location.pathname\).language/);
-  assert.doesNotMatch(layer, /detectBrowserLanguage/);
+  assert.match(layer, /parseLanguagePath\(window.location.pathname\)/);
+  // A language prefix in the URL is authoritative when present.
+  assert.match(layer, /parsed\.rest !== window\.location\.pathname/);
+  // A saved manual choice wins over auto-detection on a bare URL.
+  assert.match(layer, /A saved manual choice wins over auto-detection/);
   assert.match(layer, /zhaowu\.display-language/);
+  // Otherwise the visitor's phone/browser language decides the first visit.
+  assert.match(layer, /detectBrowserLanguage\(\)/);
+  assert.match(layer, /Otherwise detect from the visitor's phone\/browser language setting/);
   assert.match(layer, /window.location.assign/);
 });
 

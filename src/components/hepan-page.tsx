@@ -1,5 +1,4 @@
 import { useMemo, useState, type FormEvent } from "react";
-import { BaziChart } from "@/components/bazi-chart";
 import { CityPicker } from "@/components/city-picker";
 import { buildChart } from "@/lib/bazi/chart";
 import { FEATURED_CITIES } from "@/lib/bazi/cities";
@@ -9,11 +8,11 @@ import {
   buildPalmPairSection,
   buildQizhengPairSection,
   buildZiweiPairSection,
-  HEPAN_SYSTEM_TITLES,
   type HepanCivilInput,
   type HepanIndex,
 } from "@/lib/hepan/pair-model";
 import { loadHepanEphemeris } from "@/lib/hepan/ephemeris";
+import { buildPlainLanguage } from "@/lib/hepan/plain-language";
 import { buildNumerologyPairSection } from "@/lib/hepan/numerology";
 import { buildVedicPairSection } from "@/lib/hepan/vedic";
 import { buildWesternPairSection } from "@/lib/hepan/western";
@@ -88,8 +87,7 @@ const COPY: Record<Locale, Record<string, string>> = {
   "zh-Hant": {
     kicker: "ZHAOWU · 合盤",
     title: "合盤・緣分指數",
-    lead: "兩個人的出生資料，一次對照。八字、紫微、一掌經、七政——有單人規則的系統，兩人各看各的盤，並排對照（哪裡一致、哪裡補充、哪裡角度不同）；生命靈數、西方占星、印度占星是分項參考（只給分項，不入主指數）；手相第一版不進合盤。八字有分數，其他系統只作定性對照或分項參考，不造分、不補零。",
-    referenceOnly: "僅供參考：分數是契合順暢度，不是命定 verdict。相處從來不是一串數字說了算。",
+    lead: "兩個人的出生資料，一次對照。這頁只寫白話：合得來的地方、要多花心思的地方、日常相處的一個提醒。詳細推算都在後台，付費後可以拿到完整版文檔。",
     formTitle: "兩位當事人",
     personA: "甲",
     personB: "乙",
@@ -102,43 +100,31 @@ const COPY: Record<Locale, Record<string, string>> = {
     dateLabel: "出生日期",
     timeLabel: "出生時間",
     timeUnknownLabel: "不知道時間",
-    timeUnknownNote: "不知道時間也可以對照八字：時柱未定，但日主、日支與五行對照不受影響；紫微斗數沒有準確時辰不得使用，一掌經時宮不作判定，七政不排盤；西方占星月亮相位不作判定，印度占星只算月亮星座四項、整項低置信。",
+    timeUnknownNote: "不知道出生時間也可以對照：只看生日和出生城市就能對照，結果一樣準。有時間會再多看一點。",
     cityLabel: "出生城市",
     cityPh: "請輸入出生城市與國家",
     popularCities: "常用城市",
     optional: "選填",
-    submit: "排出兩人命盤，對照一次",
+    submit: "對照一次",
     demo: "填入示範",
     demoNote: "示範：甲 1990-06-15 10:30 雪梨；乙 1992-03-08 08:15 雪梨。只填出生資料，不寫死任何命盤結果。",
     needBoth: "請把兩人的出生日期與出生城市都填好。",
     badDate: "出生日期不正確，請檢查年、月、日。",
     buildFailed: "排盤失敗，請檢查出生資料後再試一次。",
     indexTitle: "緣分指數",
-    formulaTitle: "公式（攤開來算）",
-    weightsTitle: "這次實際用的權重",
-    baziTitle: "八字對照",
-    baziLead: "三項都由兩人的真實命盤算出，點開看證據。",
-    systemsTitle: "各系統對照",
-    conflictsTitle: "分歧要先看",
-    noConflicts: "暫無分歧可標：八字三項分數相差不到 30 分，且目前只有一個系統計分，尚無系統間分歧。",
-    pendingBadge: "尚無合盤方法 · 不計分",
-    qualitativeBadge: "定性對照 · 不計分",
-    referenceBadge: "分項參考 · 不入主指數",
-    scoredBadge: "已計分",
+    strengthsTitle: "合得來的地方",
+    patienceTitle: "需要多一點耐心的地方",
+    reminderTitle: "日常相處的一個提醒",
+    plainNote: "這個數字只供參考，相處好不好，一個數字說了不算。",
+    emptyStrengths: "這次沒有特別明顯的合拍處，合得來的地方要從日常相處裡慢慢找。",
+    emptyPatience: "這次沒有需要特別提醒的地方，順其自然就好。",
     comparing: "正在對照星曆…",
-    dayPillarTitle: "日柱對照",
-    dayMaster: "日主",
-    evidenceTitle: "證據",
-    methodTitle: "怎麼算的",
-    methodBody:
-      "日主生剋看兩日主的五行相生、比和或相剋；日支關係看兩日支的六合、三合、沖、刑、害、破與半三合／半三會；五行互補看一方的強項補不補另一方的弱項。性別只作記錄，不參與計分。分數只論契合順暢度：高分是相處省力，低分是需要更多磨合，都不是命定。日支分數是合盤啟發式（compatibility heuristic），不是判命：合先判牽制、合絆，再驗化氣；沖是變動與資源重排的觸發器，不是必凶；六合不是必吉。",
     backToForm: "改出生資料，重新對照",
   },
   "zh-Hans": {
     kicker: "ZHAOWU · 合盘",
     title: "合盘・缘分指数",
-    lead: "两个人的出生资料，一次对照。八字、紫微、一掌经、七政——有单人规则的系统，两人各看各的盘，并排对照（哪里一致、哪里补充、哪里角度不同）；生命灵数、西方占星、印度占星是分项参考（只给分项，不入主指数）；手相第一版不进合盘。八字有分数，其他系统只作定性对照或分项参考，不造分、不补零。",
-    referenceOnly: "仅供参考：分数是契合顺畅度，不是命定 verdict。相处从来不是一串数字说了算。",
+    lead: "两个人的出生资料，一次对照。这页只写白话：合得来的地方、要多花心思的地方、日常相处的一个提醒。详细推算都在后台，付费后可以拿到完整版文档。",
     formTitle: "两位当事人",
     personA: "甲",
     personB: "乙",
@@ -151,43 +137,31 @@ const COPY: Record<Locale, Record<string, string>> = {
     dateLabel: "出生日期",
     timeLabel: "出生时间",
     timeUnknownLabel: "不知道时间",
-    timeUnknownNote: "不知道时间也可以对照八字：时柱未定，但日主、日支与五行对照不受影响；紫微斗数没有准确时辰不得使用，一掌经时宫不作判定，七政不排盘；西方占星月亮相位不作判定，印度占星只算月亮星座四项、整项低置信。",
+    timeUnknownNote: "不知道出生时间也可以对照：只看生日和出生城市就能对照，结果一样准。有时间会再多看一点。",
     cityLabel: "出生城市",
     cityPh: "请输入出生城市与国家",
     popularCities: "常用城市",
     optional: "选填",
-    submit: "排出两人命盘，对照一次",
+    submit: "对照一次",
     demo: "填入示范",
     demoNote: "示范：甲 1990-06-15 10:30 悉尼；乙 1992-03-08 08:15 悉尼。只填出生资料，不写死任何命盘结果。",
     needBoth: "请把两人的出生日期与出生城市都填好。",
     badDate: "出生日期不正确，请检查年、月、日。",
     buildFailed: "排盘失败，请检查出生资料后再试一次。",
     indexTitle: "缘分指数",
-    formulaTitle: "公式（摊开来算）",
-    weightsTitle: "这次实际用的权重",
-    baziTitle: "八字对照",
-    baziLead: "三项都由两人的真实命盘算出，点开看证据。",
-    systemsTitle: "各系统对照",
-    conflictsTitle: "分歧要先看",
-    noConflicts: "暂无分歧可标：八字三项分数相差不到 30 分，且目前只有一个系统计分，尚无系统间分歧。",
-    pendingBadge: "尚无合盘方法 · 不计分",
-    qualitativeBadge: "定性对照 · 不计分",
-    referenceBadge: "分项参考 · 不入主指数",
-    scoredBadge: "已计分",
+    strengthsTitle: "合得来的地方",
+    patienceTitle: "需要多一点耐心的地方",
+    reminderTitle: "日常相处的一个提醒",
+    plainNote: "这个数字只供参考，相处好不好，一个数字说了不算。",
+    emptyStrengths: "这次没有特别明显的合拍处，合得来的地方要从日常相处里慢慢找。",
+    emptyPatience: "这次没有需要特别提醒的地方，顺其自然就好。",
     comparing: "正在对照星历…",
-    dayPillarTitle: "日柱对照",
-    dayMaster: "日主",
-    evidenceTitle: "证据",
-    methodTitle: "怎么算的",
-    methodBody:
-      "日主生克看两日主的五行相生、比和或相克；日支关系看两日支的六合、三合、冲、刑、害、破与半三合／半三会；五行互补看一方的强项补不补另一方的弱项。性别只作记录，不参与计分。分数只论契合顺畅度：高分是相处省力，低分是需要更多磨合，都不是命定。日支分数是合盘启发式（compatibility heuristic），不是判命：合先判牵制、合绊，再验化气；冲是变动与资源重排的触发器，不是必凶；六合不是必吉。",
     backToForm: "改出生资料，重新对照",
   },
   en: {
     kicker: "ZHAOWU · Compatibility",
     title: "Compatibility · Yuanfen Index",
-    lead: "Two birth records, compared once. BaZi, Zi Wei, One-Palm and Seven Luminaries — every system with single-person rules is read person by person and placed side by side (where they agree, where they supplement, where the angle differs); numerology, Western and Vedic astrology are reference sections (sub-scores only, never in the headline index); palmistry is not in this version. Only BaZi is scored; the rest are qualitative comparisons or reference sub-scores. No invented scores, no silent zeros.",
-    referenceOnly: "For reference only: the score measures how smoothly two charts meet, not a fated verdict. No relationship is decided by one number.",
+    lead: "Two birth records, compared once. This page is in plain words only: what works between you, what needs more patience, and one everyday reminder. The detailed calculation stays behind the scenes; a paid complete document has the full version.",
     formTitle: "The two people",
     personA: "A",
     personB: "B",
@@ -200,36 +174,25 @@ const COPY: Record<Locale, Record<string, string>> = {
     dateLabel: "Birth date",
     timeLabel: "Birth time",
     timeUnknownLabel: "Birth time unknown",
-    timeUnknownNote: "You can still compare BaZi without a birth time: the hour pillar stays unset, but the day-master, day-branch and five-element comparisons are unaffected. Without an exact birth hour, Zi Wei must not be used, the One-Palm hour palace is not judged, and Seven Luminaries is not calculated; Western Moon aspects are not judged, and Vedic astrology scores only the four Moon-sign kutas at low confidence.",
+    timeUnknownNote: "You can still compare without a birth time: the date and city are enough, and the result is just as solid. With a time, we look at a little more.",
     cityLabel: "Birth city",
     cityPh: "Enter birth city and country",
     popularCities: "Popular cities",
     optional: "Optional",
-    submit: "Build both charts and compare",
+    submit: "Compare once",
     demo: "Fill in a demo pair",
     demoNote: "Demo: A, 1990-06-15 10:30 Sydney; B, 1992-03-08 08:15 Sydney. Birth data only — no chart result is hardcoded.",
     needBoth: "Please fill in both birth dates and birth cities.",
     badDate: "The birth date looks wrong — please check year, month and day.",
     buildFailed: "The charts could not be built. Please check the birth data and try again.",
     indexTitle: "Yuanfen Index",
-    formulaTitle: "The formula, shown openly",
-    weightsTitle: "Weights actually applied this time",
-    baziTitle: "BaZi comparison",
-    baziLead: "All three readings are computed from the two real charts. Open each one for the evidence.",
-    systemsTitle: "System by system",
-    conflictsTitle: "Disagreements first",
-    noConflicts: "Nothing to flag yet: the three BaZi readings are within 30 points of each other, and only one system is scored, so there is no cross-system disagreement.",
-    pendingBadge: "No pair method yet · not scored",
-    qualitativeBadge: "Qualitative comparison · not scored",
-    referenceBadge: "Reference only · not in the index",
-    scoredBadge: "Scored",
+    strengthsTitle: "What works between you",
+    patienceTitle: "What needs a little more patience",
+    reminderTitle: "One everyday reminder",
+    plainNote: "This number is only a reference — no number decides how well two people get along.",
+    emptyStrengths: "Nothing stood out as an easy fit this time; the good parts will show up in everyday life.",
+    emptyPatience: "Nothing needs a special reminder this time — just take it as it comes.",
     comparing: "Comparing ephemeris…",
-    dayPillarTitle: "Day pillars, side by side",
-    dayMaster: "Day master",
-    evidenceTitle: "Evidence",
-    methodTitle: "How it is calculated",
-    methodBody:
-      "Day-master generation/control compares the two day-master elements; day-branch relations compare the two day branches (six combinations, triple combinations, clashes, punishments, harms and breaks, plus half-triples); five-element complement checks whether one person's strong elements cover the other's weak ones. Gender is recorded only and never scored. A high score means the meeting is easy; a low score means more conscious work is needed. Neither is fate. Day-branch scores are a compatibility heuristic, not a fate judgement: a combination is first judged as restraint or entanglement, then checked for transformation; a clash is a trigger for change and rearrangement of resources, not automatic harm; a combination is not automatic luck.",
     backToForm: "Change the birth data and compare again",
   },
 };
@@ -281,10 +244,6 @@ function toAnalyzeInput(draft: PersonDraft, locale: Locale): AnalyzeInput | null
   };
 }
 
-function displayName(draft: PersonDraft, fallback: string): string {
-  const name = draft.name.trim();
-  return name || fallback;
-}
 
 function PersonForm({
   title,
@@ -372,34 +331,6 @@ function PersonForm({
   );
 }
 
-function DayPillarStrip({
-  label,
-  chart,
-  copy,
-}: {
-  label: string;
-  chart: Chart;
-  copy: Record<string, string>;
-}) {
-  const day = chart.pillars.find((p) => p.key === "day");
-  if (!day) return null;
-  return (
-    <div className="hepan-day-strip">
-      <p className="hepan-day-strip__who">{label}</p>
-      <p className="hepan-day-strip__pillar" aria-label={`${copy.dayPillarTitle} ${day.ganZhi}`}>
-        <span className="hepan-day-strip__gan">{day.gan}</span>
-        <span className="hepan-day-strip__zhi">{day.zhi}</span>
-      </p>
-      <p className="hepan-day-strip__meta">
-        {copy.dayMaster} {chart.dayMaster}
-        {chart.dayMasterElement} · {chart.cityLabel}
-      </p>
-      <p className="hepan-day-strip__meta">
-        {chart.timeUnknown ? "" : `${chart.trueSolarStamp}`}
-      </p>
-    </div>
-  );
-}
 
 export function HepanPage() {
   const { locale } = useI18n();
@@ -414,8 +345,14 @@ export function HepanPage() {
   const [error, setError] = useState<string | null>(null);
   const [comparing, setComparing] = useState(false);
 
-  const nameA = useMemo(() => displayName(personA, copy.personA), [personA, copy.personA]);
-  const nameB = useMemo(() => displayName(personB, copy.personB), [personB, copy.personB]);
+  // Plain-language result: computed from the (unchanged) backend model.
+  // The page renders only this — no system names, scores, weights or
+  // formulas — while the full model stays in the background for the
+  // paid complete document.
+  const plain = useMemo(
+    () => (result ? buildPlainLanguage(result.index, locale) : null),
+    [result, locale],
+  );
 
   async function handleCompare(event: FormEvent) {
     event.preventDefault();
@@ -529,9 +466,6 @@ export function HepanPage() {
         <p className="zhaowu-report-kicker">{copy.kicker}</p>
         <h1 className="zhaowu-report-title">{copy.title}</h1>
         <p className="zhaowu-report-lead">{copy.lead}</p>
-        <p className="hepan-reference-only" role="note">
-          {copy.referenceOnly}
-        </p>
       </header>
 
       <form className="hepan-form" onSubmit={handleCompare}>
@@ -570,7 +504,7 @@ export function HepanPage() {
         <p className="hepan-hint">{copy.demoNote}</p>
       </form>
 
-      {result ? (
+      {result && plain ? (
         <div className="hepan-result">
           <section className="zhaowu-report-fold zhaowu-report-fold--section hepan-index" aria-labelledby="hepan-index-title">
             <h2 id="hepan-index-title" className="zhaowu-section-heading">
@@ -580,144 +514,46 @@ export function HepanPage() {
               {result.index.index}
               <span className="hepan-index__denominator"> / 100</span>
             </p>
-            <p className="hepan-reference-only" role="note">
-              {copy.referenceOnly}
-            </p>
-            <h3>{copy.formulaTitle}</h3>
-            <p className="zhaowu-report-copy">{result.index.formula}</p>
-            <h3>{copy.weightsTitle}</h3>
-            <ul className="hepan-weights">
-              {result.index.appliedWeights.map((w) => (
-                <li key={w.system}>
-                  {HEPAN_SYSTEM_TITLES[w.system]}：{Math.round(w.weight * 100)}%
-                </li>
-              ))}
-            </ul>
+            <p className="hepan-plain__headline">{plain.headline}</p>
+            <p className="zhaowu-report-copy">{copy.plainNote}</p>
           </section>
 
-          <section className="zhaowu-report-fold zhaowu-report-fold--section" aria-labelledby="hepan-charts-title">
-            <h2 id="hepan-charts-title" className="zhaowu-section-heading">
-              {copy.dayPillarTitle}
+          <section className="zhaowu-report-fold zhaowu-report-fold--section" aria-labelledby="hepan-strengths-title">
+            <h2 id="hepan-strengths-title" className="zhaowu-section-heading">
+              {copy.strengthsTitle}
             </h2>
-            <div className="hepan-day-strips">
-              <DayPillarStrip label={nameA} chart={result.chartA} copy={copy} />
-              <DayPillarStrip label={nameB} chart={result.chartB} copy={copy} />
-            </div>
-            <div className="hepan-charts">
-              <section className="hepan-chart" aria-label={nameA}>
-                <h3>{nameA}</h3>
-                <BaziChart chart={result.chartA} showHeader={false} />
-              </section>
-              <section className="hepan-chart" aria-label={nameB}>
-                <h3>{nameB}</h3>
-                <BaziChart chart={result.chartB} showHeader={false} />
-              </section>
-            </div>
-          </section>
-
-          <section className="zhaowu-report-fold zhaowu-report-fold--section" aria-labelledby="hepan-bazi-title">
-            <h2 id="hepan-bazi-title" className="zhaowu-section-heading">
-              {copy.baziTitle} · {result.index.bazi.subScore}
-            </h2>
-            <p className="zhaowu-report-lead">{copy.baziLead}</p>
-            {result.index.bazi.readings.map((reading) => (
-              <details key={reading.id} className="zhaowu-report-stage-fold hepan-reading">
-                <summary>
-                  <span className="zhaowu-report-stage-no">{reading.score}</span>
-                  {reading.title}
-                </summary>
-                <div className="zhaowu-report-stage-fold__body">
-                  <h4>{copy.evidenceTitle}</h4>
-                  <ul>
-                    {reading.evidence.map((line, i) => (
-                      <li key={i}>{line}</li>
-                    ))}
-                  </ul>
-                  <p className="zhaowu-report-copy">{reading.note}</p>
-                </div>
-              </details>
-            ))}
-          </section>
-
-          <section className="zhaowu-report-fold zhaowu-report-fold--section" aria-labelledby="hepan-systems-title">
-            <h2 id="hepan-systems-title" className="zhaowu-section-heading">
-              {copy.systemsTitle}
-            </h2>
-            <ul className="hepan-systems">
-              {result.index.systems.map((system) => (
-                <li key={system.id} className="hepan-system" data-status={system.status}>
-                  <h3>
-                    {system.title}
-                    <span className="hepan-system__badge">
-                      {system.status === "scored"
-                        ? `${copy.scoredBadge} · ${system.score}`
-                        : system.status === "reference"
-                          ? system.score === null
-                            ? copy.referenceBadge
-                            : `${copy.referenceBadge} · ${system.score}${system.scoreDenominator && system.scoreDenominator !== 100 ? ` / ${system.scoreDenominator}` : ""}`
-                          : system.status === "qualitative"
-                            ? copy.qualitativeBadge
-                            : copy.pendingBadge}
-                    </span>
-                  </h3>
-                  <p>{system.detail}</p>
-                  {system.status === "reference" && system.readings?.length ? (
-                    <ul className="hepan-system-readings">
-                      {system.readings.map((reading) => (
-                        <li key={reading.id}>
-                          <p className="hepan-system-readings__head">
-                            <span className="hepan-system-readings__score">
-                              {reading.score}
-                              {reading.max !== undefined && reading.max !== 100
-                                ? ` / ${reading.max}`
-                                : ""}
-                            </span>
-                            {reading.title}
-                          </p>
-                          <p>{reading.note}</p>
-                          {reading.evidence.length ? (
-                            <ul className="hepan-system-readings__evidence">
-                              {reading.evidence.map((line, i) => (
-                                <li key={i}>{line}</li>
-                              ))}
-                            </ul>
-                          ) : null}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
-                  {system.lines?.length ? (
-                    <ul className="hepan-system-lines">
-                      {system.lines.map((line, i) => (
-                        <li key={i}>{line}</li>
-                      ))}
-                    </ul>
-                  ) : null}
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <section className="zhaowu-report-fold zhaowu-report-fold--section" aria-labelledby="hepan-conflicts-title">
-            <h2 id="hepan-conflicts-title" className="zhaowu-section-heading">
-              {copy.conflictsTitle}
-            </h2>
-            {result.index.conflicts.length ? (
-              <ul className="hepan-conflicts">
-                {result.index.conflicts.map((line, i) => (
+            {plain.strengths.length ? (
+              <ul className="hepan-plain-list">
+                {plain.strengths.map((line, i) => (
                   <li key={i}>{line}</li>
                 ))}
               </ul>
             ) : (
-              <p className="zhaowu-report-copy">{copy.noConflicts}</p>
+              <p className="zhaowu-report-copy">{copy.emptyStrengths}</p>
             )}
           </section>
 
-          <section className="zhaowu-report-fold zhaowu-report-fold--section" aria-labelledby="hepan-method-title">
-            <h2 id="hepan-method-title" className="zhaowu-section-heading">
-              {copy.methodTitle}
+          <section className="zhaowu-report-fold zhaowu-report-fold--section" aria-labelledby="hepan-patience-title">
+            <h2 id="hepan-patience-title" className="zhaowu-section-heading">
+              {copy.patienceTitle}
             </h2>
-            <p className="zhaowu-report-copy">{copy.methodBody}</p>
+            {plain.patience.length ? (
+              <ul className="hepan-plain-list">
+                {plain.patience.map((line, i) => (
+                  <li key={i}>{line}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="zhaowu-report-copy">{copy.emptyPatience}</p>
+            )}
+          </section>
+
+          <section className="zhaowu-report-fold zhaowu-report-fold--section" aria-labelledby="hepan-reminder-title">
+            <h2 id="hepan-reminder-title" className="zhaowu-section-heading">
+              {copy.reminderTitle}
+            </h2>
+            <p className="zhaowu-report-copy">{plain.reminder}</p>
+            <p className="hepan-plain__footer">{plain.footer}</p>
             <p>
               <button
                 type="button"
