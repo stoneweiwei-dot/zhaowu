@@ -10,6 +10,10 @@
 #                           Settings > Database). Never put it in this file.
 #
 # What it does: `supabase db dump` of the live database (schema + data,
+# NOTE: uses the IPv4 Transaction Pooler (port 6543), NOT the direct
+# connection (db.<ref>.supabase.co:5432) — GitHub Actions runners have no
+# IPv6 and direct connections require it (run #2 failed: Network is
+# unreachable). Pooler host: aws-0-ap-northeast-1.pooler.supabase.com.
 # including auth users) into one SQL file, uploaded as a run artifact with
 # 7-day retention. It does NOT enable PITR, does NOT change any table,
 # policy, or setting, and does NOT deploy anything.
@@ -61,7 +65,7 @@ jobs:
           test -n "$SUPABASE_DB_PASSWORD"
           test -n "$SUPABASE_PROJECT_REF"
           supabase db dump \
-            --db-url "postgres://postgres:${SUPABASE_DB_PASSWORD}@db.${SUPABASE_PROJECT_REF}.supabase.co:5432/postgres" \
+            --db-url "postgres://postgres.${SUPABASE_PROJECT_REF}:${SUPABASE_DB_PASSWORD}@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres" \
             -f "zhaowu-backup-${SUPABASE_PROJECT_REF}-$(date -u +%Y%m%d-%H%M%S).sql"
           test -s zhaowu-backup-*.sql
           grep -c "CREATE TABLE" zhaowu-backup-*.sql
