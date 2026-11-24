@@ -212,7 +212,7 @@ test('curated themes keep visibly different page palettes instead of one shared 
   const curatedBlock = registry.match(/CURATED_SKIN_CATALOG:[\s\S]*?= \[([\s\S]*?)\] as const;/)?.[1] ?? "";
   const curatedIds = [...curatedBlock.matchAll(/\{ id: "([a-z-]+)", family:/g)].map((match) => match[1]);
   const pages = curatedIds.map((id) => tokensForSkin(ids.find((skin) => skin.id === id))['--zws-page']);
-  assert.equal(curatedIds.length, 10);
+  assert.equal(curatedIds.length, 11);
   assert.equal(new Set(pages).size, curatedIds.length);
   assert.doesNotMatch(full, /html\[data-zws\]:not\(\[data-zws-mode="dark"\]\)\s*\{[^}]*--zws-page/s);
 });

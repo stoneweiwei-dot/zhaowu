@@ -103,6 +103,7 @@ export const CURATED_SKIN_CATALOG: ReadonlyArray<{ id: string; family: SkinFamil
   { id: "verdant-pavilion", family: "green" },
   { id: "verdant-rain", family: "night" },
   { id: "night-flute", family: "night" },
+  { id: "sydney-jacaranda", family: "water" },
 ] as const;
 
 export const CURATED_SKINS = CURATED_SKIN_CATALOG
