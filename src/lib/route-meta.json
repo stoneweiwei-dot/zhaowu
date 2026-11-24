@@ -1512,6 +1512,48 @@
         "title": "Pagsusulit sa Anim na Daigdig·Kalagayan ng Isip Ngayon | ZHAOWU",
         "description": "Anim na tagpo upang pagmasdan ang nangingibabaw na kalagayan ng isip. Balangkas ng pagtingin ang mga daigdig, hindi hatol sa kabilang buhay."
       }
+    },
+    "/hepan": {
+      "zh-Hant": {
+        "title": "昭梧合盤・緣分指數｜八字合盤",
+        "description": "兩個人的出生資料一次對照：八字合盤三項計分，紫微、靈數、西占、吠陀、一掌經、七政、手相沒有合盤規則的明說不計分；指數只供參考。"
+      },
+      "zh-Hans": {
+        "title": "昭梧合盘・缘分指数｜八字合盘",
+        "description": "两个人的出生资料一次对照：八字合盘三项计分，紫微、灵数、西占、吠陀、一掌经、七政、手相没有合盘规则的明说不计分；指数只供参考。"
+      },
+      "en": {
+        "title": "ZHAOWU Compatibility · Yuanfen Index | BaZi Pair Reading",
+        "description": "Two birth records compared at once: three BaZi pair readings are scored; Zi Wei, numerology, Western and Vedic astrology, One-Palm, Seven Luminaries and palmistry have no pair method yet and are plainly not scored. The index is for reference only."
+      },
+      "ja": {
+        "title": "昭梧合盤・縁分指数｜八字の相性",
+        "description": "二人の出生データで一度に対照。八字の三項目だけを採点し、紫微・数秘・西洋占星・インド占星・一掌経・七政・手相は合盤の方法がまだないため採点しません。指数は参考まで。"
+      },
+      "ko": {
+        "title": "자오우 합반・인연 지수｜사주 궁합",
+        "description": "두 사람의 출생 정보를 한 번에 대조합니다. 사주 세 항목만 채점하고, 자미·수비학·서양 점성술·인도 점성술·일장경·칠정·수상은 합반 방법이 아직 없어 채점하지 않습니다. 지수는 참고용입니다."
+      },
+      "hi": {
+        "title": "झाओवू संगतता · युआनफ़ेन सूचकांक｜बाज़ी जोड़ी",
+        "description": "दो जन्म विवरणों की एक साथ तुलना: बाज़ी की तीन जोड़ी जाँचों का अंकन होता है; ज़ी वेई, अंकशास्त्र, पाश्चात्य व वैदिक ज्योतिष, वन-पाम, सेवन ल्यूमिनरीज़ और हस्तरेखा की कोई जोड़ी विधि नहीं है, इसलिए उनका अंकन नहीं होता। सूचकांक केवल संदर्भ के लिए है।"
+      },
+      "th": {
+        "title": "จ้าวอู่ ฮีผาน・ดัชนีหยวนเฟิ่น｜八字คู่",
+        "description": "เปรียบเทียบข้อมูลเกิดของสองคนในครั้งเดียว ให้คะแนนเฉพาะการอ่านคู่八字สามข้อ ส่วนจื่อเวย เลขศาสตร์ โหราศาสตร์ตะวันตกและอินเดีย หนึ่งฝ่ามือ เจ็ดดาว และลายมือยังไม่มีวิธีอ่านคู่ จึงไม่ให้คะแนน ดัชนีนี้ใช้เพื่ออ้างอิงเท่านั้น"
+      },
+      "id": {
+        "title": "ZHAOWU Hepan · Indeks Yuanfen | Pasangan BaZi",
+        "description": "Dua data kelahiran dibandingkan sekaligus: tiga bacaan pasangan BaZi dinilai; Zi Wei, numerologi, astrologi Barat dan Veda, One-Palm, Seven Luminaries, dan palmistry belum memiliki metode pasangan sehingga tidak dinilai. Indeks ini hanya untuk referensi."
+      },
+      "vi": {
+        "title": "ZHAOWU Hợp bàn · Chỉ số Duyên phận｜Bát tự đôi",
+        "description": "So sánh hai hồ sơ sinh cùng lúc: chỉ ba mục Bát tự đôi được chấm điểm; Tử Vi, thần số học, chiêm tinh phương Tây và Ấn Độ, Nhất Chưởng Kinh, Thất Chính và xem chỉ tay chưa có phương pháp hợp bàn nên không chấm điểm. Chỉ số chỉ mang tính tham khảo."
+      },
+      "fil": {
+        "title": "ZHAOWU Hepan · Yuanfen Index | BaZi Pair",
+        "description": "Dalawang birth record, sabay na ikinumpara: tatlong BaZi pair reading lang ang may puntos; ang Zi Wei, numerology, Western at Vedic astrology, One-Palm, Seven Luminaries at palmistry ay wala pang pair method kaya hindi binibigyan ng puntos. Ang index ay para sa sanggunian lamang."
+      }
     }
   }
 }
