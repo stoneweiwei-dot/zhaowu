@@ -15,6 +15,10 @@
 /zh-Hant / 301
 /zh-Hant/* /:splat 301
 /pricing /sample-report 301
+/articles /knowledge 301
+/articles/ /knowledge 301
+/today / 301
+/today/ / 301
 /api/gallery-ingest-finalize https://gyisxbkjzvdretbqzeuw.supabase.co/functions/v1/gallery-ingest-finalize 200
 /sb/auth/v1/* https://gyisxbkjzvdretbqzeuw.supabase.co/auth/v1/:splat 200
 /sb/rest/v1/* https://gyisxbkjzvdretbqzeuw.supabase.co/rest/v1/:splat 200
