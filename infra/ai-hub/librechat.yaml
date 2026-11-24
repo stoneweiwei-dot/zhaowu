@@ -1,0 +1,13 @@
+version: 1.2.8
+
+# Test-only OpenAI-compatible endpoint. Add provider model IDs in the isolated UI after review.
+endpoints:
+  custom:
+    - name: AI Hub Test Gateway
+      apiKey: "${AI_GATEWAY_USER_TOKEN}"
+      baseURL: http://ai-gateway:3000/v1
+      models:
+        default: []
+        fetch: false
+      titleConvo: true
+      modelDisplayLabel: AI Hub Test
