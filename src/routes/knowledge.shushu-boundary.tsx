@@ -62,7 +62,7 @@ function ShushuBoundaryArticle() {
 
       <section className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
         <h2 className="font-display text-2xl text-ink">{tr(locale,"一、荀子那句話，究竟說了什麼","一、荀子那句话，究竟说了什么","1. What did Xunzi actually say?")}</h2>
-        <blockquote className="mt-5 rounded-xl border border-earth/30 bg-cream px-5 py-4 font-display text-lg leading-8 text-ink">善為詩者不說，善為易者不占，善為禮者不相，其心同也。</blockquote>
+        <blockquote className="mt-5 rounded-xl border border-earth/30 bg-cream px-5 py-4 font-display text-lg leading-8 text-ink">{tr(locale, "善為詩者不說，善為易者不占，善為禮者不相，其心同也。", "善为诗者不说，善为易者不占，善为礼者不相，其心同也。", "善為詩者不說，善為易者不占，善為禮者不相，其心同也。")}</blockquote>
         <div className="mt-4 space-y-4 text-[15px] leading-8 text-ink-soft">
           <p>{tr(locale,"《荀子·大略》的局部語境，首先是在說真正掌握其義者，不以外在操作形式取代理解本身。單憑這一句，不宜直接倒推成後世的心學命題，更不能說荀子原本就在主張「內心具足、外境為鏡」。","《荀子·大略》的局部语境，首先是在说真正掌握其义者，不以外在操作形式取代理解本身。单凭这一句，不宜直接倒推成后世的心学命题，更不能说荀子原本就在主张“内心具足、外境为镜”。","In the immediate context of Xunzi's Great Digest, the line first says that genuine understanding is not replaced by external procedure. The sentence alone does not license a later Neo-Confucian or Chan reading about an all-sufficient inner mind.")}</p>
           <p>{tr(locale,"但若與《天論》合讀，荀子的立場會清楚許多。他說：「卜筮然後決大事，非以為得求也，以文之也。」在那個脈絡裡，卜筮被放回禮文與程序，而不是被當成取得超自然答案的可靠管道。","但若与《天论》合读，荀子的立场会清楚许多。他说：“卜筮然后决大事，非以为得求也，以文之也。”在那个脉络里，卜筮被放回礼文与程序，而不是被当成取得超自然答案的可靠管道。","Read together with the Discourse on Heaven, the position is clearer: divination is treated as patterned ritual and procedure rather than a reliable channel for acquiring supernatural answers.")}</p>
@@ -129,8 +129,8 @@ function ShushuBoundaryArticle() {
         <p className="mt-3 text-sm leading-7 text-ink-soft">{tr(locale,"本文討論的是術數研究與使用的認識論邊界，不宣稱八字、紫微、卦術或其他傳統預測模型的效力已獲現代自然科學證實。可驗證的天文、時間、地理與氣候資料，和建立在這些資料之上的傳統象徵推演，必須分層陳述。","本文讨论的是术数研究与使用的认识论边界，不宣称八字、紫微、卦术或其他传统预测模型的效力已获现代自然科学证实。可验证的天文、时间、地理与气候资料，和建立在这些资料之上的传统象征推演，必须分层陈述。","This essay concerns epistemic boundaries in the study and use of traditional divinatory systems. It does not claim that BaZi, Ziwei, hexagram methods or other predictive systems have been scientifically validated. Verifiable astronomical, temporal, geographical and climate data must be kept distinct from symbolic inference built upon them.")}</p>
         <div className="mt-5 flex flex-wrap gap-2 text-xs">
           <a className="rounded-full border border-line bg-cream px-3 py-2 text-ink-soft" href="https://zh.wikisource.org/zh-hant/%E8%8D%80%E5%AD%90/%E5%A4%A7%E7%95%A5%E7%AF%87" target="_blank" rel="noreferrer">《荀子·大略》</a>
-          <a className="rounded-full border border-line bg-cream px-3 py-2 text-ink-soft" href="https://zh.wikisource.org/zh-hant/%E8%8D%80%E5%AD%90/%E5%A4%A9%E8%AB%96%E7%AF%87" target="_blank" rel="noreferrer">《荀子·天論》</a>
-          <a className="rounded-full border border-line bg-cream px-3 py-2 text-ink-soft" href="https://news.gmw.cn/2019-09/07/content_33142787.htm" target="_blank" rel="noreferrer">李華：數與德</a>
+          <a className="rounded-full border border-line bg-cream px-3 py-2 text-ink-soft" href="https://zh.wikisource.org/zh-hant/%E8%8D%80%E5%AD%90/%E5%A4%A9%E8%AB%96%E7%AF%87" target="_blank" rel="noreferrer">{tr(locale, "《荀子·天論》", "《荀子·天论》", "《荀子·天論》")}</a>
+          <a className="rounded-full border border-line bg-cream px-3 py-2 text-ink-soft" href="https://news.gmw.cn/2019-09/07/content_33142787.htm" target="_blank" rel="noreferrer">{tr(locale, "李華：數與德", "李华：数与德", "李華：數與德")}</a>
           <a className="rounded-full border border-line bg-cream px-3 py-2 text-ink-soft" href="https://plato.stanford.edu/entries/yogacara/" target="_blank" rel="noreferrer">SEP: Yogācāra</a>
         </div>
       </section>

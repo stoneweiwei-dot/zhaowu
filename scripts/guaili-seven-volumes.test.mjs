@@ -23,7 +23,10 @@ test("the existing mythic atlas carries the special without deleting its current
 });
 
 test("seven volumes, twelve four-aspect branches and four chronological years exist", () => {
-  assert.equal((data.match(/\{no:"[壹貳參肆伍陸柒]",title:l\(/g) || []).length, 7);
+  assert.equal((data.match(/\{no:l\("[壹貳參肆伍陸柒]"/g) || []).length, 7);
+  assert.match(data, /no:l\("貳","贰","II"\)/);
+  assert.match(data, /no:l\("參","叁","III"\)/);
+  assert.match(data, /no:l\("陸","陆","VI"\)/);
   assert.equal((data.match(/\{earthly:l\(/g) || []).length, 12);
   assert.equal((data.match(/\{year:l\(/g) || []).length, 4);
   for (const year of ["元年","三年","五年","十年"]) assert.ok(data.includes('year:l("' + year + '"'));
@@ -44,7 +47,7 @@ test("do not revive prohibited terminology or misattribute original lore to clas
 test("three languages, reusable illustration and mobile responsive styling exist", () => {
   assert.match(data, /import \{ l, type Localized \}/);
   assert.match(component, /tr\(GUAILI_COPY\.sourceNotice, locale\)/);
-  assert.match(component, /\/mythic-atlas\/originals\/07-mountain-sea-bestiary.webp/);
+  assert.match(component, /mythicWebPlate\("originals", "07-shanhaijing-atlas\.png"\)/);
   assert.match(css, /@container \(max-width:390px\)/);
   assert.doesNotMatch(component, /https?:\/\//);
 });

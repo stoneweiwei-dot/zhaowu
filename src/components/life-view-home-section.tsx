@@ -241,7 +241,7 @@ export function LifeViewHomeSection({ archiveMode = false }: LifeViewHomeSection
   const latest = contents[0] ?? null;
   async function removeArticle(id: string) {
     const article = contents.find((item) => item.id === id);
-    if (!article || !window.confirm(locale === "en" ? `Remove “${article.title[locale]}” from public articles?` : `將「${article.title[locale]}」從公開文章下架？可在後台還原。`)) return;
+    if (!article || !window.confirm(locale === "en" ? `Remove “${article.title[locale]}” from public articles?` : locale === "zh-Hans" ? `将「${article.title[locale]}」从公开文章下架？可在后台还原。` : `將「${article.title[locale]}」從公開文章下架？可在後台還原。`)) return;
     try {
       const result = await ownerData<{ article: ArticleOverride }>("article.archive", { id, archived: true });
       setOverrides((current) => [...(current ?? []).filter((row) => row.id !== id), result.article]);

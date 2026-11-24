@@ -71,7 +71,15 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
     <section className="zw-v2-hero" aria-labelledby="zw-v2-title">
       <header className="zw-v2-masthead">
         <Link className="zw-v2-wordmark" to="/" aria-label="昭梧 ZHAOWU">
-          <img src="/brand-ui/header-gourd-wordmark-r113.png" alt="" width="48" height="48" />
+          <img
+            src="/brand-ui/header-gourd-wordmark-r113-144.webp"
+            srcSet="/brand-ui/header-gourd-wordmark-r113-144.webp 144w, /brand-ui/header-gourd-wordmark-r113-288.webp 288w"
+            sizes="48px"
+            alt=""
+            width={48}
+            height={48}
+            decoding="async"
+          />
           <span><strong>昭梧</strong><small>Z H A O W U</small></span>
         </Link>
       </header>

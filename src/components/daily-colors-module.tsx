@@ -134,7 +134,9 @@ export function DailyColorsModule({ variant, date }: { variant: Variant; date?: 
     >
       <header>
         <p data-daily-colors-date>{formatDailyColorDate(almanac.date, locale)}</p>
-        <h2>{compact ? customerChrome("今日穿衣", "今日穿衣", "Today's dress colour") : page.title}</h2>
+        {variant === "page"
+          ? <h1>{page.title}</h1>
+          : <h2>{compact ? customerChrome("今日穿衣", "今日穿衣", "Today's dress colour") : page.title}</h2>}
         <p>{compact ? `${page.todaySuit}：${copy.name} · ${copy.colorsLabel}` : page.subtitle}</p>
       </header>
 
