@@ -5,6 +5,7 @@ import type { PalmReading } from "@/lib/core/types";
 import { calculateQizheng, type QizhengResult } from "@/lib/qizheng/engine";
 import { normalizeZiweiCalendarBirth } from "@/lib/ziwei/calendar-normalization";
 import { buildZiweiCoreChart, type ZiweiCoreChart } from "@/lib/ziwei/core";
+import { getMutagenEvents } from "@/lib/ziwei/horoscope";
 import { ZHAOWU_ZIWEI_CALCULATION_PROFILE } from "@/lib/ziwei/profiles";
 import { palmFromChart } from "@/lib/yizhangjing/engine";
 
@@ -14,19 +15,25 @@ import { palmFromChart } from "@/lib/yizhangjing/engine";
  * One scoring system exists today: bazi. Three more systems are shown
  * as qualitative對照 (displayed from their own engines, never scored):
  * ziwei (夫妻宮主星 + 生年四化), 一掌經 (四宮星曜 + 六道),
- * 七政 (宮主制 method + the honest engine limitation). Permanent
- * method (Shi, 2026-11-23): she has NO pair/compatibility data
- * anywhere — not from her, not from her other AIs — only single-person
- * data, and none will arrive. So these three sections are NOT
+ * 七政 (宮主制 method + the honest engine limitation). Three more
+ * systems are shown as 分項參考 (reference only, never scored, never
+ * merged into the headline index and never combined into a
+ * cross-system reference total): numerology (life-path + 9×9 matrix,
+ * generic Pythagorean system), western (synastry five items, from the
+ * site's own Astronomy Engine longitudes), vedic (Guna Milan North
+ * Indian 36-point Ashtakoot, from the sidereal Moon). The last system,
+ * palm, is NOT in hepan at all in this version (Shi, 2026-11-24, 全批）:
+ * no palm comparison column is built. Permanent method (Shi,
+ * 2026-11-23): she has NO pair/compatibility data anywhere — not from
+ * her, not from her other AIs — only single-person data, and none will
+ * arrive. So the qualitative and reference sections are NOT
  * placeholders waiting for pair instructions: each person is read by
- * single-person rules, placed side by side, and compared for where
- * they agree, where they supplement, and where the angle differs. No
- * pair score is ever invented. The remaining four are pending and
- * contribute nothing: numerology has no single-person data at all from
- * Shi, so it stays out of hepan for now; western, vedic and palm have
- * single-person engines but no pair method, and Shi has confirmed none
- * will be supplied. Nothing is scored by invention, nothing is
- * silently scored zero, and a pending system never drags the index down.
+ * single-person rules (or, for numerology/western/vedic, by the generic
+ * textbook pair rules Shi approved), placed side by side, and compared
+ * for where they agree, where they supplement, and where the angle
+ * differs. No pair score is ever invented. Nothing is scored by
+ * invention, nothing is silently scored zero, and a reference section
+ * never drags the index down.
  *
  * Bazi pair method (defined for this page, from the engine's own tables
  * and 《昭梧命理分析統一指令》):
@@ -88,14 +95,22 @@ import { palmFromChart } from "@/lib/yizhangjing/engine";
  * as stars, grades, tiers or rarity. The test guards this.
  */
 
-export type HepanReadingId = "day-master" | "day-branch" | "elements";
+export type HepanReadingId =
+  | "day-master"
+  | "day-branch"
+  | "elements"
+  | "numerology"
+  | `western-${string}`
+  | `vedic-${string}`;
 
 export type HepanReading = {
   id: HepanReadingId;
   /** zh-Hant title; the page renders chrome copy per locale, evidence stays zh-Hant. */
   title: string;
-  /** 0-100 integer. */
+  /** Score out of `max` (default 100). Bazi/numerology/western readings are 0–100; vedic readings are kuta points out of the kuta maximum (1–8, half points allowed). */
   score: number;
+  /** Denominator for the score; defaults to 100 when omitted. */
+  max?: number;
   /** Evidence lines naming the actual pillars/elements. */
   evidence: string[];
   /** Method caution shown under the score. */
@@ -124,15 +139,18 @@ export type HepanSystemId =
 export type HepanSystemSection = {
   id: HepanSystemId;
   title: string;
-  status: "scored" | "qualitative" | "pending";
-  /** null when pending or qualitative: only a scored system has a score. */
+  /** scored: enters the headline index. qualitative: side-by-side, no score. reference: sub-scores only, never enters the index and never combined into a cross-system total. pending: no hepan method in this version. */
+  status: "scored" | "qualitative" | "pending" | "reference";
+  /** null when pending, qualitative, or a reference section with no single total (western: five items, no total). */
   score: number | null;
-  /** Applied weight in the composite after renormalization; null when pending or qualitative. */
+  /** Denominator for `score` when it is not out of 100 (vedic: 36 full, 15 sign-only). */
+  scoreDenominator?: number;
+  /** Applied weight in the composite after renormalization; null when pending, qualitative or reference. */
   weight: number | null;
   /** Why it is scored, or plainly why it has no hepan method yet. */
   detail: string;
   readings?: HepanReading[];
-  /** Detail lines for qualitative sections (side-by-side data, method, framing). */
+  /** Detail lines for qualitative/reference sections (side-by-side data, method, framing). */
   lines?: string[];
 };
 
@@ -197,19 +215,14 @@ const SAN_HUI: { branches: [string, string, string]; transformation: string }[] 
   { branches: ["亥", "子", "丑"], transformation: "水" },
 ];
 
-/** Still pending: no pair method, and Shi has confirmed none will be
- *  supplied (she has no pair data anywhere, only single-person data).
- *  Numerology has no single-person data at all, so it stays out of
- *  hepan for now. Nothing here promises a future instruction. */
-export const HEPAN_PENDING_REASONS: Record<"numerology" | "western" | "vedic" | "palm", string> = {
-  numerology:
-    "生命靈數連單人資料都沒有（站主手上沒有靈數指令文件），先不進合盤，本欄不計分。",
-  western:
-    "西方占星模組指令只定義了單人全盤落宮統計與行星相位，沒有雙人合盤（synastry）方法；站主已確認沒有合盤資料，本欄不計分。",
-  vedic:
-    "吠陀模組指令只定義了單人 D1／D12／Dasha，沒有雙人婚配對照方法；站主已確認沒有合盤資料，本欄不計分。",
-  palm:
-    "手相是單人掌宮呈現；沒有兩人合盤方法，站主已確認沒有合盤資料，本欄不計分。",
+/** Still pending: palm has no pair method and, by Shi's decision
+ *  (2026-11-24, 全批）, is NOT in hepan in this version — no comparison
+ *  column is built at all. Numerology, western and vedic are no longer
+ *  pending: they are reference sections (see buildNumerologyPairSection,
+ *  buildWesternPairSection, buildVedicPairSection). Nothing here promises
+ *  a future instruction. */
+export const HEPAN_PENDING_REASONS: Record<"palm", string> = {
+  palm: "手相第一版不進合盤（Shi 2026-11-24 定案）：沒有兩人合盤方法，也不做對照欄，本欄不計分。",
 };
 
 /** Fallback when buildHepanIndex is called without the qualitative
@@ -218,6 +231,14 @@ const QUALITATIVE_FALLBACK: Record<"ziwei" | "yizhangjing" | "qizheng", string> 
   ziwei: "本次對照沒有提供紫微資料（需要兩人準確出生時辰與站內紫微設定檔）；本欄不計分。",
   yizhangjing: "本次對照沒有提供一掌經資料；本欄不計分。",
   qizheng: "本站七政引擎不排十二宮，夫妻宮宮主暫時算不出來；本欄不計分。",
+};
+
+/** Fallback when buildHepanIndex is called without the reference
+ *  sections (e.g. in tests): pending, not scored, not a zero. */
+const REFERENCE_FALLBACK: Record<"numerology" | "western" | "vedic", string> = {
+  numerology: "本次對照沒有提供生命靈數資料；本欄不計分。",
+  western: "本次對照沒有提供西方占星資料；本欄不計分。",
+  vedic: "本次對照沒有提供印度占星資料；本欄不計分。",
 };
 
 export const HEPAN_SYSTEM_TITLES: Record<HepanSystemId, string> = {
@@ -319,12 +340,20 @@ function starsInBranch(chart: ZiweiCoreChart, branch: string): string[] {
  * Data comes from the site's own ziwei engine, called exactly the way
  * buildZiweiReading does (profile zhaowu_ziwei_v0.5.2, mutagen
  * south_iztro_v1): 夫妻宮主星 from the fourteen major stars, 生年四化
- * from the year-stem mutagens with each 化 star's palace. Framing
- * follows 《九頁綜合命理商業報告指令 V1.0》 page 7 (phenomenon layer
- * only; the three buckets are a reading guide, not a computed verdict).
- * No numeric sub-score: no doc defines one, and the same instruction
- * bans 軟件評分. The research reports' zw_fullbook_sanhe_v1 profile is
- * NOT in the codebase, so this section does not use it.
+ * from the year-stem mutagens with each 化 star's palace (via
+ * getMutagenEvents, which also looks in the auxiliaries — so a 壬年化科
+ * 左輔 resolves to its palace instead of reading "not in the fourteen
+ * major stars"), 夫妻宮三方四正 (夫妻／遷移／福德／官祿）, and a
+ * 化忌磨合點 flag when one person's natal 化忌 falls in the other
+ * person's 命宮 or 夫妻宮 (flagged as a磨合點, never judged as 凶）.
+ * Four化 school: A 派 （梁紫左武， south_iztro_v1) — verified against
+ * the engine on 2026-11-24: the site's profile already defaults to A,
+ * so there is no conflict and nothing is swapped. Framing follows
+ * 《九頁綜合命理商業報告指令 V1.0》 page 7 (phenomenon layer only;
+ * the three buckets are a reading guide, not a computed verdict). No
+ * numeric sub-score: no doc defines one, and the same instruction bans
+ * 軟件評分. The research reports' zw_fullbook_sanhe_v1 profile is NOT
+ * in the codebase, so this section does not use it.
  */
 export function buildZiweiPairSection(
   chartA: Chart,
@@ -361,6 +390,10 @@ export function buildZiweiPairSection(
     ["甲", zwA],
     ["乙", zwB],
   ];
+  // 夫妻宮三方四正 = 夫妻（本宮）／遷移／福德／官祿（relative to 命宮,
+  // the sequence is fixed, so these four ids always form the set).
+  const SAN_FANG_IDS = ["SPOUSE", "TRAVEL", "FORTUNE", "CAREER"] as const;
+  const jiEvents: { who: "甲" | "乙"; star: string; palaceId: string | null; palaceName: string | null }[] = [];
   for (const [who, zw] of people) {
     const spouse = spousePalace(zw);
     if (!spouse) {
@@ -371,11 +404,46 @@ export function buildZiweiPairSection(
     lines.push(
       `${who}夫妻宮在${spouse.branch}（${spouse.stem}）：${stars.length ? `主星${stars.join("、")}` : "無主星"}。`,
     );
-    for (const [hua, star] of Object.entries(zw.mutagens)) {
-      const branch = zw.majorStars[star];
-      const palace = branch ? zw.palaces.find((p) => p.branch === branch) : undefined;
+    const sanfang = SAN_FANG_IDS.map((id) => {
+      const palace = zw.palaces.find((p) => p.id === id);
+      if (!palace) return null;
+      const palaceStars = starsInBranch(zw, palace.branch);
+      return `${palace.name}（${palace.branch}，${palaceStars.length ? `主星${palaceStars.join("、")}` : "無主星"}）`;
+    }).filter((x): x is string => x !== null);
+    lines.push(`${who}夫妻宮三方四正：${sanfang.join("、")}。`);
+    // 生年四化 via getMutagenEvents: it also looks in the auxiliaries,
+    // so a 壬年化科左輔 resolves to its palace (the old majorStars-only
+    // lookup printed "落宮未在十四主星表內" for it).
+    for (const event of getMutagenEvents(zw, zw.input.yearStem, "natal")) {
       lines.push(
-        `${who}生年${hua}：${star}${palace ? `落${palace.name}宮（${branch}）` : "落宮未在十四主星表內"}。`,
+        `${who}生年${event.transformation}：${event.targetStar}${event.natalPalaceName ? `落${event.natalPalaceName}宮（${event.branch}）` : "落宮未定"}。`,
+      );
+      if (event.transformation === "忌") {
+        jiEvents.push({
+          who,
+          star: event.targetStar,
+          palaceId: event.natalPalaceId,
+          palaceName: event.natalPalaceName,
+        });
+      }
+    }
+  }
+  // 化忌磨合點: one person's natal 化忌 falling in the other person's
+  // 命宮 or 夫妻宮 is flagged as a磨合點 only — never judged as 凶
+  // (interpretation-grammar boundary: no divorce verdict from one 化忌）.
+  const soulOf = (zw: ZiweiCoreChart) => zw.palaces.find((p) => p.id === "SOUL") ?? null;
+  for (const ji of jiEvents) {
+    const other = ji.who === "甲" ? zwB : zwA;
+    const otherWho = ji.who === "甲" ? "乙" : "甲";
+    const otherSoul = soulOf(other);
+    const otherSpouse = spousePalace(other);
+    if (ji.palaceId && otherSoul && ji.palaceId === otherSoul.id) {
+      lines.push(
+        `磨合點：${ji.who}生年化忌（${ji.star}）落${otherWho}命宮（${ji.palaceName}）——只標磨合點，不判凶：化忌所落之宮是需要多花心力的位置，不是定論。`,
+      );
+    } else if (ji.palaceId && otherSpouse && ji.palaceId === otherSpouse.id) {
+      lines.push(
+        `磨合點：${ji.who}生年化忌（${ji.star}）落${otherWho}夫妻宮（${ji.palaceName}）——只標磨合點，不判凶：化忌所落之宮是需要多花心力的位置，不是定論。`,
       );
     }
   }
@@ -383,7 +451,7 @@ export function buildZiweiPairSection(
     "比法：兩人各看各的單人盤，並排對照。讀法（《九頁綜合命理商業報告指令 V1.0》第七頁）：紫微只作現象層驗證。【與八字一致】指紫微現象與八字結構說到同一處；【紫微補充的新資訊】指主星與四化落宮多出來的場景；【兩套系統觀察角度不同】指兩套系統層面不同、不得強行統一。本欄只列現象，不編配對分數，不替你判定是哪一種。",
   );
   lines.push(
-    `以站內紫微設定檔 ${ZHAOWU_ZIWEI_CALCULATION_PROFILE.id} 排出（四化 south_iztro_v1；曆法：子時當日、閏月同月、農曆年界）。研究報告提到的 zw_fullbook_sanhe_v1 設定檔尚未寫入站內程式碼，本欄不用它。`,
+    `以站內紫微設定檔 ${ZHAOWU_ZIWEI_CALCULATION_PROFILE.id} 排出（四化 A 派：梁紫左武，south_iztro_v1——實查站內引擎預設即 A 派，與定案無衝突；曆法：子時當日、閏月同月、農曆年界）。研究報告提到的 zw_fullbook_sanhe_v1 設定檔尚未寫入站內程式碼，本欄不用它。`,
   );
   return {
     id: "ziwei",
@@ -456,6 +524,58 @@ export function buildPalmPairSection(
       lines.push(`${who}時宮：因缺出生時辰，不作判定。`);
     }
   }
+  // 四宮星曜生剋: the palm engine has NO star-element field at all
+  // (no 五行 anywhere in its STAR table or PalmPalace), so the
+  // comparison uses the palace BRANCH element and says so — it is not
+  // presented as engine output.
+  const BRANCH_ELEMENT: Record<string, Element> = {
+    子: "水",
+    丑: "土",
+    寅: "木",
+    卯: "木",
+    辰: "土",
+    巳: "火",
+    午: "火",
+    未: "土",
+    申: "金",
+    酉: "金",
+    戌: "土",
+    亥: "水",
+  };
+  const palaceByLabel = (palm: PalmReading) =>
+    new Map(palm.palaces.map((p) => [p.label, p]));
+  const mapA = palaceByLabel(palmA);
+  const mapB = palaceByLabel(palmB);
+  for (const label of mapA.keys()) {
+    const pa = mapA.get(label);
+    const pb = mapB.get(label);
+    if (!pa || !pb) continue;
+    const elA = BRANCH_ELEMENT[pa.zhi];
+    const elB = BRANCH_ELEMENT[pb.zhi];
+    if (!elA || !elB) continue;
+    const relation =
+      elA === elB
+        ? `同屬${elA}，比和`
+        : ELEMENT_GENERATES[elA] === elB
+          ? `甲${elA}生乙${elB}`
+          : ELEMENT_GENERATES[elB] === elA
+            ? `乙${elB}生甲${elA}`
+            : ELEMENT_CONTROLS[elA] === elB
+              ? `甲${elA}剋乙${elB}`
+              : ELEMENT_CONTROLS[elB] === elA
+                ? `乙${elB}剋甲${elA}`
+                : "五行無直接生剋";
+    lines.push(`${label}生剋：甲${pa.zhi}${elA}、乙${pb.zhi}${elB}——${relation}（用地支五行對照；引擎沒有星曜五行欄位）。`);
+  }
+  // 六道同頻／互補: which palaces share a dao, and the two dao sets.
+  const daoA = [...new Set(palmA.palaces.map((p) => p.dao))];
+  const daoB = [...new Set(palmB.palaces.map((p) => p.dao))];
+  const sharedDaoPalaces = palmA.palaces
+    .filter((p) => mapB.get(p.label)?.dao === p.dao)
+    .map((p) => `${p.label}同為${p.dao}`);
+  lines.push(
+    `六道：甲（${daoA.join("、")}）、乙（${daoB.join("、")}）。${sharedDaoPalaces.length ? `同道：${sharedDaoPalaces.join("、")}。` : "兩人四宮六道沒有重疊：只論課題對照，不判緣分。"}`,
+  );
   lines.push(
     "【一掌經象徵】四宮星曜與六道只作生命象徵；【文化象意】前因／今果／後種是文化敘事；【精神課題】看同一課題在兩人身上如何互相照見——不是已證實的前世歷史，也不編配對分數。",
   );
@@ -483,9 +603,14 @@ export function buildPalmPairSection(
  * method itself — the 宮主制 from 《五星合格》 as quoted in
  * 《七政四餘盤面深度核驗》 — and the only relationship reading that
  * document supports (the 宮主 chain, e.g. 夫妻主飛官祿 = 婚姻牽動事業).
- * It never writes 「對方一定有地位和資源」: the same document deletes
- * that sentence as unsupported. No numeric sub-score: the 9-page
- * instruction gives 七政 no weight, and no doc defines a 七政 pair score.
+ * It also lists each person's eleven bodies by their 30° branch
+ * segment (a longitude table, NOT twelve life palaces), so the two
+ * charts can at least be compared star by star. 宮主層 and 化曜層 are
+ * never mixed: the palace-lord table is method, the body segments are
+ * positions, and neither is used to invent a chain. It never writes
+ * 「對方一定有地位和資源」: the same document deletes that sentence
+ * as unsupported. No numeric sub-score: the 9-page instruction gives
+ * 七政 no weight, and no doc defines a 七政 pair score.
  */
 export function buildQizhengPairSection(
   chartA: Chart,
@@ -511,6 +636,35 @@ export function buildQizhengPairSection(
   }
   if (!qzA || !qzB) {
     lines.push("其中一人出生時辰不全，七政不排盤（時辰未知時引擎返回空值）。");
+  } else {
+    // Eleven bodies by 30° branch segment, side by side. This is a
+    // longitude table, NOT twelve life palaces — the 宮主 chain still
+    // cannot be computed, and the page says so right after.
+    const BODY_NAMES: Record<string, string> = {
+      sun: "太陽",
+      moon: "太陰",
+      mercury: "辰星",
+      venus: "太白",
+      mars: "熒惑",
+      jupiter: "歲星",
+      saturn: "鎮星",
+      ji: "計都",
+      luo: "羅睺",
+      bei: "月孛",
+      ziqi: "紫氣",
+    };
+    const people: ["甲" | "乙", QizhengResult][] = [
+      ["甲", qzA],
+      ["乙", qzB],
+    ];
+    for (const [who, qz] of people) {
+      const parts = qz.bodies.map(
+        (b) =>
+          `${BODY_NAMES[b.key] ?? b.key}${b.palace}${b.palaceDegree.toFixed(1)}°${b.retrograde ? "（逆行）" : ""}`,
+      );
+      lines.push(`${who}七曜黃道分段：${parts.join("、")}。`);
+    }
+    lines.push("以上是 30° 一段的黃道地支分段，不是命盤十二宮；宮主鏈仍算不出來（見上），宮主層與化曜層不混用。");
   }
   return {
     id: "qizheng",
@@ -700,6 +854,9 @@ export function buildHepanIndex(
     ziwei?: HepanSystemSection;
     yizhangjing?: HepanSystemSection;
     qizheng?: HepanSystemSection;
+    numerology?: HepanSystemSection;
+    western?: HepanSystemSection;
+    vedic?: HepanSystemSection;
   },
 ): HepanIndex {
   const bazi = buildBaziPair(a, b);
@@ -740,6 +897,18 @@ export function buildHepanIndex(
           detail: QUALITATIVE_FALLBACK[id],
         };
       }
+      if (id === "numerology" || id === "western" || id === "vedic") {
+        const section = qualitative?.[id];
+        if (section) return section;
+        return {
+          id,
+          title: HEPAN_SYSTEM_TITLES[id],
+          status: "pending" as const,
+          score: null,
+          weight: null,
+          detail: REFERENCE_FALLBACK[id],
+        };
+      }
       return {
         id,
         title: HEPAN_SYSTEM_TITLES[id],
@@ -761,7 +930,7 @@ export function buildHepanIndex(
   }
   const formula =
     scored.length === 1
-      ? "緣分指數 = Σ（各系統分數 × 權重）；基礎權重按《九頁綜合命理商業報告指令 V1.0》：八字 70%、紫微 20%、一掌經 10%，七政等其餘系統不入權重、只作定性對照。目前只有八字有合盤分數，權重已歸一為八字 100%，指數即八字分數。紫微與一掌經目前只作定性對照、不計分（同一份指令禁軟件評分，也沒有定義合盤分數）。"
+      ? "緣分指數 = Σ（各系統分數 × 權重）；基礎權重按《九頁綜合命理商業報告指令 V1.0》：八字 70%、紫微 20%、一掌經 10%，七政等其餘系統不入權重、只作定性對照。目前只有八字有合盤分數，權重已歸一為八字 100%，指數即八字分數。紫微與一掌經目前只作定性對照、不計分（同一份指令禁軟件評分，也沒有定義合盤分數）。生命靈數、西方占星、印度占星是分項參考：只給分項，不入主指數、不合成參考總分。"
       : "緣分指數 = Σ（各系統分數 × 權重）；基礎權重按《九頁綜合命理商業報告指令 V1.0》：八字 70%、紫微 20%、一掌經 10%，按實際計分的系統歸一化。";
   return { index, bazi, systems, appliedWeights, formula, conflicts, presentCount: scored.length };
 }

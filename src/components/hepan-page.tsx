@@ -13,6 +13,10 @@ import {
   type HepanCivilInput,
   type HepanIndex,
 } from "@/lib/hepan/pair-model";
+import { loadHepanEphemeris } from "@/lib/hepan/ephemeris";
+import { buildNumerologyPairSection } from "@/lib/hepan/numerology";
+import { buildVedicPairSection } from "@/lib/hepan/vedic";
+import { buildWesternPairSection } from "@/lib/hepan/western";
 import { useI18n, type Locale } from "@/lib/i18n";
 import "./hepan-page.css";
 
@@ -23,12 +27,20 @@ import "./hepan-page.css";
  * two real bazi charts out (the same buildChart the report flow uses),
  * then the hepan pair model scores what the site actually has rules for.
  * Only bazi has a pair score today; ziwei, 一掌經 and 七政 are shown as
- * qualitative comparisons from their own engines (never scored) — each
- * person read by single-person rules, placed side by side. That is the
- * permanent method: Shi has confirmed she has no pair data anywhere
- * and none will arrive, so these sections are not placeholders waiting
- * for pair instructions. Numerology has no single-person data at all
- * and stays out of hepan for now.
+ * qualitative comparisons from their own engines (never scored), and
+ * 生命靈數 / 西方占星 / 印度占星 are shown as 分項參考 (sub-scores
+ * only — never merged into the headline index, never combined into a
+ * cross-system reference total). 手相 is not in hepan in this version.
+ * Each person is read by single-person rules, placed side by side.
+ * That is the permanent method: Shi has confirmed she has no pair data
+ * anywhere and none will arrive, so these sections are not placeholders
+ * waiting for pair instructions. Numerology has no single-person data
+ * at all (generic Pythagorean system, labelled so); western and vedic
+ * positions come from the site's own Astronomy Engine vendor script
+ * (loaded on demand when the form is submitted — see
+ * src/lib/hepan/ephemeris.ts); if the ephemeris cannot load, those two
+ * sections fall back to an honest "unavailable" note and everything
+ * else still renders.
  *
  * Visual: the v6 language merged in #1091 — warm paper, gold frame,
  * thin-line sections, Songti headings, no card walls. 390px first.
@@ -76,7 +88,7 @@ const COPY: Record<Locale, Record<string, string>> = {
   "zh-Hant": {
     kicker: "ZHAOWU · 合盤",
     title: "合盤・緣分指數",
-    lead: "兩個人的出生資料，一次對照。八字、紫微、一掌經、七政——有單人規則的系統，兩人各看各的盤，並排對照（哪裡一致、哪裡補充、哪裡角度不同）；生命靈數、西方占星、印度占星、手相目前沒有合盤欄位。八字有分數，其他系統只作定性對照，不造分、不補零。",
+    lead: "兩個人的出生資料，一次對照。八字、紫微、一掌經、七政——有單人規則的系統，兩人各看各的盤，並排對照（哪裡一致、哪裡補充、哪裡角度不同）；生命靈數、西方占星、印度占星是分項參考（只給分項，不入主指數）；手相第一版不進合盤。八字有分數，其他系統只作定性對照或分項參考，不造分、不補零。",
     referenceOnly: "僅供參考：分數是契合順暢度，不是命定 verdict。相處從來不是一串數字說了算。",
     formTitle: "兩位當事人",
     personA: "甲",
@@ -90,7 +102,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     dateLabel: "出生日期",
     timeLabel: "出生時間",
     timeUnknownLabel: "不知道時間",
-    timeUnknownNote: "不知道時間也可以對照八字：時柱未定，但日主、日支與五行對照不受影響；紫微斗數沒有準確時辰不得使用，一掌經時宮不作判定，七政不排盤。",
+    timeUnknownNote: "不知道時間也可以對照八字：時柱未定，但日主、日支與五行對照不受影響；紫微斗數沒有準確時辰不得使用，一掌經時宮不作判定，七政不排盤；西方占星月亮相位不作判定，印度占星只算月亮星座四項、整項低置信。",
     cityLabel: "出生城市",
     cityPh: "請輸入出生城市與國家",
     popularCities: "常用城市",
@@ -111,7 +123,9 @@ const COPY: Record<Locale, Record<string, string>> = {
     noConflicts: "暫無分歧可標：八字三項分數相差不到 30 分，且目前只有一個系統計分，尚無系統間分歧。",
     pendingBadge: "尚無合盤方法 · 不計分",
     qualitativeBadge: "定性對照 · 不計分",
+    referenceBadge: "分項參考 · 不入主指數",
     scoredBadge: "已計分",
+    comparing: "正在對照星曆…",
     dayPillarTitle: "日柱對照",
     dayMaster: "日主",
     evidenceTitle: "證據",
@@ -123,7 +137,7 @@ const COPY: Record<Locale, Record<string, string>> = {
   "zh-Hans": {
     kicker: "ZHAOWU · 合盘",
     title: "合盘・缘分指数",
-    lead: "两个人的出生资料，一次对照。八字、紫微、一掌经、七政——有单人规则的系统，两人各看各的盘，并排对照（哪里一致、哪里补充、哪里角度不同）；生命灵数、西方占星、印度占星、手相目前没有合盘栏位。八字有分数，其他系统只作定性对照，不造分、不补零。",
+    lead: "两个人的出生资料，一次对照。八字、紫微、一掌经、七政——有单人规则的系统，两人各看各的盘，并排对照（哪里一致、哪里补充、哪里角度不同）；生命灵数、西方占星、印度占星是分项参考（只给分项，不入主指数）；手相第一版不进合盘。八字有分数，其他系统只作定性对照或分项参考，不造分、不补零。",
     referenceOnly: "仅供参考：分数是契合顺畅度，不是命定 verdict。相处从来不是一串数字说了算。",
     formTitle: "两位当事人",
     personA: "甲",
@@ -137,7 +151,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     dateLabel: "出生日期",
     timeLabel: "出生时间",
     timeUnknownLabel: "不知道时间",
-    timeUnknownNote: "不知道时间也可以对照八字：时柱未定，但日主、日支与五行对照不受影响；紫微斗数没有准确时辰不得使用，一掌经时宫不作判定，七政不排盘。",
+    timeUnknownNote: "不知道时间也可以对照八字：时柱未定，但日主、日支与五行对照不受影响；紫微斗数没有准确时辰不得使用，一掌经时宫不作判定，七政不排盘；西方占星月亮相位不作判定，印度占星只算月亮星座四项、整项低置信。",
     cityLabel: "出生城市",
     cityPh: "请输入出生城市与国家",
     popularCities: "常用城市",
@@ -158,7 +172,9 @@ const COPY: Record<Locale, Record<string, string>> = {
     noConflicts: "暂无分歧可标：八字三项分数相差不到 30 分，且目前只有一个系统计分，尚无系统间分歧。",
     pendingBadge: "尚无合盘方法 · 不计分",
     qualitativeBadge: "定性对照 · 不计分",
+    referenceBadge: "分项参考 · 不入主指数",
     scoredBadge: "已计分",
+    comparing: "正在对照星历…",
     dayPillarTitle: "日柱对照",
     dayMaster: "日主",
     evidenceTitle: "证据",
@@ -170,7 +186,7 @@ const COPY: Record<Locale, Record<string, string>> = {
   en: {
     kicker: "ZHAOWU · Compatibility",
     title: "Compatibility · Yuanfen Index",
-    lead: "Two birth records, compared once. BaZi, Zi Wei, One-Palm and Seven Luminaries — every system with single-person rules is read person by person and placed side by side (where they agree, where they supplement, where the angle differs); numerology, Western astrology, Vedic astrology and palmistry have no compatibility section for now. Only BaZi is scored; the rest are qualitative comparisons. No invented scores, no silent zeros.",
+    lead: "Two birth records, compared once. BaZi, Zi Wei, One-Palm and Seven Luminaries — every system with single-person rules is read person by person and placed side by side (where they agree, where they supplement, where the angle differs); numerology, Western and Vedic astrology are reference sections (sub-scores only, never in the headline index); palmistry is not in this version. Only BaZi is scored; the rest are qualitative comparisons or reference sub-scores. No invented scores, no silent zeros.",
     referenceOnly: "For reference only: the score measures how smoothly two charts meet, not a fated verdict. No relationship is decided by one number.",
     formTitle: "The two people",
     personA: "A",
@@ -184,7 +200,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     dateLabel: "Birth date",
     timeLabel: "Birth time",
     timeUnknownLabel: "Birth time unknown",
-    timeUnknownNote: "You can still compare BaZi without a birth time: the hour pillar stays unset, but the day-master, day-branch and five-element comparisons are unaffected. Without an exact birth hour, Zi Wei must not be used, the One-Palm hour palace is not judged, and Seven Luminaries is not calculated.",
+    timeUnknownNote: "You can still compare BaZi without a birth time: the hour pillar stays unset, but the day-master, day-branch and five-element comparisons are unaffected. Without an exact birth hour, Zi Wei must not be used, the One-Palm hour palace is not judged, and Seven Luminaries is not calculated; Western Moon aspects are not judged, and Vedic astrology scores only the four Moon-sign kutas at low confidence.",
     cityLabel: "Birth city",
     cityPh: "Enter birth city and country",
     popularCities: "Popular cities",
@@ -205,7 +221,9 @@ const COPY: Record<Locale, Record<string, string>> = {
     noConflicts: "Nothing to flag yet: the three BaZi readings are within 30 points of each other, and only one system is scored, so there is no cross-system disagreement.",
     pendingBadge: "No pair method yet · not scored",
     qualitativeBadge: "Qualitative comparison · not scored",
+    referenceBadge: "Reference only · not in the index",
     scoredBadge: "Scored",
+    comparing: "Comparing ephemeris…",
     dayPillarTitle: "Day pillars, side by side",
     dayMaster: "Day master",
     evidenceTitle: "Evidence",
@@ -394,12 +412,14 @@ export function HepanPage() {
     index: HepanIndex;
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [comparing, setComparing] = useState(false);
 
   const nameA = useMemo(() => displayName(personA, copy.personA), [personA, copy.personA]);
   const nameB = useMemo(() => displayName(personB, copy.personB), [personB, copy.personB]);
 
-  function handleCompare(event: FormEvent) {
+  async function handleCompare(event: FormEvent) {
     event.preventDefault();
+    if (comparing) return;
     setError(null);
     const inputA = toAnalyzeInput(personA, locale);
     const inputB = toAnalyzeInput(personB, locale);
@@ -411,6 +431,7 @@ export function HepanPage() {
       setError(copy.badDate);
       return;
     }
+    setComparing(true);
     try {
       const chartA = buildChart(inputA);
       const chartB = buildChart(inputB);
@@ -428,6 +449,54 @@ export function HepanPage() {
         hour: inputB.hour,
         minute: inputB.minute,
       };
+      const numerology = buildNumerologyPairSection(civilA, civilB);
+      // Western + vedic need real planet longitudes from the Astronomy
+      // Engine vendor script (loaded on demand). If it cannot load,
+      // those two sections fall back to an honest "unavailable" note;
+      // everything else still renders.
+      let western = buildWesternPairSection({
+        available: false,
+        reason: "星曆暫時無法載入（網路或天文引擎）",
+      });
+      let vedic = buildVedicPairSection({
+        available: false,
+        reason: "星曆暫時無法載入（網路或天文引擎）",
+      });
+      try {
+        const eph = await Promise.race([
+          loadHepanEphemeris(
+            { civil: civilA, city: inputA.city, timeUnknown: inputA.timeUnknown },
+            { civil: civilB, city: inputB.city, timeUnknown: inputB.timeUnknown },
+          ),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("ephemeris timeout")), 20000),
+          ),
+        ]);
+        western = buildWesternPairSection({
+          available: true,
+          a: eph.westernA,
+          b: eph.westernB,
+          moonReliable: eph.moonReliable,
+        });
+        if (eph.vedicA && eph.vedicB) {
+          vedic = buildVedicPairSection({
+            available: true,
+            a: eph.vedicA,
+            b: eph.vedicB,
+            genderA: chartA.gender,
+            genderB: chartB.gender,
+            lowConfidence: inputA.timeUnknown || inputB.timeUnknown,
+          });
+        } else {
+          vedic = buildVedicPairSection({
+            available: false,
+            reason: "月亮星座全天不穩定，無法判定",
+          });
+        }
+      } catch {
+        // Keep the fallbacks above; the bazi/ziwei/palm/qizheng/numerology
+        // sections are unaffected.
+      }
       setResult({
         chartA,
         chartB,
@@ -435,10 +504,15 @@ export function HepanPage() {
           ziwei: buildZiweiPairSection(chartA, civilA, chartB, civilB),
           yizhangjing: buildPalmPairSection(chartA, civilA, chartB, civilB),
           qizheng: buildQizhengPairSection(chartA, civilA, chartB, civilB),
+          numerology,
+          western,
+          vedic,
         }),
       });
     } catch {
       setError(copy.buildFailed);
+    } finally {
+      setComparing(false);
     }
   }
 
@@ -486,7 +560,9 @@ export function HepanPage() {
           </p>
         ) : null}
         <div className="hepan-form-actions">
-          <button type="submit">{copy.submit}</button>
+          <button type="submit" disabled={comparing}>
+            {comparing ? copy.comparing : copy.submit}
+          </button>
           <button type="button" className="hepan-demo-button" onClick={fillDemo}>
             {copy.demo}
           </button>
@@ -575,12 +651,41 @@ export function HepanPage() {
                     <span className="hepan-system__badge">
                       {system.status === "scored"
                         ? `${copy.scoredBadge} · ${system.score}`
-                        : system.status === "qualitative"
-                          ? copy.qualitativeBadge
-                          : copy.pendingBadge}
+                        : system.status === "reference"
+                          ? system.score === null
+                            ? copy.referenceBadge
+                            : `${copy.referenceBadge} · ${system.score}${system.scoreDenominator && system.scoreDenominator !== 100 ? ` / ${system.scoreDenominator}` : ""}`
+                          : system.status === "qualitative"
+                            ? copy.qualitativeBadge
+                            : copy.pendingBadge}
                     </span>
                   </h3>
                   <p>{system.detail}</p>
+                  {system.status === "reference" && system.readings?.length ? (
+                    <ul className="hepan-system-readings">
+                      {system.readings.map((reading) => (
+                        <li key={reading.id}>
+                          <p className="hepan-system-readings__head">
+                            <span className="hepan-system-readings__score">
+                              {reading.score}
+                              {reading.max !== undefined && reading.max !== 100
+                                ? ` / ${reading.max}`
+                                : ""}
+                            </span>
+                            {reading.title}
+                          </p>
+                          <p>{reading.note}</p>
+                          {reading.evidence.length ? (
+                            <ul className="hepan-system-readings__evidence">
+                              {reading.evidence.map((line, i) => (
+                                <li key={i}>{line}</li>
+                              ))}
+                            </ul>
+                          ) : null}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
                   {system.lines?.length ? (
                     <ul className="hepan-system-lines">
                       {system.lines.map((line, i) => (
