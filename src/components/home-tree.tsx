@@ -118,6 +118,20 @@ function SeasonalMark({ section }: { section: HomeSection }) {
   </svg>;
 }
 
+/** A coordinated set of small wayfinding marks for the jacaranda edition.
+ * Shown only while the Sydney jacaranda skin is active (see home-mobile-v2.css);
+ * the seasonal mark above covers every other season. */
+function JacarandaMark({ section }: { section: HomeSection }) {
+  return <svg className="ph-jacaranda-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+    <circle cx="20" cy="20" r="18" stroke="currentColor" strokeOpacity=".45" />
+    {section === 'form' && <><circle cx="20" cy="20" r="9" stroke="currentColor"/><path d="M20 8v24M8 20h24M14 14l12 12M26 14 14 26" stroke="currentColor" strokeLinecap="round"/></>}
+    {section === 'today' && <><circle cx="20" cy="20" r="6" stroke="currentColor"/><path d="M20 9v3M20 28v3M9 20h3M28 20h3M12 12l2 2M26 26l2 2M28 12l-2 2M14 26l-2 2" stroke="currentColor" strokeLinecap="round"/></>}
+    {section === 'quiz' && <><path d="M20 10c1 6 4 9 10 10-6 1-9 4-10 10-1-6-4-9-10-10 6-1 9-4 10-10Z" stroke="currentColor"/><circle cx="29" cy="11" r="1.5" fill="currentColor"/></>}
+    {section === 'notes' && <><path d="M10 12c4-1 7 0 10 2 3-2 6-3 10-2v15c-4-1-7 0-10 2-3-2-6-3-10-2V12ZM20 14v15" stroke="currentColor" strokeLinejoin="round"/><path d="M13 17h4M23 17h4" stroke="currentColor" strokeLinecap="round"/></>}
+    <path d="M20 2.5c-2 2-2 3.5 0 4.5 2-1 2-2.5 0-4.5Z" fill="currentColor" />
+  </svg>;
+}
+
 /** Four top-level blocks. All start collapsed; a tap reveals that block’s existing pages. */
 export function HomeTree({ t, onOpen }: { t: T; onOpen: (s: HomeSection) => void }) {
   const [open, setOpen] = useState<HomeSection | null>(null);
@@ -128,7 +142,7 @@ export function HomeTree({ t, onOpen }: { t: T; onOpen: (s: HomeSection) => void
       return <section key={node.id} className="ph-tree-node" data-open={isOpen ? 'true' : 'false'} data-home-card={node.id}>
         <button type="button" className="ph-tree-primary zw-entry" aria-expanded={isOpen} aria-controls={panelId} onClick={() => setOpen(isOpen ? null : node.id)}>
           <span className="ph-tree-wash" aria-hidden="true" style={{ backgroundImage: `url("${node.art}")` }} />
-          <SeasonalMark section={node.id} /><span><strong>{node.title}</strong><small>{node.hint}</small></span><i aria-hidden>{isOpen ? '−' : '+'}</i>
+          <SeasonalMark section={node.id} /><JacarandaMark section={node.id} /><span><strong>{node.title}</strong><small>{node.hint}</small></span><i aria-hidden>{isOpen ? '−' : '+'}</i>
         </button>
         <div className="ph-tree-body" id={panelId} hidden={!isOpen}><ul>
           {node.primary ? <li key={node.primary.title}><Leaf leaf={node.primary} onOpen={onOpen} /></li> : null}
@@ -137,6 +151,5 @@ export function HomeTree({ t, onOpen }: { t: T; onOpen: (s: HomeSection) => void
             : <li key={item.title}><Leaf leaf={item} onOpen={onOpen} /></li>)}
         </ul></div>
       </section>;
-    })}
-  </nav>;
+    })}  </nav>;
 }
