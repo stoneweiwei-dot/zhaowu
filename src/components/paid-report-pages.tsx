@@ -387,7 +387,7 @@ export function FocusedReportSections({ sections, result, showChartArtwork = tru
   return (
     <section className="zhaowu-focused-report zhaowu-report-continuous-sheet zhaowu-v6-report-pages" aria-label={locale === "en" ? "Reading and full report" : locale === "zh-Hans" ? "导读与完整命书" : "導讀與完整命書"} data-report-design-v6>
       <nav className="zhaowu-v6-float-nav" aria-label={chromeCopy.contents}>
-        <a href="#zhaowu-report-summary-title" className="zhaowu-v6-together" onClick={() => document.querySelector<HTMLElement>("[data-professional-report]")?.setAttribute("open", "")}>{chromeCopy.together}</a>
+        <Link to="/hepan" className="zhaowu-v6-together">{chromeCopy.together}</Link>
         <details className="zhaowu-v6-toc">
           <summary className="zhaowu-v6-contents">{chromeCopy.contents}</summary>
           <div className="zhaowu-v6-toc-menu">

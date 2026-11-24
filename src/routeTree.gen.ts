@@ -20,6 +20,7 @@ import { Route as DailyColorsRouteImport } from './routes/daily-colors'
 import { Route as FunTestsRouteImport } from './routes/fun-tests'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as GuailiLuanshenRouteImport } from './routes/guaili-luanshen'
+import { Route as HepanRouteImport } from './routes/hepan'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as IndianAstrologyRouteImport } from './routes/indian-astrology'
 import { Route as KnowledgeRouteImport } from './routes/knowledge'
@@ -109,6 +110,11 @@ const GalleryRoute = GalleryRouteImport.update({
 const GuailiLuanshenRoute = GuailiLuanshenRouteImport.update({
   id: '/guaili-luanshen',
   path: '/guaili-luanshen',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HepanRoute = HepanRouteImport.update({
+  id: '/hepan',
+  path: '/hepan',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistoryRoute = HistoryRouteImport.update({
@@ -305,6 +311,7 @@ export interface FileRoutesByFullPath {
   '/fun-tests': typeof FunTestsRouteWithChildren
   '/gallery': typeof GalleryRoute
   '/guaili-luanshen': typeof GuailiLuanshenRoute
+  '/hepan': typeof HepanRoute
   '/history': typeof HistoryRoute
   '/indian-astrology': typeof IndianAstrologyRoute
   '/knowledge': typeof KnowledgeRouteWithChildren
@@ -353,6 +360,7 @@ export interface FileRoutesByTo {
   '/fun-tests': typeof FunTestsRouteWithChildren
   '/gallery': typeof GalleryRoute
   '/guaili-luanshen': typeof GuailiLuanshenRoute
+  '/hepan': typeof HepanRoute
   '/history': typeof HistoryRoute
   '/indian-astrology': typeof IndianAstrologyRoute
   '/knowledge': typeof KnowledgeRouteWithChildren
@@ -402,6 +410,7 @@ export interface FileRoutesById {
   '/fun-tests': typeof FunTestsRouteWithChildren
   '/gallery': typeof GalleryRoute
   '/guaili-luanshen': typeof GuailiLuanshenRoute
+  '/hepan': typeof HepanRoute
   '/history': typeof HistoryRoute
   '/indian-astrology': typeof IndianAstrologyRoute
   '/knowledge': typeof KnowledgeRouteWithChildren
@@ -452,6 +461,7 @@ export interface FileRouteTypes {
     | '/fun-tests'
     | '/gallery'
     | '/guaili-luanshen'
+    | '/hepan'
     | '/history'
     | '/indian-astrology'
     | '/knowledge'
@@ -500,6 +510,7 @@ export interface FileRouteTypes {
     | '/fun-tests'
     | '/gallery'
     | '/guaili-luanshen'
+    | '/hepan'
     | '/history'
     | '/indian-astrology'
     | '/knowledge'
@@ -548,6 +559,7 @@ export interface FileRouteTypes {
     | '/fun-tests'
     | '/gallery'
     | '/guaili-luanshen'
+    | '/hepan'
     | '/history'
     | '/indian-astrology'
     | '/knowledge'
@@ -597,6 +609,7 @@ export interface RootRouteChildren {
   FunTestsRoute: typeof FunTestsRouteWithChildren
   GalleryRoute: typeof GalleryRoute
   GuailiLuanshenRoute: typeof GuailiLuanshenRoute
+  HepanRoute: typeof HepanRoute
   HistoryRoute: typeof HistoryRoute
   IndianAstrologyRoute: typeof IndianAstrologyRoute
   KnowledgeRoute: typeof KnowledgeRouteWithChildren
@@ -703,6 +716,13 @@ declare module '@tanstack/react-router' {
       path: '/guaili-luanshen'
       fullPath: '/guaili-luanshen'
       preLoaderRoute: typeof GuailiLuanshenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hepan': {
+      id: '/hepan'
+      path: '/hepan'
+      fullPath: '/hepan'
+      preLoaderRoute: typeof HepanRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/history': {
@@ -1001,6 +1021,7 @@ const rootRouteChildren: RootRouteChildren = {
   FunTestsRoute: FunTestsRouteWithChildren,
   GalleryRoute: GalleryRoute,
   GuailiLuanshenRoute: GuailiLuanshenRoute,
+  HepanRoute: HepanRoute,
   HistoryRoute: HistoryRoute,
   IndianAstrologyRoute: IndianAstrologyRoute,
   KnowledgeRoute: KnowledgeRouteWithChildren,
