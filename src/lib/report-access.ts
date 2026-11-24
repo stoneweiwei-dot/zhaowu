@@ -67,6 +67,8 @@ const PAYMENT_LINKS: Record<ReportSystemId, string> = {
   numerology: "https://buy.stripe.com/dRm00jgtpgPL1tN2X02sM0w",
 };
 
+const BUNDLE_PAYMENT_LINK = "https://buy.stripe.com/3cI5kD6SP42Zc8rfJM2sM0J"; // 藏書六系統套裝 2026-11-24
+
 type Verification = {
   ok?: boolean;
   paid?: boolean;
@@ -353,6 +355,36 @@ export async function startReportCheckout(product: ReportAccessProduct, system: 
     product,
     currency: detectReportPriceCurrency(),
     has_report_id: Boolean(reportId),
+  });
+  window.location.assign(url.toString());
+}
+
+export async function startBundleCheckout() {
+  // 藏書六系統套裝：same consent + storage guards as a single-system checkout.
+  if (!hasPurchaseConsent()) throw new Error("CONSENT_REQUIRED");
+  try {
+    const probeKey = "zhaowu.checkout-storage-probe";
+    const probeValue = "x".repeat(4096);
+    localStorage.setItem(probeKey, probeValue);
+    if (localStorage.getItem(probeKey) !== probeValue) throw new Error("storage readback failed");
+    localStorage.removeItem(probeKey);
+  } catch {
+    throw new Error("CHECKOUT_STORAGE_UNAVAILABLE");
+  }
+  const accessKey = reportAccessKey();
+  if (!accessKey) throw new Error("ACCESS_KEY_UNAVAILABLE");
+  try {
+    if (localStorage.getItem(ACCESS_KEY_STORAGE) !== accessKey) throw new Error("access key not saved");
+  } catch {
+    throw new Error("CHECKOUT_STORAGE_UNAVAILABLE");
+  }
+  const url = new URL(BUNDLE_PAYMENT_LINK);
+  url.searchParams.set("client_reference_id", accessKey);
+  trackConversion("zhaowu_checkout_clicked", {
+    system: "bundle",
+    product: "bundle",
+    currency: detectReportPriceCurrency(),
+    has_report_id: false,
   });
   window.location.assign(url.toString());
 }
