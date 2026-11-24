@@ -15,6 +15,153 @@ export type PublicChangeEntry = {
  */
 export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
   {
+    id: "2026-11-18-share-chart-visual-r2",
+    date: "2026-11-18",
+    zhHant: { title: "命象分享卡與四柱排盤顯示整理", summary: "分享卡改用已計算的日主與命象摘要，移除淡色重複浮水印；四柱天干、地支依既有五行資料著色，十神標籤調整為次要層級。命盤計算不變。" },
+    zhHans: { title: "命象分享卡与四柱排盘显示整理", summary: "分享卡改用已计算的日主与命象摘要，移除淡色重复水印；四柱天干、地支依既有五行资料着色，十神标签调整为次要层级。命盘计算不变。" },
+    en: { title: "Share card and Four Pillars display refinements", summary: "The share card now uses the computed day master and chart summary and removes its faint duplicate watermark. Four Pillars stems and branches use their existing element values for colour, with Ten-God labels visually secondary. Chart calculations are unchanged." },
+  },
+  {
+    id: "2026-11-11-sky-visits-updates",
+    date: "2026-11-11",
+    zhHant: {
+      title: "此時天象頁面精簡、頁尾累計到訪與更新紀錄補齊",
+      summary: "此時天象保留上方太陽系互動示意圖並移除下方重複天象轉盤；頁尾僅保留累計到訪人次徽章（含既有基數 2,444）並隱藏其他公開閱讀計數；更新頁補齊近期首頁、多語言、節氣七十二候、手機閱讀與天象頁等正式改動。",
+    },
+    zhHans: {
+      title: "此时天象页面精简、页尾累计到访与更新记录补齐",
+      summary: "此时天象保留上方太阳系互动示意图并移除下方重复天象转盘；页尾仅保留累计到访人次徽章（含既有基数 2,444）并隐藏其他公开阅读计数；更新页补齐近期首页、多语言、节气七十二候、手机阅读与天象页等正式改动。",
+    },
+    en: {
+      title: "Sky page trim, cumulative-only footer visits, and updated release notes",
+      summary: "The Sky Now keeps the upper interactive solar system illustration while removing the lower duplicate motion dial; the footer keeps only the cumulative visit badge (including the 2,444 historical base) while hiding other public view counts; and the updates page adds the recent homepage, language, seasonal, mobile and sky improvements.",
+    },
+  },
+  {
+    id: "2026-11-09-sky-solar-system",
+    date: "2026-11-09",
+    zhHant: {
+      title: "此時天象加入太陽系互動示意圖",
+      summary: "此時天象頁面頂部新增可拖曳調整視角、暫停與重設的太陽系運行示意圖，並標明行星與矮行星圖例。",
+    },
+    zhHans: {
+      title: "此时天象加入太阳系互动示意图",
+      summary: "此时天象页面顶部新增可拖动调整视角、暂停与重设的太阳系运行示意图，并标明行星与矮行星图例。",
+    },
+    en: {
+      title: "Interactive solar system illustration on the sky page",
+      summary: "Added an interactive solar system illustration at the top of The Sky Now with view dragging, pause and reset controls, and a clear planetary legend.",
+    },
+  },
+  {
+    id: "2026-11-08-mobile-zoom-and-swipe-cues",
+    date: "2026-11-08",
+    zhHant: {
+      title: "手機雙指縮放與橫向滑動提示",
+      summary: "開放手機頁面雙指縮放與橫向拖曳檢視，並為較寬的圖表與區塊加入橫向滑動容器與滑動提示。",
+    },
+    zhHans: {
+      title: "手机双指缩放与横向滑动提示",
+      summary: "开放手机页面双指缩放与横向拖动查看，并为较宽的图表与区块加入横向滑动容器与滑动提示。",
+    },
+    en: {
+      title: "Mobile pinch-zoom and horizontal swipe cues",
+      summary: "Enabled pinch-zoom and horizontal panning on mobile, with dedicated horizontal scroll containers and swipe hints for wider charts and sections.",
+    },
+  },
+  {
+    id: "2026-11-08-owner-face-id-signin",
+    date: "2026-11-08",
+    zhHant: {
+      title: "站主 Face ID 登入連線穩定性修正",
+      summary: "修正站主使用 Face ID 驗證登入時的服務連線設定，提升裝置通行密鑰登入的穩定度；一般訪客與命盤流程不變。",
+    },
+    zhHans: {
+      title: "站主 Face ID 登录连接稳定性修正",
+      summary: "修正站主使用 Face ID 验证登录时的服务连接配置，提升设备通行密钥登录的稳定度；普通访客与命盘流程不变。",
+    },
+    en: {
+      title: "Owner Face ID sign-in reliability fix",
+      summary: "Updated the owner Face ID sign-in service connection so device passkey verification stays reliable. Visitor and chart flows are unchanged.",
+    },
+  },
+  {
+    id: "2026-11-07-sydney-auto-72-hou",
+    date: "2026-11-07",
+    zhHant: {
+      title: "節氣七十二候整合為悉尼自動面板",
+      summary: "主題面板將二十四節氣與七十二候收合為單一悉尼自動節氣入口，依當地時序自動對應當下物候與畫面氛圍。",
+    },
+    zhHans: {
+      title: "节气七十二候整合为悉尼自动面板",
+      summary: "主题面板将二十四节气与七十二候收合为单一悉尼自动节气入口，依当地时序自动对应当下物候与画面氛围。",
+    },
+    en: {
+      title: "72 micro-seasons unified into a Sydney auto panel",
+      summary: "Consolidated the solar terms and 72 micro-seasons into a single Sydney auto-seasonal panel that follows local seasonal timing automatically.",
+    },
+  },
+  {
+    id: "2026-11-07-language-switcher-and-music-volume",
+    date: "2026-11-07",
+    zhHant: {
+      title: "首頁收合式九語切換選單與音樂音量位置整理",
+      summary: "首頁改為收合式語言切換器並支援九種介面語言顯示，同時將音量控制固定收進音樂面板內，減少頂部操作干擾。",
+    },
+    zhHans: {
+      title: "首页收合式九语切换菜单与音乐音量位置整理",
+      summary: "首页改为收合式语言切换器并支持九种界面语言显示，同时将音量控制固定收进音乐面板内，减少顶部操作干扰。",
+    },
+    en: {
+      title: "Collapsible nine-language switcher and music volume tidy-up",
+      summary: "Replaced the expanded language strip with a collapsible nine-language switcher on the homepage and kept volume controls inside the Music panel.",
+    },
+  },
+  {
+    id: "2026-11-07-home-four-collapsed-blocks",
+    date: "2026-11-07",
+    zhHant: {
+      title: "首頁四主塊收合版面與長卷底紋調整",
+      summary: "首頁四大主入口改為預設收合的分層結構，搭配更柔和的長卷底紋與音樂音量細節，讓首屏閱讀更聚焦。",
+    },
+    zhHans: {
+      title: "首页四主块收合版面与长卷底纹调整",
+      summary: "首页四大主入口改为默认收合的分层结构，搭配更柔和的长卷底纹与音乐音量细节，让首屏阅读更聚焦。",
+    },
+    en: {
+      title: "Four-block collapsible homepage layout and scroll ground",
+      summary: "Refined the homepage into four collapsible primary blocks over a calmer scroll ground with balanced music volume controls.",
+    },
+  },
+  {
+    id: "2026-11-03-update-records",
+    date: "2026-11-03",
+    zhHant: { title: "更新紀錄與開發提交數", summary: "更新頁區分正式版本序號與 Git 開發提交，並在部署時計算可查證的提交數。" },
+    zhHans: { title: "更新记录与开发提交数", summary: "更新页区分正式版本序号与 Git 开发提交，并在部署时计算可核验的提交数。" },
+    en: { title: "Release and development history", summary: "The updates page distinguishes numbered releases from Git commits and calculates the verifiable commit count at deployment." },
+  },
+  {
+    id: "2026-11-03-sky-observations-layout",
+    date: "2026-11-03",
+    zhHant: { title: "此時天象閱讀版面與悉尼觀測", summary: "更新天象頁閱讀版面，並提供已標日期的悉尼觀測資料；觀測快照不代表自動持續更新。" },
+    zhHans: { title: "此时天象阅读版面与悉尼观测", summary: "更新天象页阅读版面，并提供已标日期的悉尼观测资料；观测快照不代表自动持续更新。" },
+    en: { title: "Sky page layout and Sydney observations", summary: "Updated the sky page layout and added dated Sydney observation snapshots; the snapshots do not update continuously." },
+  },
+  {
+    id: "2026-11-02-music-and-report-atlas",
+    date: "2026-11-02",
+    zhHant: { title: "音樂清單與免費命盤圖鑑", summary: "改善手機音樂清單和播放，免費報告加入十天干與十二地支圖鑑。" },
+    zhHans: { title: "音乐清单与免费命盘图鉴", summary: "改善手机音乐清单和播放，免费报告加入十天干与十二地支图鉴。" },
+    en: { title: "Music playlist and free chart illustrations", summary: "Improved the mobile music playlist and playback and added the ten stems and twelve branches illustrations to free reports." },
+  },
+  {
+    id: "2026-10-30-mythic-atlas-lighter-images",
+    date: "2026-10-30",
+    zhHant: { title: "黃泉圖錄與怪力亂神圖片載入更快", summary: "黃泉圖錄、十二生肖與怪力亂神頁面改用網頁尺寸的圖片與 720p 影片，載入量減少約九成；點圖仍可開啟原始全尺寸檔案。命盤計算與付款流程不變。" },
+    zhHans: { title: "黄泉图录与怪力乱神图片加载更快", summary: "黄泉图录、十二生肖与怪力乱神页面改用网页尺寸的图片与 720p 影片，加载量减少约九成；点图仍可打开原始全尺寸文件。命盘计算与付款流程不变。" },
+    en: { title: "Faster Mythic Atlas and Guaili images", summary: "The Mythic Atlas, zodiac and Guaili pages now load web-sized images and a 720p film, about 90% less data; tapping an image still opens the full-resolution original. Chart calculation and payments are unchanged." },
+  },
+  {
     id: "2026-10-30-article-view-count-protection",
     date: "2026-10-30",
     zhHant: { title: "文章瀏覽數防灌水（待套用）", summary: "已備妥文章瀏覽數保護：只能經由計數功能增加、只計算站上現有文章，同一位訪客短時間內重複開啟不再重複計算，並加上整體上限；資料庫變更待審核後套用，目前尚未生效。顯示方式、命盤計算與付款流程不變。" },
@@ -27,13 +174,6 @@ export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
     zhHant: { title: "請求頻率限制基礎（待套用）", summary: "已備妥通用的請求頻率限制，作為登入、優惠碼與文章互動防濫用保護的共同基礎；資料庫變更待審核後套用，目前尚未生效。訪客操作、命盤計算與付款流程不變。" },
     zhHans: { title: "请求频率限制基础（待套用）", summary: "已备妥通用的请求频率限制，作为登录、优惠码与文章互动防滥用保护的共同基础；数据库变更待审核后套用，目前尚未生效。访客操作、命盘计算与付款流程不变。" },
     en: { title: "Request rate-limit foundation (pending)", summary: "A shared request rate limit for sign-in, promo codes and article interactions is prepared; the database change is pending review and not yet active. Visitor flows, chart calculation and payments are unchanged." },
-  },
-  {
-    id: "2026-10-30-mythic-atlas-lighter-images",
-    date: "2026-10-30",
-    zhHant: { title: "黃泉圖錄與怪力亂神圖片載入更快", summary: "黃泉圖錄、十二生肖與怪力亂神頁面改用網頁尺寸的圖片與 720p 影片，載入量減少約九成；點圖仍可開啟原始全尺寸檔案。命盤計算與付款流程不變。" },
-    zhHans: { title: "黄泉图录与怪力乱神图片加载更快", summary: "黄泉图录、十二生肖与怪力乱神页面改用网页尺寸的图片与 720p 影片，加载量减少约九成；点图仍可打开原始全尺寸文件。命盘计算与付款流程不变。" },
-    en: { title: "Faster Mythic Atlas and Guaili images", summary: "The Mythic Atlas, zodiac and Guaili pages now load web-sized images and a 720p film, about 90% less data; tapping an image still opens the full-resolution original. Chart calculation and payments are unchanged." },
   },
   {
     id: "2026-10-23-pwa-language-guide-empty-state",
@@ -294,3 +434,6 @@ export function publicChangeText(entry: PublicChangeEntry, language: string) {
   if (language === "zh-Hans") return entry.zhHans;
   return entry.zhHant;
 }
+
+/** Newest recorded change; stable source order breaks same-day ties. */
+export const SORTED_PUBLIC_CHANGELOG = [...PUBLIC_CHANGELOG].sort((a, b) => b.date.localeCompare(a.date));
