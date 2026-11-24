@@ -1,0 +1,56 @@
+services:
+  ai-gateway:
+    image: calciumion/new-api:latest
+    container_name: ai-hub-gateway
+    restart: unless-stopped
+    environment:
+      TZ: Australia/Sydney
+      SESSION_SECRET: ${AI_GATEWAY_SESSION_SECRET:?set_test_only_gateway_session_secret}
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - gateway_data:/data
+    networks:
+      - ai_hub
+
+  mongodb:
+    image: mongo:7
+    container_name: ai-hub-mongodb
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - ai_hub
+
+  librechat:
+    image: ghcr.io/danny-avila/librechat:latest
+    container_name: ai-hub-librechat
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+      - ai-gateway
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3080
+      MONGO_URI: ${LIBRECHAT_MONGO_URI:?set_test_database_uri}
+      CREDS_KEY: ${LIBRECHAT_CREDS_KEY:?set_test_only_creds_key}
+      CREDS_IV: ${LIBRECHAT_CREDS_IV:?set_test_only_creds_iv}
+      SESSION_SECRET: ${LIBRECHAT_SESSION_SECRET:?set_test_only_session_secret}
+      AI_GATEWAY_USER_TOKEN: ${AI_GATEWAY_USER_TOKEN:?set_test_only_gateway_user_token}
+      AI_GATEWAY_ADMIN_TOKEN: ${AI_GATEWAY_ADMIN_TOKEN:?set_test_only_gateway_token}
+      ENDPOINTS: custom
+      CONFIG_PATH: /app/librechat.yaml
+    ports:
+      - "127.0.0.1:3080:3080"
+    volumes:
+      - ./librechat.yaml:/app/librechat.yaml:ro
+    networks:
+      - ai_hub
+
+networks:
+  ai_hub:
+    internal: true
+
+volumes:
+  gateway_data:
+  mongo_data:

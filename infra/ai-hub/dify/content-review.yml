@@ -1,0 +1,232 @@
+app:
+  description: 隔離測試用：生成內容、審查邏輯、格式化 JSON；不呼叫正式系統或寫入外部服務。
+  icon: 🧪
+  icon_background: '#E4FBCC'
+  mode: workflow
+  name: 昭梧內容生成與審查（測試範例）
+  use_icon_as_answer_icon: false
+kind: app
+version: 0.1.5
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      enabled: false
+    opening_statement: 請輸入測試主題與必要背景；不要貼個資或正式資料。
+    retriever_resource:
+      enabled: false
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    text_to_speech:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+  graph:
+    edges:
+      - data:
+          isInIteration: false
+          sourceType: start
+          targetType: llm
+        id: e1
+        source: start
+        sourceHandle: source
+        target: draft
+        targetHandle: target
+        type: custom
+      - data:
+          isInIteration: false
+          sourceType: llm
+          targetType: llm
+        id: e2
+        source: draft
+        sourceHandle: source
+        target: review
+        targetHandle: target
+        type: custom
+      - data:
+          isInIteration: false
+          sourceType: llm
+          targetType: llm
+        id: e3
+        source: review
+        sourceHandle: source
+        target: format
+        targetHandle: target
+        type: custom
+      - data:
+          isInIteration: false
+          sourceType: llm
+          targetType: end
+        id: e4
+        source: format
+        sourceHandle: source
+        target: end
+        targetHandle: target
+        type: custom
+    nodes:
+      - data:
+          title: 開始
+          type: start
+          variables:
+            - label: 測試主題
+              max_length: 500
+              options: []
+              required: true
+              type: text-input
+              variable: topic
+            - label: 背景與要求
+              max_length: 3000
+              options: []
+              required: false
+              type: paragraph
+              variable: context
+        height: 116
+        id: start
+        position:
+          x: 80
+          y: 240
+        positionAbsolute:
+          x: 80
+          y: 240
+        selected: false
+        sourcePosition: right
+        targetPosition: left
+        type: custom
+        width: 244
+      - data:
+          context:
+            enabled: false
+            variable_selector: []
+          model:
+            completion_params:
+              temperature: 0.5
+            mode: chat
+            name: test-model
+            provider: langgenius/openai_api_compatible/openai_api_compatible
+          prompt_template:
+            - id: sys
+              role: system
+              text: 你是內容草稿助手。僅依使用者提供的測試資料撰寫，不臆造昭梧政策、價格或事實；不輸出秘密或個資。
+            - id: user
+              role: user
+              text: |-
+                主題：{{#start.topic#}}
+                背景／要求：{{#start.context#}}
+                請產生繁體中文草稿，並明確標示需要事實核對的主張。
+          title: 內容生成
+          type: llm
+          vision:
+            enabled: false
+        height: 190
+        id: draft
+        position:
+          x: 380
+          y: 240
+        positionAbsolute:
+          x: 380
+          y: 240
+        selected: false
+        sourcePosition: right
+        targetPosition: left
+        type: custom
+        width: 244
+      - data:
+          context:
+            enabled: false
+            variable_selector: []
+          model:
+            completion_params:
+              temperature: 0.1
+            mode: chat
+            name: test-model
+            provider: langgenius/openai_api_compatible/openai_api_compatible
+          prompt_template:
+            - id: sys
+              role: system
+              text: 你是邏輯審查員。找出矛盾、無根據事實、缺少條件及安全/隱私問題；不要新增外部事實。回傳草稿與問題清單。
+            - id: user
+              role: user
+              text: "請審查此草稿：\n{{#draft.text#}}"
+          title: 邏輯與事實待核對審查
+          type: llm
+          vision:
+            enabled: false
+        height: 190
+        id: review
+        position:
+          x: 680
+          y: 240
+        positionAbsolute:
+          x: 680
+          y: 240
+        selected: false
+        sourcePosition: right
+        targetPosition: left
+        type: custom
+        width: 244
+      - data:
+          context:
+            enabled: false
+            variable_selector: []
+          model:
+            completion_params:
+              temperature: 0
+            mode: chat
+            name: test-model
+            provider: langgenius/openai_api_compatible/openai_api_compatible
+          prompt_template:
+            - id: sys
+              role: system
+              text: 將草稿及審查結果整理為 JSON。只輸出 JSON，不得聲稱已寫入資料庫或建立任務。
+            - id: user
+              role: user
+              text: |-
+                草稿：{{#draft.text#}}
+                審查：{{#review.text#}}
+                請輸出欄位 draft、review_notes、needs_human_review（布林值）、approved_for_external_write（固定 false）。
+          title: 格式化輸出
+          type: llm
+          vision:
+            enabled: false
+        height: 190
+        id: format
+        position:
+          x: 980
+          y: 240
+        positionAbsolute:
+          x: 980
+          y: 240
+        selected: false
+        sourcePosition: right
+        targetPosition: left
+        type: custom
+        width: 244
+      - data:
+          outputs:
+            - value_selector:
+                - format
+                - text
+              variable: result
+          title: 輸出結果（人工審核）
+          type: end
+        height: 90
+        id: end
+        position:
+          x: 1280
+          y: 240
+        positionAbsolute:
+          x: 1280
+          y: 240
+        selected: false
+        sourcePosition: right
+        targetPosition: left
+        type: custom
+        width: 244
+    viewport:
+      x: 0
+      y: 0
+      zoom: 0.7
