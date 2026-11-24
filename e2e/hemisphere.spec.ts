@@ -85,10 +85,10 @@ for (const width of [320, 390]) {
     await page.goto('/?zw_entry=home',{waitUntil:'networkidle'});
     await expect(page.locator('html')).toHaveAttribute('data-zws-term','立冬');
     await expect(page.locator('html')).toHaveAttribute('data-zws-hemisphere','south');
-    await expect(page.locator('.zw-stage')).toHaveCSS('background-image', /start-winter-2026/);
+    await expect(page.locator('.zw-stage')).toHaveCSS('background-image', /sydney-jacaranda-summer/);
     await expect(page.locator('[data-home-birth-entry]')).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
-    expect((await page.request.get('/theme-skins/southern/start-winter-2026.webp')).status()).toBe(200);
+    expect((await page.request.get('/theme-skins/southern/sydney-jacaranda-summer.webp')).status()).toBe(200);
     await page.screenshot({path:`test-results/south-winter-${width}.png`});
   });
 }
