@@ -322,3 +322,143 @@ html body .zhaowu-gender-capsule.is-active {
     white-space: nowrap !important;
   }
 }
+
+/* =========================================================================
+   2026-11-24 · #1112 跟進修復（Shi iPhone 實測複查，live ebc82b63）
+   #1112 的覆寫在以下五處沒生效，根因都已在上線樣式表（live index-*.css，
+   release ebc82b63）與原始碼中逐項驗證（見 PR 說明）。
+   本節全部用固定色值 + ID 級選擇器，不再跟主題層的變數打架；
+   不動引擎、定價、Stripe、#1091 鎖定檔案。
+   Desktop（>700px）不動；大運與工具列收合只在 ≤520px 生效。
+   ========================================================================= */
+
+/* --- 1. 解鎖／寄給我／問問題三顆按鈕：固定深綠底＋米白字 --------------
+   #1112 的規則是 (0,6,3)，只跟主題四重規則打平（靠檔案順序險勝），
+   深色模式下更直接輸給 (1,6,3) 的 ID 規則
+   （theme-skins-full.css：html[data-zws]×4[data-zws-mode=dark]
+   body #zhaowu-main-content :is(...)），字色被打回 var(--zws-on-accent)；
+   「寄給我」那顆 #1112 根本沒寫到（沒有 [data-free-summary-email] 選擇器），
+   「繼續：問個問題 →」那顆是 analysis-form.tsx:602 的 button.zw-flow-next，
+   #1112 也沒寫到。這裡用 #root + #zhaowu-main-content 兩個 ID（(2,1,3)）
+   一次壓過所有對手，背景與字色都寫死，不再用變數。 --- */
+html body #root #zhaowu-main-content [data-bazi-reading-locked] button,
+html body #root #zhaowu-main-content [data-free-summary-email] button,
+html body #root #zhaowu-main-content [data-guest-follow-up="true"] button[type="submit"],
+html body #root #zhaowu-main-content button.zw-flow-next,
+html body #root #zhaowu-main-content #report button[type="submit"].bg-cinnabar,
+html body #root #zhaowu-main-content #report a.bg-cinnabar {
+  background: #345e50 !important;
+  background-image: none !important;
+  color: #fffaf0 !important;
+  -webkit-text-fill-color: #fffaf0 !important;
+  border-color: #345e50 !important;
+}
+html body #root #zhaowu-main-content [data-bazi-reading-locked] button *,
+html body #root #zhaowu-main-content [data-free-summary-email] button *,
+html body #root #zhaowu-main-content [data-guest-follow-up="true"] button[type="submit"] *,
+html body #root #zhaowu-main-content button.zw-flow-next * {
+  color: #fffaf0 !important;
+  -webkit-text-fill-color: #fffaf0 !important;
+}
+
+/* --- 6. 性別膠囊已選態：固定深綠底＋米白字 ---------------------------
+   #1112 的規則 (0,2,2) 在主包 CSS 裡是唯一一條直接寫膠囊字色的規則，
+   但膠囊的基礎樣式住在懶加載 chunk（index-*.css，後載入）裡，
+   實機仍顯示淡字；這裡用 #root + #birth-form 兩個 ID（(2,2,2)），
+   連子元素一起寫死，什麼皮膚／模式／載入順序都壓得住。
+   未選態（白底深字）本來就是清楚的，不動。 --- */
+html body #root #birth-form .zhaowu-gender-capsule.is-active,
+html body #root #birth-form .zhaowu-gender-capsule.is-active * {
+  background: #345e50 !important;
+  color: #fffaf0 !important;
+  -webkit-text-fill-color: #fffaf0 !important;
+  border-color: #345e50 !important;
+}
+
+@media (max-width: 700px) {
+  /* --- 3. 頁尾：全頁紙面底＋直接寫死文字色 ---------------------------
+     #1112 只修了首頁（#root:has(.zw-painted-home.zw-v2-home)），
+     而且只在 footer 元素上寫 color（會被繼承），但主題規則是直接寫在
+     p/span/a 子元素上的（html[data-zws] body .zhaowu-site-footer
+     :is(p,span,a){color:var(--zws-soft)!important}，(0,2,3)），
+     所以報告頁根本沒有紙面底，文字仍是淡灰綠。這裡全頁給實色紙底，
+     文字色直接寫在 p/a/summary 上（(0,5,3)），不寫 span——
+     讓站主登入連結與瀏覽數小條保持主題原來的配色，再把瀏覽數的
+     數字／標籤單獨恢復成松綠／墨灰。 --- */
+  html[data-zws][data-zws] body .zhaowu-site-footer {
+    background: #faf7ef !important;
+  }
+  html[data-zws][data-zws] body .zhaowu-site-footer :is(p, a, summary):not(.bg-pine):not(.zhaowu-home-login-inline) {
+    color: #23302d !important;
+    -webkit-text-fill-color: #23302d !important;
+  }
+  html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-site-footer .zhaowu-site-views__number {
+    color: #305b50 !important;
+    -webkit-text-fill-color: #305b50 !important;
+  }
+  html[data-zws][data-zws][data-zws][data-zws] body .zhaowu-site-footer .zhaowu-site-views__label {
+    color: #4a5953 !important;
+    -webkit-text-fill-color: #4a5953 !important;
+  }
+
+  /* --- 5. 浮動工具列：不透明底（蓋住的文字不再透出來） --------------
+     底色 #fffbf1e0 + blur 讓被壓住的內文透出來，很亂；改實色。
+     注意：主題有一條 (1,4,2) 的規則
+     （theme-skins-full.css：html[data-zws]×4 body
+     :is(#birth-form,…,.zhaowu-site-utility-buttons) → background:var(--zws-surface)），
+     光寫兩個 class 壓不過它；這裡用 #root + 3×[data-zws] 寫到 (1,5,2)。
+     徹底消除滾動遮擋要 hide-on-scroll 的 JS，不在本 PR（見 PR 說明）。 --- */
+  html[data-zws][data-zws][data-zws] body #root .zhaowu-site-utility-dock .zhaowu-site-utility-buttons {
+    background: #faf6ed !important;
+    background-color: #faf6ed !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+@media (max-width: 520px) {
+  /* --- 4. 大運：橫滑條改三欄換行，確保每格年份完整 -------------------
+     原來是 flex 不換行＋每格固定 88px（.mobile-scroll-container
+     .zhaowu-cycle-list），390px 只看到約 2.5 格，第三格年份被屏緣切成
+     「2017–20」；#1112 的 nowrap 只防了格內斷行，沒解決格子太寬。
+     改三欄 grid 後全部大運一次看完，不再橫滑；MobileScrollContainer
+     本來就只在可橫滑時才顯示提示條（isScrollable），所以提示條會
+     自己消失，不用另外藏。 --- */
+  html body .mobile-scroll-container .zhaowu-cycle-list {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    flex-wrap: wrap !important;
+    min-width: 0 !important;
+    gap: 8px !important;
+    padding-bottom: 0 !important;
+  }
+  html body .mobile-scroll-container .zhaowu-cycle-list > li {
+    flex: none !important;
+    min-width: 0 !important;
+    width: auto !important;
+    padding: 8px 6px !important;
+  }
+
+  /* --- 5. 浮動工具列：手機上收成圖示，縮小佔位 ----------------------
+     兩個按鈕本來沒有 aria-label，只有可見的「音樂／導覽」文字，
+     所以標籤用 visually-hidden 收起（不用 display:none），
+     無障礙名稱還在，佔位從約 130px 寬收到約 96px。 --- */
+  html body .zhaowu-site-utility-buttons > button {
+    position: relative !important;
+    min-width: 44px !important;
+    min-height: 40px !important;
+    padding: 4px 8px !important;
+  }
+  html body .zhaowu-site-utility-buttons > button > span:last-child {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: -1px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+}
