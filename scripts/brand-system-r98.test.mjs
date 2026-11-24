@@ -44,7 +44,8 @@ test("header uses kit icons, a single owner-approved brand lockup and a labelled
   assert.match(shell, /zhaowu-header-mode-toggle/);
   assert.match(shell, /<BrandSeal \/>/);
   assert.doesNotMatch(shell, /BRAND_ASSETS\.logoHorizontal/);
-  assert.match(brand, /HEADER_MARK = "\/brand-ui\/header-gourd-wordmark-r113\.png"/);
+  assert.match(brand, /header-gourd-wordmark-r113-144\.webp/);
+  assert.match(brand, /header-gourd-wordmark-r113-288\.webp/);
   assert.doesNotMatch(brand, /logo-primary\.svg/);
 });
 

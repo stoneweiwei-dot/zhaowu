@@ -6,6 +6,12 @@ import {
 } from "@/lib/astrology/deep-engine";
 import { computeAngles, computeHouses, houseOf, julianDay, ZODIAC_SIGNS, type HouseSystem } from "@/lib/astrology/engine";
 import { buildWesternReportChapters, type WesternReportFacts, type WesternReportConfig } from "@/lib/astrology/report-protocol";
+import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
+
+function zhFacing(locale: string, hant: string) {
+  if (locale !== "zh-Hans") return hant;
+  return toSimplifiedCustomerText(hant).replaceAll("宮", "宫").replaceAll("軸", "轴");
+}
 
 type Astronomy = {
   GeoVector: (body: string, date: Date, aberration: boolean) => unknown;
@@ -236,34 +242,34 @@ export function WesternDepthSection({ birth, locale, mode, houseSystem, onHouseS
     {!analysis ? <p>{error||label("loading")}</p> :
       analysis.houseCount!==10 ? <p>{label("withheld")}</p> : <>
         <p>{analysis.leadingGroup
-          ? (locale==="en"?"Convergent dominant group: ":"集中主軸：")+analysis.leadingGroup
-          : (locale==="en"?"Mixed chart: no single group wins both total and density.":"混合盤：總數與每宮密度未同時支持單一主軸，不強判。")}</p>
+          ? (locale==="en"?"Convergent dominant group: ":zhFacing(locale,"集中主軸："))+analysis.leadingGroup
+          : (locale==="en"?"Mixed chart: no single group wins both total and density.":zhFacing(locale,"混合盤：總數與每宮密度未同時支持單一主軸，不強判。"))}</p>
         {groups.map(group=>{
           const copy=westernGroupNarrative(group.group,locale);
           return <article key={group.group}>
             <h3>{group.group} · {copy.label} · {group.count}/10</h3>
             <p>{copy.foundation}。{copy.strengths}</p>
-            <p>{locale==="en"?"Imbalance: ":"失衡面："}{copy.risks}</p>
-            <p>{locale==="en"?"Action: ":"行動："}{copy.action}</p>
-            <small>{locale==="en"?"Evidence: ":"落宮依據："}{group.occupants.map(k=>planetNames[k][locale]).join("、")||"—"}；{locale==="en"?"seven classical: ":"古典七曜："}{group.classicalCount}</small>
+            <p>{locale==="en"?"Imbalance: ":zhFacing(locale,"失衡面：")}{copy.risks}</p>
+            <p>{locale==="en"?"Action: ":zhFacing(locale,"行動：")}{copy.action}</p>
+            <small>{locale==="en"?"Evidence: ":zhFacing(locale,"落宮依據：")}{group.occupants.map(k=>planetNames[k][locale]).join("、")||"—"}；{locale==="en"?"seven classical: ":zhFacing(locale,"古典七曜：")}{group.classicalCount}</small>
           </article>;
         })}
-        <p>{locale==="en"?"Closest major aspects: ":"主要相位（按容許度）："}{analysis.aspects.slice(0,3).map(a=>`${planetNames[a.a][locale]}–${planetNames[a.b][locale]} ${a.type} ${a.orb.toFixed(1)}°`).join("；")||"—"}</p>
-        <section aria-label={locale==="en"?"Ten-chapter Western report":"西方占星十章報告"}>
-          <h3>{locale==="en"?"Personal ten-chapter report outline":"個人化十章報告"}</h3>
+        <p>{locale==="en"?"Closest major aspects: ":zhFacing(locale,"主要相位（按容許度）：")}{analysis.aspects.slice(0,3).map(a=>`${planetNames[a.a][locale]}–${planetNames[a.b][locale]} ${a.type} ${a.orb.toFixed(1)}°`).join("；")||"—"}</p>
+        <section aria-label={locale==="en"?"Ten-chapter Western report":zhFacing(locale,"西方占星十章報告")}>
+          <h3>{locale==="en"?"Personal ten-chapter report outline":zhFacing(locale,"個人化十章報告")}</h3>
           <p>{locale==="en"
             ?"Each chapter cites actual chart positions. Unsupported techniques and future transits are explicitly withheld. No fabricated 3,000–5,000-character AI expansion is shown."
-            :"每章只使用已有命盤證據；未計算的行運、特殊點與跨系統旁證明確留白，不以模板灌水冒充三至五千字 AI 深讀。"}</p>
+            :zhFacing(locale,"每章只使用已有命盤證據；未計算的行運、特殊點與跨系統旁證明確留白，不以模板灌水冒充三至五千字 AI 深讀。")}</p>
           {chapters.map(ch=><details key={ch.number} style={{marginBlock:12}}>
-            <summary style={{cursor:"pointer",fontWeight:650,paddingBlock:6}}>【{ch.number}｜{ch.title}】{ch.status==="limited"?" · "+(locale==="en"?"unavailable":"未判"):""}</summary>
+            <summary style={{cursor:"pointer",fontWeight:650,paddingBlock:6}}>【{ch.number}｜{ch.title}】{ch.status==="limited"?" · "+(locale==="en"?"unavailable":zhFacing(locale,"未判")):""}</summary>
             <p>{ch.summary}</p>
             <p>{ch.action}</p>
-            <p style={{fontSize:"0.9em"}}><strong>{locale==="en"?"Evidence":"依據"}：</strong>{ch.evidence.length
+            <p style={{fontSize:"0.9em"}}><strong>{locale==="en"?"Evidence":zhFacing(locale,"依據")}：</strong>{ch.evidence.length
               ?ch.evidence.slice(0,12).map(item=>item.source+":"+item.text).join("；")
-              :(locale==="en"?"Not calculated":"未計算")}</p>
+              :(locale==="en"?"Not calculated":zhFacing(locale,"未計算"))}</p>
           </details>)}
         </section>
-        <p>{locale==="en"?"Vedic context is separate: use its D1/D60 reliability rules, never force agreement.":"印度占星只作獨立旁證：須另依 D1／D60 自身精度規則核算，不能為一致而強行互證。"} <a href="/indian-astrology">{locale==="en"?"Indian astrology":"印度占星"}</a></p>
+        <p>{locale==="en"?"Vedic context is separate: use its D1/D60 reliability rules, never force agreement.":zhFacing(locale,"印度占星只作獨立旁證：須另依 D1／D60 自身精度規則核算，不能為一致而強行互證。")} <a href="/indian-astrology">{locale==="en"?"Indian astrology":"印度占星"}</a></p>
       </>}
     <p><small>{label("disclaimer")}</small></p>
   </section>;
@@ -276,24 +282,24 @@ export function WesternDepthSection({ birth, locale, mode, houseSystem, onHouseS
         window.dispatchEvent(new Event("zhaowu-western-minute"));
       }}/> {label("verified")}
     </label>:null}
-    <label>{locale==="en"?"Ten-planet house system (the classical wheel above remains Placidus)":"十大行星宮位制（上方古典星輪維持 Placidus）"}{" "}
+    <label>{locale==="en"?"Ten-planet house system (the classical wheel above remains Placidus)":zhFacing(locale,"十大行星宮位制（上方古典星輪維持 Placidus）")}{" "}
       <select value={houseSystem} onChange={e=>onHouseSystemChange(e.target.value as HouseSystem)}>
         <option value="placidus">Placidus</option><option value="whole">Whole Sign</option>
       </select>
     </label>
     {!analysis ? <p role="status">{error||label("loading")}</p> : <>
-      <p>{locale==="en"?"Planetary positions":"十大行星星位"}：{analysis.computedBodies}/10 ·
-      {locale==="en"?" Houses confirmed ":" 已確認落宮 "}{analysis.houseCount}/10 ·
-      {locale==="en"?" Reliability ":" 可靠度 "}{snapshot!.quality}</p>
-      {analysis.houseCount!==10 ? <p>{label("withheld")}</p> : <p>{locale==="en"?"Main theme: ":"全盤主軸："}{analysis.leadingGroup?westernGroupNarrative(analysis.leadingGroup,locale).label:(locale==="en"?"mixed / not asserted":"混合／不強判")}</p>}
-      <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:8,marginTop:12}} aria-label={locale==="en"?"Ten planetary positions":"十大行星黃經"}>
+      <p>{locale==="en"?"Planetary positions":zhFacing(locale,"十大行星星位")}：{analysis.computedBodies}/10 ·
+      {locale==="en"?" Houses confirmed ":zhFacing(locale," 已確認落宮 ")}{analysis.houseCount}/10 ·
+      {locale==="en"?" Reliability ":zhFacing(locale," 可靠度 ")}{snapshot!.quality}</p>
+      {analysis.houseCount!==10 ? <p>{label("withheld")}</p> : <p>{locale==="en"?"Main theme: ":zhFacing(locale,"全盤主軸：")}{analysis.leadingGroup?westernGroupNarrative(analysis.leadingGroup,locale).label:(locale==="en"?"mixed / not asserted":zhFacing(locale,"混合／不強判"))}</p>}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:8,marginTop:12}} aria-label={locale==="en"?"Ten planetary positions":zhFacing(locale,"十大行星黃經")}>
         {snapshot!.placements.map(p=><span key={p.key} style={{fontSize:"0.9em"}}>{planetNames[p.key][locale]}：{p.signReliable?ZODIAC_SIGNS[Math.floor(norm(p.longitude)/30)]:"?"} {p.longitude.toFixed(2)}°{p.retrograde?" R":""}</span>)}
       </div>
       {analysis.houseCount ? <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:8}}>
-        {analysis.byHouse.map((number,i)=><span key={i}>{locale==="en"?"H":"宮"}{i+1}：{number}</span>)}
+        {analysis.byHouse.map((number,i)=><span key={i}>{locale==="en"?"H":zhFacing(locale,"宮")}{i+1}：{number}</span>)}
       </div>:null}
       <p>{groups.map(g=>`${g.group} ${g.count}/10（${g.perHouse.toFixed(2)}/宮）`).join(" · ")}</p>
-      <small>{locale==="en"?"Totals are descriptive; group sizes differ.":"分組同時公開原始數量與每宮密度；宮數不同，不以數量硬排名。"}</small>
+      <small>{locale==="en"?"Totals are descriptive; group sizes differ.":zhFacing(locale,"分組同時公開原始數量與每宮密度；宮數不同，不以數量硬排名。")}</small>
       {analysis.warnings.map(w=><p key={w}><small>{w}</small></p>)}
       <p><button type="button" onClick={()=>snapshot&&exportJSON(snapshot)}>{label("export")}</button>{" "}
         <label>{label("import")}<input type="file" accept=".json,application/json" onChange={async e=>{
@@ -307,7 +313,7 @@ export function WesternDepthSection({ birth, locale, mode, houseSystem, onHouseS
               timeReliability:imported.quality,provenance:imported.provenance,
             });
             setSnapshot(imported);saveLocal(imported);
-            setImportNote(locale==="en"?"Imported locally.":"已匯入本機。");
+            setImportNote(locale==="en"?"Imported locally.":zhFacing(locale,"已匯入本機。"));
           } catch (reason) {setImportNote(String(reason));}
           e.target.value="";
         }}/></label></p>
