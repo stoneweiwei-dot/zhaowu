@@ -93,7 +93,7 @@ function publicPayload(manifest) {
       url: playbackUrl(row),
       contentType: row.contentType || "audio/mpeg",
       fileSize: row.fileSize ?? null,
-      enabled: row.id === (manifest.activeId || active?.id),
+      enabled: row.enabled === true || row.id === (manifest.activeId || active?.id),
       createdAt: row.createdAt || null,
     })),
   };
