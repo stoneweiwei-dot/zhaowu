@@ -11,8 +11,10 @@ import { DataGradeFooter } from "@/components/data-grade-footer";
 import { MobileReadingGuide } from "@/components/mobile-reading-guide";
 import { FocusedReportSections } from "@/components/paid-report-pages";
 import { FollowUpBox } from "@/components/follow-up-box";
+import { ReportCompletionPanel } from "@/components/report-completion-panel";
 import { CharacterPanel } from "@/components/character-panel";
 import { BaziChart } from "@/components/bazi-chart";
+import { FreeStemBranchAtlas } from "@/components/free-stem-branch-atlas";
 import { ReportTimingGuide } from "@/components/report-timing-guide";
 import { customerCopy, customerParagraphs } from "@/lib/report/customer-copy";
 import { composeFocusedReport, renderFocusedReportText, type ReportSection } from "@/lib/report/focused-report";
@@ -30,6 +32,7 @@ import {
 } from "@/lib/report-access";
 import { directAnswerCoversQuestion } from "@/lib/qa/answer-quality";
 import { foodPreferenceAnswer } from "@/lib/report/food-preference-answer";
+import { watchReportAccess } from "@/lib/report-access-watch";
 
 const RESULT_COPY = {
   "zh-Hant": { syncFailed: "內容已完成，但雲端同步暫時失敗；畫面內容不受影響。", fullFailed: "補充內容暫時未能生成。", saved: "完整報告已保存。", saveFailed: "保存失敗。", saving: "保存中…", updateSaved: "更新已保存報告", fullGenerate: "補充", fullGenerating: "整理中…", imageReady: "個人命象已生成並保存。", imageMatched: "已為你配對並保存圖庫命象。", imageLoadFailed: "命象圖未能載入；文字內容不受影響。", next: "下一步", evidence: "命盤與天干地支圖", evidenceLead: "", decree: "命理解讀", chartDetail: "展開命盤與人物詳解" },
@@ -50,33 +53,78 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const [ownerAccess, setOwnerAccess] = useState(false);
   const [purchasing, setPurchasing] = useState<ReportAccessProduct | null>(null);
   const [purchaseError, setPurchaseError] = useState<string | null>(null);
+  const [paymentPending, setPaymentPending] = useState(false);
+  const [checkoutSuccess, setCheckoutSuccess] = useState(false);
   const consent = usePurchaseConsent(result.dataGrade);
 
   useEffect(() => {
-    let active = true;
-    void resolveReportAccess("bazi").then((acc) => {
-      if (!active) return;
-      setAccessLevel(acc.level);
-      setOwnerAccess(Boolean(acc.owner));
-      if (!acc.owner && acc.level !== "system" && oncePerSession("paywall:bazi")) {
-        trackConversion("zhaowu_paywall_viewed", { system: "bazi", level: acc.level });
-      }
-    }).catch(() => { if (active) { setAccessLevel("none"); setOwnerAccess(false); } });
-    return () => { active = false; };
+    try {
+      const visible = sessionStorage.getItem("zhaowu.checkout-success-visible.v1") === "1";
+      sessionStorage.removeItem("zhaowu.checkout-success-visible.v1");
+      setCheckoutSuccess(visible);
+    } catch { setCheckoutSuccess(false); }
   }, []);
 
   useEffect(() => {
+    return watchReportAccess(() => resolveReportAccess("bazi"), (acc) => {
+      setAccessLevel(acc.level);
+      setOwnerAccess(Boolean(acc.owner));
+      setPaymentPending(acc.pending && acc.level !== "system");
+      if (acc.revoked) setMsg(locale === "en" ? "This order was refunded." : locale === "zh-Hans" ? "此订单已退款" : "此訂單已退款");
+      if (!acc.owner && acc.level !== "system" && oncePerSession("paywall:bazi")) {
+        trackConversion("zhaowu_paywall_viewed", { system: "bazi", level: acc.level });
+      }
+    }, () => { setAccessLevel("none"); setOwnerAccess(false); });
+  }, [locale]);
+
+  useEffect(() => {
     if (oncePerSession(`answer-shown:${result.id ?? ""}`)) trackConversion("zhaowu_answer_shown", { system: "bazi" });
+    if (oncePerSession(`chart-completed:${result.id ?? ""}`)) trackConversion("chart_completed", { system: "bazi", locale });
+  }, [result.id]);
+
+  useEffect(() => {
+    let visible = false; let bottom = false; let longDwell = false; let sent = false;
+    let longTimer: number | undefined; let bottomTimer: number | undefined;
+    const maybeSend = () => {
+      if (sent || !visible) return;
+      if (longDwell || (bottom && bottomTimer === -1)) {
+        sent = true;
+        if (oncePerSession(`report-viewed:${result.id ?? ""}`)) trackConversion("report_viewed", { system: "bazi" });
+      }
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible && longTimer === undefined) longTimer = window.setTimeout(() => { longTimer = -1; longDwell = true; maybeSend(); }, 30_000);
+      if (!visible && longTimer !== undefined && longTimer >= 0) { clearTimeout(longTimer); longTimer = undefined; }
+      maybeSend();
+    });
+    const root = document.getElementById("result"); if (root) observer.observe(root);
+    const onScroll = () => {
+      bottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 16;
+      if (bottom && visible && bottomTimer === undefined) bottomTimer = window.setTimeout(() => { bottomTimer = -1; maybeSend(); }, 1000);
+      if (!bottom && bottomTimer !== undefined && bottomTimer >= 0) { clearTimeout(bottomTimer); bottomTimer = undefined; }
+      maybeSend();
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      observer.disconnect();
+      if (longTimer !== undefined && longTimer >= 0) clearTimeout(longTimer);
+      if (bottomTimer !== undefined && bottomTimer >= 0) clearTimeout(bottomTimer);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, [result.id]);
 
   async function handleUnlock(product: ReportAccessProduct) {
     if (!consent.require()) return;
+    trackConversion("unlock_clicked", { system: "bazi", product: product });
     setPurchasing(product);
     setPurchaseError(null);
     try {
       await startReportCheckout(product, "bazi", result.id);
-    } catch {
-      setPurchaseError(locale === "en" ? "Checkout channel is not active yet. Pricing and boundary are locked." : locale === "zh-Hans" ? toSimplifiedCustomerText("付款通道尚未啟用；價格與免費／付費邊界已經固定。") : "付款通道尚未啟用；價格與免費／付費邊界已經固定。");
+    } catch (cause) {
+      setPurchaseError(cause instanceof Error && cause.message === "CHECKOUT_STORAGE_UNAVAILABLE"
+        ? (locale === "en" ? "This browser cannot save your purchase for recovery. Allow site storage or use another browser before paying." : locale === "zh-Hans" ? "无法在此浏览器保存付款凭证。请允许网站存储数据或使用其他浏览器后再付款。" : "無法在此瀏覽器保存付款憑證。請允許網站儲存資料或使用其他瀏覽器後再付款。")
+        : (locale === "en" ? "Checkout channel is not active yet. Pricing and boundary are locked." : locale === "zh-Hans" ? toSimplifiedCustomerText("付款通道尚未啟用；價格與免費／付費邊界已經固定。") : "付款通道尚未啟用；價格與免費／付費邊界已經固定。"));
       setPurchasing(null);
     }
   }
@@ -205,6 +253,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
   return (
     <section id="result" className="zhaowu-result-flow space-y-5" data-answer-first-r144="true">
+      {checkoutSuccess && unlocked ? <p className="rounded-lg border border-wood/30 bg-wood/5 p-4 text-sm leading-6 text-ink" role="status" data-checkout-success>{locale === "en" ? "Full access confirmed. Your complete report is open. This is a one-time unlock, not a subscription." : locale === "zh-Hans" ? "完整权限已确认／完整报告已经开放／本次为单次解锁，不是订阅。" : "完整權限已確認／完整報告已經開放／本次為單次解鎖，不是訂閱。"}</p> : null}
       <article className="zhaowu-result-card seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <p className="text-xs tracking-[0.28em] text-cinnabar">{t("resultQ")}</p>
         <h2 className="mt-2 font-display text-2xl">{question}</h2>
@@ -267,6 +316,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         </div>
       </details>
 
+      <FreeStemBranchAtlas chart={chart} />
       {unlocked ? <ReportTimingGuide chart={chart} unlocked /> : null}
       {unlocked ? <DataGradeFooter grade={result.dataGrade} locale={locale} /> : null}
 
@@ -310,7 +360,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           </li>
           <li className="flex items-start gap-2">
             <span className="text-cinnabar">✦</span>
-            <span>{locale === "en" ? "Ten-Stem portrait and the branch scenery found in your chart" : locale === "zh-Hans" ? toSimplifiedCustomerText("十天干日主圖與命盤中實際出現的地支景色") : "十天干日主圖與命盤中實際出現的地支景色"}</span>
+            <span>{locale === "en" ? "Full, paid interpretation of the stems and branches in your chart" : locale === "zh-Hans" ? toSimplifiedCustomerText("八字天干地支的完整付費解讀") : "八字天干地支的完整付費解讀"}</span>
           </li>
         </ul>
 
@@ -320,7 +370,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           <p className="my-4 rounded-lg border border-wood/30 bg-wood/5 p-3 text-center text-xs leading-5 text-ink-soft" data-owner-free-access>
             {locale === "en" ? "Owner signed in: every reading is free — nothing to buy." : locale === "zh-Hans" ? "站主已登入：全部内容免费阅读，无需购买。" : "站主已登入：全部內容免費閱讀，無需購買。"}
           </p>
-        ) : (
+        ) : !unlocked ? (
         <div className="mx-auto my-4 grid max-w-sm grid-cols-1 gap-3">
           <div className="flex flex-col justify-between rounded-lg border-2 border-cinnabar/80 bg-cinnabar/5 p-4 text-center relative shadow-sm">
             <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-cinnabar px-2 py-0.5 text-[10px] text-cream font-medium">
@@ -342,10 +392,11 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           </div>
 
         </div>
-        )}
+        ) : null}
 
-        <PurchaseConsent locale={locale} checked={consent.checked} needed={consent.needed} onChange={consent.toggle} grade={result.dataGrade} gradeAck={consent.gradeAck} gradeNeeded={consent.gradeNeeded} onGradeChange={consent.toggleGrade} />
+        {!unlocked && <PurchaseConsent locale={locale} checked={consent.checked} needed={consent.needed} onChange={consent.toggle} grade={result.dataGrade} gradeAck={consent.gradeAck} gradeNeeded={consent.gradeNeeded} onGradeChange={consent.toggleGrade} />}
 
+        {paymentPending ? <p className="mt-2 text-xs text-ink-mute" role="status">{locale === "en" ? "Checking payment status. If this takes longer, refresh this page before trying to pay again." : locale === "zh-Hans" ? "正在确认付款状态。如等待较久，请先刷新本页，避免重复付款。" : "正在確認付款狀態。如等待較久，請先重新整理本頁，避免重複付款。"}</p> : null}
         {purchaseError ? (
           <p className="mt-2 text-xs text-cinnabar" role="alert">{purchaseError}</p>
         ) : null}
@@ -386,6 +437,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
 
       {msg ? <p className="zhaowu-result-message text-sm text-cinnabar mt-2">{msg}</p> : null}
       {unlocked && reportSections ? <FocusedReportSections sections={reportSections} result={result} showChartArtwork={false} showReadingGuide={false} /> : null}
+      {unlocked && !ownerAccess ? <ReportCompletionPanel system="bazi" locale={locale} /> : null}
       <p className="text-xs leading-6 text-ink-mute mt-4">{t("disclaimer")}</p>
     </section>
   );

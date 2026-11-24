@@ -2,10 +2,11 @@ import type { Locale } from "@/lib/i18n";
 import { l, tr } from "./-mythic-atlas-data";
 import {
   GUAILI_ARTS, GUAILI_COPY, GUAILI_EIGHT, GUAILI_HOUSES,
-  GUAILI_TWELVE, GUAILI_VOLUMES, GUAILI_YEARS, GUAILI_ZODIAC,
+  GUAILI_TWELVE, GUAILI_VOLUMES, GUAILI_PART_TWO, GUAILI_YEARS, GUAILI_ZODIAC,
 } from "./-mythic-atlas-guaili-data";
 import { ZODIAC_PLATES } from "./-mythic-atlas-zodiac-essay";
 import { mythicWebPlate } from "@/lib/mythic-web-assets";
+import { MythicImageViewer } from "./-mythic-image-viewer";
 
 const simplifiedCurrents = ["同炉","仪光","祝骨","强郎","文卿","退奇","铜聋","耆耆","赤伯","东僧","天贼","是谁"];
 
@@ -55,9 +56,9 @@ export function GuailiBook({ locale }: { locale: Locale }) {
         {GUAILI_ZODIAC.map((path, index) => <details key={index} id={`guaili-${ZODIAC_PLATES[index].branch}`}>
           <summary><span className="hq-guaili-zodiac-mark">{String(index + 1).padStart(2, "0")}</span><strong>{tr(path.earthly, locale)}</strong><span className="hq-guaili-zodiac-short">{tr(path.shadow, locale)}</span></summary>
           <figure className="hq-guaili-plate">
-            <a href={`/mythic-atlas/zodiac/${ZODIAC_PLATES[index].image}`} target="_blank" rel="noopener noreferrer" aria-label={tr(l(`開啟${tr(path.earthly, "zh-Hant")}原圖`, `打开${tr(path.earthly, "zh-Hans")}原图`, `Open original plate: ${tr(path.earthly, "en")}`), locale)}>
+            <MythicImageViewer src={`/mythic-atlas/zodiac/${ZODIAC_PLATES[index].image}`} locale={locale} label={tr(l(`開啟${tr(path.earthly, "zh-Hant")}原圖`, `打开${tr(path.earthly, "zh-Hans")}原图`, `Open original plate: ${tr(path.earthly, "en")}`), locale)}>
               <img src={mythicWebPlate("zodiac", ZODIAC_PLATES[index].image)} width={941} height={1672} loading="lazy" decoding="async" alt={tr(l(`${tr(path.earthly, "zh-Hant")}四態原創畫作：凡體、${tr(path.shadow, "zh-Hant")}、${tr(path.beast, "zh-Hant")}、${tr(path.god, "zh-Hant")}`, `${tr(path.earthly, "zh-Hans")}四态原创画作：凡体、${tr(path.shadow, "zh-Hans")}、${tr(path.beast, "zh-Hans")}、${tr(path.god, "zh-Hans")}`, `Original four-aspect plate of ${tr(path.earthly, "en")}`), locale)} />
-            </a>
+            </MythicImageViewer>
             <figcaption>{tr(l("STONE 原創 · 941 × 1672 原圖，點圖放大；圖中文字為繁體中文", "STONE 原创 · 941 × 1672 原图，点图放大；图中文字为繁体中文", "STONE Original · 941 × 1672 original; tap to enlarge. Lettering remains in Traditional Chinese."), locale)}</figcaption>
           </figure>
           <dl>
@@ -129,5 +130,31 @@ export function GuailiBook({ locale }: { locale: Locale }) {
         <p><a href="#sources">{tr(l("參閱本館來源分層","参阅本馆来源分层","See archive source classifications"), locale)}</a></p>
       </div>
     </section>
+    <section className="hq-section hq-guaili" id="guaili-part-two" aria-labelledby="hq-guaili-part-two-heading">
+      <div className="hq-guaili-subheading">
+        <span>II</span>
+        <h2 id="hq-guaili-part-two-heading">{tr(l("《黃泉紀》第二部・續卷設定", "《黄泉纪》第二部・续卷设定", "Yellow Springs · Part Two"), locale)}</h2>
+        <p>{tr(l(
+          "承接七卷原書的同一架空世界。第七卷以編年概述終局；第二部依事件順序補出卷八至二十七，並以終章補記收束。以下為故事設定與情節提要，不冒稱完整小說正文。",
+          "承接七卷原书的同一架空世界。第七卷以编年概述终局；第二部依事件顺序补出卷八至二十七，并以终章补记收束。以下为故事设定与情节提要，不冒称完整小说正文。",
+          "This shares the seven-volume fictional world. Volume 7 summarizes the eventual calamity; the continuation now presents volumes 8–27 in event order, followed by an afterword. These are story treatments, not complete prose chapters."
+        ), locale)}</p>
+      </div>
+      <div className="hq-guaili-volumes">
+        {GUAILI_PART_TWO.map((chapter) => <details key={chapter.no} id={`guaili-part-two-${chapter.no === "終" ? "ending" : chapter.no}`}>
+          <summary>
+            <span className="hq-guaili-volume-number">{chapter.no}</span>
+            <span className="hq-guaili-volume-title">{tr(chapter.title, locale)}<small>{tr(chapter.lead, locale)}</small></span>
+          </summary>
+          <p>{tr(chapter.text, locale)}</p>
+        </details>)}
+      </div>
+      <p className="hq-guaili-source-note">{tr(l(
+        "創作界線：天庭官僚與黃泉裂隙是昭梧小說世界觀；借用的宗教人物、異獸名號及五毒分類不等於史實或教義。終章沿用既有十年未解結局。",
+        "创作界线：天庭官僚与黄泉裂隙是昭梧小说世界观；借用的宗教人物、异兽名号及五毒分类不等于史实或教义。终章沿用既有十年未解结局。",
+        "Heaven's bureaucracy and the broken crossing belong to this fictional world. Borrowed religious names, beasts and venom groupings are not historical or doctrinal claims. The unresolved ten-year ending remains intact."
+      ), locale)}</p>
+    </section>
+
   </>;
 }

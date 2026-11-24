@@ -6941,7 +6941,7 @@ body::before {
   line-height: 1.68;
 }
 .zhaowu-visual-note.is-provisional { border-left-color: rgba(166, 77, 62, .58); }
-.zhaowu-visual-watermark { margin: 13px 2px -2px; color: rgba(76, 59, 40, .38); font-size: 13px; font-weight: 700; letter-spacing: .08em; text-align: right; }
+.zhaowu-visual-watermark { position: relative; display: block; clear: both; margin: 14px 2px 14px; padding-top: 8px; border-top: 1px solid rgba(87, 76, 59, .2); color: rgba(56, 48, 38, .72); font-size: 13px; font-weight: 700; letter-spacing: .08em; line-height: 1.6; text-align: right; }
 
 @media (max-width: 430px) {
   .zhaowu-visual-book { margin: 0 18px 32px; padding: 18px; border-radius: 19px; }
@@ -7355,6 +7355,15 @@ body::before {
   color: #786957;
   font-size: 9px;
   line-height: 1.6;
+  text-align: center;
+}
+
+.zhaowu-share-guide-tip {
+  margin: 6px auto 0;
+  max-width: 32rem;
+  color: #6b5d4d;
+  font-size: 10px;
+  line-height: 1.65;
   text-align: center;
 }
 
