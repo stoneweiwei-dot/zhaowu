@@ -162,6 +162,20 @@ export const PUBLIC_CHANGELOG: readonly PublicChangeEntry[] = [
     en: { title: "Faster Mythic Atlas and Guaili images", summary: "The Mythic Atlas, zodiac and Guaili pages now load web-sized images and a 720p film, about 90% less data; tapping an image still opens the full-resolution original. Chart calculation and payments are unchanged." },
   },
   {
+    id: "2026-10-30-article-view-count-protection",
+    date: "2026-10-30",
+    zhHant: { title: "文章瀏覽數防灌水（待套用）", summary: "已備妥文章瀏覽數保護：只能經由計數功能增加、只計算站上現有文章，同一位訪客短時間內重複開啟不再重複計算，並加上整體上限；資料庫變更待審核後套用，目前尚未生效。顯示方式、命盤計算與付款流程不變。" },
+    zhHans: { title: "文章浏览数防灌水（待套用）", summary: "已备妥文章浏览数保护：只能经由计数功能增加、只计算站上现有文章，同一位访客短时间内重复打开不再重复计算，并加上整体上限；数据库变更待审核后套用，目前尚未生效。显示方式、命盘计算与付款流程不变。" },
+    en: { title: "Article view count protection (pending)", summary: "Prepared: view counts can only grow through the counting function and only for articles on the site; repeat opens by the same visitor within a short window are not re-counted, with an overall ceiling. The database change is pending review and not yet active. Display, chart calculation and payments are unchanged." },
+  },
+  {
+    id: "2026-10-30-request-rate-limit-foundation",
+    date: "2026-10-30",
+    zhHant: { title: "請求頻率限制基礎（待套用）", summary: "已備妥通用的請求頻率限制，作為登入、優惠碼與文章互動防濫用保護的共同基礎；資料庫變更待審核後套用，目前尚未生效。訪客操作、命盤計算與付款流程不變。" },
+    zhHans: { title: "请求频率限制基础（待套用）", summary: "已备妥通用的请求频率限制，作为登录、优惠码与文章互动防滥用保护的共同基础；数据库变更待审核后套用，目前尚未生效。访客操作、命盘计算与付款流程不变。" },
+    en: { title: "Request rate-limit foundation (pending)", summary: "A shared request rate limit for sign-in, promo codes and article interactions is prepared; the database change is pending review and not yet active. Visitor flows, chart calculation and payments are unchanged." },
+  },
+  {
     id: "2026-10-23-pwa-language-guide-empty-state",
     date: "2026-10-23",
     zhHant: { title: "安裝版語言對應、導覽頁收編、空內容區塊不再顯示", summary: "安裝為 App 後，名稱與語言標記會跟隨繁中／簡中／英文；舊的 /guide 網址改導向首頁導覽；吉象圖鑑與影片區在沒有內容時直接隱藏，不再出現空區塊。命盤計算與付款流程不變。" },
