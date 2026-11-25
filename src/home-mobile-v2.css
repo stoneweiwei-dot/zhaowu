@@ -810,3 +810,31 @@ html body #root .zw-painted-home.zw-v2-home .zw-winter-quote {
   border-radius: 0 !important;
   box-shadow: none !important;
 }
+
+/* ── home-flat 2026-11-26 (dock): 音乐/导览钮盖内容 ──────────────────
+   根因：home-mobile-v2.css:197-208 的 v2 规则把 dock 钉成 fixed
+   bottom-right（(1,3,2)），盖掉了 painted-home.css:179 让它在首页
+   in-flow 的规则（(1,2,2)）。两个白 pill 滚到哪盖到哪，节气注脚、
+   隐私文字、返回昭梧按钮全被盖住。
+   修法：首页恢复 in-flow——用 [data-site-utility-dock] 把特性提到
+   (1,4,2)，稳赢 v2 规则，不靠源码顺序。dock 落到内容和页脚之间
+   居中，音乐/导览滚到底才看得见，不再盖字。首页已有 fixed 的
+   .ph-bottom-nav，导航不受影响；面板沿用 v2 的 static 规则，就地展开。 */
+html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-utility-dock[data-site-utility-dock] {
+  position: relative !important;
+  inset: auto !important;
+  width: max-content !important;
+  max-width: 100% !important;
+  margin: 8px auto 80px !important;
+  z-index: 36 !important;
+}
+/* 两个钮顺带改扁平：白 pill → .58 半透明方角（跟导览标题一致）；选中态保留印色 */
+html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-utility-buttons > button:not(.is-active) {
+  background: rgba(247, 241, 228, .58) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-utility-buttons > button {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
