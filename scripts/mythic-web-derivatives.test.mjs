@@ -53,6 +53,10 @@ test("pages render web derivatives and keep original links", () => {
   assert.ok(main.indexOf("src={MYTHIC_WEB_FILM}") < main.indexOf('src="/mythic-atlas/films/huangquan-chronicles.mp4"'));
   const guaili = readFileSync("src/routes/-mythic-atlas-guaili.tsx", "utf8");
   assert.ok(!/<img src="\/mythic-atlas\/originals\/[^"]+\.png"/.test(guaili));
+  // 2026-11-25: zodiac plates render on the Mythic Archive guaili section now
+  // that the guaili page is a continuous reader; the reader keeps original
+  // chapter artwork as web derivatives.
+  assert.match(guaili, /<img src=\{mythicWebPlate\("zodiac", ZODIAC_PLATES\[index\]\.image\)\}/);
   const index = readFileSync("src/routes/guaili-luanshen.tsx", "utf8");
-  assert.match(index, /<img src=\{mythicWebPlate\("zodiac", ZODIAC_PLATES\[i\]\.image\)\}/);
+  assert.match(index, /<img src=\{mythicWebPlate\("originals", artwork\.file\)\}/);
 });
