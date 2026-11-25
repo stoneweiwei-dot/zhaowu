@@ -641,7 +641,7 @@ html[data-zws]:not([data-zws^="solar-"]):not([data-zws^="southern-"]):not([data-
   margin: 0;
   padding: 1.25rem 1rem;
   background: transparent;
-  border: 1px solid rgba(45, 60, 50, .28);
+  border: 0;
   border-radius: 0;
   box-shadow: none;
 }
@@ -654,6 +654,19 @@ html[data-zws]:not([data-zws^="solar-"]):not([data-zws^="southern-"]):not([data-
 html body #root .zw-painted-home.zw-v2-home :is(.zhaowu-bazi-stage, .zhaowu-customer-record) {
   background: transparent !important;
   border-radius: 0 !important;
+  box-shadow: none !important;
+}
+/* The blocks above are transparent, but their inner sections still paint:
+   the chart collapsibles sit on #eee7d7 at .66, the birth summary on a
+   green wash, and so on — stacked, they read as one solid block. Strip the
+   whole desk subtree back to the painting (three IDs in the selector so it
+   outranks the sheet-shell card rules). Form controls and images keep
+   their own backgrounds; the panel's own border is gone too, so the desk
+   has no card edge left at all. */
+html body #root .zw-painted-home.zw-v2-home #birth-form :is(#bazi, #customer-record, #question-stage),
+html body #root .zw-painted-home.zw-v2-home #birth-form :is(#bazi, #customer-record, #question-stage) *:not(input):not(select):not(textarea):not(button):not(a):not(img) {
+  background: transparent !important;
+  background-image: none !important;
   box-shadow: none !important;
 }
 
