@@ -188,6 +188,57 @@ const FIVE_TASTES = [
   },
 ] as const;
 
+const TILE_GROUPS = [
+  {
+    key: "colours",
+    href: "#correspondences",
+    name: ["五色", "五色", "Five colours"],
+    desc: ["青赤黃白黑", "青赤黄白黑", "Azure, red, yellow, white, black"],
+    glyphs: ["木", "火", "土", "金", "水"],
+    colors: ["#2f7a5e", "#b44a32", "#b8892e", "#8a8f7a", "#2f4a5e"],
+  },
+  {
+    key: "tones",
+    href: "#correspondences",
+    name: ["五音", "五音", "Five tones"],
+    desc: ["宮商角徵羽", "宫商角徵羽", "Gong, Shang, Jue, Zhi, Yu"],
+    glyphs: ["宮", "商", "角", "徵", "羽"],
+    colors: ["#b8892e", "#8a8f7a", "#2f7a5e", "#b44a32", "#2f4a5e"],
+  },
+  {
+    key: "tastes",
+    href: "#five-tastes",
+    name: ["五味", "五味", "Five tastes"],
+    desc: ["酸苦甘辛鹹", "酸苦甘辛咸", "Sour, bitter, sweet, pungent, salty"],
+    glyphs: ["酸", "苦", "甘", "辛", "鹹"],
+    colors: ["#2f7a5e", "#b44a32", "#b8892e", "#8a8f7a", "#2f4a5e"],
+  },
+  {
+    key: "qi",
+    href: "#five-qi",
+    name: ["五氣", "五气", "Five qi"],
+    desc: ["風熱濕燥寒", "风热湿燥寒", "Wind, heat, dampness, dryness, cold"],
+    glyphs: ["風", "熱", "濕", "燥", "寒"],
+    colors: ["#2f7a5e", "#b44a32", "#b8892e", "#8a8f7a", "#2f4a5e"],
+  },
+  {
+    key: "functions",
+    href: "#support",
+    name: ["五功能", "五功能", "Five functions"],
+    desc: ["展開・啟動・整理・界線・儲備", "展开・启动・整理・界线・储备", "Five ways of working"],
+    glyphs: ["木", "火", "土", "金", "水"],
+    colors: ["#2f7a5e", "#b44a32", "#b8892e", "#8a8f7a", "#2f4a5e"],
+  },
+  {
+    key: "diet",
+    href: "#diet",
+    name: ["五色飲食", "五色饮食", "Five-colour diet"],
+    desc: ["一週 35 格檢查表", "一周 35 格检查表", "A 35-box weekly checklist"],
+    glyphs: ["木", "火", "土", "金", "水"],
+    colors: ["#2f7a5e", "#b44a32", "#b8892e", "#8a8f7a", "#2f4a5e"],
+  },
+] as const;
+
 function FiveElementsToneQiArticle() {
   const { locale } = useI18n();
 
@@ -212,7 +263,35 @@ function FiveElementsToneQiArticle() {
         </p>
       </header>
 
-      <section className="seal-border rounded-2xl bg-cream p-5 sm:p-8">
+      <section className="border-t border-line pt-5">
+        <h2 className="font-display text-lg text-ink">
+          {tr(locale, "五行小分組", "五行小分组", "Five-element groups")}
+        </h2>
+        <p className="mt-1 text-sm leading-6 text-ink-soft">
+          {tr(locale, "點一方塊，跳到對應那節。", "点一方块，跳到对应那节。", "Tap a tile to jump to that section.")}
+        </p>
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          {TILE_GROUPS.map((tile) => (
+            <a key={tile.key} href={tile.href} className="flex aspect-square flex-col items-center justify-between border border-line bg-paper p-2 text-center">
+              <span className="mt-1 flex justify-center gap-0.5">
+                {tile.glyphs.map((g, i) => (
+                  <span key={g} className="grid h-5 w-5 place-items-center font-display text-xs font-bold text-white" style={{ backgroundColor: tile.colors[i] }}>
+                    {g}
+                  </span>
+                ))}
+              </span>
+              <span className="font-display text-sm font-bold leading-tight text-ink">
+                {tr(locale, tile.name[0], tile.name[1], tile.name[2])}
+              </span>
+              <span className="text-[11px] leading-tight text-ink-soft">
+                {tr(locale, tile.desc[0], tile.desc[1], tile.desc[2])}
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section id="correspondences" className="scroll-mt-24 seal-border rounded-2xl bg-cream p-5 sm:p-8">
         <h2 className="font-display text-2xl text-ink">
           {tr(locale, "五行對應速讀", "五行对应速读", "Five correspondences")}
         </h2>
@@ -252,7 +331,7 @@ function FiveElementsToneQiArticle() {
         </div>
       </section>
 
-      <section className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
+      <section id="five-qi" className="scroll-mt-24 seal-border rounded-2xl bg-paper p-5 sm:p-8">
         <h2 className="font-display text-2xl text-ink">
           {tr(locale, "「五氣」要分清語境", "“五气”要分清语境", "Read “five qi” in context")}
         </h2>
@@ -265,7 +344,7 @@ function FiveElementsToneQiArticle() {
         </p>
       </section>
 
-      <section className="seal-border rounded-2xl bg-cream p-5 sm:p-8">
+      <section id="support" className="scroll-mt-24 seal-border rounded-2xl bg-cream p-5 sm:p-8">
         <h2 className="font-display text-2xl text-ink">
           {tr(locale, "真正的「補」：對準功能卡點，再練出改變", "真正的“补”：对准功能卡点，再练出改变", "What “support” means: train the blocked function")}
         </h2>
@@ -291,7 +370,7 @@ function FiveElementsToneQiArticle() {
         </a>
       </section>
 
-      <section className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
+      <section id="diet" className="scroll-mt-24 seal-border rounded-2xl bg-paper p-5 sm:p-8">
         <h2 className="font-display text-2xl text-ink">
           {tr(locale, "五色飲食與五味：把對應吃進日常", "五色饮食与五味：把对应吃进日常", "Five colours and five tastes: eating the correspondences")}
         </h2>
@@ -349,7 +428,7 @@ function FiveElementsToneQiArticle() {
           )}</p>
         </div>
 
-        <h3 className="mt-6 font-display text-xl text-ink">
+        <h3 id="five-tastes" className="mt-6 scroll-mt-24 font-display text-xl text-ink">
           {tr(locale, "五味對照", "五味对照", "Five tastes")}
         </h3>
         <p className="mt-3 text-[15px] leading-8 text-ink-soft">
