@@ -41,6 +41,31 @@ test("only the standardized owner-library five-tone names can fulfill the gift",
   assert.equal(matched.find((item) => item.element === "水")?.track, null);
 });
 
+test("the descriptive owner-library five-tone names (as stored live) also fulfill the gift", () => {
+  // Live owner-music names, 2026-11-25: descriptive Chinese name + English "Element · Tone · title".
+  // The old standardized form above still works; this form is what the library actually stores,
+  // and the parser must accept it or every gift button stays "syncing from the music library".
+  const live = [
+    { id: "jue", name: "古木角聲｜Wood · Jue · Ancient Grove", element: "木", tone: "角", title: "古木角聲" },
+    { id: "zhi", name: "雲鶴徵聲｜Fire · Zhi · Cloud Crane", element: "火", tone: "徵", title: "雲鶴徵聲" },
+    { id: "gong", name: "山寺宮聲｜Earth · Gong · Mountain Temple", element: "土", tone: "宮", title: "山寺宮聲" },
+    { id: "shang", name: "石英商聲｜Metal · Shang · Quartz", element: "金", tone: "商", title: "石英商聲" },
+    { id: "yu", name: "清蓮羽聲｜Water · Yu · Clear Lotus", element: "水", tone: "羽", title: "清蓮羽聲" },
+  ];
+  for (const track of live) {
+    assert.deepEqual(parseFiveToneTrackName(track.name), { element: track.element, tone: track.tone, title: track.title });
+  }
+  // A mismatched element/tone pair still fulfills nothing.
+  assert.equal(parseFiveToneTrackName("古木角聲｜Fire · Jue · Mismatch"), null);
+  assert.equal(parseFiveToneTrackName("普通背景音樂"), null);
+  const tracks = live.map((t) => ({ id: t.id, name: t.name, url: `/${t.id}.mp3`, contentType: "audio/mpeg", fileSize: 1, enabled: true, createdAt: null }));
+  for (const primary of ["木", "火", "土", "金", "水"]) {
+    const matched = matchFiveToneTracks(buildFiveTonePlan(primary, "system"), tracks);
+    assert.equal(matched.length, 3);
+    for (const item of matched) assert.ok(item.track, `expected a playable track for ${item.element} (${primary} primary)`);
+  }
+});
+
 test("the report stays primary while every verified paid level includes its playable five-tone gift", async () => {
   const [gate, gift, css, specialist, palm, numerology, unified] = await Promise.all([
     read("src/components/report-access-gate.tsx"),
