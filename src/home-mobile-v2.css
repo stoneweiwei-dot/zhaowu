@@ -645,6 +645,17 @@ html[data-zws]:not([data-zws^="solar-"]):not([data-zws^="southern-"]):not([data-
   border-radius: 0;
   box-shadow: none;
 }
+/* The plain-language chart inside the desk is its own solid card
+   (.zhaowu-home-sheet-shell :is(.zhaowu-bazi-stage, .zhaowu-customer-record)
+   in zhaowu-design-system.css: background #FBF7EE !important). That is the
+   opaque block the browser still saw after the panel itself went
+   transparent — so on the painted homepage only, strip it back to the
+   painting too. The report page is untouched (this selector is home-only). */
+html body #root .zw-painted-home.zw-v2-home :is(.zhaowu-bazi-stage, .zhaowu-customer-record) {
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
 
 .zhaowu-gender-capsules {
   display: grid;
