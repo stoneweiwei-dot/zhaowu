@@ -27,6 +27,7 @@ import {
 } from "../src/lib/hepan/numerology.ts";
 import { aspectBetween, buildWesternPairSection } from "../src/lib/hepan/western.ts";
 import { buildVedicPairSection, GANA, NADI } from "../src/lib/hepan/vedic.ts";
+import { buildPlainLanguage } from "../src/lib/hepan/plain-language.ts";
 import { readFileSync } from "node:fs";
 
 // Verified fixture: 1990-06-15 10:30 Sydney male.
@@ -828,4 +829,308 @@ test("floating 合盤 button: paid report page links to /hepan, no longer expand
   const source = readFileSync(new URL("../src/components/paid-report-pages.tsx", import.meta.url), "utf8");
   assert.match(source, /<Link to="\/hepan" className="zhaowu-v6-together">/);
   assert.doesNotMatch(source, /\[data-professional-report\]\)\?\.setAttribute\("open", ""\)/);
+});
+
+// --- Plain-language rendering (Shi, 2026-11-24) -------------------------
+// The page shows ONLY what buildPlainLanguage returns. The backend model
+// (formula, weights, per-system scores) is still computed and still
+// locked by the tests above; these tests lock the plain surface:
+// no jargon, no digits, correct block assignment, headline bands,
+// reminder variants and the caps.
+
+const FULL_A = { 木: 40, 火: 15, 土: 15, 金: 15, 水: 15 };
+const FULL_B = { 木: 0, 火: 25, 土: 25, 金: 25, 水: 25 };
+const PART_A = { 木: 40, 火: 20, 土: 20, 金: 10, 水: 10 };
+const PART_B = { 木: 10, 火: 10, 土: 20, 金: 20, 水: 40 };
+const SKEW = { 木: 60, 火: 10, 土: 10, 金: 10, 水: 10 };
+
+/** The demo pair with all six sections, as the page builds it (western
+ *  and vedic from the test helpers, not the live ephemeris). */
+function fullDemoIndex() {
+  const { chartA, chartB, civilA, civilB } = demoPair();
+  return buildHepanIndex(chartA, chartB, {
+    ziwei: buildZiweiPairSection(chartA, civilA, chartB, civilB),
+    yizhangjing: buildPalmPairSection(chartA, civilA, chartB, civilB),
+    qizheng: buildQizhengPairSection(chartA, civilA, chartB, civilB),
+    numerology: buildNumerologyPairSection(civilA, civilB),
+    western: buildWesternPairSection({
+      available: true,
+      a: westernPos(0),
+      b: westernPos(120),
+      moonReliable: true,
+    }),
+    vedic: buildVedicPairSection({
+      available: true,
+      a: vedicMoon(0, 10, 0),
+      b: vedicMoon(4, 10, 9),
+      genderA: "male",
+      genderB: "female",
+      lowConfidence: false,
+    }),
+  });
+}
+
+function plainText(plain) {
+  return [plain.headline, ...plain.strengths, ...plain.patience, plain.reminder, plain.footer].join("\n");
+}
+
+const JARGON =
+  /八字|紫微|一掌經|七政|生命靈數|占星|手相|六合|六沖|三合|生剋|四化|宮主|星曜|六道|相位|容許度|權重|公式|分數|大運|流年|日主|日支|五行|化忌|命宮|夫妻宮|星曆|相合|磨合|中性|計分|不計分|不入主指數|命盤|三會/;
+
+test("plain language: demo pair shows no jargon and no digits anywhere", () => {
+  const plain = buildPlainLanguage(fullDemoIndex(), "zh-Hant");
+  const text = plainText(plain);
+  assert.doesNotMatch(text, JARGON);
+  assert.doesNotMatch(text, /\d/);
+  assert.match(plain.footer, /完整版/);
+  assert.doesNotMatch(plain.footer, /http/);
+  assert.equal(plain.strengths.length, 3);
+  assert.equal(plain.patience.length, 3);
+  assert.match(plain.headline, /合得來的地方不少/);
+});
+
+test("plain language: headline bands are high >= 75, mid 55-74, low < 55", () => {
+  const high = buildHepanIndex(makeChart("辛", "子", FULL_A), makeChart("壬", "丑", FULL_B));
+  assert.deepEqual(
+    high.bazi.readings.map((r) => r.score),
+    [85, 90, 100],
+  );
+  assert.equal(high.index, 92);
+  assert.match(buildPlainLanguage(high, "zh-Hant").headline, /合得來的地方明顯比需要磨合的地方多/);
+
+  const mid = fullDemoIndex();
+  assert.equal(mid.index, 63);
+  assert.match(buildPlainLanguage(mid, "zh-Hant").headline, /合得來的地方不少，不過也有一個地方/);
+
+  const low = buildHepanIndex(makeChart("辛", "子", PART_A), makeChart("甲", "午", PART_B));
+  assert.deepEqual(
+    low.bazi.readings.map((r) => r.score),
+    [45, 40, 50],
+  );
+  assert.equal(low.index, 45);
+  assert.match(buildPlainLanguage(low, "zh-Hant").headline, /要磨合的地方不少，急不得/);
+});
+
+test("plain language: day-master 85/70 go to strengths, 45 goes to patience", () => {
+  const gen = buildHepanIndex(makeChart("辛", "子", EVEN), makeChart("壬", "寅", EVEN));
+  assert.deepEqual(
+    buildPlainLanguage(gen, "zh-Hant").strengths,
+    ["一個人主動、一個人接得住，事情推得動。"],
+  );
+
+  const same = buildHepanIndex(makeChart("辛", "子", EVEN), makeChart("庚", "寅", EVEN));
+  assert.deepEqual(
+    buildPlainLanguage(same, "zh-Hant").strengths,
+    ["想法挺像，很多事不用多說就懂。"],
+  );
+
+  const ctl = buildHepanIndex(makeChart("辛", "子", EVEN), makeChart("甲", "寅", EVEN));
+  assert.deepEqual(
+    buildPlainLanguage(ctl, "zh-Hant").patience,
+    ["做事的方式不太一樣，容易在小事上較勁。"],
+  );
+});
+
+test("plain language: day-branch 六合/半三合 go to strengths, 六沖 goes to patience", () => {
+  const liuhe = buildHepanIndex(makeChart("壬", "子", EVEN), makeChart("癸", "丑", EVEN));
+  assert.ok(
+    buildPlainLanguage(liuhe, "zh-Hant").strengths.includes("過日子挺合拍，待在一起不累。"),
+  );
+
+  const sanhui = buildHepanIndex(makeChart("庚", "申", EVEN), makeChart("壬", "子", EVEN));
+  assert.ok(
+    buildPlainLanguage(sanhui, "zh-Hant").strengths.includes("剛開始要適應一下，處久了會越來越順。"),
+  );
+
+  const liuchong = buildHepanIndex(makeChart("壬", "子", EVEN), makeChart("甲", "午", EVEN));
+  assert.ok(
+    buildPlainLanguage(liuchong, "zh-Hant").patience.includes("生活習慣和步調差得比較多，要多留空間給對方。"),
+  );
+
+  // No relation (60) earns no sentence either way.
+  const none = buildHepanIndex(makeChart("壬", "子", EVEN), makeChart("甲", "寅", EVEN));
+  const plain = buildPlainLanguage(none, "zh-Hant");
+  assert.doesNotMatch(plainText(plain), /過日子挺合拍|剛開始要適應|生活習慣和步調/);
+});
+
+test("plain language: elements 100 goes to strengths, 0 goes to patience, 50-69 earns nothing", () => {
+  const full = buildHepanIndex(makeChart("壬", "子", FULL_A), makeChart("甲", "寅", FULL_B));
+  assert.ok(
+    buildPlainLanguage(full, "zh-Hant").strengths.includes("一個人缺的，另一個人剛好補得上。"),
+  );
+
+  const none = buildHepanIndex(makeChart("壬", "子", SKEW), makeChart("甲", "寅", SKEW));
+  assert.equal(none.bazi.readings[2].score, 0);
+  assert.ok(
+    buildPlainLanguage(none, "zh-Hant").patience.includes(
+      "一個人缺的，另一個人不一定補得上，遇到瓶頸容易一起卡住。",
+    ),
+  );
+
+  const mid = buildHepanIndex(makeChart("壬", "子", PART_A), makeChart("甲", "寅", PART_B));
+  assert.equal(mid.bazi.readings[2].score, 50);
+  assert.doesNotMatch(
+    plainText(buildPlainLanguage(mid, "zh-Hant")),
+    /一個人缺的，另一個人剛好補得上|一個人缺的，另一個人不一定補得上/,
+  );
+});
+
+test("plain language: numerology 85 goes to strengths, 45 to patience, same number gets its own line", () => {
+  const neutral = (numerology) =>
+    buildHepanIndex(makeChart("辛", "子", EVEN), makeChart("庚", "寅", EVEN), { numerology });
+
+  const xianghe = neutral(
+    buildNumerologyPairSection(civilOf(1990, 1, 1, 12, 0), civilOf(1992, 3, 8, 8, 15)),
+  );
+  assert.ok(
+    buildPlainLanguage(xianghe, "zh-Hant").strengths.includes("兩個人看事情的角度挺像，節奏也合得來。"),
+  );
+
+  const mohe = neutral(
+    buildNumerologyPairSection(civilOf(1990, 6, 15, 10, 30), civilOf(1992, 3, 8, 8, 15)),
+  );
+  assert.ok(
+    buildPlainLanguage(mohe, "zh-Hant").patience.includes("做事的方式不太一樣，決定之前多商量一下。"),
+  );
+
+  const same = neutral(
+    buildNumerologyPairSection(civilOf(1990, 6, 15, 10, 30), civilOf(1990, 6, 24, 10, 30)),
+  );
+  assert.ok(
+    buildPlainLanguage(same, "zh-Hant").strengths.includes("想法很像，連盲點都像，互補要靠其他地方。"),
+  );
+});
+
+test("plain language: western contributes at most one sentence per block, sun-moon first", () => {
+  const neutral = (western) =>
+    buildHepanIndex(makeChart("辛", "子", EVEN), makeChart("庚", "寅", EVEN), { western });
+  const westHigh = [
+    "平常過日子的節奏合得來，累了的時候對方也懂。",
+    "兩個人親近的方式合得來，喜歡待在一起。",
+    "喜歡的東西挺像，一起做點什麼都不難。",
+    "情緒上互相接得住，不用多說。",
+    "兩個人在一起挺穩的，長久相處不用擔心。",
+  ];
+  const westLow = [
+    "一個人想休息、一個人想出門的時候，節奏容易對不上。",
+    "親近的方式不太一樣，一個想靠近、一個想留點空間的時候多。",
+    "喜歡的東西不太一樣，花錢花時間的地方容易有不同想法。",
+    "情緒低落的時候，兩個人安慰人的方式不太一樣。",
+    "長久相處要多花點心思，責任和界線要講清楚。",
+  ];
+
+  const easy = neutral(
+    buildWesternPairSection({ available: true, a: westernPos(0), b: westernPos(120), moonReliable: true }),
+  );
+  const easyPlain = buildPlainLanguage(easy, "zh-Hant");
+  assert.equal(easyPlain.strengths.filter((s) => westHigh.includes(s)).length, 1);
+  assert.ok(easyPlain.strengths.includes(westHigh[0]));
+
+  const hard = neutral(
+    buildWesternPairSection({ available: true, a: westernPos(0), b: westernPos(90), moonReliable: true }),
+  );
+  const hardPlain = buildPlainLanguage(hard, "zh-Hant");
+  assert.equal(hardPlain.patience.filter((s) => westLow.includes(s)).length, 1);
+  assert.ok(hardPlain.patience.includes(westLow[0]));
+});
+
+test("plain language: vedic 26 goes to strengths, 19 earns nothing, 13 with a zero habit goes to patience", () => {
+  const neutral = (vedic) =>
+    buildHepanIndex(makeChart("辛", "子", EVEN), makeChart("庚", "寅", EVEN), { vedic });
+  const vedicSec = (a, b) =>
+    buildVedicPairSection({
+      available: true,
+      a,
+      b,
+      genderA: "male",
+      genderB: "female",
+      lowConfidence: false,
+    });
+
+  const high = neutral(vedicSec(vedicMoon(3, 10, 7), vedicMoon(11, 10, 26)));
+  assert.ok(
+    buildPlainLanguage(high, "zh-Hant").strengths.includes("整體來說，兩個人過日子的節奏合得來。"),
+  );
+
+  const skip = neutral(vedicSec(vedicMoon(0, 10, 0), vedicMoon(4, 10, 9)));
+  const skipPlain = buildPlainLanguage(skip, "zh-Hant");
+  assert.doesNotMatch(
+    plainText(skipPlain),
+    /整體來說，兩個人過日子的節奏合得來|有些生活習慣和性情上的地方|整體來說，兩個人要磨合的地方比較多/,
+  );
+
+  const low = neutral(vedicSec(vedicMoon(3, 10, 7), vedicMoon(9, 10, 22)));
+  assert.ok(
+    buildPlainLanguage(low, "zh-Hant").patience.includes("有些生活習慣和性情上的地方，要多包容一點。"),
+  );
+});
+
+test("plain language: ziwei flag goes to patience, shared palm dao goes to strengths", () => {
+  const demo = fullDemoIndex();
+  assert.ok(
+    buildPlainLanguage(demo, "zh-Hant").patience.includes("有一個地方要多花點心力，不是誰對誰錯。"),
+  );
+
+  const chartA = buildChart(realInput(1990, 6, 15, 10, 30, "male"));
+  const chartB = buildChart(realInput(2000, 12, 12, 18, 0, "female"));
+  const palm = buildHepanIndex(chartA, chartB, {
+    yizhangjing: buildPalmPairSection(
+      chartA,
+      civilOf(1990, 6, 15, 10, 30),
+      chartB,
+      civilOf(2000, 12, 12, 18, 0),
+    ),
+  });
+  assert.ok(
+    buildPlainLanguage(palm, "zh-Hant").strengths.includes("有些在意的事，兩個人想得挺像。"),
+  );
+
+  // The demo pair shares no dao, so it earns no palm sentence.
+  assert.doesNotMatch(plainText(buildPlainLanguage(demo, "zh-Hant")), /有些在意的事，兩個人想得挺像/);
+});
+
+test("plain language: reminder is contrast with conflicts, smooth with nothing to flag, steady otherwise", () => {
+  const contrast = buildHepanIndex(makeChart("壬", "子", PART_A), makeChart("甲", "午", PART_B));
+  assert.equal(contrast.conflicts.length, 1);
+  assert.match(
+    buildPlainLanguage(contrast, "zh-Hant").reminder,
+    /卡住的那天，晚一點再談/,
+  );
+
+  const smooth = buildHepanIndex(makeChart("辛", "子", EVEN), makeChart("庚", "寅", EVEN));
+  assert.equal(smooth.conflicts.length, 0);
+  assert.deepEqual(buildPlainLanguage(smooth, "zh-Hant").patience, []);
+  assert.match(buildPlainLanguage(smooth, "zh-Hant").reminder, /順的時候多/);
+
+  const steady = buildHepanIndex(makeChart("辛", "子", EVEN), makeChart("甲", "寅", EVEN));
+  assert.equal(steady.conflicts.length, 0);
+  assert.equal(buildPlainLanguage(steady, "zh-Hant").patience.length, 1);
+  assert.match(buildPlainLanguage(steady, "zh-Hant").reminder, /分開幾次說/);
+});
+
+test("plain language: strengths cap at 3, patience cap at 4, empty blocks stay honest", () => {
+  const plain = buildPlainLanguage(fullDemoIndex(), "zh-Hant");
+  assert.ok(plain.strengths.length <= 3);
+  assert.ok(plain.patience.length <= 4);
+  assert.ok(plain.strengths.length > 0);
+  assert.ok(plain.patience.length > 0);
+
+  const high = buildHepanIndex(makeChart("辛", "子", FULL_A), makeChart("壬", "丑", FULL_B));
+  const highPlain = buildPlainLanguage(high, "zh-Hant");
+  assert.equal(highPlain.strengths.length, 3);
+  assert.deepEqual(highPlain.patience, []);
+
+  const low = buildHepanIndex(makeChart("辛", "子", PART_A), makeChart("甲", "午", PART_B));
+  const lowPlain = buildPlainLanguage(low, "zh-Hant");
+  assert.deepEqual(lowPlain.strengths, []);
+  assert.ok(lowPlain.patience.length > 0);
+});
+
+test("plain language: English output has no Chinese characters and no digits", () => {
+  const plain = buildPlainLanguage(fullDemoIndex(), "en");
+  const text = plainText(plain);
+  assert.doesNotMatch(text, /[\u4e00-\u9fff]/);
+  assert.doesNotMatch(text, /\d/);
+  assert.match(plain.footer, /paid complete document/);
+  assert.match(plain.headline, /fair amount comes easily/);
 });
