@@ -34,3 +34,13 @@ test("painted home mounts the tree and no longer shows the jade dragon", async (
   assert.doesNotMatch(home, /reference-comic-dragons|zhaowu-dragon-lake/);
   assert.doesNotMatch(home, /觀世錄|观世录/, "obscure entrance name must not be a top-level label");
 });
+
+test("opened blocks show square image tiles, not text rows", async () => {
+  const tree = await source("src/components/home-tree.tsx");
+  assert.match(tree, /ph-tree-tiles/);
+  assert.match(tree, /ph-tree-tile/);
+  const thumbs = tree.match(/thumb: '[^']+'/g) || [];
+  assert.equal(thumbs.length, 14, `expected 14 tile thumbs, found ${thumbs.length}`);
+  for (const path of ["/home-tiles/quiz-who.webp", "/home-tiles/quiz-state.webp", "/home-tiles/quiz-brand.webp", "/home-tiles/quiz-life.webp", "/home-tiles/sample-report.webp", "/home-tiles/my-reports.webp", "/home-tiles/daily-colors.webp", "/home-tiles/knowledge-basics.webp", "/home-tiles/mythic-atlas.webp", "/home-tiles/guaili.webp", "/home-tiles/updates.webp", "/home-tiles/about.webp", "/images/soul-chapters/zh/volume-1.webp", "/sky-universe/cosmic-nebula.webp"]) assert.ok(tree.includes(path), path);
+  assert.match(tree, /loading="lazy"/);
+});
