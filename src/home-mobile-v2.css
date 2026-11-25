@@ -838,3 +838,99 @@ html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-utility-buttons > 
   border-radius: 0 !important;
   box-shadow: none !important;
 }
+
+/* ── home-layout 2026-11-26: 首页排版收尾 ──────────────────────────
+   Shi 03:58 纠正：要修的是排版，不是白卡。
+   1. 生辰面板仍实白的真根因：#birth-form 自身的底。theme-skins-full.css:693
+      用 html[data-zws]×4 body :is(#birth-form,…) (1,4,2) !important 把整张
+      #birth-form 漆成 var(--zws-surface) 实色纸面；#1150 只清了外层
+      .zw-v2-opening 的渐变和里面的子块，从没动过 #birth-form 自身的底，
+      所以浏览器一直看到实白直栏。这里用 #root + 3×[data-zws] 写到
+      (2,5,2) !important 压过它（mobile-page-scroll.css:411 同款写法），
+      只限首页，报告页不动。
+   2. 音乐钮扩到非首页：design-system:8263 把 dock 全站钉成 fixed；
+      #1151 只在首页恢复了 in-flow。文章页（每日幸运色、八景宫、知识
+      文章）和所有非首页都还是浮在右下角盖字。这里把 in-flow 扩到
+      非首页，dock 落到内容和页脚之间。
+   3. 排版密度：hero 不再 100svh、masthead 收短、雾洗减淡、内容铺满
+      宽度、栏间空距收紧。只改首页排版。 */
+
+/* 1. #birth-form 自身去底（真根因） */
+html[data-zws][data-zws][data-zws] body #root .zw-painted-home.zw-v2-home #birth-form,
+html body #root .zw-painted-home.zw-v2-home #birth-form {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* 2. dock in-flow 扩到非首页（文章页、今日指引以外的所有非首页） */
+html body #root:not(:has(.zw-painted-home.zw-v2-home)) .zhaowu-site-utility-dock[data-site-utility-dock] {
+  position: relative !important;
+  inset: auto !important;
+  width: max-content !important;
+  max-width: 100% !important;
+  margin: 8px auto 80px !important;
+  z-index: 36 !important;
+}
+
+/* 3a. hero 不再撑满一屏，内容往上提；顶雾减淡 */
+html body #root .zw-painted-home.zw-v2-home .zw-v2-hero {
+  min-height: 0;
+  padding-top: 8px;
+  padding-bottom: 28px;
+}
+html body #root .zw-painted-home.zw-v2-home .zw-v2-masthead {
+  min-height: 52px;
+  margin-bottom: 12px;
+}
+html body #root .zw-painted-home.zw-v2-home .zw-stage::after {
+  background: linear-gradient(to bottom, rgba(250,247,237,.55) 0%, rgba(250,247,237,.42) 30%, rgba(250,247,237,0) 55%) !important;
+}
+
+/* 3b. 内容铺满宽度：手机 16px 边距，桌面栏宽 560→680 */
+html body #root .zw-painted-home.zw-v2-home .zw-v2-hero,
+html body #root .zw-painted-home.zw-v2-home .ph-tree,
+html body #root .zw-painted-home.zw-v2-home .zw-season-context {
+  max-width: none;
+  padding-inline: 16px;
+}
+html body #root .zw-painted-home.zw-v2-home .zw-home-birth-desk-container {
+  max-width: none;
+  margin: .75rem auto .5rem;
+}
+@media (min-width: 900px) {
+  html body #root .zw-painted-home.zw-v2-home .zw-v2-hero,
+  html body #root .zw-painted-home.zw-v2-home .ph-tree,
+  html body #root .zw-painted-home.zw-v2-home .zw-season-context {
+    max-width: 680px;
+  }
+}
+
+/* 3c. 栏间空距收紧 */
+html body #root .zw-painted-home.zw-v2-home .ph-tree-intro {
+  padding: 16px 0 14px;
+}
+html body #root .zw-painted-home.zw-v2-home .ph-tree-head {
+  min-height: 76px;
+  padding: 12px 0;
+}
+html body #root .zw-painted-home.zw-v2-home .ph-tree-node {
+  margin-bottom: 10px;
+}
+html body #root .zw-painted-home.zw-v2-home .ph-tree {
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+html body #root .zw-painted-home.zw-v2-home .zw-season-context {
+  padding-top: 10px;
+  padding-bottom: 14px;
+}
+html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature {
+  margin: 16px auto 24px;
+  padding-inline: 16px;
+}
+html body #root .zw-painted-home.zw-v2-home .ph-bottom-nav {
+  margin-top: 12px;
+}
