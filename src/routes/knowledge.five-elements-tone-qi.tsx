@@ -67,6 +67,127 @@ const ELEMENTS = [
   },
 ] as const;
 
+const DIET_COLORS = [
+  {
+    key: "wood",
+    glyph: "木",
+    color: ["綠（青）", "绿（青）", "Green (azure)"],
+    organ: ["肝", "肝", "Liver"],
+    foods: [
+      "菠菜、西蘭花、青瓜、青椒、羽衣甘藍、菜心、芥蘭、青豆、牛油果、奇異果、青蘋果",
+      "菠菜、西兰花、黄瓜、青椒、羽衣甘蓝、菜心、芥兰、青豆、牛油果、猕猴桃、青苹果",
+      "Spinach, broccoli, cucumber, green pepper, kale, choy sum, Chinese broccoli, green beans, avocado, kiwi, green apple",
+    ],
+    tip: [
+      "任何一餐加一碟灼青菜或一份沙律，綠色幾乎不會缺。",
+      "任何一餐加一碟焯青菜或一份沙拉，绿色几乎不会缺。",
+      "Add a plate of blanched greens or a salad to any meal and green is almost never missing.",
+    ],
+  },
+  {
+    key: "fire",
+    glyph: "火",
+    color: ["紅（赤）", "红（赤）", "Red"],
+    organ: ["心", "心", "Heart"],
+    foods: [
+      "番茄、紅椒、士多啤梨、西瓜、紅蘋果、紅蘿蔔（偏橙紅）、車厘子、紅棗、紅菜頭、石榴",
+      "番茄、红椒、草莓、西瓜、红苹果、胡萝卜（偏橙红）、樱桃、红枣、红甜菜、石榴",
+      "Tomato, red pepper, strawberry, watermelon, red apple, carrot (orange-red), cherry, red dates, beetroot, pomegranate",
+    ],
+    tip: [
+      "意粉醬、番茄炒蛋、紅椒炒肉，一道菜就補到紅色。",
+      "意面酱、番茄炒蛋、红椒炒肉，一道菜就补到红色。",
+      "A pasta sauce, tomato and egg, or stir-fried red pepper with meat covers red in a single dish.",
+    ],
+  },
+  {
+    key: "earth",
+    glyph: "土",
+    color: ["黃橙（黃）", "黄橙（黄）", "Yellow / orange"],
+    organ: ["脾胃", "脾胃", "Spleen and stomach"],
+    foods: [
+      "南瓜、粟米、黃椒、香蕉、橙、芒果、菠蘿、檸檬、甘筍、番薯、木瓜、雞蛋黃",
+      "南瓜、玉米、黄椒、香蕉、橙子、芒果、菠萝、柠檬、胡萝卜、红薯、木瓜、蛋黄",
+      "Pumpkin, corn, yellow pepper, banana, orange, mango, pineapple, lemon, carrot, sweet potato, papaya, egg yolk",
+    ],
+    tip: [
+      "早餐加香蕉或橙，晚餐用南瓜湯或粟米當配菜，最省事。",
+      "早餐加香蕉或橙子，晚餐用南瓜汤或玉米当配菜，最省事。",
+      "A banana or orange at breakfast, pumpkin soup or corn as a side at dinner — the easiest way.",
+    ],
+  },
+  {
+    key: "metal",
+    glyph: "金",
+    color: ["白", "白", "White"],
+    organ: ["肺", "肺", "Lung"],
+    foods: [
+      "白蘿蔔、椰菜花、菇類（白菇、杏鮑菇）、洋蔥、蒜頭、豆腐、淮山、蓮藕、梨、白桃",
+      "白萝卜、花椰菜、菌菇（白蘑菇、杏鲍菇）、洋葱、蒜、豆腐、山药、莲藕、梨、白桃",
+      "White radish, cauliflower, mushrooms (white button, king oyster), onion, garlic, tofu, Chinese yam, lotus root, pear, white peach",
+    ],
+    tip: [
+      "菇類和豆腐很容易入菜 — 打邊爐、炒菜、煲湯都加一點。",
+      "菌菇和豆腐很容易入菜——火锅、炒菜、煲汤都加一点。",
+      "Mushrooms and tofu go into almost anything — hotpot, stir-fries and soups.",
+    ],
+  },
+  {
+    key: "water",
+    glyph: "水",
+    color: ["黑紫（黑）", "黑紫（黑）", "Black / purple"],
+    organ: ["腎", "肾", "Kidney"],
+    foods: [
+      "黑豆、黑芝麻、紫茄子、紫椰菜、藍莓、提子、紫薯、黑木耳、海帶、紫米、無花果",
+      "黑豆、黑芝麻、紫茄子、紫甘蓝、蓝莓、葡萄、紫薯、黑木耳、海带、紫米、无花果",
+      "Black beans, black sesame, eggplant, red cabbage, blueberry, grapes, purple sweet potato, black wood ear, kelp, black rice, fig",
+    ],
+    tip: [
+      "這色最常漏。早餐灑黑芝麻、甜品選藍莓、晚餐來碟蒜蓉茄子。",
+      "这色最常漏。早餐撒黑芝麻、甜品选蓝莓、晚餐来碟蒜蓉茄子。",
+      "The easiest colour to miss. Sprinkle black sesame at breakfast, pick blueberries for dessert, add garlic eggplant at dinner.",
+    ],
+  },
+] as const;
+
+const FIVE_TASTES = [
+  {
+    key: "wood",
+    glyph: "木",
+    taste: ["酸", "酸", "Sour"],
+    organ: ["肝", "肝", "Liver"],
+    examples: ["檸檬、醋、山楂", "柠檬、醋、山楂", "Lemon, vinegar, hawthorn"],
+  },
+  {
+    key: "fire",
+    glyph: "火",
+    taste: ["苦", "苦", "Bitter"],
+    organ: ["心", "心", "Heart"],
+    examples: ["苦瓜", "苦瓜", "Bitter melon"],
+  },
+  {
+    key: "earth",
+    glyph: "土",
+    taste: ["甘（甜）", "甘（甜）", "Sweet"],
+    organ: ["脾", "脾", "Spleen"],
+    examples: ["南瓜、番薯", "南瓜、红薯", "Pumpkin, sweet potato"],
+  },
+  {
+    key: "metal",
+    glyph: "金",
+    taste: ["辛", "辛", "Pungent"],
+    organ: ["肺", "肺", "Lung"],
+    examples: ["薑、蒜", "姜、蒜", "Ginger, garlic"],
+  },
+  {
+    key: "water",
+    glyph: "水",
+    taste: ["鹹", "咸", "Salty"],
+    organ: ["腎", "肾", "Kidney"],
+    examples: ["海帶、黑豆", "海带、黑豆", "Kelp, black beans"],
+  },
+] as const;
+
 function FiveElementsToneQiArticle() {
   const { locale } = useI18n();
 
@@ -168,6 +289,97 @@ function FiveElementsToneQiArticle() {
         <a href="/#birth-form" className="mt-5 inline-flex min-h-11 items-center rounded-full border border-cinnabar/25 bg-paper px-4 py-2 text-sm text-cinnabar">
           {tr(locale, "查看命盤", "查看命盘", "Open chart")} →
         </a>
+      </section>
+
+      <section className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
+        <h2 className="font-display text-2xl text-ink">
+          {tr(locale, "五色飲食與五味：把對應吃進日常", "五色饮食与五味：把对应吃进日常", "Five colours and five tastes: eating the correspondences")}
+        </h2>
+        <p className="mt-3 text-[15px] leading-8 text-ink-soft">
+          {tr(locale,
+            "下面這份五色飲食對照，把檢查表的方法放進五行對應裡：先看一週裡哪一色最常漏，再對照自己命盤裡真正需要支援的那一行去補。一週 2–3 餐有意識地吃到那一色就夠，不用每一餐齊五色。先說清楚：缺字不等於有病，八字裡某一行字數少，不能單獨當成不足的證據；要不要補、補哪一行，由完整命局（月令、調候、格局、病藥）判斷，這張表不能代替喜用神的判斷。",
+            "下面这份五色饮食对照，把检查表的方法放进五行对应里：先看一周里哪一色最常漏，再对照自己命盘里真正需要支援的那一行去补。一周 2–3 餐有意识地吃到那一色就够，不用每一餐齐五色。先说清楚：缺字不等于有病，八字里某一行字数少，不能单独当成不足的证据；要不要补、补哪一行，由完整命局（月令、调候、格局、病药）判断，这张表不能代替喜用神的判断。",
+            "The five-colour food guide below brings the checklist method into the correspondence table: first see which colour you miss most often in a week, then match it to the element your chart genuinely needs supported. Two to three deliberate meals a week covering that colour is enough; not every meal needs all five colours. One caution first: a low element count is not a diagnosis. Whether an element needs support, and which one, is judged from the whole chart — month command, climate, structure and remedy — and this table does not replace a useful-element judgement."
+          )}
+        </p>
+
+        <h3 className="mt-6 font-display text-xl text-ink">
+          {tr(locale, "五色對照與食物", "五色对照与食物", "Five colours, foods to reach for")}
+        </h3>
+        <div className="mt-3">
+          {DIET_COLORS.map((item) => (
+            <div key={item.key} className="border-t border-line py-3 first:border-t-0 first:pt-0">
+              <p className="text-sm leading-6 text-ink">
+                <strong className="font-display text-base">{item.glyph} · {tr(locale, item.color[0], item.color[1], item.color[2])}</strong>
+                {" — "}{tr(locale, item.organ[0], item.organ[1], item.organ[2])}
+              </p>
+              <p className="mt-1 text-sm leading-6 text-ink-soft">
+                {tr(locale, "食物", "食物", "Foods")}：{tr(locale, item.foods[0], item.foods[1], item.foods[2])}
+              </p>
+              <p className="mt-1 text-sm leading-6 text-ink-soft">
+                {tr(locale, "上場提示", "上场提示", "Serving idea")}：{tr(locale, item.tip[0], item.tip[1], item.tip[2])}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <h3 className="mt-6 font-display text-xl text-ink">
+          {tr(locale, "三步用法", "三步用法", "How to use it, in three steps")}
+        </h3>
+        <div className="mt-3 space-y-3 text-[15px] leading-8 text-ink-soft">
+          <p>{tr(locale,
+            "吃到就勾 — 每色每天約一拳頭或一小碗，吃到該顏色的蔬果、豆類或菇類，就在當天那格打勾。怎樣算吃到？新鮮、冷凍或煮熟的都可以；果汁、果醬和炸物不計。",
+            "吃到就勾——每色每天约一拳头或一小碗，吃到该颜色的蔬果、豆类或菌菇，就在当天那格打勾。怎样算吃到？新鲜、冷冻或煮熟的都可以；果汁、果酱和炸物不计。",
+            "Tick it when you eat it — about a fistful or a small bowl of that colour a day, from vegetables, fruit, beans or mushrooms, and the day's box is ticked. Fresh, frozen or cooked all count; juice, jam and fried food do not."
+          )}</p>
+          <p>{tr(locale,
+            "缺色就補 — 晚餐前看一眼今天還缺哪一色，湯、沙律、水果或配菜補一份就好。第一週先做到每天 3 色，習慣後再挑戰每天 5 色、全週 30 格以上。",
+            "缺色就补——晚餐前看一眼今天还缺哪一色，汤、沙拉、水果或配菜补一份就好。第一周先做到每天 3 色，习惯后再挑战每天 5 色、全周 30 格以上。",
+            "Fill the gap — check before dinner which colour is still missing today and add one soup, salad, fruit or side. Aim for three colours a day in the first week, then work toward five a day and 30 boxes or more across the week."
+          )}</p>
+          <p>{tr(locale,
+            "週日回顧 — 數一數全週勾數（滿分 35 格），圈出最常漏的一色，下週買菜先買那一色。買菜時每色先買 2 種，少量多款，比大量單一更易吃完；冷凍蔬菜和冷凍莓果一樣計，忙的日子靠它們救場。漏勾不是失敗 — 表格是幫你看見缺口，不是考試。",
+            "周日回顾——数一数全周勾数（满分 35 格），圈出最常漏的一色，下周买菜先买那一色。买菜时每色先买 2 种，少量多款，比大量单一更易吃完；冷冻蔬菜和冷冻莓果一样计，忙的日子靠它们救场。漏勾不是失败——表格是帮你看见缺口，不是考试。",
+            "Sunday review — count the week's ticks (35 boxes in total), circle the colour you missed most, and buy that colour first next week. Buy two kinds per colour in small amounts rather than a lot of one thing; frozen vegetables and frozen berries count the same and save busy days. A missed tick is not a failure — the table is there to show the gap, not to grade you."
+          )}</p>
+          <p>{tr(locale,
+            "配搭原則：一餐不用齊五色，一天齊就好。深色和淺色輪流吃，同一色裡也換不同食物，例如綠色不要每天只吃青瓜。外食時選有配菜的定食、湯粉加青菜、沙律加豆類，比單點一碟肉更容易齊色。",
+            "配搭原则：一餐不用齐五色，一天齐就好。深色和浅色轮流吃，同一色里也换不同食物，例如绿色不要每天只吃黄瓜。外食时选有配菜的定食、汤粉加青菜、沙拉加豆类，比单点一碟肉更容易齐色。",
+            "Pairing notes: one meal does not need all five colours — one day does. Alternate dark and light, and vary within a colour instead of eating cucumber for green every day. When eating out, a set meal with sides, noodle soup with greens, or a salad with beans covers colours more easily than a single plate of meat."
+          )}</p>
+        </div>
+
+        <h3 className="mt-6 font-display text-xl text-ink">
+          {tr(locale, "五味對照", "五味对照", "Five tastes")}
+        </h3>
+        <p className="mt-3 text-[15px] leading-8 text-ink-soft">
+          {tr(locale,
+            "五味是同一張對應表的另一面。傳統上認為，酸入木、苦入火、甘入土、辛入金、鹹入水；八字裡偏弱的那一行，可以用對應的味道微調飲食來輔助，命局均衡的，不用刻意去補。這是傳統說法，僅供參考，不是醫療建議；調整飲食之前，先諮詢專業人員。",
+            "五味是同一张对应表的另一面。传统上认为，酸入木、苦入火、甘入土、辛入金、咸入水；八字里偏弱的那一行，可以用对应的味道微调饮食来辅助，命局均衡的，不用刻意去补。这是传统说法，仅供参考，不是医疗建议；调整饮食之前，先咨询专业人员。",
+            "The five tastes are the other side of the same table. Traditionally, sour enters Wood, bitter enters Fire, sweet enters Earth, pungent enters Metal and salty enters Water. An element that is weak in a chart can be supported with small dietary adjustments in the matching taste; a balanced chart needs no deliberate supplementation. This is traditional teaching, for reference only, not medical advice; consult a professional before changing your diet."
+          )}
+        </p>
+        <div className="mt-3">
+          {FIVE_TASTES.map((item) => (
+            <div key={item.key} className="border-t border-line py-3 first:border-t-0 first:pt-0">
+              <p className="text-sm leading-6 text-ink">
+                <strong className="font-display text-base">{item.glyph} · {tr(locale, item.taste[0], item.taste[1], item.taste[2])}</strong>
+                {" — "}{tr(locale, item.organ[0], item.organ[1], item.organ[2])}
+              </p>
+              <p className="mt-1 text-sm leading-6 text-ink-soft">
+                {tr(locale, "例子", "例子", "Examples")}：{tr(locale, item.examples[0], item.examples[1], item.examples[2])}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-5 text-sm leading-7 text-ink-soft">
+          {tr(locale,
+            "註：本節是日常飲食整理工具，份量為實用估算，不是醫療或營養治療建議。如有長期病患、懷孕、食物過敏或正在服藥，請先諮詢醫生或註冊營養師，再按個人情況調整。五色方法整理自昭梧每週五色飲食檢查表（方法來源：Threads @danica1ii）；五味對應整理自裴晴（@peichin.oracle）Threads 貼文，按傳統說法轉述，未作權威背書。",
+            "注：本节是日常饮食整理工具，份量为实用估算，不是医疗或营养治疗建议。如有长期病患、怀孕、食物过敏或正在服药，请先咨询医生或注册营养师，再按个人情况调整。五色方法整理自昭梧每周五色饮食检查表（方法来源：Threads @danica1ii）；五味对应整理自裴晴（@peichin.oracle）Threads 贴文，按传统说法转述，未作权威背书。",
+            "Note: this section is a daily diet organiser; portions are practical estimates, not medical or nutritional therapy advice. If you have a long-term condition, are pregnant, have food allergies or take medication, consult a doctor or registered dietitian before adjusting your diet. The five-colour method is adapted from Zhaowu's weekly five-colour diet checklist (method source: Threads @danica1ii); the five-taste correspondences are adapted from a Threads post by Pei Qing (@peichin.oracle), retold as traditional teaching without endorsement as an authoritative source."
+          )}
+        </p>
       </section>
 
       <section className="seal-border rounded-2xl bg-paper p-5 sm:p-8">
