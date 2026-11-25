@@ -23,7 +23,11 @@ type ReadingChapter = {
 
 const ORIGINAL_CHAPTERS: ReadingChapter[] = GUAILI_VOLUMES.map((chapter, index) => ({
   ...chapter,
-  number: l(`第${chapter.no}卷`, `第${chapter.no}卷`, `Volume ${index + 1}`),
+  // GUAILI_VOLUMES no is Localized; the reader key is the hant numeral
+  // ("貳" matches ART_BY_CHAPTER). Spreading it raw broke the build
+  // (TS2322: no must be string) and rendered "[object Object]" in titles.
+  no: chapter.no.hant,
+  number: l(`第${chapter.no.hant}卷`, `第${chapter.no.hans}卷`, `Volume ${index + 1}`),
   anchor: `guaili-volume-${index + 1}`,
 }));
 
