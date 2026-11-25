@@ -700,3 +700,113 @@ html body #root .zw-painted-home.zw-v2-home #birth-form :is(#bazi, #customer-rec
   font-weight: 600;
   box-shadow: 0 2px 6px rgba(52, 94, 80, 0.25);
 }
+
+/* ── home-flat 2026-11-26: 生辰案台仍实白的根因 ─────────────────────
+   #1143/#1144/#1147 只清了 #birth-form 里三段的底，但整个案台包在
+   .zw-v2-opening 里，它的 linear-gradient(90deg, rgba(250,247,237,.87),
+   rgba(250,247,237,.60)) 才是整块淡色底。把外层这块拿掉，字直接落
+   到画上（画顶已有 .zw-stage::after 的淡洗保证可读）。其余白卡
+   （今日磁砖、输入框、性别胶囊、节气标签、黄历内页）一并改扁平。
+   只改首页，报告页不动。 */
+
+/* 1. 根因：外层 opening 的 .87/.60 奶油渐变整块拿掉 */
+html body #root .zw-painted-home.zw-v2-home .zw-v2-opening {
+  background: transparent !important;
+  background-image: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+/* 顺带：customer-record 的 backdrop blur 也会把画磨成霜，去掉 */
+html body #root .zw-painted-home.zw-v2-home #birth-form :is(#bazi, #customer-record, #question-stage) {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 2. 案台输入框 / 下拉 / 文本框：白底圆角 → 画上细线 */
+html body #root .zw-painted-home.zw-v2-home #birth-form input:not([type="checkbox"]):not([type="radio"]),
+html body #root .zw-painted-home.zw-v2-home #birth-form select,
+html body #root .zw-painted-home.zw-v2-home #birth-form textarea,
+html body #root .zw-painted-home.zw-v2-home [data-free-summary-email] input {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid rgba(70, 58, 40, .35) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+/* 性别胶囊：#ffffff 圆角 → 跟导览标题一样的 .58 半透明扁平 */
+html body #root .zw-painted-home.zw-v2-home .zhaowu-gender-capsule {
+  background: rgba(247, 241, 228, .58) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html body #root .zw-painted-home.zw-v2-home .zhaowu-gender-capsule.is-active {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+/* 案台里的按钮：圆角清零；提交按钮改细线描边（解锁收钱按钮和寄件按钮保留印色底，只去圆角） */
+html body #root .zw-painted-home.zw-v2-home #birth-form button,
+html body #root .zw-painted-home.zw-v2-home [data-free-summary-email] button,
+html body #root .zw-painted-home.zw-v2-home [data-bazi-reading-locked] button {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html body #root .zw-painted-home.zw-v2-home #birth-form button[type="submit"] {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid var(--ph-accent, #345e50) !important;
+  color: var(--ph-ink, #273b34) !important;
+}
+/* 八字图鉴小卡（#bazi 里的可点格）：白底圆角 → 透明细线框 */
+html body #root .zw-painted-home.zw-v2-home #birth-form #bazi button {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid rgba(70, 58, 40, .25) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* 3. 今日指引展开后的磁砖：.94 米白圆角卡 → 跟四个导览标题一样的 .58 半透明扁平 */
+html body #root .zw-painted-home.zw-v2-home .ph-tree-tile,
+html body #root .zw-painted-home.zw-v2-home .ph-tree-branch-tile {
+  background: rgba(247, 241, 228, .58) !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(70, 58, 40, .2) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html body #root .zw-painted-home.zw-v2-home .ph-tree-branch-tile > img {
+  border-radius: 0 !important;
+}
+html body #root .zw-painted-home.zw-v2-home .ph-tree-tile-cta {
+  border-radius: 0 !important;
+}
+
+/* 4. 黄历内页：section 去底去圆角，卡片只去圆角（卡片本身已是 .58） */
+html body #root .zw-painted-home.zw-v2-home #daily-almanac .zhaowu-today-section {
+  background: transparent !important;
+  background-image: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html body #root .zw-painted-home.zw-v2-home #daily-almanac .zhaowu-today-card {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* 5. 节气标签：深绿实色小 pill → 画上纯文字 + 细线；引言条带去底 */
+html body #root .zw-painted-home.zw-v2-home .zw-v2-season {
+  background: transparent !important;
+  background-image: none !important;
+  color: var(--ph-ink, #273b34) !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(70, 58, 40, .35) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 6px 0 !important;
+}
+html body #root .zw-painted-home.zw-v2-home .zw-winter-quote {
+  background: transparent !important;
+  background-image: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
