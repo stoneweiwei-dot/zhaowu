@@ -63,14 +63,31 @@ export function buildFiveTonePlan(primary: Element, level: PaidReportAccessLevel
   }));
 }
 
+const ELEMENT_BY_EN = { Wood: "木", Fire: "火", Earth: "土", Metal: "金", Water: "水" } as const;
+const TONE_BY_EN = { Jue: "角", Zhi: "徵", Gong: "宮", Shang: "商", Yu: "羽" } as const;
+
 export function parseFiveToneTrackName(name: string) {
   const normalized = name.trim().replaceAll("|", "｜");
-  const match = normalized.match(/^([木火土金水])\s*｜\s*([角徵征宮宫商羽])音\s*｜\s*(.+)$/u);
-  if (!match) return null;
-  const element = match[1] as Element;
-  const tone = (match[2] === "征" ? "徵" : match[2] === "宫" ? "宮" : match[2]) as FiveTonePlanItem["tone"];
-  if (FIVE_TONE_BY_ELEMENT[element] !== tone) return null;
-  return { element, tone, title: match[3].trim() || name.trim() };
+  // Standardized owner-library names: 木｜角音｜<title>
+  const standard = normalized.match(/^([木火土金水])\s*｜\s*([角徵征宮宫商羽])音\s*｜\s*(.+)$/u);
+  if (standard) {
+    const element = standard[1] as Element;
+    const tone = (standard[2] === "征" ? "徵" : standard[2] === "宫" ? "宮" : standard[2]) as FiveTonePlanItem["tone"];
+    if (FIVE_TONE_BY_ELEMENT[element] !== tone) return null;
+    return { element, tone, title: standard[3].trim() || name.trim() };
+  }
+  // Descriptive library names, as actually stored in the owner music library
+  // (2026-11-25: all five live tones use this form, e.g. 古木角聲｜Wood · Jue · Ancient Grove).
+  // The element/tone are read from the English "Element · Tone" part, which is unambiguous;
+  // the Chinese descriptive name is kept as the display title.
+  const descriptive = normalized.match(/^(.+?)｜\s*(Wood|Fire|Earth|Metal|Water)\s*[·•]\s*(Jue|Zhi|Gong|Shang|Yu)\s*[·•]\s*(.+)$/u);
+  if (descriptive) {
+    const element = ELEMENT_BY_EN[descriptive[2] as keyof typeof ELEMENT_BY_EN] as Element;
+    const tone = TONE_BY_EN[descriptive[3] as keyof typeof TONE_BY_EN] as FiveTonePlanItem["tone"];
+    if (FIVE_TONE_BY_ELEMENT[element] !== tone) return null;
+    return { element, tone, title: descriptive[1].trim() || descriptive[4].trim() || name.trim() };
+  }
+  return null;
 }
 
 export function matchFiveToneTracks(plan: FiveTonePlanItem[], tracks: OwnerMusicTrack[]): FiveToneTrackMatch[] {
