@@ -8,7 +8,7 @@ const source = (path) => readFile(new URL(path, root), "utf8");
 test("home shows four collapsed blocks in three languages", async () => {
   const tree = await source("src/components/home-tree.tsx");
   for (const name of ["我的命盤", "今日指引", "趣味測驗", "文章與知識", "我的命盘", "趣味测验", "文章与知识", "My chart", "Today’s guide", "Quizzes", "Articles & knowledge"]) assert.ok(tree.includes(name), name);
-  for (const child of ["開始免費排盤", "看範例報告", "我的報告", "人生十章對照", "看看你是誰", "看看你的狀態", "生活小測", "命理小知識", "幽明萬象錄", "三界異聞錄", "最新更新", "關於昭梧"]) assert.ok(tree.includes(child), child);
+  for (const child of ["開始免費排盤", "看範例報告", "我的報告", "人生十章對照", "五行", "看看你是誰", "看看你的狀態", "生活小測", "命理小知識", "幽明萬象錄", "三界異聞錄", "最新更新", "關於昭梧"]) assert.ok(tree.includes(child), child);
   assert.match(tree, /data-home-card=\{node.id\}/);
   assert.match(tree, /useState<HomeSection \| null>\(null\)/);
   assert.match(tree, /aria-expanded=\{isOpen\}/);
@@ -40,7 +40,7 @@ test("opened blocks show square image tiles, not text rows", async () => {
   assert.match(tree, /ph-tree-tiles/);
   assert.match(tree, /ph-tree-tile/);
   const thumbs = tree.match(/thumb: '[^']+'/g) || [];
-  assert.equal(thumbs.length, 15, `expected 15 tile thumbs, found ${thumbs.length}`);
-  for (const path of ["/home-tiles/quiz-who.webp", "/home-tiles/quiz-state.webp", "/home-tiles/quiz-brand.webp", "/home-tiles/quiz-life.webp", "/home-tiles/sample-report.webp", "/home-tiles/my-reports.webp", "/home-tiles/daily-colors.webp", "/home-tiles/knowledge-basics.webp", "/home-tiles/mythic-atlas.webp", "/home-tiles/guaili.webp", "/home-tiles/updates.webp", "/home-tiles/about.webp", "/images/soul-chapters/zh/volume-1.webp", "/sky-universe/cosmic-nebula.webp", "/today/almanac-lotus-v1.webp"]) assert.ok(tree.includes(path), path);
+  assert.equal(thumbs.length, 16, `expected 16 tile thumbs, found ${thumbs.length}`);
+  for (const path of ["/articles/list-thumbs/five-elements-as-movement.webp", "/home-tiles/quiz-who.webp", "/home-tiles/quiz-state.webp", "/home-tiles/quiz-brand.webp", "/home-tiles/quiz-life.webp", "/home-tiles/sample-report.webp", "/home-tiles/my-reports.webp", "/home-tiles/daily-colors.webp", "/home-tiles/knowledge-basics.webp", "/home-tiles/mythic-atlas.webp", "/home-tiles/guaili.webp", "/home-tiles/updates.webp", "/home-tiles/about.webp", "/images/soul-chapters/zh/volume-1.webp", "/sky-universe/cosmic-nebula.webp", "/today/almanac-lotus-v1.webp"]) assert.ok(tree.includes(path), path);
   assert.match(tree, /loading="lazy"/);
 });
