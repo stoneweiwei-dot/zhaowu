@@ -50,6 +50,13 @@ export function homeTree(t: T): TreeNode[] {
       title: t('趣味測驗', '趣味测验', 'Quizzes'),
       hint: t('幾分鐘，看見另一面的自己。', '几分钟，看见另一面的自己。', 'A few minutes to meet another side of you.'),
       items: [
+        { kind: 'branch', id: 'wuxing', title: t('五行', '五行', 'Five elements'), hint: t('色、音、味、氣、功能與飲食', '色、音、味、气、功能与饮食', 'Colour, tone, taste, qi, function and food'), thumb: '/articles/list-thumbs/five-elements-as-movement.webp', children: [
+          { kind: 'link', href: '/knowledge/five-elements-tone-qi', title: t('五行五色、五音與五氣', '五行五色、五音与五气', 'Five elements, colours, tones and qi'), hint: t('五色、五音、五味、五氣、五功能與五色飲食，一篇看完。', '五色、五音、五味、五气、五功能与五色饮食，一篇看完。', 'Colours, tones, tastes, qi, functions and the five-colour diet in one article.') },
+          { kind: 'link', href: '/fun-tests?test=element', title: t('五行功能測驗', '五行功能测验', 'Five-element function quiz'), hint: t('看現在最想加強哪一種功能', '看现在最想加强哪一种功能', 'Which function you most want to build') },
+          { kind: 'link', href: '/quiz/five-element-overdrive', title: t('五行優勢內耗測驗', '五行优势内耗测验', 'Strength overuse quiz'), hint: t('10 個情境，看哪種優勢被你用成內耗', '10 个情境，看哪种优势被你用成内耗', '10 scenes — which strength you overuse') },
+          { kind: 'action', section: 'quiz', title: t('五行香氣譜', '五行香气谱', 'Scent map'), hint: t('看嗅覺偏好與五行的文化象意', '看嗅觉偏好与五行的文化象意', 'Scent preferences and their cultural meaning') },
+          { kind: 'link', href: '/tea-guardian', title: t('七題找到適合的茶', '七题找到适合的茶', 'Find your tea'), hint: t('七個問題，配一款適合你的茶', '七个问题，配一款适合你的茶', 'Seven questions, one tea') },
+        ] },
         { kind: 'branch', id: 'who', title: t('看看你是誰', '看看你是谁', 'Who you are'), hint: t('性格與緣分的角度', '性格与缘分的角度', 'Character and affinity'), thumb: '/home-tiles/quiz-who.webp', children: [
           { kind: 'link', href: '/quiz/divine-affinity', title: t('仙佛淵源本緣測試', '仙佛渊源本缘测试', 'Divine affinity quiz'), hint: t('16 題，看你與哪一位神佛最有緣', '16 题，看你与哪一位神佛最有缘', '16 questions — which sacred figure feels closest') },
           { kind: 'link', href: '/quiz/cultivation-destiny', title: t('修仙命格靈測', '修仙命格灵测', 'Cultivation destiny'), hint: t('推演你的靈根、宗門與道途', '推演你的灵根、宗门与道途', 'Your spirit root, sect and path') },
