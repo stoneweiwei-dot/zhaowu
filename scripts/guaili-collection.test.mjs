@@ -21,17 +21,21 @@ test("the separate Guaili group has one real canonical route and visible homepag
   assert.match(index, /to="\/mythic-atlas" hash="guaili"/);
 });
 test("seven-volume, twelve-branch and four-year indexes reuse one source of truth", () => {
-  for (const token of ["GUAILI_VOLUMES", "GUAILI_ZODIAC", "GUAILI_YEARS"]) assert.ok(index.includes(token));
+  // 2026-11-25: the guaili page is now a continuous reader (volumes 1-27 +
+  // afterword). The zodiac and chronicle indexes live on the Mythic Archive
+  // guaili section (body), rendered from the same shared data.
+  assert.ok(index.includes("GUAILI_VOLUMES"));
+  assert.ok(body.includes("GUAILI_VOLUMES"));
+  assert.ok(body.includes("GUAILI_ZODIAC"));
+  assert.ok(body.includes("GUAILI_YEARS"));
   assert.match(index, /GUAILI_VOLUMES\.map/);
-  assert.match(index, /GUAILI_ZODIAC\.map/);
-  assert.match(index, /GUAILI_YEARS\.map/);
+  assert.match(body, /GUAILI_ZODIAC\.map/);
+  assert.match(body, /GUAILI_YEARS\.map/);
   assert.match(source, /export const GUAILI_VOLUMES/);
-  for (const pair of [["guaili-volume", "volume"], ["guaili-year", "year"]]) {
-    assert.ok(index.includes('hash={`' + pair[0]), pair[0]);
-    assert.ok(body.includes('id={`' + pair[0] + '-${index+1}`}'), pair[0]);
-  }
+  assert.ok(index.includes("`guaili-volume-${index + 1}`"), "reader chapter anchors");
+  assert.ok(body.includes('id={`guaili-volume-${index+1}`}'), "volume");
+  assert.ok(body.includes('id={`guaili-year-${index+1}`}'), "year");
   assert.match(body, /id=\{`guaili-\$\{ZODIAC_PLATES\[index\]\.branch\}`\}/);
-  assert.match(index, /ZODIAC_PLATES\[i\]\.branch/);
   assert.match(essay, /image:"01-zi-rat\.png"/);
   assert.ok(index.includes('not a second copy'));
   assert.doesNotMatch(index, /<GuailiBook/);
@@ -47,9 +51,12 @@ test("new group has three language SEO entries and a public sitemap URL", () => 
   assert.ok(seo.routes["/mythic-atlas"], "existing mythic route preserved");
 });
 test("new group remains text-oriented, mobile-friendly and retains original artwork", () => {
-  assert.match(index, /07-mountain-sea-bestiary\.webp/);
+  // 2026-11-25: reader keeps original chapter artwork as web derivatives;
+  // the zodiac plates render on the Mythic Archive guaili section.
+  assert.match(index, /07-shanhaijing-atlas\.png/);
+  assert.match(index, /mythicWebPlate\("originals", artwork\.file\)/);
   // 2026-10-30: renders the web WebP derivative of the same original zodiac plate.
-  assert.match(index, /mythicWebPlate\("zodiac", ZODIAC_PLATES\[i\]\.image\)/);
+  assert.match(body, /mythicWebPlate\("zodiac", ZODIAC_PLATES\[index\]\.image\)/);
   assert.match(index, /STONE Original/);
   assert.match(css, /@container \(max-width:389px\)/);
   assert.doesNotMatch(index, /十二鬼月|Twelve Ghost Moons/);
