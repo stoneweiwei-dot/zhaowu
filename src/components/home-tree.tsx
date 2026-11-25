@@ -5,7 +5,7 @@ type T = (zh: string, hans: string, en: string) => string;
 
 export type TreeLeaf =
   | { kind: 'link'; href: string; title: string; hint: string; marker?: string; thumb?: string }
-  | { kind: 'action'; section: HomeSection; title: string; hint: string };
+  | { kind: 'action'; section: HomeSection; title: string; hint: string; thumb?: string };
 export type TreeBranch = { kind: 'branch'; id: string; title: string; hint: string; thumb: string; children: TreeLeaf[] };
 export type TreeNode = {
   id: HomeSection;
@@ -39,7 +39,7 @@ export function homeTree(t: T): TreeNode[] {
       id: 'today', icon: 'calendar', art: '/art/scene-lotus-boat-v1.webp',
       title: t('今日指引', '今日指引', 'Today’s guide'),
       hint: t('黃曆、今日星象、穿衣顏色，一次看清。', '黄历、今日星象、穿衣颜色，一次看清。', 'Almanac, today’s sky and colours, clearly grouped.'),
-      primary: { kind: 'action', section: 'today', title: t('看今天的黃曆', '看今天的黄历', 'Open today’s almanac'), hint: t('宜忌、節氣與今日提醒', '宜忌、节气与今日提醒', 'Dos and don’ts, solar terms and daily guidance') },
+      primary: { kind: 'action', section: 'today', title: t('看今天的黃曆', '看今天的黄历', 'Open today’s almanac'), hint: t('宜忌、節氣與今日提醒', '宜忌、节气与今日提醒', 'Dos and don’ts, solar terms and daily guidance'), thumb: '/today/almanac-lotus-v1.webp' },
       items: [
         { kind: 'link', href: '/sky-events', title: t('今日星象', '今日星象', 'Today’s sky & astrology'), hint: t('星辰形象、當週天象與占星解讀，直接進入', '星辰形象、当周天象与占星解读，直接进入', 'Sky events, weekly outlook and astrology in one tap'), thumb: '/sky-universe/cosmic-nebula.webp' },
         { kind: 'link', href: '/daily-colors', title: t('每日幸運色', '每日幸运色', 'Colour of the day'), hint: t('今天穿什麼顏色比較順。', '今天穿什么颜色比较顺。', 'Which colour to wear today.'), thumb: '/home-tiles/daily-colors.webp' },
@@ -100,6 +100,12 @@ function Leaf({ leaf, onOpen }: { leaf: TreeLeaf; onOpen: (s: HomeSection) => vo
  */
 function Tile({ leaf, onOpen }: { leaf: TreeLeaf; onOpen: (s: HomeSection) => void }) {
   if (leaf.kind === 'action') {
+    if (leaf.thumb) {
+      return <button type="button" className="ph-tree-tile" onClick={() => onOpen(leaf.section)}>
+        <img src={leaf.thumb} alt="" loading="lazy" />
+        <span><strong>{leaf.title}</strong><small>{leaf.hint}</small></span>
+      </button>;
+    }
     return <button type="button" className="ph-tree-tile-cta" onClick={() => onOpen(leaf.section)}>
       <span><strong>{leaf.title}</strong><small>{leaf.hint}</small></span><i aria-hidden>›</i>
     </button>;
