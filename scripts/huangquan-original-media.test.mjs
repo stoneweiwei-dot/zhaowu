@@ -16,10 +16,19 @@ test("all twelve unmodified 9:16 PNG images match their source hashes and galler
     assert.ok(data.includes(image.file), "missing gallery ref " + image.file);
   }
 });
-test("original MP4 exists and is referenced in the relevant chronicle section", () => {
+test("720p film in repo matches the web derivative; 42 MB original is recorded in the backup manifest", () => {
+  const backup = JSON.parse(readFileSync("docs/mythic-atlas/huangquan-original-film-backup.json", "utf8"));
+  // Original recovered from Git history, kept out of the repo (Cloudflare Pages
+  // 25 MB single-file limit); its hash/size still match the 2026-10-28 manifest.
+  assert.equal(backup.original.size, manifest.film.size);
+  assert.equal(backup.original.sha256, manifest.film.sha256);
+  assert.equal(backup.original.gitBlob, "556fcf120f6e3b45714bdc4a23594041519dcbe4");
+  // In-repo file is the 720p derivative, byte-identical to the web copy.
   const path = "public/mythic-atlas/films/" + manifest.film.file;
-  assert.equal(statSync(path).size, manifest.film.size);
-  assert.equal(sha256(readFileSync(path)), manifest.film.sha256);
+  const bytes = readFileSync(path);
+  assert.equal(statSync(path).size, backup.inRepo.size);
+  assert.equal(sha256(bytes), backup.inRepo.sha256);
+  assert.equal(sha256(bytes), sha256(readFileSync("public/mythic-atlas/web/films/huangquan-chronicles-720p.mp4")));
   assert.match(main, /<video controls playsInline preload="metadata"/);
   assert.match(main, /<source src="\/mythic-atlas\/films\/huangquan-chronicles\.mp4" type="video\/mp4"/);
   assert.match(main, /id="huangquan-film"/);

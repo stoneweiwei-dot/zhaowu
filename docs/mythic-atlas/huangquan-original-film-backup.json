@@ -1,0 +1,36 @@
+{
+  "title": "ZHAOWU 黃泉紀 · 42 MB 原片備份紀錄",
+  "date": "2026-11-25",
+  "note": "原片自 2026-11-11 #1022 起不在倉庫 main 上（Cloudflare Pages 單檔 25 MB 上限）；本檔記錄取回來源與備份位置，倉庫內 films/ 僅留 720p 衍生版。",
+  "original": {
+    "file": "huangquan-chronicles.mp4",
+    "size": 44151953,
+    "sha256": "e4ceabcedeb428dba4e1f42fbed500b488799723a94654bfd2a73190004b9b89",
+    "gitBlob": "556fcf120f6e3b45714bdc4a23594041519dcbe4",
+    "gitCommit": "95c5aaea",
+    "gitCommitDate": "2026-10-28",
+    "dimensions": "1080x1920, 12.8 Mbps, 27.6 s, no audio",
+    "manifest": "docs/mythic-atlas/huangquan-original-media-20261028.json"
+  },
+  "inRepo": {
+    "file": "public/mythic-atlas/films/huangquan-chronicles.mp4",
+    "size": 6373952,
+    "sha256": "0aa62050f4b51e41759cf68411581810fd54e7eb4a061c5d5c115aefc468096f",
+    "note": "720p 衍生版（720x1280 H.264 CRF 24），與 public/mythic-atlas/web/films/huangquan-chronicles-720p.mp4 同一 blob；為 /mythic-atlas 影片的第二 <source> 備援"
+  },
+  "backups": [
+    {
+      "location": "Git history blob 556fcf120f6e3b45714bdc4a23594041519dcbe4 (commit 95c5aaea)",
+      "verified": "2026-11-25, SHA256 與尺寸皆與 2026-10-28 校驗文件一致"
+    },
+    {
+      "location": "~/workspace/zhaowu/backups/huangquan-chronicles-original-42MB.mp4",
+      "verified": "2026-11-25, 44,151,953 bytes, SHA256 e4ceabce…"
+    },
+    {
+      "location": "Dropbox / Zhaowu-Backup（待傳）",
+      "verified": "尚未上傳；需 Stone 一句話確認後再傳，不新增付費儲存"
+    }
+  ],
+  "recovery": "git cat-file blob 556fcf120f6e3b45714bdc4a23594041519dcbe4 > huangquan-chronicles-original-42MB.mp4；再以 sha256sum 核對 e4ceabce…。切勿把 42 MB 檔放回倉庫 public/，會再觸發 Pages 25 MB 上限。"
+}
