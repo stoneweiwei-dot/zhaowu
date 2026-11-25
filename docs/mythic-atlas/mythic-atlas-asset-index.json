@@ -1,0 +1,781 @@
+{
+  "title": "昭梧｜《怪力亂神》原始圖庫完整索引",
+  "date": "2026-11-25",
+  "baseCommit": "ef5de3ed5b8acdaad7f56b6f485fc94d8560557f",
+  "audit": "2026-11-25 逐檔以 Git 物件算 SHA256 對照校驗文件，並逐檔 GET 正式站驗內容類型。核查時正式站 109 檔全回 text/html（_redirects /mythic-atlas/* / 200 蓋掉靜態檔）；修復見本倉庫 muse/mythic-redirect-fix-2026-11-25 分支。",
+  "calibrationFiles": [
+    "docs/mythic-atlas/huangquan-original-media-20261028.json（12 黃泉 PNG＋原片，SHA256 全對）",
+    "docs/mythic-atlas/web-derivatives-20261030.md（24 webp sha256 前 16 碼全對）",
+    "public/mythic-atlas/borrow-star/art-manifest.json（9 WebP SHA256 全對）",
+    "docs/mythic-atlas/huangquan-original-film-backup.json（42 MB 原片備份紀錄）"
+  ],
+  "counts": {
+    "total": 109,
+    "totalBytes": 114974905
+  },
+  "files": [
+    {
+      "path": "public/mythic-atlas/borrow-star/01-falling-star.svg",
+      "size": 16433,
+      "sha256": "7df67f208b154558f6aacbf6622d95d05b7e577aeb248df432e0077b74c44ec9",
+      "series": "borrow-star-svg",
+      "usage": "借星九幕向量重繪（暫時程式繪圖，非畫作驗收證據；依 docs/BORROW-STAR-ARTWORK-PUBLISHING.md 不得重新引入作畫作）"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/01-falling-star.webp",
+      "size": 52436,
+      "sha256": "5383dc434f1d2a01a62e1647b2b1afdc8227d1fa935f2aaf5a90a1c44f89bd06",
+      "series": "borrow-star",
+      "usage": "/mythic-atlas#borrow-star 借星九幕：墜星（540x960，經核准的 raster 圖，見 art-manifest.json）"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/02-follow-the-light.svg",
+      "size": 20110,
+      "sha256": "be011d0f1cdfb5e83827a1c069a07e7fdebb7086487dbcc070c76d331982fbc8",
+      "series": "borrow-star-svg",
+      "usage": "借星九幕向量重繪（暫時程式繪圖，非畫作驗收證據；依 docs/BORROW-STAR-ARTWORK-PUBLISHING.md 不得重新引入作畫作）"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/02-follow-the-light.webp",
+      "size": 37542,
+      "sha256": "b4933e1ec1d798c469da6a657964dcc7555ec3f77a5d97d73313c84da3e4be63",
+      "series": "borrow-star",
+      "usage": "/mythic-atlas#borrow-star 借星九幕：追光（540x960，經核准的 raster 圖，見 art-manifest.json）"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/03-reflection-mountain.svg",
+      "size": 21192,
+      "sha256": "a4852025f44b5c557ffcaef8416b23c30b9da748d5781e5f99644bff89474f34",
+      "series": "borrow-star-svg",
+      "usage": "借星九幕向量重繪（暫時程式繪圖，非畫作驗收證據；依 docs/BORROW-STAR-ARTWORK-PUBLISHING.md 不得重新引入作畫作）"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/03-reflection-mountain.webp",
+      "size": 34752,
+      "sha256": "22afeb10ad0bd676d4d2d41b55a14210fab3fd914318eaf48b8b25c9992b9081",
+      "series": "borrow-star",
+      "usage": "/mythic-atlas#borrow-star 借星九幕：倒影山（540x960，經核准的 raster 圖，見 art-manifest.json）"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/04-heaven-gate.svg",
+      "size": 16397,
+      "sha256": "cf7f8d6989de23fdc5140c556d2963ae43b55f40d55a2bd5ee21b082b38a384c",
+      "series": "borrow-star-svg",
+      "usage": "借星九幕向量重繪（暫時程式繪圖，非畫作驗收證據；依 docs/BORROW-STAR-ARTWORK-PUBLISHING.md 不得重新引入作畫作）"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/04-heaven-gate.webp",
+      "size": 52924,
+      "sha256": "8f2657435d512d251b5dcea57645f43731cc765f8e1120d7a615067d3b86ec2e",
+      "series": "borrow-star",
+      "usage": "/mythic-atlas#borrow-star 借星九幕：天門影（540x960，經核准的 raster 圖，見 art-manifest.json）"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/05-lone-boat.svg",
+      "size": 20165,
+      "sha256": "2f51d2e4f17946dc4f3f697455295ea46f7a676cf460d65d91dd49f8432d7efd",
+      "series": "borrow-star-svg",
+      "usage": "借星九幕向量重繪（暫時程式繪圖，非畫作驗收證據；依 docs/BORROW-STAR-ARTWORK-PUBLISHING.md 不得重新引入作畫作）"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/05-lone-boat.webp",
+      "size": 33048,
+      "sha256": "033f55e71ce91e40ffe6a84c4459c00078dab9acf02880ba9e6f8ee20ceef352",
+      "series": "borrow-star",
+      "usage": "/mythic-atlas#borrow-star 借星九幕：孤舟渡（540x960，經核准的 raster 圖，見 art-manifest.json）"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/06-enter-water.svg",
+      "size": 20862,
+      "sha256": "941fb2059d8fe51119d845b941012efbbb7d5f23e7862e76c2fe5873e38bcdd1",
+      "series": "borrow-star-svg",
+      "usage": "借星九幕向量重繪（暫時程式繪圖，非畫作驗收證據；依 docs/BORROW-STAR-ARTWORK-PUBLISHING.md 不得重新引入作畫作）"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/06-enter-water.webp",
+      "size": 33776,
+      "sha256": "9f992bbfdc91222741eea6bf889f97bc93700b69aea28eedfd0d27f40824015d",
+      "series": "borrow-star",
+      "usage": "/mythic-atlas#borrow-star 借星九幕：入水（540x960，經核准的 raster 圖，見 art-manifest.json）"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/07-star-palace.svg",
+      "size": 20873,
+      "sha256": "87744a1c0ce5f55790fd8415573248610304d70c182abe214e4c870d8deb6399",
+      "series": "borrow-star-svg",
+      "usage": "借星九幕向量重繪（暫時程式繪圖，非畫作驗收證據；依 docs/BORROW-STAR-ARTWORK-PUBLISHING.md 不得重新引入作畫作）"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/07-star-palace.webp",
+      "size": 44198,
+      "sha256": "3697edd066d31e17fd52f2f3a51809c5fae9980826982f25cba9d10dc74f16bf",
+      "series": "borrow-star",
+      "usage": "/mythic-atlas#borrow-star 借星九幕：星宮（540x960，經核准的 raster 圖，見 art-manifest.json）"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/08-meeting.svg",
+      "size": 17095,
+      "sha256": "9d9539c505fd59b7660f45cc74bf75c0df59a0cbaad85cbdb0760827ff117847",
+      "series": "borrow-star-svg",
+      "usage": "借星九幕向量重繪（暫時程式繪圖，非畫作驗收證據；依 docs/BORROW-STAR-ARTWORK-PUBLISHING.md 不得重新引入作畫作）"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/08-meeting.webp",
+      "size": 42718,
+      "sha256": "a877fe86d578687066a76900f9f9587ab919e5f08ad0ad9f5b4347d7b061dff9",
+      "series": "borrow-star",
+      "usage": "/mythic-atlas#borrow-star 借星九幕：相逢（540x960，經核准的 raster 圖，見 art-manifest.json）"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/09-star-returns.svg",
+      "size": 16215,
+      "sha256": "4a0561e9a2c06ee21632134e5afd5f47379350931a74e603054dfd9de122c295",
+      "series": "borrow-star-svg",
+      "usage": "借星九幕向量重繪（暫時程式繪圖，非畫作驗收證據；依 docs/BORROW-STAR-ARTWORK-PUBLISHING.md 不得重新引入作畫作）"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/09-star-returns.webp",
+      "size": 29778,
+      "sha256": "854366a12373dbe9a75d938b8ff73d6f2dc4732d1ff3ef707cc279c76a476680",
+      "series": "borrow-star",
+      "usage": "/mythic-atlas#borrow-star 借星九幕：星歸（540x960，經核准的 raster 圖，見 art-manifest.json）"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/README.md",
+      "size": 773,
+      "sha256": "682ecaf3e415658e4cbbf4945fbe83bd2d6d271efd21356f3f87829e863e5ceb",
+      "series": "borrow-star",
+      "usage": "借星系列清單／說明文件"
+    },
+    {
+      "path": "public/mythic-atlas/borrow-star/art-manifest.json",
+      "size": 1939,
+      "sha256": "0740215502344492e0dec6179ef6a76b06066e06239b1de847bfa8c571560c73",
+      "series": "borrow-star",
+      "usage": "借星系列清單／說明文件"
+    },
+    {
+      "path": "public/mythic-atlas/films/huangquan-chronicles.mp4",
+      "size": 6373952,
+      "sha256": "0aa62050f4b51e41759cf68411581810fd54e7eb4a061c5d5c115aefc468096f",
+      "series": "huangquan-film",
+      "usage": "/mythic-atlas 影片第二 <source> 備援；現為 720p 位元組（42 MB 原片見 huangquan-original-film-backup.json）"
+    },
+    {
+      "path": "public/mythic-atlas/kaiming-beast-stone-original.png",
+      "size": 786446,
+      "sha256": "135fbca0c82d90cd36304138cd98c897cfde137658749667b7fb4a95192936d4",
+      "series": "other",
+      "usage": "開明獸原畫（Kaiming bestiary entry）"
+    },
+    {
+      "path": "public/mythic-atlas/originals/01-skeleton-puppet.png",
+      "size": 3768063,
+      "sha256": "a633935f4980d3b4f47ae144cd44dead6b6fbf1d52e4b8f78d82d8193e92792f",
+      "series": "huangquan-plates",
+      "usage": "/mythic-atlas 圖版（ARTWORKS）：骨偶問名｜李嵩《骷髏幻戲圖》；顯示用 /mythic-atlas/web/originals/01-skeleton-puppet.webp，原畫為「開啟完整原圖」連結目標"
+    },
+    {
+      "path": "public/mythic-atlas/originals/01-skeleton-puppet.webp",
+      "size": 207240,
+      "sha256": "5e201b81b2de22e408729b443e2a723bbc3da06806d9a778c2d4d44591ff3e70",
+      "series": "huangquan-legacy-webp",
+      "usage": "舊版手工命名 WebP（PNG 之前）；01-skeleton-puppet.webp 與 07-mountain-sea-bestiary.webp 由首頁／怪力封面使用"
+    },
+    {
+      "path": "public/mythic-atlas/originals/02-t-shaped-silk.png",
+      "size": 3716289,
+      "sha256": "490132f1b381d4ca3331db85eceeb1102ed0f3022afe8d6bcd1cc63f490a6cda",
+      "series": "huangquan-plates",
+      "usage": "/mythic-atlas 圖版（ARTWORKS）：三界帛書｜馬王堆 T 形帛畫；顯示用 /mythic-atlas/web/originals/02-t-shaped-silk.webp，原畫為「開啟完整原圖」連結目標"
+    },
+    {
+      "path": "public/mythic-atlas/originals/02-three-realms-banner.webp",
+      "size": 338852,
+      "sha256": "68a356b2265b53a22ed2be65cac26196c0f8773080d3cab50dc6b8255c78c256",
+      "series": "huangquan-legacy-webp",
+      "usage": "舊版手工命名 WebP（PNG 之前）；01-skeleton-puppet.webp 與 07-mountain-sea-bestiary.webp 由首頁／怪力封面使用"
+    },
+    {
+      "path": "public/mythic-atlas/originals/03-celestial-court.png",
+      "size": 3755823,
+      "sha256": "cf8319dbf0e267b61d006aee0e85d8d677b07dde506477a59e78141f9bf77bce",
+      "series": "huangquan-plates",
+      "usage": "/mythic-atlas 圖版（ARTWORKS）：諸天朝序｜永樂宮《朝元圖》；顯示用 /mythic-atlas/web/originals/03-celestial-court.webp，原畫為「開啟完整原圖」連結目標"
+    },
+    {
+      "path": "public/mythic-atlas/originals/03-celestial-procession.webp",
+      "size": 388336,
+      "sha256": "adf2a1f3ca9690226e4ffe9c6e37f572b336dc0372fb5b5ae5522c82abeefcf1",
+      "series": "huangquan-legacy-webp",
+      "usage": "舊版手工命名 WebP（PNG 之前）；01-skeleton-puppet.webp 與 07-mountain-sea-bestiary.webp 由首頁／怪力封面使用"
+    },
+    {
+      "path": "public/mythic-atlas/originals/04-guan-yu-captive.png",
+      "size": 3855299,
+      "sha256": "937ba6f92a8608f96048cb09082fe392ac1d12a46272fb972cb8a43988b06312",
+      "series": "huangquan-plates",
+      "usage": "/mythic-atlas 圖版（ARTWORKS）：封疆擒將｜商喜《關羽擒將圖》；顯示用 /mythic-atlas/web/originals/04-guan-yu-captive.webp，原畫為「開啟完整原圖」連結目標"
+    },
+    {
+      "path": "public/mythic-atlas/originals/04-guardian-captures-general.webp",
+      "size": 320276,
+      "sha256": "10415227c08cc06bd8bba0f6219900c2fa3cb0988200e52f57fe21d94c323b9b",
+      "series": "huangquan-legacy-webp",
+      "usage": "舊版手工命名 WebP（PNG 之前）；01-skeleton-puppet.webp 與 07-mountain-sea-bestiary.webp 由首頁／怪力封面使用"
+    },
+    {
+      "path": "public/mythic-atlas/originals/05-ten-kings-court.webp",
+      "size": 238414,
+      "sha256": "f66dd3a6d29137ea130be93d9991fc21378f2cefbe4018c9fe7fe6ad5606956a",
+      "series": "huangquan-legacy-webp",
+      "usage": "舊版手工命名 WebP（PNG 之前）；01-skeleton-puppet.webp 與 07-mountain-sea-bestiary.webp 由首頁／怪力封面使用"
+    },
+    {
+      "path": "public/mythic-atlas/originals/05-ten-kings.png",
+      "size": 3613163,
+      "sha256": "09893c044c3b5e03bc4c63d9ad5f176bb8e6aeebe1be2fcefbc8b667d3db34a7",
+      "series": "huangquan-plates",
+      "usage": "/mythic-atlas 圖版（ARTWORKS）：幽司停判｜陸信忠《十王圖》；顯示用 /mythic-atlas/web/originals/05-ten-kings.webp，原畫為「開啟完整原圖」連結目標"
+    },
+    {
+      "path": "public/mythic-atlas/originals/06-nine-dragons.png",
+      "size": 3873324,
+      "sha256": "fcd8595aeeda568ca3972c3cfe368591dc3654e7a1aeb22489cd907752f2c50d",
+      "series": "huangquan-plates",
+      "usage": "/mythic-atlas 圖版（ARTWORKS）：九龍裂水｜陳容《九龍圖》；顯示用 /mythic-atlas/web/originals/06-nine-dragons.webp，原畫為「開啟完整原圖」連結目標"
+    },
+    {
+      "path": "public/mythic-atlas/originals/06-nine-dragons.webp",
+      "size": 381442,
+      "sha256": "58b0e896e81416a58db9434b53f318c2fc075ced6f2c267873a6e764133304f9",
+      "series": "huangquan-legacy-webp",
+      "usage": "舊版手工命名 WebP（PNG 之前）；01-skeleton-puppet.webp 與 07-mountain-sea-bestiary.webp 由首頁／怪力封面使用"
+    },
+    {
+      "path": "public/mythic-atlas/originals/07-mountain-sea-bestiary.webp",
+      "size": 472404,
+      "sha256": "d8c320d25fdf19d9b226cf7720ef7ff8845c57a78954206a9ab8b8f1ca587532",
+      "series": "huangquan-legacy-webp",
+      "usage": "舊版手工命名 WebP（PNG 之前）；01-skeleton-puppet.webp 與 07-mountain-sea-bestiary.webp 由首頁／怪力封面使用"
+    },
+    {
+      "path": "public/mythic-atlas/originals/07-shanhaijing-atlas.png",
+      "size": 4351826,
+      "sha256": "a8f75d3aadad04768cb8aa1b42e0175ca84b9e64cbebdf49fd85835edbcaa6b2",
+      "series": "huangquan-plates",
+      "usage": "/mythic-atlas 圖版（ARTWORKS）：災異山海｜明刻本《山海經圖》；顯示用 /mythic-atlas/web/originals/07-shanhaijing-atlas.webp，原畫為「開啟完整原圖」連結目標"
+    },
+    {
+      "path": "public/mythic-atlas/originals/08-ghostly-amusements.png",
+      "size": 3639391,
+      "sha256": "12844836f2155695f9386bff072d55192e674962fb0efb2378a8f86243c3475a",
+      "series": "huangquan-plates",
+      "usage": "/mythic-atlas 圖版（ARTWORKS）：雨中鬼趣｜羅聘《鬼趣圖》；顯示用 /mythic-atlas/web/originals/08-ghostly-amusements.webp，原畫為「開啟完整原圖」連結目標"
+    },
+    {
+      "path": "public/mythic-atlas/originals/08-ghostly-amusements.webp",
+      "size": 124604,
+      "sha256": "83f2be68206bbefb49f7cc27df3a42d0763545852e04c5d96b6d41b533351ad4",
+      "series": "huangquan-legacy-webp",
+      "usage": "舊版手工命名 WebP（PNG 之前）；01-skeleton-puppet.webp 與 07-mountain-sea-bestiary.webp 由首頁／怪力封面使用"
+    },
+    {
+      "path": "public/mythic-atlas/originals/09-lifting-the-bowl.webp",
+      "size": 328724,
+      "sha256": "5cde32b60792d06382a3914d4a5630f42a39359793e9ba7bcca1b8b491ebc43b",
+      "series": "huangquan-legacy-webp",
+      "usage": "舊版手工命名 WebP（PNG 之前）；01-skeleton-puppet.webp 與 07-mountain-sea-bestiary.webp 由首頁／怪力封面使用"
+    },
+    {
+      "path": "public/mythic-atlas/originals/09-uncovering-the-bowl.png",
+      "size": 3861763,
+      "sha256": "e4f47077a06891a4992ae27a1239c3dcf967c400218e562cccbf2cbd7c3c0939",
+      "series": "huangquan-plates",
+      "usage": "/mythic-atlas 圖版（ARTWORKS）：揭缽見天｜《揭缽圖》母題；顯示用 /mythic-atlas/web/originals/09-uncovering-the-bowl.webp，原畫為「開啟完整原圖」連結目標"
+    },
+    {
+      "path": "public/mythic-atlas/originals/10-coastal-invasion.png",
+      "size": 3921901,
+      "sha256": "8507532cfa587cff41f57ffb65ce99d7a3c317204ba82cf03e148fb75540b4de",
+      "series": "huangquan-plates",
+      "usage": "/mythic-atlas 圖版（ARTWORKS）：海疆無燈｜《倭寇圖卷》類海防圖像；顯示用 /mythic-atlas/web/originals/10-coastal-invasion.webp，原畫為「開啟完整原圖」連結目標"
+    },
+    {
+      "path": "public/mythic-atlas/originals/10-coastal-raiders.webp",
+      "size": 355988,
+      "sha256": "1263ff13cb466f535c28a4f734bce1f1da071375dbfdc8f4348610823b9b0b1e",
+      "series": "huangquan-legacy-webp",
+      "usage": "舊版手工命名 WebP（PNG 之前）；01-skeleton-puppet.webp 與 07-mountain-sea-bestiary.webp 由首頁／怪力封面使用"
+    },
+    {
+      "path": "public/mythic-atlas/originals/11-searching-the-mountain.png",
+      "size": 4222690,
+      "sha256": "84cd201fff8c62c73c44117f8519145623c282e5db8a1345db4cc1c91bff8975",
+      "series": "huangquan-plates",
+      "usage": "/mythic-atlas 圖版（ARTWORKS）：灌口搜山｜《搜山圖》傳統；顯示用 /mythic-atlas/web/originals/11-searching-the-mountain.webp，原畫為「開啟完整原圖」連結目標"
+    },
+    {
+      "path": "public/mythic-atlas/originals/11-searching-the-mountain.webp",
+      "size": 396208,
+      "sha256": "6e3ed49d52a31e1288dacb379b960d00a128092b10a97720264ad48a1199472f",
+      "series": "huangquan-legacy-webp",
+      "usage": "舊版手工命名 WebP（PNG 之前）；01-skeleton-puppet.webp 與 07-mountain-sea-bestiary.webp 由首頁／怪力封面使用"
+    },
+    {
+      "path": "public/mythic-atlas/originals/12-five-planets-28-mansions.png",
+      "size": 3595586,
+      "sha256": "40fb16c7f7de3ec91094763d52975138416bf326fccd88444f70ad6be7a1975b",
+      "series": "huangquan-plates",
+      "usage": "/mythic-atlas 圖版（ARTWORKS）：星宿錯位｜《五星二十八宿神形圖》傳統；顯示用 /mythic-atlas/web/originals/12-five-planets-28-mansions.webp，原畫為「開啟完整原圖」連結目標"
+    },
+    {
+      "path": "public/mythic-atlas/originals/12-stars-and-constellations.webp",
+      "size": 348976,
+      "sha256": "0afd132d83b839fb988c18b81839bef9827c5cdcaf834a90f6f897d2a3fd1f59",
+      "series": "huangquan-legacy-webp",
+      "usage": "舊版手工命名 WebP（PNG 之前）；01-skeleton-puppet.webp 與 07-mountain-sea-bestiary.webp 由首頁／怪力封面使用"
+    },
+    {
+      "path": "public/mythic-atlas/web/films/huangquan-chronicles-720p.mp4",
+      "size": 6373952,
+      "sha256": "0aa62050f4b51e41759cf68411581810fd54e7eb4a061c5d5c115aefc468096f",
+      "series": "web-derivatives",
+      "usage": "/mythic-atlas 影片第一 <source>（MYTHIC_WEB_FILM），720p 衍生版"
+    },
+    {
+      "path": "public/mythic-atlas/web/films/huangquan-chronicles-poster.webp",
+      "size": 234602,
+      "sha256": "646df4679e3e569d18a01dfe313361bd58edd5b92bbc88165206f4b082147cf1",
+      "series": "web-derivatives",
+      "usage": "/mythic-atlas 影片海報（MYTHIC_WEB_FILM_POSTER）"
+    },
+    {
+      "path": "public/mythic-atlas/web/kaiming-beast-stone-original.webp",
+      "size": 202328,
+      "sha256": "a27e8e32d9a8fcf6ddc5aa2455572d9c4af5c7cd8a91a3f86df2e0be71986316",
+      "series": "web-derivatives",
+      "usage": "開明獸原畫的 web 衍生圖"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/01-skeleton-puppet-thumb.webp",
+      "size": 21448,
+      "sha256": "c9ffaa45e219b8cf6cacfe642ef0d28919ea4a80d57a88880d7efaa1756f0d22",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/01-skeleton-puppet.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/01-skeleton-puppet.webp",
+      "size": 411556,
+      "sha256": "a8bb355b7c75a3620b3e6a8dba2b25313ce4787ed45a50641582e09c8016a8fc",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/01-skeleton-puppet.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/02-t-shaped-silk-thumb.webp",
+      "size": 24700,
+      "sha256": "2ba08e4523843e5dcdabd4c19b8b117998bd37139c46d81082eea4c9f99f5d7b",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/02-t-shaped-silk.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/02-t-shaped-silk.webp",
+      "size": 397810,
+      "sha256": "b835c67a581a3cc018a50b47c558627bba655ce62b0c6e5afe4beb69060e9dde",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/02-t-shaped-silk.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/03-celestial-court-thumb.webp",
+      "size": 27402,
+      "sha256": "1b13d5f41aebb962c3b0375b5d4549ac7dcdda16d798859e6362ef8a439973d0",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/03-celestial-court.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/03-celestial-court.webp",
+      "size": 407526,
+      "sha256": "33695f79bb97234d6bb703bbb344a42f8b5ec6c574db0d2c2b2d750cf8e6bc6a",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/03-celestial-court.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/04-guan-yu-captive-thumb.webp",
+      "size": 30600,
+      "sha256": "8dccccbdffd3c3e0129ed7c1ab8cb06f6c8b852f461becfe10ef45a189a515b5",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/04-guan-yu-captive.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/04-guan-yu-captive.webp",
+      "size": 457830,
+      "sha256": "fa07b9954ac4e511e40567a4f04cbff44a4cf32ffc30d527b9ae0438952ac3c6",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/04-guan-yu-captive.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/05-ten-kings-thumb.webp",
+      "size": 25294,
+      "sha256": "f0720624c29478a2cf9caa46f61cc83594760e574a88ab2de465eea726e8e586",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/05-ten-kings.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/05-ten-kings.webp",
+      "size": 393238,
+      "sha256": "df0da05d13d23ca0ee3618c5775a848af9307847a12176317e83141cecb4f1a8",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/05-ten-kings.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/06-nine-dragons-thumb.webp",
+      "size": 32698,
+      "sha256": "9625ffb7411c9df94744d400049c6ce5faf74e5baf26ea74135d6959e3b3b19b",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/06-nine-dragons.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/06-nine-dragons.webp",
+      "size": 428918,
+      "sha256": "785f578e35021830020a152088a2a757e9e995e50d5df77a1f7e5eb5d5cb2d95",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/06-nine-dragons.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/07-shanhaijing-atlas-thumb.webp",
+      "size": 34652,
+      "sha256": "d8e4fb49291dbd12b466b3802fd2d36f8beabcd7fa467f5d922e1f15bc3f7bd4",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/07-shanhaijing-atlas.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/07-shanhaijing-atlas.webp",
+      "size": 550556,
+      "sha256": "87b16b27a64b2147b6c07bfad514b3e2f12d6adc29350c76299e1c87891d5d0c",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/07-shanhaijing-atlas.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/08-ghostly-amusements-thumb.webp",
+      "size": 24608,
+      "sha256": "fefcf77d80f8d3f70d7e53868994d6c050698b38c1ba5a1074e0923ab7a4e5c0",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/08-ghostly-amusements.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/08-ghostly-amusements.webp",
+      "size": 366554,
+      "sha256": "617591c6c9c756058a7d869445268a9e8212ff5cf1613bf08d6e8a803e85f298",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/08-ghostly-amusements.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/09-uncovering-the-bowl-thumb.webp",
+      "size": 28148,
+      "sha256": "0582ece5983584c44ea7a2558514ffb7702721d48d538c1f00004fa50c3872e4",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/09-uncovering-the-bowl.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/09-uncovering-the-bowl.webp",
+      "size": 442232,
+      "sha256": "b6f58df97547b78881bb09f6ef29c3463fd4ee52e092526a7e3b580cce11c025",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/09-uncovering-the-bowl.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/10-coastal-invasion-thumb.webp",
+      "size": 28288,
+      "sha256": "188c144c0b0f94f5ae93ff1182b69a28ee9425015de1ae303f2cafbac53f3416",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/10-coastal-invasion.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/10-coastal-invasion.webp",
+      "size": 449656,
+      "sha256": "09b1adf0a3bfa6cea757d9ee6c3c1128cf5ee489048107a978b0d15c9f2b1cd0",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/10-coastal-invasion.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/11-searching-the-mountain-thumb.webp",
+      "size": 31636,
+      "sha256": "e958d5d26c417a22b7dde3d710cdd761284ac7094345215cf43a04ba7ec361da",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/11-searching-the-mountain.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/11-searching-the-mountain.webp",
+      "size": 512648,
+      "sha256": "4463e36c4e2e37d354ec788dcf87a8d81930dd0f0485decc0adadc6cfc24108d",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/11-searching-the-mountain.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/12-five-planets-28-mansions-thumb.webp",
+      "size": 26360,
+      "sha256": "5d3b1f64c715003a2e66a487eaf75ed4e11f3bbacc1d1759e80462a7484ea44d",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/12-five-planets-28-mansions.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/originals/12-five-planets-28-mansions.webp",
+      "size": 371738,
+      "sha256": "2b36e65286e41964f44c610ac9545d050dcd26fd35778ebf4021db3da478cc9e",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 originals/12-five-planets-28-mansions.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/01-zi-rat-thumb.webp",
+      "size": 20082,
+      "sha256": "00e7e030a22634cc44e4a4bea8c51d1ac0b9ad6925e64085780bf16355c11d75",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/01-zi-rat.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/01-zi-rat.webp",
+      "size": 276526,
+      "sha256": "2e3255c03ae75b1f2b171e14f03d166810e6ce0aaff609ad28518baee202f9d2",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/01-zi-rat.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/02-chou-ox-thumb.webp",
+      "size": 26506,
+      "sha256": "507c37f00d05df6bbd7e07f9c86885a2a1f1df81a7e1e1ba55d758f546dd6343",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/02-chou-ox.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/02-chou-ox.webp",
+      "size": 343764,
+      "sha256": "761d4383def269a4f7dced6a87a538b110b7c6b684d6ddc9afe86c38bfd6a942",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/02-chou-ox.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/03-yin-tiger-thumb.webp",
+      "size": 28470,
+      "sha256": "2f568acb61f268ae501f588d9cd6dc90fcd0a002beb3a69c8427b509a28278db",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/03-yin-tiger.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/03-yin-tiger.webp",
+      "size": 355246,
+      "sha256": "6e2f4837a85fb4b9303de5b3e352e611d851f19c25ab2ee8b346654012caa702",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/03-yin-tiger.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/04-mao-rabbit-thumb.webp",
+      "size": 25842,
+      "sha256": "f2f18f3c87aca940b9afdec114c1d82add1ef24443dd32614609a7a838d22b45",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/04-mao-rabbit.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/04-mao-rabbit.webp",
+      "size": 321196,
+      "sha256": "002f824d07b6938a80fed45a670e4400fdc260b0471e570efaa4156850a2e007",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/04-mao-rabbit.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/05-chen-dragon-thumb.webp",
+      "size": 27932,
+      "sha256": "138a7326da36d304e13fabaf77972f3523e80fba9900bcefec0f12dd2b5a7e13",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/05-chen-dragon.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/05-chen-dragon.webp",
+      "size": 360362,
+      "sha256": "eb109089b8b18807af03f3a80b2fa6a49bf58bbc7f2db2ae1586a2319956c3cd",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/05-chen-dragon.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/06-si-snake-thumb.webp",
+      "size": 25724,
+      "sha256": "2ec50e5ad17fa20e3548933594f87a7f55de6b6048de93cbba789aafb72c9cd4",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/06-si-snake.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/06-si-snake.webp",
+      "size": 325288,
+      "sha256": "e6ffa03f2800c667dde2b6b45073a710430afeb2d8088bc83fc56cb5c5bff1fb",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/06-si-snake.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/07-wu-horse-thumb.webp",
+      "size": 29052,
+      "sha256": "830d76e16b2b5a8c3581726a958b4cbdc8c2db70ba7b3a9040bbd30c362c5599",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/07-wu-horse.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/07-wu-horse.webp",
+      "size": 359180,
+      "sha256": "a771034ab82178c6ea0a9f2dfaa12d5c094e1ec92c84fc487ce1f5beb5db4c1c",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/07-wu-horse.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/08-wei-sheep-thumb.webp",
+      "size": 28022,
+      "sha256": "b5e07c97614c0e0b7ab1d8735ea5391a6ca7fbd85c63f0ada0d8f8c82c973df3",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/08-wei-sheep.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/08-wei-sheep.webp",
+      "size": 344264,
+      "sha256": "1580bb1e04edf708315d0f294e6e23c5af7db96b7c8a1d0bfca87bd6851e4e86",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/08-wei-sheep.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/09-shen-monkey-thumb.webp",
+      "size": 31022,
+      "sha256": "abc3cf6919862f2362f9791aaacbe7322c8bcec0234a03f3fb5ab83d88c6ccd3",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/09-shen-monkey.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/09-shen-monkey.webp",
+      "size": 387924,
+      "sha256": "e3662989e24581e93ec6fef2eb884762c19ded7415ed665fb775cb6575959b8e",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/09-shen-monkey.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/10-you-rooster-thumb.webp",
+      "size": 31046,
+      "sha256": "97c4c6b227cac86bdb930d55af767d9c19ccad9ff85b46252df6d941247be910",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/10-you-rooster.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/10-you-rooster.webp",
+      "size": 388002,
+      "sha256": "21682840c78c84ec03f51743a3def72482bea4f895dfa2d51cecbb02a512fa8d",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/10-you-rooster.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/11-xu-dog-thumb.webp",
+      "size": 27950,
+      "sha256": "4b3e62974f5c3eac89e3e175d5600bf0b1e702d417d771ded998a8ea4b307c0d",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/11-xu-dog.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/11-xu-dog.webp",
+      "size": 339882,
+      "sha256": "2cf09e6e1a63e184f616ce2b0b295bda26d8d3aa41cb7983d91b89e91f0d50ef",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/11-xu-dog.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/12-hai-boar-thumb.webp",
+      "size": 28906,
+      "sha256": "66ff111076db3fdcebbd5ecdd4c1f40c0ce12e020c2f600572c7853a790b0018",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/12-hai-boar.png"
+    },
+    {
+      "path": "public/mythic-atlas/web/zodiac/12-hai-boar.webp",
+      "size": 356654,
+      "sha256": "332ee444de27da18a48bd2e4487088a7c47d01e0a161962e8db29b1596c3a54e",
+      "series": "web-derivatives",
+      "usage": "web 衍生圖（941w q80 WebP 或 240w 縮圖），對應 zodiac/12-hai-boar.png"
+    },
+    {
+      "path": "public/mythic-atlas/zodiac/01-zi-rat.png",
+      "size": 3154432,
+      "sha256": "cd2b672f365226c8550f709439821979bee3ad24c7c685c6aef8f744902ca2c8",
+      "series": "zodiac-plates",
+      "usage": "/guaili-luanshen 與 /mythic-atlas#guaili 十二支圖版：子・鼠｜骨噬・疫災；顯示用 /mythic-atlas/web/zodiac/01-zi-rat.webp"
+    },
+    {
+      "path": "public/mythic-atlas/zodiac/02-chou-ox.png",
+      "size": 3361436,
+      "sha256": "871db1c304e28deb3b816cea4d9549b18c07992699feec7a769307acdb7222dd",
+      "series": "zodiac-plates",
+      "usage": "/guaili-luanshen 與 /mythic-atlas#guaili 十二支圖版：丑・牛｜牛煞・裂災；顯示用 /mythic-atlas/web/zodiac/02-chou-ox.webp"
+    },
+    {
+      "path": "public/mythic-atlas/zodiac/03-yin-tiger.png",
+      "size": 3420260,
+      "sha256": "1eead0d2e8ab91f4fa74c5913b70649fcd1ad7446eb44f4e4e7467685c995196",
+      "series": "zodiac-plates",
+      "usage": "/guaili-luanshen 與 /mythic-atlas#guaili 十二支圖版：寅・虎｜虎嘯・兵災；顯示用 /mythic-atlas/web/zodiac/03-yin-tiger.webp"
+    },
+    {
+      "path": "public/mythic-atlas/zodiac/04-mao-rabbit.png",
+      "size": 3311668,
+      "sha256": "3410952b9ac206431aae4b9aa7fd6a2a81d7e6749546d3276b3afb6de6b21548",
+      "series": "zodiac-plates",
+      "usage": "/guaili-luanshen 與 /mythic-atlas#guaili 十二支圖版：卯・兔｜玉兔妖・魘災；顯示用 /mythic-atlas/web/zodiac/04-mao-rabbit.webp"
+    },
+    {
+      "path": "public/mythic-atlas/zodiac/05-chen-dragon.png",
+      "size": 3459447,
+      "sha256": "9ea9d10cff2ad9ef1f50f2a8dc85c0b75ca4cc6c4642d758e2312334c1366270",
+      "series": "zodiac-plates",
+      "usage": "/guaili-luanshen 與 /mythic-atlas#guaili 十二支圖版：辰・龍｜屍龍・旱災；顯示用 /mythic-atlas/web/zodiac/05-chen-dragon.webp"
+    },
+    {
+      "path": "public/mythic-atlas/zodiac/06-si-snake.png",
+      "size": 3290312,
+      "sha256": "5401cae8bd010b182963717cfe470529725ff31cd0d59b72b3772d26ba4a373b",
+      "series": "zodiac-plates",
+      "usage": "/guaili-luanshen 與 /mythic-atlas#guaili 十二支圖版：巳・蛇｜蛇魅・魘災；顯示用 /mythic-atlas/web/zodiac/06-si-snake.webp"
+    },
+    {
+      "path": "public/mythic-atlas/zodiac/07-wu-horse.png",
+      "size": 3361269,
+      "sha256": "791f92119c0e7ee2645b24847c68d5e386387a3230583969152452e44082fedb",
+      "series": "zodiac-plates",
+      "usage": "/guaili-luanshen 與 /mythic-atlas#guaili 十二支圖版：午・馬｜熾馬・焚災；顯示用 /mythic-atlas/web/zodiac/07-wu-horse.webp"
+    },
+    {
+      "path": "public/mythic-atlas/zodiac/08-wei-sheep.png",
+      "size": 3337772,
+      "sha256": "032399fc92b2c51d51024cf61a3a5da5926da826feed08aab400ff0f06bb2ef5",
+      "series": "zodiac-plates",
+      "usage": "/guaili-luanshen 與 /mythic-atlas#guaili 十二支圖版：未・羊｜羊骨邪・荒災；顯示用 /mythic-atlas/web/zodiac/08-wei-sheep.webp"
+    },
+    {
+      "path": "public/mythic-atlas/zodiac/09-shen-monkey.png",
+      "size": 3515518,
+      "sha256": "9483c75763ef2fa6dcded86f043c75cf1625b4ec65335de35c6f6b02caf3d52b",
+      "series": "zodiac-plates",
+      "usage": "/guaili-luanshen 與 /mythic-atlas#guaili 十二支圖版：申・猴｜石猴煞・洪災；顯示用 /mythic-atlas/web/zodiac/09-shen-monkey.webp"
+    },
+    {
+      "path": "public/mythic-atlas/zodiac/10-you-rooster.png",
+      "size": 3463875,
+      "sha256": "a7ff85aa49cfafef381b25e71dfaf8ecb40ecb8b867ccb173132cceb2a41d090",
+      "series": "zodiac-plates",
+      "usage": "/guaili-luanshen 與 /mythic-atlas#guaili 十二支圖版：酉・雞｜血雞・疫災；顯示用 /mythic-atlas/web/zodiac/10-you-rooster.webp"
+    },
+    {
+      "path": "public/mythic-atlas/zodiac/11-xu-dog.png",
+      "size": 3299470,
+      "sha256": "8b860ffedd2b3cf73a851c9ead342bd9a01e3e43f4b8a14f991759c270e8cd78",
+      "series": "zodiac-plates",
+      "usage": "/guaili-luanshen 與 /mythic-atlas#guaili 十二支圖版：戌・狗｜犬噬・魘災；顯示用 /mythic-atlas/web/zodiac/11-xu-dog.webp"
+    },
+    {
+      "path": "public/mythic-atlas/zodiac/12-hai-boar.png",
+      "size": 3403420,
+      "sha256": "46b72fa127a5e3a49b4159a8276f4853b27b46101493dab56dee2503a493b280",
+      "series": "zodiac-plates",
+      "usage": "/guaili-luanshen 與 /mythic-atlas#guaili 十二支圖版：亥・豬｜彘瘟・疫災；顯示用 /mythic-atlas/web/zodiac/12-hai-boar.webp"
+    }
+  ]
+}

@@ -12,6 +12,14 @@ test('Pages redirects retain app routes, Supabase proxy and canonical guide redi
   for (const route of ['/login', '/account', '/member', '/history', '/auth/callback', '/gallery', '/social', '/mythic-atlas', '/tianji-dual', '/tianji-xinggong']) {
     assert.match(redirects, new RegExp(`^${route.replaceAll('/', '\\/')} \/ 200$`, 'm'));
   }
+  // Wildcard rewrites for paths that hold static files must target /index.html:
+  // a target of "/" serves the app shell for every file under the path
+  // (verified live 2026-11-25: all 109 files under /mythic-atlas/* returned
+  // text/html). Bare routes keep "/ 200": no file lives at the bare path,
+  // and "/index.html" there 308-redirects the route home.
+  for (const route of ['/social', '/mythic-atlas']) {
+    assert.match(redirects, new RegExp(`^${route.replaceAll('/', '\\/')}/\\* \/index\\.html 200$`, 'm'));
+  }
   assert.match(redirects, /^\/guide\/\* \/\?guide=1 302$/m);
   assert.match(redirects, /^\/sb\/rest\/v1\/\* https:\/\/gyisxbkjzvdretbqzeuw\.supabase\.co\/rest\/v1\/:splat 200$/m);
   assert.match(redirects, /^\/\* \/index\.html 200$/m);
