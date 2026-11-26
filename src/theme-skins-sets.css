@@ -148,7 +148,6 @@ html[data-zws="pine-ink"] {
 
 /* ── 粉彩錦鯉 · 魚鱗紋、輕盈細字、全圓角 ─────────────────────────────────────────────────────────── */
 html[data-zws="pastel-koi"] {
-  --zws-accent: #4f807e;
   --zws-pattern: radial-gradient(circle at 50% 100%, transparent 0 10px, rgba(111, 154, 152, .16) 11px 12px, transparent 13px);
   --zws-pattern-size: 26px 13px; --zws-pattern-opacity: .6;
   --zws-card-frame: 0 10px 26px rgba(170, 140, 170, .14), inset 0 0 0 1px rgba(255, 255, 255, .8);

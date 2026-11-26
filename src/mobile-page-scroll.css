@@ -347,18 +347,18 @@ html body #root #zhaowu-main-content [data-guest-follow-up="true"] button[type="
 html body #root #zhaowu-main-content button.zw-flow-next,
 html body #root #zhaowu-main-content #report button[type="submit"].bg-cinnabar,
 html body #root #zhaowu-main-content #report a.bg-cinnabar {
-  background: #345e50 !important;
+  background: var(--zws-action-bg, #345e50) !important;
   background-image: none !important;
-  color: #fffaf0 !important;
-  -webkit-text-fill-color: #fffaf0 !important;
-  border-color: #345e50 !important;
+  color: var(--zws-on-accent, #fffaf0) !important;
+  -webkit-text-fill-color: var(--zws-on-accent, #fffaf0) !important;
+  border-color: var(--zws-action-bg, #345e50) !important;
 }
 html body #root #zhaowu-main-content [data-bazi-reading-locked] button *,
 html body #root #zhaowu-main-content [data-free-summary-email] button *,
 html body #root #zhaowu-main-content [data-guest-follow-up="true"] button[type="submit"] *,
 html body #root #zhaowu-main-content button.zw-flow-next * {
-  color: #fffaf0 !important;
-  -webkit-text-fill-color: #fffaf0 !important;
+  color: var(--zws-on-accent, #fffaf0) !important;
+  -webkit-text-fill-color: var(--zws-on-accent, #fffaf0) !important;
 }
 
 /* --- 6. 性別膠囊已選態：固定深綠底＋米白字 ---------------------------

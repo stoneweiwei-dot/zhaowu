@@ -1,6 +1,6 @@
 import { expect, test, type Locator } from '@playwright/test';
 
-test.use({ viewport: { width: 390, height: 844 }, locale: 'zh-TW' });
+test.use({ viewport: { width: 390, height: 844 }, locale: 'zh-TW', serviceWorkers: 'block' });
 
 async function box(locator: Locator) {
   await expect(locator).toBeVisible();
@@ -13,7 +13,7 @@ test('mobile homepage keeps the winter quote, dock and footer aligned', async ({
   // The quote only renders for seasonal skins.
   await page.route('**/api/owner-data?view=site-skin', route =>
     route.fulfill({ json: { configured: true, skin: 'solar-minor-snow' } }));
-  await page.goto('/');
+  await page.goto('/?zw_entry=home', { waitUntil: 'networkidle' });
   const discover = page.locator('.zw-v2-discover');
   await expect(discover).toContainText('往下探索昭梧');
   const quote = await box(page.locator('.zw-winter-quote'));

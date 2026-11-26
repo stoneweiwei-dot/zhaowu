@@ -1066,6 +1066,60 @@ html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature-link:focus-vi
   background: rgba(250, 247, 238, .12) !important;
 }
 
+@media (max-width: 767px) {
+  /* The shell is the scrollport. Paint one scene at the top of its content. */
+  html body #root .zw-painted-home.zw-v2-home {
+    background: var(--zw-v2-paper) !important;
+  }
+  html body #root > .zhaowu-route-home:has(.zw-v2-home) {
+    background: var(--zws-page, #f3ead7) !important;
+  }
+  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header {
+    position: relative !important;
+    inset: auto !important;
+    margin-inline-start: auto;
+  }
+  html body #root .zw-painted-home.zw-v2-home :is(.zw-stage, .zw-veil) {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 100svh;
+    box-shadow: none !important;
+    border: 0;
+    -webkit-mask-image: linear-gradient(#000 60%, transparent);
+    mask-image: linear-gradient(#000 60%, transparent);
+  }
+  html body #root .zw-painted-home.zw-v2-home :is(.zw-v2-season, .zw-v2-discover) {
+    position: static;
+  }
+  html body #root .zw-painted-home.zw-v2-home :is(.zw-v2-wordmark, .ph-tree-tile, .ph-tree-branch-tile, .zw-bajinggong-feature-link) {
+    min-height: 44px;
+    border: 0 !important;
+    box-shadow: none;
+  }
+  html body #root .zw-painted-home.zw-v2-home :is(.ph-tree-tile, .ph-tree-branch-tile, .zw-bajinggong-feature-link) > img {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    --edge-fade: transparent, #000 8px, #000 calc(100% - 8px), transparent;
+    -webkit-mask-image: linear-gradient(to right, var(--edge-fade)), linear-gradient(var(--edge-fade));
+    mask-image: linear-gradient(to right, var(--edge-fade)), linear-gradient(var(--edge-fade));
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+  html body #root .zw-painted-home.zw-v2-home .ph-tree-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Night skins use light ink: darken the opening scene so it stays readable over pale paintings (all widths). */
+html[data-zws-mode="dark"] body #root .zw-painted-home.zw-v2-home {
+  background: var(--zws-page, #0f1d22) !important;
+}
+html[data-zws-mode="dark"] body #root .zw-painted-home.zw-v2-home .zw-veil {
+  background: linear-gradient(180deg, rgba(8, 18, 24, .66), rgba(8, 18, 24, .82)) !important;
+}
+
 /* 4. 宽屏顶栏（>=1200px；1019px 不动）：两盒放宽到 1080px，导览靠右 */
 @media (min-width: 1200px) {
   html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header {
