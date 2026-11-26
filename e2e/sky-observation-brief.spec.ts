@@ -1,5 +1,8 @@
 import { test, expect } from '@playwright/test';
 
+// The PWA service worker would answer chart-artwork.js before page.route can abort it (WebKit), so block it for these tests.
+test.use({ serviceWorkers: 'block' });
+
 test('dated observation distinguishes current from archived and links to its source', async ({ page }) => {
   await page.clock.setFixedTime(new Date('2026-11-12T01:00:00Z'));
   await page.goto('/sky-events');
@@ -9,10 +12,10 @@ test('dated observation distinguishes current from archived and links to its sou
   const brief = observation.locator('.sky-observation-brief');
   await expect(brief.locator('time')).toHaveAttribute('datetime', '2026-11-12');
   await expect(brief.getByRole('status')).not.toContainText(/not yet|尚未/i);
-  await page.clock.setFixedTime(new Date('2026-11-13T01:00:00Z'));
+  await page.clock.setFixedTime(new Date('2026-11-15T01:00:00Z'));
   await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
   await expect(brief.getByRole('status')).toContainText(/not yet|尚未/i);
-  await expect(brief.locator('time')).toHaveAttribute('datetime', '2026-11-12');
+  await expect(brief.locator('time')).toHaveAttribute('datetime', '2026-11-14');
   await brief.getByRole('link').click();
   await expect(page).toHaveURL(/#sky-observation-record$/);
   await expect(page.locator('#sky-observation-record .daily-sky')).toBeVisible();
@@ -72,6 +75,7 @@ test('interpretive-first reading and upper SkyUniverse work while lower SkyCurre
 });
 
 test('upper SkyUniverse controls and legend render cleanly without lower SkyCurrentMotion or horizontal overflow', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2026-11-04T01:00:00Z'));
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/sky-events');
   const universe = page.locator('.sky-universe-section');
@@ -114,6 +118,6 @@ test('failed chart loading leaves the dated observation readable', async ({ page
   await universe.scrollIntoViewIfNeeded();
   await expect(universe.getByRole('status')).toContainText(/暫時無法顯示|暂时无法显示|unavailable/);
   const record = page.locator('details#sky-observation-record');
-  await record.locator('summary').click();
+  await record.locator('summary').first().click();
   await expect(record.locator('.daily-sky')).toBeVisible();
 });
