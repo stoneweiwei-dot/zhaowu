@@ -25,6 +25,14 @@ writeFileSync(
   "utf8",
 );
 
+// Runtime handlers (api/, functions/, netlify/) cannot read public/release.json, so the same
+// release value is also baked into a tiny module that they import.
+writeFileSync(
+  new URL("../lib/release-id.js", import.meta.url),
+  `// Written by scripts/write-release-assets.mjs at build time; same value as public/release.json.\nexport const ZHAOWU_BUILD_RELEASE = ${JSON.stringify(release)};\n`,
+  "utf8",
+);
+
 writeFileSync(
   new URL("../public/sw.js", import.meta.url),
   template.replaceAll("__ZHAOWU_RELEASE__", release),
