@@ -1,5 +1,6 @@
 import { fetchMingshuJson, jsonResponse, mingshuOrigin } from "../lib/mingshu-client.js";
 import { ZHAOWU_ENGINE_VERSION, ZHAOWU_RELEASE } from "../lib/zhaowu-verification.js";
+import { ZHAOWU_BUILD_RELEASE } from "../lib/release-id.js";
 
 export default async function handler(req, res) {
   if ((req.method || "GET") !== "GET") {
@@ -11,7 +12,8 @@ export default async function handler(req, res) {
 
   return jsonResponse(res, 200, {
     ok: true,
-    release: ZHAOWU_RELEASE,
+    release: ZHAOWU_BUILD_RELEASE,
+    ledgerRelease: ZHAOWU_RELEASE,
     local: {
       status: "reachable",
       engineVersion: ZHAOWU_ENGINE_VERSION,
