@@ -28,6 +28,9 @@ test('homepage entrances and scene at mobile and desktop sizes', async ({ page }
     await expect.poll(() => page.evaluate(() => Number(getComputedStyle(document.documentElement).getPropertyValue('--zw-veil')))).toBeGreaterThan(0.15);
     await expect.poll(() => page.evaluate(() => Number(getComputedStyle(document.documentElement).getPropertyValue('--zw-veil')))).toBeLessThanOrEqual(0.46);
     await page.screenshot({path:`test-results/guide-${width}.png`});
+    // The four blocks start collapsed; open “My chart” to reveal its free-chart action.
+    await page.locator('[data-home-card="form"] .zw-entry').click();
+    await expect(page.locator('[data-home-card="form"]')).toHaveAttribute('data-open', 'true');
     await page.getByRole('button', { name: /開始免費排盤|开始免费排盘|Start my free chart/ }).first().click();
     await expect(page.locator('[data-home-card]')).toHaveCount(0);
   }
