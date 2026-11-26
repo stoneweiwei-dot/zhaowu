@@ -1169,8 +1169,8 @@ html[data-zw-theme="night"] .zhaowu-specialist-node { border-top-color: rgba(236
   color: #5f5a52 !important;
   box-shadow: 0 3px 12px rgba(49, 42, 32, .08) !important;
   left: auto !important;
-  right: max(.75rem, env(safe-area-inset-right)) !important;
-  bottom: max(.75rem, env(safe-area-inset-bottom)) !important;
+  right: var(--music-control-inset, max(.75rem, env(safe-area-inset-right))) !important;
+  bottom: var(--music-control-inset, max(.75rem, env(safe-area-inset-bottom))) !important;
 }
 
 .zhaowu-site-footer { width: min(100%, 760px); }
