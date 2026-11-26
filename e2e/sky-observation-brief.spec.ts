@@ -54,6 +54,7 @@ test('summary stays readable at mobile and desktop widths in each language', asy
 });
 
 test('interpretive-first reading and upper SkyUniverse work while lower SkyCurrentMotion is absent', async ({ page }, testInfo) => {
+  test.setTimeout(90_000); // slow CI runners: this test opens and closes the science details and takes a full-page screenshot
   await page.clock.setFixedTime(new Date('2026-11-04T01:00:00Z'));
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/sky-events');
