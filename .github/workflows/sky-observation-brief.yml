@@ -24,6 +24,6 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - run: ZHAOWU_SKIP_LIVE_PRIVACY=1 npm run build
       - run: npx playwright install --with-deps webkit
       - run: npx playwright test e2e/sky-observation-brief.spec.ts --project=iphone-safari
