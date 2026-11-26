@@ -4,6 +4,7 @@ import {
   ZHAOWU_ENGINE_VERSION,
   ZHAOWU_RELEASE,
 } from "../lib/zhaowu-verification.js";
+import { ZHAOWU_BUILD_RELEASE } from "../lib/release-id.js";
 
 function headerValue(req, name) {
   const headers = req?.headers;
@@ -64,7 +65,8 @@ export default async function handler(req, res) {
   return jsonResponse(res, 200, {
     ok: true,
     apiVersion: "1",
-    release: ZHAOWU_RELEASE,
+    release: ZHAOWU_BUILD_RELEASE,
+    ledgerRelease: ZHAOWU_RELEASE,
     engine: {
       name: "Zhaowu BaZi",
       version: ZHAOWU_ENGINE_VERSION,
