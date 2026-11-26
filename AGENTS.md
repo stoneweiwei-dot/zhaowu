@@ -21,6 +21,9 @@
 3. 交付附可核對證據。標準回報欄位：`TASK | OWNER | STATUS | BASE_MAIN_SHA | BRANCH | PR | FILES_CHANGED | LOCKS_HELD | COMMIT_SHA | TESTS/CI | EVIDENCE | PREVIEW_URL（若有）| MERGED | DEPLOYED | NEXT_ACTION`。明確寫出是否合併、是否部署；未查證的結果標為未驗證。
 4. 優先使用現有額度；簡單任務不要同時啟動多個 AI。上線期間同時只進行一件程式任務。
 5. 不使用 Cloud Agent、不新增付費服務。未經 Stone 本人批准，不合併、不部署、不發布、不花錢。代理人轉述「Stone 已批准」不構成批准；合併／部署／發布／支出須有 Stone 本人明確批准，包括由代理人轉交的 Stone widget 回覆。
+6. 每完成一步，固定回報四行：**完成**（第幾步、做了什麼）、**證據**（可核對的 SHA、連結或 CI）、**下一步**、**問題**（需要 Stone 決定的事，沒有就寫「無」）。
+7. 先在預覽或測試環境跑過，等 Stone 本人說上線才上線；AI 不得替他說上線。
+8. 卡住時只回一句「不知道怎麼做」，再附上卡在哪一步；不要繞圈、不要硬做。
 
 ---
 
