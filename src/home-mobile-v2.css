@@ -1112,6 +1112,14 @@ html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature-link:focus-vi
   }
 }
 
+/* Night skins use light ink: darken the opening scene so it stays readable over pale paintings (all widths). */
+html[data-zws-mode="dark"] body #root .zw-painted-home.zw-v2-home {
+  background: var(--zws-page, #0f1d22) !important;
+}
+html[data-zws-mode="dark"] body #root .zw-painted-home.zw-v2-home .zw-veil {
+  background: linear-gradient(180deg, rgba(8, 18, 24, .66), rgba(8, 18, 24, .82)) !important;
+}
+
 /* 4. 宽屏顶栏（>=1200px；1019px 不动）：两盒放宽到 1080px，导览靠右 */
 @media (min-width: 1200px) {
   html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header {
