@@ -343,7 +343,9 @@ html body #root .zw-painted-home.zw-v2-home .zw-v2-actions { margin-top:12px; }
 html body #root .zw-painted-home.zw-v2-home .zw-v2-primary { max-width:none; }
 html body #root .zw-painted-home.zw-v2-home .zw-v2-sample { display:none; }
 html body #root .zw-painted-home.zw-v2-home .zw-v2-season { position:static; width:fit-content; max-width:100%; margin:14px 0 .4rem; color:#fff; background:rgba(28,44,38,.77); padding:6px 10px; font-size:14px; border-radius:4px; }
-html body #root .zw-painted-home.zw-v2-home .zw-v2-discover { position:absolute; bottom:8px; left:24px; right:24px; color:#fff !important; text-shadow:0 1px 4px #000; }
+@media (min-width: 768px) {
+  html body #root .zw-painted-home.zw-v2-home .zw-v2-discover { position:absolute; bottom:8px; left:24px; right:24px; color:#fff !important; text-shadow:0 1px 4px #000; }
+}
 html body #root .zw-painted-home.zw-v2-home .ph-tree { max-width:560px; margin-inline:auto; }
 html body #root .zw-painted-home.zw-v2-home .ph-tree-node { margin:0 0 18px; padding:0; border:0; background:transparent; }
 html body #root .zw-painted-home.zw-v2-home .ph-tree-primary.zw-entry { display:flex; justify-content:space-between; width:100%; min-height:72px; padding:16px 18px; border:0; border-bottom:1px solid rgba(70,58,40,.2); border-radius:0; text-align:left; background:rgba(247,241,228,.58); color:#273b34 !important; }
@@ -795,7 +797,7 @@ html body #root .zw-painted-home.zw-v2-home #daily-almanac .zhaowu-today-card {
 
 /* 5. 节气标签：深绿实色小 pill → 画上纯文字 + 细线；引言条带去底 */
 html body #root .zw-painted-home.zw-v2-home .zw-v2-season {
-  background: transparent !important;
+  background: var(--season-backing, transparent) !important;
   background-image: none !important;
   color: var(--ph-ink, #273b34) !important;
   border: 0 !important;
@@ -1008,6 +1010,50 @@ html body #root .zw-painted-home.zw-v2-home .ph-bottom-nav {
 }
 html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-utility-dock[data-site-utility-dock] {
   margin-bottom: 40px !important;
+}
+
+@media (max-width: 767px) {
+  html body #root .zw-painted-home.zw-v2-home .zw-v2-season {
+    /* Light text on a dark backing stays readable on both the painting and the pale sheet. */
+    --season-backing: rgba(28, 44, 38, .86);
+    color: #fffdf8 !important;
+    -webkit-text-fill-color: #fffdf8 !important;
+    padding-inline: 8px !important;
+  }
+  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-utility-dock[data-site-utility-dock] {
+    justify-items: center;
+    margin-block: 16px !important;
+  }
+  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-utility-buttons > button {
+    /* Dock buttons share a grid alignment and need no standalone music offsets. */
+    --music-control-inset: auto;
+    box-sizing: border-box;
+    width: 48px;
+    height: 48px;
+    min-width: 48px !important;
+    min-height: 48px !important;
+  }
+  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-footer-top-links,
+  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-views {
+    width: min(100%, 18rem);
+    margin-inline: auto;
+  }
+  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-footer-top-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-footer-top-links > a,
+  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-views {
+    box-sizing: border-box;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+  }
+  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-views {
+    margin-top: 0;
+  }
 }
 
 /* 3. 八景宫去底，扁平透画 */

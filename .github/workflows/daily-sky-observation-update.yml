@@ -51,7 +51,8 @@ jobs:
       - name: Verify sky snapshot contract and build
         run: |
           node --test scripts/sky-snapshot-contract.test.mjs scripts/daily-sky-date.test.mjs
-          npm run build
+          npx vite build
+          npx tsc --noEmit
 
       - name: Commit and update PR if snapshot changed
         run: |
@@ -69,7 +70,7 @@ jobs:
           git push -u origin "$BRANCH"
           gh pr create --title "chore(sky): Sydney weekly sky snapshot ${SYDNEY_DATE}" \
                        --body "Automated weekly Sydney sky observation snapshot generated via approved self-hosted astronomy-engine." \
-                       --head "$BRANCH" --base main || true
+                       --head "$BRANCH" --base main || echo "::warning::Could not create the pull request. The snapshot is on $BRANCH. Check existing PRs and the repository's Actions PR permissions."
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WEEK_START: ${{ github.event.inputs.week_start }}
