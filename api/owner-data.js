@@ -125,7 +125,12 @@ async function readJsonBody(req) {
   if (typeof req?.json === "function") {
     try { return await req.json(); } catch { return {}; }
   }
-  if (req?.body && typeof req.body === "object" && !Buffer.isBuffer(req.body)) return req.body;
+  if (
+    req?.body
+    && typeof req.body === "object"
+    && !Buffer.isBuffer(req.body)
+    && Object.getPrototypeOf(req.body) === Object.prototype
+  ) return req.body;
   if (typeof req?.body === "string") {
     try { return JSON.parse(req.body); } catch { return {}; }
   }
