@@ -934,3 +934,100 @@ html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature {
 html body #root .zw-painted-home.zw-v2-home .ph-bottom-nav {
   margin-top: 12px;
 }
+
+/* ── home-layout-2 2026-11-26: 首页排版下一批 ───────────────────────
+   另一边刚验完 live d84647fa（浏览器 12:03-12:04，桌面宽度）：hero 标题
+   已提到约 11%、生辰面板已扁平、音乐钮首页和文章页都在流程里、五行
+   小分组五项都对——这三件不要改坏。下一批只修下面四件，全部只改首页。
+   1. 桌面还是中间窄栏：内容 625-720px，1920px 下两边各空约 600px。
+      根因：#1152 只把桌面栏宽放到了 680px，且 .zhaowu-home-app-frame
+      还卡在 860px。桌面（>=900px）栏宽 680→1080、app-frame 860→1120，
+      案台容器放宽到 880（表单太宽不好填），八景宫同宽。手机 <900px
+      本来就是满宽（max-width:none），不动。
+   2. 大段之间还是空，三处收紧：(a) #birth-form 的段间距是
+      clamp(46px,7vw,64px)（design-system），加上两段各 24-42px 内边距，
+      “生辰已准备好”到“你的命书”之间空出一大段——段间距改 16px，
+      两段上下内边距改 16px；(b) 往下探索昭梧下面到导览之前：hero 底
+      边距 28→16、导览顶边距 10→4；(c) 八景宫下面到工具钮之前：八景
+      宫底边距 24→12、节气注脚底边距 14→8、底导航顶边距 12→6、dock
+      底边距 80→40（dock 已是 in-flow，底边距只是留白）。
+   3. 八景宫还是实色淡奶油块：.zw-bajinggong-feature-link 的底是
+      rgba(250,247,238,.36)，在淡画上看就是实色块——改透明，跟生辰
+      面板一样字直接落画上，hover 只留 .12 淡洗，上下细线保留。
+   4. 1920px 下置中的“昭梧 ZHAOWU” logo 跟顶上导览连结（首页／建立
+      命书／我的报告／怎么用）重叠，1019px 不重叠。根因：>=900px 时
+      顶栏和导览都是 720px 置中盒、同一 y 带（top:12-14px），logo 也
+      在同一带。只在 >=1200px 修（1019px 不动）：两盒都放宽到 1080px，
+      导览连结改靠右（padding-right 留 180px 给语言切换），logo 在左、
+      连结在右、语言切换在最右，互不重叠；hero 标题位置不动。 */
+
+/* 1. 桌面栏宽放宽（>=900px；手机满宽不动） */
+@media (min-width: 900px) {
+  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-home-app-frame {
+    max-width: 1120px !important;
+  }
+  html body #root .zw-painted-home.zw-v2-home .zw-v2-hero,
+  html body #root .zw-painted-home.zw-v2-home .ph-tree,
+  html body #root .zw-painted-home.zw-v2-home .zw-season-context {
+    max-width: 1080px;
+  }
+  html body #root .zw-painted-home.zw-v2-home .zw-home-birth-desk-container {
+    max-width: 880px;
+  }
+  html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature {
+    width: min(100%, 1080px);
+  }
+}
+
+/* 2a. 生辰已准备好 → 你的命书：段间距 46-64px → 16px，两段内边距收紧 */
+html body #root .zw-painted-home.zw-v2-home #birth-form.zhaowu-analysis-flow {
+  gap: 16px !important;
+}
+html body #root .zw-painted-home.zw-v2-home #birth-form :is(.zhaowu-customer-record, .zhaowu-bazi-stage) {
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+}
+
+/* 2b. 往下探索昭梧 → 导览 */
+html body #root .zw-painted-home.zw-v2-home .zw-v2-hero {
+  padding-bottom: 16px;
+}
+html body #root .zw-painted-home.zw-v2-home .ph-tree {
+  padding-top: 4px;
+}
+
+/* 2c. 八景宫 → 工具钮 */
+html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature {
+  margin-bottom: 12px;
+}
+html body #root .zw-painted-home.zw-v2-home .zw-season-context {
+  padding-bottom: 8px;
+}
+html body #root .zw-painted-home.zw-v2-home .ph-bottom-nav {
+  margin-top: 6px;
+}
+html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-utility-dock[data-site-utility-dock] {
+  margin-bottom: 40px !important;
+}
+
+/* 3. 八景宫去底，扁平透画 */
+html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature-link {
+  background: transparent !important;
+  background-image: none !important;
+}
+html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature-link:hover,
+html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature-link:focus-visible {
+  background: rgba(250, 247, 238, .12) !important;
+}
+
+/* 4. 宽屏顶栏（>=1200px；1019px 不动）：两盒放宽到 1080px，导览靠右 */
+@media (min-width: 1200px) {
+  html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header {
+    width: min(1080px, calc(100% - 48px)) !important;
+  }
+  html body #root:has(.zw-painted-home.zw-v2-home) .zw-journey-nav {
+    width: min(1080px, calc(100% - 48px)) !important;
+    justify-content: flex-end !important;
+    padding: 0 180px 0 8px !important;
+  }
+}
