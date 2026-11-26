@@ -1014,13 +1014,11 @@ html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-utility-dock[data-
 
 @media (max-width: 767px) {
   html body #root .zw-painted-home.zw-v2-home .zw-v2-season {
-    --season-backing: #faf7ed;
-    -webkit-text-fill-color: currentColor !important;
-    padding-inline: 8px !important;
-  }
-  html body #root .zw-painted-home.zw-v2-home[data-tone="dark"] .zw-v2-season {
-    --season-backing: #24352f;
+    /* Light text on a dark backing stays readable on both the painting and the pale sheet. */
+    --season-backing: rgba(28, 44, 38, .86);
     color: #fffdf8 !important;
+    -webkit-text-fill-color: #fffdf8 !important;
+    padding-inline: 8px !important;
   }
   html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-utility-dock[data-site-utility-dock] {
     justify-items: center;
