@@ -1,5 +1,8 @@
 import { test, expect } from '@playwright/test';
 
+// The PWA service worker would answer chart-artwork.js before page.route can abort it (WebKit), so block it for these tests.
+test.use({ serviceWorkers: 'block' });
+
 test('dated observation distinguishes current from archived and links to its source', async ({ page }) => {
   await page.clock.setFixedTime(new Date('2026-11-12T01:00:00Z'));
   await page.goto('/sky-events');
