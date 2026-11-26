@@ -1,9 +1,10 @@
+import { pageHead } from "@/lib/route-meta";
 import { useMemo, useState } from "react";
 import { QuizShareButton } from "@/components/quiz-share-button";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
 
-export const Route = createFileRoute("/quiz/five-element-overdrive")({ component: FiveElementOverdriveQuiz });
+export const Route = createFileRoute("/quiz/five-element-overdrive")({ head: pageHead, component: FiveElementOverdriveQuiz });
 
 type ElementKey = "wood" | "fire" | "earth" | "metal" | "water";
 type Localized = Record<Locale, string>;

@@ -10,7 +10,7 @@ test("archive changes at Sydney midnight, not the reader timezone or before the 
 });
 test("weekly deep link opens visible content above the essay without an extra disclosure", async () => {
   const page = await readFile("src/routes/sky-events.tsx", "utf8");
-  assert.ok(page.indexOf('<TodaySkyCards />') < page.indexOf('<article className="sky-event-article"'));
+  assert.ok(page.includes('<SkyObservationBrief />') && page.indexOf('<SkyObservationBrief />') < page.indexOf('<article className="sky-event-article"'));
   assert.match(page, /<section[^>]*id="sky-week"/);
   assert.doesNotMatch(page, /<details[^>]*id="sky-week"/);
 });

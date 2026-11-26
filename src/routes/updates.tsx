@@ -1,10 +1,11 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { displayText, intlTagFor, useDisplayLanguage } from "@/lib/display-language";
 import { SORTED_PUBLIC_CHANGELOG, publicChangeText } from "@/lib/public-changelog";
 import { getPublicSiteStats, SITE_RELEASE_FALLBACK, type PublicSiteStats } from "@/lib/site-stats";
 
-export const Route = createFileRoute("/updates")({ component: UpdatesPage });
+export const Route = createFileRoute("/updates")({ head: pageHead, component: UpdatesPage });
 
 function UpdatesPage() {
   const { language } = useDisplayLanguage();

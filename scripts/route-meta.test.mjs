@@ -4,7 +4,7 @@ import { test } from "node:test";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { readRouteMeta, escapeHtmlAttribute, injectRouteMeta } from "./build-route-html.mjs";
+import { clientRouteMeta, readRouteMeta, escapeHtmlAttribute, injectRouteMeta } from "./build-route-html.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (p) => readFileSync(join(ROOT, p), "utf8");
@@ -75,7 +75,7 @@ test("injectRouteMeta writes per-route title/description/og/canonical and drops 
 
 test("package.json build runs build-route-html after vite build", () => {
   const pkg = JSON.parse(read("package.json"));
-  assert.match(pkg.scripts.build, /^vite build && node scripts\/build-route-html\.mjs && tsc --noEmit$/);
+  assert.match(pkg.scripts.build, /^vite build && (?:node scripts\/generate-calendar-feed\.mjs && )?node scripts\/build-route-html\.mjs && tsc --noEmit$/);
 });
 
 test("vercel.json has no global SPA catch-all (soft-404 fix) and every client route is still reachable", () => {
@@ -89,7 +89,7 @@ test("vercel.json has no global SPA catch-all (soft-404 fix) and every client ro
   const block = tree.match(/interface FileRoutesByFullPath \{([\s\S]*?)\n\}/)[1];
   const routes = [...block.matchAll(/'([^']+)':/g)].map((m) => m[1]);
   assert.ok(routes.length > 30, "route tree parse sanity");
-  const prerendered = new Set(Object.keys(readRouteMeta().routes));
+  const prerendered = new Set([...Object.keys(readRouteMeta().routes), ...Object.keys(clientRouteMeta)]);
   const uncovered = routes.filter(
     (p) => p !== "/" && !prerendered.has(p) && !rewritten.some((base) => p === base || p.startsWith(`${base}/`)),
   );

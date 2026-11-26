@@ -1,10 +1,11 @@
+import { pageHead } from "@/lib/route-meta";
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { QuizShareButton } from "@/components/quiz-share-button";
 import { useI18n, type Locale } from "@/lib/i18n";
 import "../earth-online-quiz.css";
 
-export const Route = createFileRoute("/fun-tests/earth-online")({ component: EarthOnlineQuiz });
+export const Route = createFileRoute("/fun-tests/earth-online")({ head: pageHead, component: EarthOnlineQuiz });
 
 type BookKey =
   | "dao"

@@ -2,6 +2,15 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
 import { buildDailySkySnapshot, upsertObservationSource } from "./generate-daily-sky-observation.mjs";
+import { recentSkySnapshot } from "../src/lib/daily-sky-date.ts";
+
+test("current card uses the latest eligible date through day eight", () => {
+  const rows = [{ date: "2026-11-27" }, { date: "2026-11-14" }];
+  assert.equal(recentSkySnapshot(rows, "2026-11-22"), rows[1]);
+  assert.equal(recentSkySnapshot(rows, "2026-11-23"), undefined);
+  assert.equal(recentSkySnapshot(rows, "2026-11-13"), undefined);
+  assert.equal(recentSkySnapshot(rows, "2026-11-27"), rows[0]);
+});
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 

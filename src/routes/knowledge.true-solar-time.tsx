@@ -1,8 +1,9 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 import content from "@/lib/true-solar-time-content.json";
 
-export const Route = createFileRoute("/knowledge/true-solar-time")({ component: TrueSolarTimeArticle });
+export const Route = createFileRoute("/knowledge/true-solar-time")({ head: pageHead, component: TrueSolarTimeArticle });
 
 type Pair = [string, string];
 type LocaleKey = "zh-Hant" | "zh-Hans" | "en";

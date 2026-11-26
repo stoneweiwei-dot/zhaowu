@@ -11,6 +11,9 @@ import { LANGUAGES, languagePath, languageAlternates } from "../src/lib/language
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const META_PATH = join(ROOT, "src/lib/route-meta.json");
+// These routes stay out of the sitemap but need their own initial HTML for direct visits.
+export const clientRouteMeta = JSON.parse(readFileSync(join(ROOT, "src/lib/client-route-meta.json"), "utf8"));
+
 const AMP = "\u0026"; // &
 
 export function readRouteMeta() {
@@ -178,7 +181,8 @@ function localizeStaticLinks(main, language) {
 /** Localized title, lead and editorial body; never a claim of full article translation. */
 export function renderRouteSummary(routePath, language = "zh-Hant") {
   const routes = readRouteMeta().routes;
-  const entry = routes[routePath]?.[language];
+  const client = clientRouteMeta[routePath];
+  const entry = routes[routePath]?.[language] ?? client?.[language] ?? client?.["zh-Hant"];
   if (!entry) throw new Error(`missing route metadata for ${routePath} ${language}`);
   const copy = SHELL_COPY[language];
   const knowledgePaths = ["/knowledge/true-solar-time", "/knowledge/five-elements-tone-qi", "/knowledge/shushu-boundary", "/knowledge/system-map", "/knowledge/xiuxian-cultivation"];
@@ -198,10 +202,17 @@ export function buildRouteHtml(distDir = join(ROOT, "dist")) {
   const { origin, routes } = readRouteMeta();
   const shell = readFileSync(indexPath, "utf8");
   const written = [];
-  for (const route of Object.keys(routes)) {
+  for (const [route, entries] of Object.entries({ ...routes, ...clientRouteMeta })) {
     for (const language of LANGUAGES) {
       const path = languagePath(route, language);
-      let html = injectRouteMeta(shell, routes[route][language], path, origin, language);
+      const entry = entries[language] ?? entries["zh-Hant"];
+      let html = injectRouteMeta(shell, entry, path, origin, language);
+      if (clientRouteMeta[route]) {
+        html = html.replace(/<link[^>]*hreflang=[^>]*>\s*/g, "");
+        if (route !== "/yunyi-shenxiang") {
+          html = html.replace('<meta name="robots" content="index,follow"', '<meta name="robots" content="noindex,nofollow"');
+        }
+      }
       // Preserve the established rich default homepage and its reader recovery links.
       if (route !== "/" || language !== "zh-Hant") html = injectStaticPage(html, route, origin, language);
       const target = join(distDir, path, "index.html");

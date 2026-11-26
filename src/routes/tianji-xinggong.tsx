@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, type CSSProperties } from "react";
 import { resolveTianjiBirth, type TianjiBirthResolution, type TianjiPalace } from "@/lib/tianji-xinggong";
@@ -13,7 +14,7 @@ import {
 import "@/tianji-xinggong.css";
 import { requireOwnerRoute } from "@/lib/auth/owner-route";
 
-export const Route = createFileRoute("/tianji-xinggong")({ beforeLoad: requireOwnerRoute, component: TianjiXinggongPage });
+export const Route = createFileRoute("/tianji-xinggong")({ head: pageHead, beforeLoad: requireOwnerRoute, component: TianjiXinggongPage });
 
 const PALACE_ORDER: TianjiPalace[] = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
 
