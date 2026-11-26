@@ -114,12 +114,21 @@ async function readRawBody(req) {
 }
 
 async function readJsonBody(req) {
-  if (req?.body && typeof req.body === "object" && !Buffer.isBuffer(req.body) && !ArrayBuffer.isView(req.body) && !(req.body instanceof ArrayBuffer)) return req.body;
-  if (typeof req?.body === "string") {
-    try { return JSON.parse(req.body); } catch { return {}; }
-  }
+  // Same Pages ReadableStream trap as owner-session.js: req.body is a
+  // stream, not a parsed object — parse via req.json() first.
   if (typeof req?.json === "function") {
     try { return await req.json(); } catch {}
+  }
+  if (
+    req?.body
+    && typeof req.body === "object"
+    && !Buffer.isBuffer(req.body)
+    && !ArrayBuffer.isView(req.body)
+    && !(req.body instanceof ArrayBuffer)
+    && Object.getPrototypeOf(req.body) === Object.prototype
+  ) return req.body;
+  if (typeof req?.body === "string") {
+    try { return JSON.parse(req.body); } catch { return {}; }
   }
   const raw = await readRawBody(req);
   if (!raw.length) return {};

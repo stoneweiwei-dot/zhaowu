@@ -52,12 +52,21 @@ function requestIsSameOrigin(req) {
 }
 
 async function readJsonBody(req) {
-  if (req?.body && typeof req.body === "object" && !Buffer.isBuffer(req.body)) return req.body;
-  if (typeof req?.body === "string") {
-    try { return JSON.parse(req.body); } catch { return {}; }
-  }
+  // Pages Functions passes a standards-based Request whose body is a
+  // ReadableStream. A stream is also an object, so treating every object
+  // body as parsed JSON silently dropped every POST action on Production
+  // (api/owner-login.js was already fixed for the same trap; this mirrors it).
   if (typeof req?.json === "function") {
     try { return await req.json(); } catch { return {}; }
+  }
+  if (
+    req?.body
+    && typeof req.body === "object"
+    && !Buffer.isBuffer(req.body)
+    && Object.getPrototypeOf(req.body) === Object.prototype
+  ) return req.body;
+  if (typeof req?.body === "string") {
+    try { return JSON.parse(req.body); } catch { return {}; }
   }
   return {};
 }
