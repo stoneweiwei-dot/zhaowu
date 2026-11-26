@@ -31,13 +31,6 @@ function localNote(locale: Locale, skin: SkinDef) {
   return locale === "en" ? skin.noteEn : locale === "zh-Hans" ? skin.noteHans : skin.noteZh;
 }
 
-const SEASON_CHROME: Record<string, { radius: string; shadow: string }> = {
-  "sydney-jacaranda": { radius: "28px", shadow: "0 0 0 2px #9a7ec4, 0 0 0 6px rgba(196,161,90,.55)" },
-  "southern-summer": { radius: "18px", shadow: "0 8px 0 #d7a441, 0 0 0 2px #0c5870" },
-  "southern-autumn": { radius: "4px", shadow: "inset 10px 0 0 #2c4d66, 0 0 0 2px #c46a32" },
-  "southern-winter": { radius: "0px", shadow: "0 0 0 1px #f7fbfd, 0 0 0 5px #1e4654" },
-};
-
 type ThemeCardProps = {
   locale: Locale;
   skin: SkinDef;
@@ -49,30 +42,29 @@ type ThemeCardProps = {
 };
 
 function ThemeCard({ locale, skin, active, saving, compact = false, onChoose, onPreview }: ThemeCardProps) {
-  const chrome = SEASON_CHROME[skin.id];
   const name = localName(locale, skin);
-  const dark = skin.mode === "dark";
   return (
     <article
-      className={`overflow-hidden border ${active ? "ring-2 ring-offset-2" : ""}`}
-      style={{ backgroundColor: skin.swatch[0], borderColor: skin.swatch[1], color: dark ? "#f7f1e5" : "#202925", outlineColor: skin.swatch[1], borderRadius: chrome?.radius ?? "18px", boxShadow: chrome?.shadow }}
+      className={`overflow-hidden border ${active ? "outline outline-2 outline-offset-2" : ""}`}
+      style={{ backgroundColor: "var(--zws-page)", borderColor: "var(--zws-accent)", color: "var(--zws-ink)", outlineColor: "var(--zws-accent)", borderRadius: "var(--zws-card-radius)", boxShadow: "var(--zws-card-frame)" }}
       data-owner-theme-card={skin.id}
-      data-theme-frame={chrome ? skin.id : undefined}
+      data-zws-mode={skin.mode}
+      data-theme-frame={skin.id}
     >
       <button type="button" onClick={() => onPreview({ src: skin.hero, alt: `${name} · ${tr(locale, "原畫", "原画", "Original artwork")}` })} className="block w-full text-left" aria-label={`${name} · ${tr(locale, "查看原畫", "查看原画", "View original artwork")}`}>
         <img src={skin.hero} alt="" loading="lazy" className={`${compact ? "h-28" : "h-44"} w-full object-cover`} style={{ objectPosition: skin.focus }} />
       </button>
-      <div className="p-4" style={{ background: dark ? "rgba(4,12,18,.74)" : "rgba(255,255,255,.58)" }}>
+      <div className="p-4" style={{ background: "var(--zws-surface)" }}>
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <p className="font-display text-lg leading-7">{name}</p>
-            <p className="mt-1 text-sm leading-6 opacity-80">{localNote(locale, skin)}</p>
+            <p className="mt-1 text-sm leading-6" style={{ color: "var(--zws-soft)" }}>{localNote(locale, skin)}</p>
           </div>
         </div>
         <div className="mt-3 flex items-center gap-2" aria-label={tr(locale, "主題色票", "主题色票", "Theme palette")}>
-          {skin.swatch.map((colour) => <i key={colour} className="h-5 flex-1 rounded-full border border-black/10" style={{ backgroundColor: colour }} />)}
+          {["var(--zws-page)", "var(--zws-accent)", "var(--zws-gold)"].map((colour) => <i key={colour} className="h-5 flex-1 rounded-full border border-black/10" style={{ backgroundColor: colour }} />)}
         </div>
-        <button type="button" disabled={saving} onClick={() => onChoose(skin.id)} aria-pressed={active} className="mt-4 min-h-11 w-full rounded-full border px-4 text-sm font-medium disabled:opacity-50" style={{ borderColor: skin.swatch[1], backgroundColor: active ? skin.swatch[1] : "transparent", color: active ? (dark ? skin.swatch[0] : "#fffaf0") : "inherit" }}>
+        <button type="button" disabled={saving} onClick={() => onChoose(skin.id)} aria-pressed={active} className="mt-4 min-h-11 w-full border px-4 text-sm font-medium disabled:opacity-50" style={{ borderRadius: "var(--zws-btn-radius)", borderColor: "var(--zws-action-bg)", backgroundColor: "var(--zws-action-bg)", color: "var(--zws-on-accent)" }}>
           {saving ? tr(locale, "同步中…", "同步中…", "Saving…") : active ? tr(locale, "全站使用中", "全站使用中", "Live site theme") : tr(locale, "套用這套主題", "套用这套主题", "Publish this theme")}
         </button>
       </div>
