@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/route-meta";
 import { useDisplayLanguage } from "@/lib/display-language";
 import { QuizShareButton } from "@/components/quiz-share-button";
 import { customerChrome } from "@/lib/customer-chrome";
@@ -20,7 +21,7 @@ import {
   type FiveElementKey,
 } from "@/lib/fun-tests/five-element-function";
 
-export const Route = createFileRoute("/fun-tests")({ component: FunTests });
+export const Route = createFileRoute("/fun-tests")({ head: pageHead, component: FunTests });
 
 type AnimalKey = "eagle" | "wolf" | "fox" | "deer" | "leopard" | "crane" | "whale" | "horse";
 type AnimalGroup = "action" | "relational" | "adaptive";

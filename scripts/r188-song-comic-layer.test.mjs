@@ -11,8 +11,8 @@ test("r201 retires the homepage comic while preserving report and share comic tr
   const comic = await source("src/components/song-comic-layer.tsx");
 
   assert.doesNotMatch(home, /SongComicToday/);
-  assert.match(report, /<SongComicReportInsert dayMaster={foundation\.dayMaster}/);
-  assert.match(report, /<SongComicShareCard dayMaster={foundation\.dayMaster}/);
+  assert.match(report, /<SongComicReportInsert dayMaster={dayMaster}/);
+  assert.match(report, /<SongComicShareCard dayMaster={dayMaster}/);
 
   assert.match(comic, /data-song-comic-report/);
   assert.match(comic, /data-song-comic-share/);

@@ -1,10 +1,11 @@
+import { pageHead } from "@/lib/route-meta";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { pickDivineArt } from "@/lib/quiz-result-art";
 import { QuizShareButton } from "@/components/quiz-share-button";
 
-export const Route = createFileRoute("/quiz/divine-affinity")({ component: DivineAffinityQuiz });
+export const Route = createFileRoute("/quiz/divine-affinity")({ head: pageHead, component: DivineAffinityQuiz });
 
 type AffinityKey = "buddha" | "bodhisattva" | "guardian" | "immortal";
 type AffinityAnswer = { label: string; key: AffinityKey };

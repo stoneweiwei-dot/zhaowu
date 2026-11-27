@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 /** A continuous reader for the series, not a second copy of the seven-volume source text. */
@@ -10,7 +11,7 @@ import "./mythic-atlas.css";
 import "./-mythic-atlas-guaili.css";
 import "./guaili-luanshen.css";
 
-export const Route = createFileRoute("/guaili-luanshen")({ component: GuailiReadingPage });
+export const Route = createFileRoute("/guaili-luanshen")({ head: pageHead, component: GuailiReadingPage });
 
 type ReadingChapter = {
   no: string;

@@ -54,10 +54,10 @@ function formatReleaseDate(value: string | null, language: DisplayLanguage) {
   return new Intl.DateTimeFormat(intlTagFor(language), { year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
 }
 
-const PRIVATE_ROUTES = ["/login", "/account", "/history", "/auth", "/gallery", "/social", "/member"];
-// Sitemap-listed public routes self-canonicalise; everything else keeps "/".
+const PRIVATE_ROUTES = ["/login", "/account", "/history", "/auth", "/gallery", "/social", "/member", "/tianji-dual", "/tianji-xinggong"];
+// Only sitemap-listed routes advertise alternate language URLs.
 // The set lives in src/lib/route-meta.json (shared with the static-HTML build step).
-const SELF_CANONICAL_ROUTES = ROUTE_META_PATHS;
+const SITEMAP_ROUTES = ROUTE_META_PATHS;
 
 function updateMeta(selector: string, content: string) {
   const node = document.querySelector<HTMLMetaElement>(selector);
@@ -393,7 +393,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Public routes use the same ten-language metadata as the static build.
-    // Unknown/private routes retain the site-wide fallback.
+    // Client-only routes also have page-specific metadata.
     const routeMeta = routeMetaFor(pathname);
     const routeEntry = routeMeta
       ? routeMetaForLanguage(routeMeta, language)
@@ -429,18 +429,18 @@ export function SiteShell({ children }: { children: ReactNode }) {
     );
   }, [language, pathname]);
 
-  // SEO: private/account routes are noindex; sitemap-listed public routes self-canonicalise, everything else keeps "/".
+  // Known routes self-canonicalise; only sitemap routes advertise language alternates.
   useEffect(() => {
     const origin = "https://zhao-wu.com";
     const normalized = pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
     const isPrivate = PRIVATE_ROUTES.some((route) => normalized === route || normalized.startsWith(`${route}/`));
-    const canonicalPath = languagePath(SELF_CANONICAL_ROUTES.includes(normalized) ? normalized : "/", language);
+    const canonicalPath = languagePath(routeMetaFor(normalized) ? normalized : "/", language);
     const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (canonical) canonical.href = `${origin}${canonicalPath === "/" ? "/" : canonicalPath}`;
     updateMeta('meta[property="og:url"]', `${origin}${canonicalPath}`);
     updateMeta('meta[name="robots"]', isPrivate ? "noindex,nofollow" : "index,follow");
     document.querySelectorAll('link[hreflang]').forEach(node => node.remove());
-    if (!isPrivate && SELF_CANONICAL_ROUTES.includes(normalized)) {
+    if (!isPrivate && SITEMAP_ROUTES.includes(normalized)) {
       for (const alternate of languageAlternates(normalized, origin)) {
         const link = document.createElement("link");
         link.rel = "alternate";

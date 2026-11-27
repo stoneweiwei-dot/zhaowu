@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/route-meta";
 import { useDisplayLanguage } from "@/lib/display-language";
 import { customerChrome } from "@/lib/customer-chrome";
 import { createFileRoute, Link } from "@tanstack/react-router";
@@ -14,7 +15,7 @@ import {
   VisitorAuthError,
 } from "@/lib/auth/visitor";
 
-export const Route = createFileRoute("/member")({ component: MemberPage });
+export const Route = createFileRoute("/member")({ head: pageHead, component: MemberPage });
 
 type Mode = MemberMode;
 

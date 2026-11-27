@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/route-meta";
 import { useDisplayLanguage } from "@/lib/display-language";
 import { customerChrome, translateChromeObject } from "@/lib/customer-chrome";
 import { Link } from "@tanstack/react-router";
@@ -22,7 +23,7 @@ import "@/home-portals.css";
 import "@/home-portals-astrology.css";
 import "@/home-layout-r46.css";
 
-export const Route = createFileRoute("/")({ component: Home });
+export const Route = createFileRoute("/")({ head: pageHead, component: Home });
 
 type Section = "form" | "today" | "quiz" | "notes";
 
@@ -348,7 +349,7 @@ function Home() {
             <span className="zw-subview-back-arrow" aria-hidden>←</span>
             <span>{copy.backHome}</span>
           </button>
-          <span className="zw-subview-title">{navLabels[activeSection]}</span>
+          <h1 className="zw-subview-title">{navLabels[activeSection]}</h1>
         </div>
       )}
 

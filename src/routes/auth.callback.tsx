@@ -1,10 +1,11 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { captureOAuthRedirect } from "@/lib/supabase-rest";
 import { useI18n } from "@/lib/i18n";
 
-export const Route = createFileRoute("/auth/callback")({ component: AuthCallbackPage });
+export const Route = createFileRoute("/auth/callback")({ head: pageHead, component: AuthCallbackPage });
 
 function AuthCallbackPage() {
   const { t, locale } = useI18n();

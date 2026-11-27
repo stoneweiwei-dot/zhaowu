@@ -58,6 +58,7 @@ async function mockAuthenticatedCloud(page: Page, reportStatus = 200) {
   });
 }
 async function fillKnownBirthData(page: Page) {
+  await page.locator("#birth-gender").selectOption("male");
   await page.locator("#birth-year").fill("1988");
   await page.locator("#birth-month").fill("10");
   await page.locator("#birth-day").fill("4");
@@ -78,30 +79,28 @@ async function mobileHealthy(page: Page) {
 }
 
 test("Guest saves birth details first and then receives the r144 question stage", async ({ page }) => {
-  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await page.goto("/#birth-form", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
   await fillKnownBirthData(page);
-  await page.getByRole("button", { name: "保存並生成昭梧命書", exact: true }).click();
+  await page.getByRole("button", { name: "生成我的命書", exact: true }).click();
   await expect(page.locator(".zhaowu-birth-summary")).toBeVisible();
+  await page.locator("#bazi .zw-flow-next").click();
   await expect(page.locator("#question-stage")).toBeVisible();
   await expect(page.locator("#analysis-question")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "沿著這份命書，繼續問你真正關心的事", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "問個問題（選填）", exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "開始分析這個問題", exact: true })).toBeVisible();
   await mobileHealthy(page);
 });
 
 test("Guest birth record stays on the phone and opens one integrated report", async ({ page }) => {
-  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await page.goto("/#birth-form", { waitUntil: "domcontentloaded" });
   await dismissInstallPrompt(page);
   await fillKnownBirthData(page);
-  await page.getByRole("button", { name: "保存並生成昭梧命書", exact: true }).click();
+  await page.getByRole("button", { name: "生成我的命書", exact: true }).click();
   await expect(page.locator(".zhaowu-birth-summary")).toBeVisible();
-  await expect(page.locator("#question-stage")).toBeVisible();
-  const fullDetails = page.locator("#bazi > .zhaowu-bazi-preview > .zhaowu-bazi-full-details");
-  await expect(fullDetails).not.toHaveAttribute("open", "");
-  await expect(page.locator("[data-unified-birth-report]")).toBeHidden();
-  await fullDetails.locator(":scope > summary").click();
-  await expect(page.locator("[data-unified-birth-report]")).toBeVisible();
+  await expect(page.locator("#bazi [data-plain-item]")).toHaveCount(2);
+  await expect(page.locator("#bazi [data-unified-birth-report]")).toHaveCount(0);
+  await expect(page.locator("#bazi [data-bazi-reading-locked]")).toBeVisible();
   await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
   await mobileHealthy(page);
 });

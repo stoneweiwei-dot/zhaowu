@@ -1,10 +1,11 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 import { stoneMark } from "@/lib/stone-mark";
 import { useState, type CSSProperties } from "react";
 import "@/about-zhaowu.css";
 
-export const Route = createFileRoute("/about")({ component: AboutZhaowu });
+export const Route = createFileRoute("/about")({ head: pageHead, component: AboutZhaowu });
 
 type Feature = {
   label: string;

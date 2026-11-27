@@ -1,3 +1,4 @@
+import "./result-page.css";
 import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
 import { useEffect, useState } from "react";
 import { writeFullReport } from "@/lib/actions";
@@ -252,7 +253,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const hasDurableRecord = savedId === result.id || reportSyncedId === result.id;
 
   return (
-    <section id="result" className="zhaowu-result-flow space-y-5" data-answer-first-r144="true">
+    <section id="result" className="zhaowu-result-flow space-y-5 zw-result-v2" data-answer-first-r144="true">
       {checkoutSuccess && unlocked ? <p className="rounded-lg border border-wood/30 bg-wood/5 p-4 text-sm leading-6 text-ink" role="status" data-checkout-success>{locale === "en" ? "Full access confirmed. Your complete report is open. This is a one-time unlock, not a subscription." : locale === "zh-Hans" ? "完整权限已确认／完整报告已经开放／本次为单次解锁，不是订阅。" : "完整權限已確認／完整報告已經開放／本次為單次解鎖，不是訂閱。"}</p> : null}
       <article className="zhaowu-result-card seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <p className="text-xs tracking-[0.28em] text-cinnabar">{t("resultQ")}</p>

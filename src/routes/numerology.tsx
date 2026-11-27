@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/route-meta";
 import { ChartTable } from "@/components/specialist-chart";
 import { ReportAccessGate } from "@/components/report-access-gate";
 import { PersonalPaidProfile } from "@/components/personal-paid-profile";
@@ -14,7 +15,7 @@ import {
 } from "@/lib/numerology";
 import { readSharedBirthRecord, SHARED_BIRTH_EVENT, type SharedBirthRecord } from "@/lib/shared-birth";
 
-export const Route = createFileRoute("/numerology")({ component: NumerologyPage });
+export const Route = createFileRoute("/numerology")({ head: pageHead, component: NumerologyPage });
 
 function NumerologyPage(){
   const {locale}=useI18n();

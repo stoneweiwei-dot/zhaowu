@@ -1,8 +1,9 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { SYSTEM_BOUNDARIES, SYSTEM_CAPABILITIES, SYSTEM_CAPABILITY_SYNC, type CapabilityStatus, type LocalizedText, type SystemCapability } from "@/lib/system-capability-map";
 import { useI18n, type Locale } from "@/lib/i18n";
 
-export const Route = createFileRoute("/knowledge/system-map")({ component: SystemMapPage });
+export const Route = createFileRoute("/knowledge/system-map")({ head: pageHead, component: SystemMapPage });
 
 function text(locale: Locale, value: LocalizedText) {
   return locale === "en" ? value[2] : locale === "zh-Hans" ? value[1] : value[0];

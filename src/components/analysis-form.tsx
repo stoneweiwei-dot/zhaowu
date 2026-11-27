@@ -1,3 +1,6 @@
+import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
+import { publicShareUrl } from "@/lib/share-url";
+import "./result-page.css";
 import { BaziReadingUnlock, useBaziReadingAccess } from "@/components/bazi-reading-unlock";
 import { FreeSummaryEmail } from "@/components/free-summary-email";
 import { JourneySteps } from "@/components/journey-steps";
@@ -14,7 +17,6 @@ import { useAppStore } from "@/lib/store";
 import { oncePerSession, trackConversion } from "@/lib/observability/conversion-telemetry";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { createEngineReportRecord, saveVisitorChart, updateBirthData } from "@/lib/supabase-rest";
-import { UNKNOWN_TIME_COPY } from "@/lib/bazi/presentation";
 import {
   formatSharedBirthRecord,
   readSharedBirthRecord,
@@ -27,9 +29,9 @@ import { CityPicker } from "@/components/city-picker";
 import { BaziChart } from "@/components/bazi-chart";
 import { buildChart } from "@/lib/bazi/chart";
 import { analyzeStructure } from "@/lib/bazi/structure";
-import { chartTerm } from "@/lib/bazi/presentation";
+import { chartTerm, pillarName, ganzhiLabel, UNKNOWN_TIME_COPY } from "@/lib/bazi/presentation";
 import { UnifiedBirthReport } from "@/components/unified-birth-report";
-import { ChartTrustPanel } from "@/components/chart-trust-panel";
+import { ChartTrustPanel, copyPlainText } from "@/components/chart-trust-panel";
 import { buildPlainChartSummary } from "@/lib/bazi/plain-summary";
 
 const EN_STRENGTH: Record<string, string> = {
@@ -80,7 +82,7 @@ export function AnalysisForm() {
   const [error, setError] = useState<string | null>(null);
   const [rememberedRecord, setRememberedRecord] = useState<SharedBirthRecord | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(true);
-  const [chartDetailsOpen, setChartDetailsOpen] = useState(false);
+  const [actionStatus, setActionStatus] = useState("");
   const [questionOpen, setQuestionOpen] = useState(false);
 
   const copy = locale === "en"
@@ -98,21 +100,29 @@ export function AnalysisForm() {
         saving: "Saving…",
         saved: "Birth record saved on this phone.",
         saveError: "Could not save the birth record. Please try again.",
-        chartKicker: "STEP 2 · ZHAOWU DESTINY BOOK",
-        chartTitle: "Your Destiny Book",
+        chartTitle: "My BaZi chart",
+        core: "Your core reading",
+        reading: "Your chart interpretation",
+        atlas: "Your illustrated atlas",
+        deep: "Read your Destiny Book",
+        nextSteps: "Next steps",
+        artwork: "Original stem and branch artwork",
+        full: "View full Destiny Book",
+        share: "Share Destiny Book",
+        copyChart: "Copy chart",
+        unknownHour: "Unknown",
+        copied: "Copied",
+        failed: "Could not copy",
+        ask: "Ask a question",
 
 
         foundation: "Technical terms",
-        plainTitle: "Your chart in plain words",
-        plainLead: "No jargon—just what your birth chart says about you. The technical chart is folded below.",
-        chartToggle: "View the Four Pillars chart",
         dayMaster: "Day master",
         monthOrder: "Month command",
         strength: "Strength baseline",
         structure: "Structure direction",
         features: "Main structural feature",
         noFeature: "—",
-        fullDetails: "Open your full Destiny Book reading",
 
         questionKicker: "STEP 3 · ASK YOUR DESTINY BOOK",
         questionTitle: "Ask a question (optional)",
@@ -145,21 +155,29 @@ export function AnalysisForm() {
           saving: "正在保存…",
           saved: "生辰已保存在这台手机。",
           saveError: "保存失败，请再试一次。",
-          chartKicker: "第二步 · 昭梧命书",
-          chartTitle: "你的命书",
+          chartTitle: "我的八字命盘",
+          core: "你的核心命辞",
+          reading: "你的命盘解读",
+          atlas: "你的专属命理图鉴",
+          deep: "深入阅读命书",
+          nextSteps: "下一步",
+          artwork: "天干地支原画",
+          full: "查看完整命书",
+          share: "分享命书",
+          copyChart: "复制命盘",
+          unknownHour: "时辰未知",
+          copied: "已复制",
+          failed: "复制失败",
+          ask: "继续问问题",
 
 
           foundation: "术语版",
-          plainTitle: "你的命盘白话版",
-          plainLead: "不讲术语，直接告诉你命盘在说什么。专业命盘与术语都收在下面。",
-          chartToggle: "看四柱命盘",
           dayMaster: "日主",
           monthOrder: "月令",
           strength: "旺衰底盘",
           structure: "格局方向",
           features: "主要结构特点",
           noFeature: "—",
-          fullDetails: "展开完整昭梧命书",
 
           questionKicker: "第三步 · 命书问答",
           questionTitle: "问个问题（选填）",
@@ -191,21 +209,29 @@ export function AnalysisForm() {
           saving: "正在保存…",
           saved: "生辰已保存在這台手機。",
           saveError: "保存失敗，請再試一次。",
-          chartKicker: "第二步 · 昭梧命書",
-          chartTitle: "你的命書",
+          chartTitle: "我的八字命盤",
+          core: "你的核心命辭",
+          reading: "你的命盤解讀",
+          atlas: "你的專屬命理圖鑑",
+          deep: "深入閱讀命書",
+          nextSteps: "下一步",
+          artwork: "天干地支原畫",
+          full: "查看完整命書",
+          share: "分享命書",
+          copyChart: "複製命盤",
+          unknownHour: "時辰未知",
+          copied: "已複製",
+          failed: "複製失敗",
+          ask: "繼續問問題",
 
 
           foundation: "術語版",
-          plainTitle: "你的命盤白話版",
-          plainLead: "不講術語，直接告訴你命盤在說什麼。專業命盤與術語都收在下面。",
-          chartToggle: "看四柱命盤",
           dayMaster: "日主",
           monthOrder: "月令",
           strength: "旺衰底盤",
           structure: "格局方向",
           features: "主要結構特點",
           noFeature: "—",
-          fullDetails: "展開完整昭梧命書",
 
           questionKicker: "第三步 · 命書問答",
           questionTitle: "問個問題（選填）",
@@ -374,8 +400,7 @@ export function AnalysisForm() {
     if (!previewChart) return [];
     try { return buildPlainChartSummary(previewChart, locale); } catch { return []; }
   }, [previewChart, locale]);
-  // Plain-language opening lines for the full report (who you are + your natural energy).
-  const plainLead = useMemo(() => plainItems.slice(0, 2).map((item) => item.body).filter(Boolean), [plainItems]);
+  const chartText = (value: string) => locale === "zh-Hans" ? toSimplifiedCustomerText(value) : value;
   const foundationValues = previewChart && structure
     ? locale === "en"
       ? {
@@ -387,16 +412,41 @@ export function AnalysisForm() {
         }
       : {
           dayMaster: `${previewChart.dayMaster}${previewChart.dayMasterElement}`,
-          monthOrder: `${previewChart.monthBranch} · ${structure.monthMainStem}${structure.monthTenGod}`,
-          strength: `${previewChart.strength.tendency} · ${previewChart.strength.summary}`,
-          structure: `${structure.label}${structure.established ? "" : "方向"} · ${structure.completion.label}`,
-          features: structure.supportingPattern ?? copy.noFeature,
+          monthOrder: chartText(`${previewChart.monthBranch} · ${structure.monthMainStem}${structure.monthTenGod}`),
+          strength: chartText(`${previewChart.strength.tendency} · ${previewChart.strength.summary}`),
+          structure: chartText(`${structure.label}${structure.established ? "" : "方向"} · ${structure.completion.label}`),
+          features: chartText(structure.supportingPattern ?? copy.noFeature),
         }
     : null;
+
+  async function handleChartAction(action: "share" | "copy") {
+    if (!previewChart) return;
+    setActionStatus("");
+    try {
+      if (action === "share" && navigator.share) {
+        try {
+          await navigator.share({ title: copy.chartTitle, url: publicShareUrl() });
+          return;
+        } catch (error) {
+          if (error instanceof Error && error.name === "AbortError") return;
+        }
+      }
+      const summary = previewChart.pillars.map(pillar => {
+        const value = pillar.ready && !(previewChart.timeUnknown && pillar.key === "time")
+          ? ganzhiLabel(pillar.ganZhi, locale) : copy.unknownHour;
+        return pillarName(pillar.key, locale) + " · " + value;
+      }).join("\n");
+      await copyPlainText(action === "share" ? publicShareUrl() : summary);
+      setActionStatus(copy.copied);
+    } catch {
+      setActionStatus(copy.failed);
+    }
+  }
 
   function selectStep(step: JourneyStep) {
     if (step > 1 && (!rememberedRecord || detailsOpen)) return;
     setError(null);
+    setActionStatus("");
     setDetailsOpen(step === 1);
     setQuestionOpen(step === 3);
     window.requestAnimationFrame(() => {
@@ -424,7 +474,7 @@ export function AnalysisForm() {
         {rememberedRecord && !detailsOpen ? (
           <div className="zhaowu-birth-summary" aria-label={copy.birthReady}>
             <span>{copy.birthReady}</span>
-            <strong>{formatSharedBirthRecord(rememberedRecord, locale)}</strong>
+            {questionOpen ? <strong>{formatSharedBirthRecord(rememberedRecord, locale)}</strong> : null}
           </div>
         ) : (
           <div className="zhaowu-birth-fields">
@@ -542,65 +592,78 @@ export function AnalysisForm() {
         )}
       </section>
 
-      {showQuestion && !questionOpen ? <section id="bazi" className="zhaowu-bazi-stage" aria-labelledby="zhaowu-bazi-title" aria-live="polite">
-        <header className="zhaowu-bazi-stage-head">
-          <p className="zhaowu-section-kicker">{copy.chartKicker}</p>
-          <h2 id="zhaowu-bazi-title">{copy.chartTitle}</h2>
-        </header>
-        {previewChart && structure && foundationValues ? (
-          <div className="zhaowu-bazi-preview">
-            <section className="zhaowu-bazi-plain" data-home-bazi-explanation data-plain-summary aria-labelledby="zhaowu-bazi-plain-title">
-              <img className="zhaowu-bazi-plain__art" src="/art/zhaowu-dragon-lake-v1.webp" alt="" decoding="async" width={1200} height={675} />
-              <h3 id="zhaowu-bazi-plain-title">{copy.plainTitle}</h3>
-              <p className="zhaowu-bazi-plain__lead">{copy.plainLead}</p>
-              {rememberedRecord?.city.standardTimeFallback ? <p className="zhaowu-time-warning" data-location-fallback>{locale === "en" ? "Birthplace was not verified. This chart uses Beijing standard time (UTC+8) and has not been corrected to true solar time." : locale === "zh-Hans" ? "出生地未确认：本盘暂按北京时间（UTC+8）计算，未校正真太阳时。" : "出生地未確認：本盤暫按北京標準時間（UTC+8）計算，未校正真太陽時。"}</p> : null}
-              <ol>
-                {plainItems.slice(0, 2).map((item) => (
-                  <li key={item.key} data-plain-item={item.key}>
-                    <strong>{item.title}</strong>
-                    <p>{item.body}</p>
-                  </li>
+      {showQuestion && !questionOpen ? <section id="bazi" className="zhaowu-bazi-stage zw-result-v2" aria-label={copy.chartTitle}>
+        {previewChart && rememberedRecord ? (
+          <div className="zw-result-paper">
+            <section data-result-section="01" aria-labelledby="bazi-title-01">
+              <h2 id="bazi-title-01"><span className="zw-result-number">01</span>{copy.chartTitle}</h2>
+              <p>{formatSharedBirthRecord(rememberedRecord, locale)}</p>
+              {previewChart.locationFallback || rememberedRecord.city.standardTimeFallback ? <p className="zhaowu-time-warning" data-location-fallback>{locale === "en" ? "Birthplace was not verified. This chart uses Beijing standard time (UTC+8) and has not been corrected to true solar time." : locale === "zh-Hans" ? "出生地未确认：本盘暂按北京时间（UTC+8）计算，未校正真太阳时。" : "出生地未確認：本盤暫按北京標準時間（UTC+8）計算，未校正真太陽時。"}</p> : null}
+              <div className="zw-result-pillars" data-bazi-chart>
+                {previewChart.pillars.map(pillar => (
+                  <div key={pillar.key} data-pillar={pillar.key}>
+                    <b>{pillarName(pillar.key, locale)}</b>
+                    {pillar.ready && !(previewChart.timeUnknown && pillar.key === "time") ? (
+                      <strong aria-label={ganzhiLabel(pillar.ganZhi, locale)}>
+                        <span data-ganzhi-part="stem" data-element={pillar.ganElement}>{chartTerm(pillar.gan, locale).split(" · ")[0]}</span>
+                        <span data-ganzhi-part="branch" data-element={pillar.zhiElement}>{chartTerm(pillar.zhi, locale).split(" · ")[0]}</span>
+                      </strong>
+                    ) : <span>{copy.unknownHour}</span>}
+                  </div>
                 ))}
-              </ol>
-              {readingUnlocked ? <details className="zw-flow-optional"><summary>{locale === "en" ? "More about your chart" : locale === "zh-Hans" ? "更多命盘解读" : "更多命盤解讀"}</summary>
-                {plainItems.slice(2).map(item => <div key={item.key}><strong>{item.title}</strong><p>{item.body}</p></div>)}
-              </details> : null}
+              </div>
+              <dl className="zw-result-facts">
+                <div><dt>{copy.dayMaster}</dt><dd data-element={previewChart.dayMasterElement}>{foundationValues?.dayMaster ?? chartTerm(previewChart.dayMaster, locale)}</dd></div>
+                <div><dt>{copy.monthOrder}</dt><dd data-element={previewChart.pillars.find(pillar => pillar.key === "month")?.zhiElement}>{chartTerm(previewChart.monthBranch, locale)}</dd></div>
+              </dl>
             </section>
-            <details className="zhaowu-chart-details zhaowu-bazi-fold" data-fold="chart">
-              <summary>{locale === "en" ? "Chart and stem / branch artwork" : locale === "zh-Hans" ? "命盘与天干地支图" : "命盤與天干地支圖"}</summary>
-              <BaziChart chart={previewChart} showHeader={false} expandDetails={false} />
-              <CharacterPanel chart={previewChart} />
-            </details>
-            <FreeStemBranchAtlas chart={previewChart} />
-            {readingUnlocked ? <><details className="zhaowu-chart-details zhaowu-bazi-fold" data-fold="terms">
-              <summary>{copy.foundation}</summary>
-              <section className="zhaowu-bazi-foundation" aria-labelledby="zhaowu-bazi-foundation-title">
-                <h3 id="zhaowu-bazi-foundation-title" className="sr-only">{copy.foundation}</h3>
-                <dl>
-                  <div><dt>{copy.dayMaster}</dt><dd>{foundationValues.dayMaster}</dd></div>
-                  <div><dt>{copy.monthOrder}</dt><dd>{foundationValues.monthOrder}</dd></div>
-                  <div><dt>{copy.strength}</dt><dd>{foundationValues.strength}</dd></div>
-                  <div><dt>{copy.structure}</dt><dd>{foundationValues.structure}</dd></div>
-                  <div><dt>{copy.features}</dt><dd>{foundationValues.features}</dd></div>
-                </dl>
-              </section>
-            </details>
-            <details
-              className="zhaowu-chart-details zhaowu-bazi-full-details"
-              open={chartDetailsOpen}
-              onToggle={(event) => setChartDetailsOpen(event.currentTarget.open)}
-            >
-              <summary>{copy.fullDetails}</summary>
-              {chartDetailsOpen ? (
-                <div className="zhaowu-bazi-full-details__body">
-                  {rememberedRecord ? <UnifiedBirthReport birth={rememberedRecord} locale={locale} foundation={foundationValues} plainLead={plainLead} /> : null}
-                  <ChartTrustPanel chart={previewChart} locale={locale} />
-                </div>
-              ) : null}
-            </details></> : <BaziReadingUnlock locale={locale} grade={rememberedGrade} pending={readingPaymentPending} />}
-            <FreeSummaryEmail locale={locale} />
-            <button type="button" className="zw-flow-next" onClick={() => selectStep(3)}>{locale === "en" ? "Ask a question" : locale === "zh-Hans" ? "继续：问个问题" : "繼續：問個問題"}<span aria-hidden="true"> →</span></button>
-            <p className="zw-flow-note">{locale === "en" ? "Optional. Your birth details are already saved on this device." : locale === "zh-Hans" ? "提问是选填；生辰已保存在这台设备。" : "提問是選填；生辰已保存在這台裝置。"}</p>
+            <section data-result-section="02" data-home-bazi-explanation data-plain-summary aria-labelledby="bazi-title-02">
+              <h2 id="bazi-title-02"><span className="zw-result-number">02</span>{copy.core}</h2>
+              {plainItems.slice(0, 1).map(item => (
+                <div key={item.key} data-plain-item={item.key}><strong>{item.title}</strong><p>{item.body}</p></div>
+              ))}
+            </section>
+            <section data-result-section="03" aria-labelledby="bazi-title-03">
+              <h2 id="bazi-title-03"><span className="zw-result-number">03</span>{copy.reading}</h2>
+              {plainItems.slice(1, 2).map(item => (
+                <div key={item.key} data-plain-item={item.key}><strong>{item.title}</strong><p>{item.body}</p></div>
+              ))}
+              {readingUnlocked ? plainItems.slice(2).map(item => (
+                <div key={item.key} data-plain-item={item.key}><strong>{item.title}</strong><p>{item.body}</p></div>
+              )) : null}
+            </section>
+            <section data-result-section="04" aria-labelledby="bazi-title-04">
+              <h2 id="bazi-title-04"><span className="zw-result-number">04</span>{copy.atlas}</h2>
+              <FreeStemBranchAtlas chart={previewChart} embedded />
+              <details><summary>{copy.artwork}</summary><CharacterPanel chart={previewChart} /></details>
+            </section>
+            <section data-result-section="05" id="bazi-reading" tabIndex={-1} aria-labelledby="bazi-title-05">
+              <h2 id="bazi-title-05"><span className="zw-result-number">05</span>{copy.deep}</h2>
+              {readingUnlocked ? <>
+                {foundationValues ? <UnifiedBirthReport birth={rememberedRecord} locale={locale} foundation={foundationValues} dayMaster={previewChart.dayMaster} termsLabel={copy.foundation} terms={
+                  <dl data-report-mode="terms" className="zw-result-facts">
+                    <div><dt>{copy.dayMaster}</dt><dd>{foundationValues.dayMaster}</dd></div>
+                    <div><dt>{copy.monthOrder}</dt><dd>{foundationValues.monthOrder}</dd></div>
+                    <div><dt>{copy.strength}</dt><dd>{foundationValues.strength}</dd></div>
+                    <div><dt>{copy.structure}</dt><dd>{foundationValues.structure}</dd></div>
+                    <div><dt>{copy.features}</dt><dd>{foundationValues.features}</dd></div>
+                  </dl>
+                } /> : null}
+                <ChartTrustPanel chart={previewChart} locale={locale} />
+              </> : <BaziReadingUnlock locale={locale} grade={rememberedGrade} pending={readingPaymentPending} />}
+              <BaziChart chart={previewChart} showHeader={false} expandDetails={false} referenceOnly />
+            </section>
+            <section data-result-section="06" aria-labelledby="bazi-title-06">
+              <h2 id="bazi-title-06"><span className="zw-result-number">06</span>{copy.nextSteps}</h2>
+              <div className="zw-result-actions">
+                <button type="button" className="zw-flow-next" onClick={() => selectStep(3)}>{copy.ask}</button>
+                <a href="#bazi-reading">{copy.full}</a>
+                <button type="button" onClick={() => void handleChartAction("share")}>{copy.share}</button>
+                <button type="button" onClick={() => void handleChartAction("copy")}>{copy.copyChart}</button>
+              </div>
+              <span role="status">{actionStatus}</span>
+              <FreeSummaryEmail locale={locale} />
+            </section>
           </div>
         ) : <p role="status">{locale === "en" ? "Your chart could not be shown. Edit your birth details to try again." : locale === "zh-Hans" ? "命盘暂时无法显示，请修改出生资料后重试。" : "命盤暫時無法顯示，請修改出生資料後重試。"}</p>}
       </section> : null}

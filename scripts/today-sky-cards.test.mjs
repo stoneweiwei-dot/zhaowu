@@ -98,10 +98,10 @@ test("the featured Sun–North Node trine separates orbital facts from symbolic 
   assert.ok(event.sources.some((source) => source.url.includes("line_of_nodes")));
 });
 
-test("today sky cards render on the /sky-events route above the deep-dive article", () => {
+test("the current snapshot brief appears above the deep-dive article", () => {
   assert.match(component, /export function TodaySkyCards/);
-  assert.match(route, /import \{ TodaySkyCards \} from "@\/components\/today-sky-cards"/);
-  const todayIndex = route.indexOf("<TodaySkyCards");
+  assert.doesNotMatch(route, /<TodaySkyCards/);
+  const todayIndex = route.indexOf("<SkyObservationBrief");
   const articleIndex = route.indexOf("sky-event-article");
   assert.ok(todayIndex > -1 && articleIndex > -1 && todayIndex < articleIndex, "today cards must appear before the deep-dive article");
 });

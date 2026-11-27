@@ -1,15 +1,14 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
-import { SKY_EVENT_CATEGORIES, getArchivedSkyEvents, getFeaturedSkyEvent, getTodaySkyUpdatedDate } from "@/lib/sky-events";
-import { TodaySkyCards } from "@/components/today-sky-cards";
+import { SKY_EVENT_CATEGORIES, getArchivedSkyEvents, getFeaturedSkyEvent } from "@/lib/sky-events";
 import { DailySkyObservation } from "@/components/daily-sky-observation";
 import { SkyUniverse } from "@/components/sky-universe";
 import { SkyObservationBrief } from "@/components/sky-observation-brief";
-import { isSkyReportArchived } from "@/lib/sky-week-presentation";
 import "@/sky-events.css";
 import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
 
-export const Route = createFileRoute("/sky-events")({ component: SkyEventsPage });
+export const Route = createFileRoute("/sky-events")({ head: pageHead, component: SkyEventsPage });
 
 type Lang = "zh-Hant" | "zh-Hans" | "en";
 
@@ -123,7 +122,6 @@ function SkyEventsPage() {
   const lang: Lang = locale === "en" ? "en" : locale === "zh-Hans" ? "zh-Hans" : "zh-Hant";
   const event = getFeaturedSkyEvent();
   const archive = getArchivedSkyEvents();
-  const showCurrentWeek = !isSkyReportArchived(getTodaySkyUpdatedDate());
   const isSaturn = event.id === "saturn-opposition-2026";
   const ui = locale === "en"
     ? { title: "The Sky Now", lead: "Astronomical reality × symbolic astrology", back: "Home", science: "Astronomy layer · verifiable", symbolic: "Astrology layer · symbolic", houses: "Where this sign falls in your natal chart", sources: "Sources & verification", watch: "What this desk will publish first", archive: "Earlier sky events", note: "Astronomy and astrology are not presented as the same kind of knowledge. Measurable celestial motion is factual; personal meaning is a symbolic interpretive tradition." }
@@ -197,9 +195,13 @@ function SkyEventsPage() {
 
       <nav className="sky-events-shortcuts" aria-label={labels.navigation}>
         <a href="#sky-featured">{labels.feature}</a>
-        <a href="#sky-observation-record">{labels.week}</a>
+        <a href="#sky-week">{labels.week}</a>
         <a href="#sky-archive">{labels.archive}</a>
       </nav>
+
+      <section className="sky-week-public" id="sky-week" aria-label={labels.week}>
+        <SkyObservationBrief />
+      </section>
 
       <article className="sky-event-article">
         <section className="sky-event-impact" id="sky-featured" aria-labelledby="sky-impact-heading">
@@ -273,12 +275,6 @@ function SkyEventsPage() {
       <details className="sky-section-disclosure sky-observation-disclosure" id="sky-observation-record">
         <summary><strong>{guide.observation}</strong><span>{labels.expand}</span></summary>
         <div className="sky-observation-disclosure-body">
-          <SkyObservationBrief />
-          {showCurrentWeek ? (
-            <section className="sky-week-public" id="sky-week" aria-label={labels.week}>
-              <TodaySkyCards />
-            </section>
-          ) : null}
           <DailySkyObservation />
         </div>
       </details>

@@ -48,3 +48,8 @@ assert.ok(freeAtlasImage(selectFreeAtlas(example)[0], "en").includes("/atlas/"),
 assert.match(component,/is-poster/);
 const css = readFileSync("src/components/free-stem-branch-atlas.css", "utf8");
 assert.match(css,/object-position:center center/);
+
+assert.match(component, /<summary>\s*\{embedded \? art : null\}/);
+assert.match(component, /loading="lazy"/);
+assert.match(component, /onError=\{\(\) => setFailedArt/);
+assert.match(component, /FREE_ATLAS_FALLBACK_ART\[entry.symbol\]/);

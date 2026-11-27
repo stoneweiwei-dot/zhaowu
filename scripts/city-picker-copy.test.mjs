@@ -36,18 +36,10 @@ test("city input confirms exact matches and requires a verified birthplace", () 
   assert.match(analysisForm, /未校正真太陽時/);
 });
 
-test("home bazi leads with a plain-language summary and folds the technical chart", () => {
-  // Owner 2026-10-08: plain words first; four pillars, terms and full details stay folded.
+test("home chart, interpretation and unlock precede the next action", () => {
   assert.match(analysisForm, /data-home-bazi-explanation/);
   assert.match(analysisForm, /buildPlainChartSummary\(previewChart, locale\)/);
-  assert.match(analysisForm, /data-fold="chart"/);
-  assert.match(analysisForm, /<BaziChart chart=\{previewChart\} showHeader=\{false\} expandDetails=\{false\} \/>/);
-  assert.match(analysisForm, /className="zhaowu-chart-details zhaowu-bazi-full-details"/);
-  assert.match(analysisForm, /open=\{chartDetailsOpen\}/);
-  assert.match(analysisForm, /chartDetailsOpen \? \(/);
-  assert.match(analysisForm, /<summary>\{copy\.fullDetails\}<\/summary>/);
-  assert.match(analysisForm, /展開完整昭梧命書/);
-  assert.match(analysisForm, /<UnifiedBirthReport birth=\{rememberedRecord\}/);
-  assert.ok(analysisForm.indexOf('data-fold="chart"') < analysisForm.indexOf('className="zw-flow-next"'));
+  assert.match(analysisForm, /<BaziChart chart={previewChart}[^>]*referenceOnly/);
+  assert.match(analysisForm, /<UnifiedBirthReport birth={rememberedRecord}/);
   assert.ok(analysisForm.indexOf('<BaziReadingUnlock') < analysisForm.indexOf('className="zw-flow-next"'));
 });

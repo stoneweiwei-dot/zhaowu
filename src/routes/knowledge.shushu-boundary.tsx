@@ -1,7 +1,8 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
 
-export const Route = createFileRoute("/knowledge/shushu-boundary")({ component: ShushuBoundaryArticle });
+export const Route = createFileRoute("/knowledge/shushu-boundary")({ head: pageHead, component: ShushuBoundaryArticle });
 
 function tr(locale: Locale, hant: string, hans: string, en: string) {
   return locale === "en" ? en : locale === "zh-Hans" ? hans : hant;

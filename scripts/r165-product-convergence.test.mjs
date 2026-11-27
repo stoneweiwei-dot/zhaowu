@@ -11,8 +11,8 @@ const state = await readFile(new URL("../docs/CURRENT-STATE.md", import.meta.url
 test("r165 locks the public product around one ZHAOWU Destiny Book", () => {
   assert.match(home, /昭梧 · 個人命書/);
   assert.match(home, /一份生辰，讀成一本昭梧命書/);
-  assert.match(form, /保存並生成昭梧命書/);
-  assert.match(form, /第二步 · 昭梧命書/);
+  assert.match(form, /生成我的命書/);
+  assert.match(form, /我的八字命盤/);
   assert.match(form, /<BaziChart/);
   assert.match(form, /<UnifiedBirthReport/);
   assert.match(report, /昭梧命書 · 本命卷/);

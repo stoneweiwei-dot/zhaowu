@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/route-meta";
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { RealmEmblemArt } from "@/components/realm-emblem-art";
@@ -5,7 +6,7 @@ import { QuizShareButton } from "@/components/quiz-share-button";
 import { useI18n } from "@/lib/i18n";
 import { SIX_REALM_QUESTIONS, SIX_REALM_RESULTS, scoreSixRealmAnswers, type SixRealmKey } from "@/lib/fun-tests/six-realms";
 
-export const Route = createFileRoute("/quiz/six-realms")({ component: SixRealmsQuiz });
+export const Route = createFileRoute("/quiz/six-realms")({ head: pageHead, component: SixRealmsQuiz });
 
 const UI = {
   "zh-Hant": {
