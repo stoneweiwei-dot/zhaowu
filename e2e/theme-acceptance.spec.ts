@@ -48,7 +48,7 @@ async function healthy(page: Page, label: string) {
     expect.soft(m.shadow, `${label}: ${m.selector} has a floating shadow`).toBe('none');
     expect.soft(Math.round(m.height * 100) / 100, `${label}: ${m.selector} touch target`).toBeGreaterThanOrEqual(44);
   }
-  const headings = await metrics(page, ['#zhaowu-customer-title', '.zhaowu-bazi-stage-head h2', '.zw-home-more-title', '.zw-subview-title', '.zhaowu-report-title', '.zhaowu-report-summary-block h4']);
+  const headings = await metrics(page, ['#zhaowu-customer-title', '#bazi-title-01', '.zw-home-more-title', '.zw-subview-title', '.zhaowu-report-title', '.zhaowu-report-summary-block h4']);
   for (const m of headings) {
     expect.soft(alpha(m.bg), `${label}: ${m.selector} heading is a pasted panel`).toBe(0);
     expect.soft(m.shadow, `${label}: ${m.selector} heading shadow`).toBe('none');

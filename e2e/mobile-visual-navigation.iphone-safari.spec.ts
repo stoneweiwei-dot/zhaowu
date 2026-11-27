@@ -167,16 +167,12 @@ test.describe("iPhone Safari visual and report navigation contract", () => {
       window.localStorage.setItem("zhaowu.birth-record.v1", JSON.stringify(birth));
     }, BIRTH);
 
-    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await page.goto("/#birth-form", { waitUntil: "domcontentloaded" });
     await dismissInstallPromptIfVisible(page);
     await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
-    const fullDetails = page.locator("#bazi > .zhaowu-bazi-preview > .zhaowu-bazi-full-details");
-    await expect(fullDetails).not.toHaveAttribute("open", "");
-    await expect(page.locator("[data-unified-birth-report]")).toBeHidden();
-    await fullDetails.locator(":scope > summary").click();
-    await expect(page.locator("[data-unified-birth-report]")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "你的昭梧命書", exact: true })).toBeVisible();
-    await expect(page.locator("[data-unified-birth-report]")).not.toContainText(/紫微斗數|西洋星座|印度古法占星|七政四餘|前世今生|生命靈數/);
+    await expect(page.locator("#bazi [data-plain-item]")).toHaveCount(2);
+    await expect(page.locator("#bazi [data-unified-birth-report]")).toHaveCount(0);
+    await expect(page.locator("#bazi [data-bazi-reading-locked]")).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   });
 });

@@ -83,6 +83,6 @@ test('homepage question result keeps reasoning metadata inside collapsed evidenc
   assert.match(evidence, /data-evidence-status/);
   assert.match(evidence, /data-biggest-variable/);
   assert.match(evidence, /<BaziChart chart=\{chart\} expandDetails=\{false\} \/>/);
-  assert.match(analysisForm, /<BaziChart chart=\{previewChart\} showHeader=\{false\} expandDetails=\{false\} \/>/);
+  assert.match(analysisForm, /<BaziChart chart=\{previewChart\} showHeader=\{false\} expandDetails=\{false\} referenceOnly \/>/);
   assert.doesNotMatch(analysisForm, /showHeader=\{false\} expandDetails\s*\/>/);
 });

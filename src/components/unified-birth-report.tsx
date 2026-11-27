@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import type { Locale } from "@/lib/i18n";
 import { calculateLifeNumber, NUMEROLOGY_PROFILES, tx } from "@/lib/numerology";
 import type { SharedBirthRecord } from "@/lib/shared-birth";
-import { comicStemTeaser, SongComicReportInsert, SongComicShareCard } from "@/components/song-comic-layer";
+import { SongComicReportInsert, SongComicShareCard } from "@/components/song-comic-layer";
 import { specialistHeadline } from "@/lib/specialist-headline";
 import "@/report-hub.css";
 import type { ReportSystemId } from "@/lib/report-access";
@@ -24,9 +24,7 @@ type Foundation = {
   features: string;
 };
 
-const NO_PLAIN_LEAD: string[] = [];
-
-type ReportSection = { title: string; body: string[]; teaser?: string; groups?: ReportSection[] };
+type ReportSection = { title: string; body: string[]; groups?: ReportSection[] };
 
 function sectionBody(reading: SpecialistReading, title: RegExp, fallback = "") {
   return reading.sections.find((section) => title.test(section.title))?.body.trim() || fallback;
@@ -83,7 +81,7 @@ function reportCopy(locale: Locale) {
     comicMode: "Comic Destiny Book",
     systemsMode: "Six Systems",
     comicKicker: "YOUR STORY · SIX FRAMES",
-    comicLead: "Six illustrated scenes first; text stays secondary and opens only when you want detail.",
+    comicLead: "Read your chart in six illustrated scenes.",
     systemsLead: "One conclusion per system. Open any card for its full chart.",
     frame: "Frame",
     openFull: "Expand",
@@ -123,7 +121,7 @@ function reportCopy(locale: Locale) {
     comicMode: "漫画命书",
     systemsMode: "六大系统",
     comicKicker: "你的故事 · 六格读完",
-    comicLead: "先看六格漫画把主线看懂；文字解释放在后面，需要时再展开。",
+    comicLead: "用六格漫画读懂你的命盘。",
     systemsLead: "每个系统先给你一句结论；点进去看完整盘。",
     frame: "第",
     openFull: "展开",
@@ -162,7 +160,7 @@ function reportCopy(locale: Locale) {
     comicMode: "漫畫命書",
     systemsMode: "六大系統",
     comicKicker: "你的故事 · 六格讀完",
-    comicLead: "先看六格漫畫把主線看懂；文字解釋放在後面，需要時再展開。",
+    comicLead: "用六格漫畫讀懂你的命盤。",
     systemsLead: "每個系統先給你一句結論；點進去看完整盤。",
     frame: "第",
     openFull: "展開",
@@ -180,9 +178,9 @@ function reportCopy(locale: Locale) {
   };
 }
 
-export function UnifiedBirthReport({ birth, locale, foundation, plainLead = NO_PLAIN_LEAD }: { birth: SharedBirthRecord; locale: Locale; foundation: Foundation; plainLead?: string[] }) {
+export function UnifiedBirthReport({ birth, locale, foundation, dayMaster, termsLabel, terms }: { birth: SharedBirthRecord; locale: Locale; foundation: Foundation; dayMaster: string; termsLabel: string; terms: ReactNode }) {
   const copy = reportCopy(locale);
-  const [mode, setMode] = useState<"formal" | "comic" | "systems">("formal");
+  const [mode, setMode] = useState<"formal" | "comic" | "systems" | "terms">("formal");
   const sections = useMemo<ReportSection[]>(() => {
     const western = buildWesternReading(birth, locale);
     const ziwei = buildZiweiReading(birth, locale);
@@ -195,7 +193,6 @@ export function UnifiedBirthReport({ birth, locale, foundation, plainLead = NO_P
       {
         title: copy.basis,
         body: unique([
-          ...plainLead,
           `${foundation.dayMaster}｜${foundation.monthOrder}`,
           foundation.strength,
           `${foundation.structure}；${foundation.features}`,
@@ -247,7 +244,7 @@ export function UnifiedBirthReport({ birth, locale, foundation, plainLead = NO_P
         ], locale),
       },
     ];
-  }, [birth, copy.basis, copy.lesson, copy.nature, copy.relation, copy.timing, copy.work, foundation, locale, plainLead]);
+  }, [birth, copy.basis, copy.lesson, copy.nature, copy.relation, copy.timing, copy.work, foundation, locale]);
 
   const formalStages = useMemo<ReportSection[]>(() => {
     const [basis, nature, relation, work, timing, lesson] = sections;
@@ -264,18 +261,17 @@ export function UnifiedBirthReport({ birth, locale, foundation, plainLead = NO_P
       .map((section) => ({ title: section.title, body: unique(section.body.slice(section === nature ? 2 : 1), locale) }))
       .filter((group) => group.body.length > 0);
     // Reading rules and technical labels stay available, but after the substantive paragraphs.
-    const basisDetail: ReportSection = { title: copy.basisDetail, body: unique(basis?.body.slice(plainLead.length + 2) ?? [], locale) };
+    const basisDetail: ReportSection = { title: copy.basisDetail, body: unique(basis?.body.slice(2) ?? [], locale) };
     return [
       {
         title: copy.summaryStage,
         body: unique([
-          ...(basis?.body.slice(0, plainLead.length + 2) ?? []),
+          ...(basis?.body.slice(0, 2) ?? []),
           ...(nature?.body.slice(0, 2) ?? []),
         ], locale),
       },
       {
         title: copy.visualStage,
-        teaser: comicStemTeaser(foundation.dayMaster, locale),
         body: unique(themed, locale),
       },
       {
@@ -284,83 +280,41 @@ export function UnifiedBirthReport({ birth, locale, foundation, plainLead = NO_P
       },
       {
         title: copy.notesStage,
-        teaser: copy.notesLead,
         body: unique([...detailGroups.flatMap((group) => group.body), ...basisDetail.body], locale),
         groups: [...detailGroups, basisDetail].filter((group) => group.body.length > 0),
       },
     ];
-  }, [birth, copy.basisDetail, copy.bodyCare, copy.bodyFallback, copy.bodyStage, copy.notesLead, copy.notesStage, copy.summaryStage, copy.visualStage, foundation.dayMaster, locale, plainLead, sections]);
+  }, [birth, copy.basisDetail, copy.bodyCare, copy.bodyFallback, copy.bodyStage, copy.notesStage, copy.summaryStage, copy.visualStage, locale, sections]);
 
   return (
-    <section className="zhaowu-unified-birth-report" data-unified-birth-report aria-labelledby="zhaowu-unified-report-title">
+    <section className="zhaowu-unified-birth-report" data-unified-birth-report aria-label={copy.title}>
       <header>
-        <p className="zhaowu-section-kicker">{copy.kicker}</p>
-        <h3 id="zhaowu-unified-report-title">{copy.title}</h3>
         <div className="zhaowu-report-mode-switch" role="group" aria-label={copy.title}>
           <button type="button" aria-pressed={mode === "formal"} onClick={() => setMode("formal")}>{copy.formalMode}</button>
+          <button type="button" aria-pressed={mode === "terms"} onClick={() => setMode("terms")}>{termsLabel}</button>
           <button type="button" aria-pressed={mode === "comic"} onClick={() => setMode("comic")}>{copy.comicMode}</button>
           <button type="button" aria-pressed={mode === "systems"} onClick={() => setMode("systems")}>{copy.systemsMode}</button>
         </div>
       </header>
       {mode === "formal" ? (
-        <>
-          <nav className="zhaowu-report-reading-path" aria-label={locale === "en" ? "Reading order" : locale === "zh-Hans" ? "阅读顺序" : "閱讀順序"}>
-            {formalStages.map((section, index) => <span key={section.title}><b>{String(index + 1).padStart(2, "0")}</b>{section.title}</span>)}
-          </nav>
-          <div className="zhaowu-unified-report-flow" data-report-mode="formal">
-            {formalStages.map((section, index) => (
-              <article key={section.title} data-formal-stage={index + 1}>
-                {index === 0 ? (
-                  <div className="zhaowu-unified-summary-stage">
-                    <span className="zhaowu-unified-fold__step">01</span>
-                    <h4>{section.title}</h4>
-                    <div className="zhaowu-unified-fold__body">
-                      {/* Only the single direct-conclusion line stays open by
-                          default (matching the SUMMARY_VISIBLE_LINES=1 convention
-                          used on the continuous report page) — users were not
-                          reading the second always-visible paragraph, so it now
-                          folds with the rest instead of showing automatically. */}
-                      {section.body.slice(0, 1).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-                    </div>
-                    {section.body.length > 1 ? (
-                      <details className="zhaowu-unified-fold zhaowu-unified-fold--more" data-report-fold>
-                        <summary>{copy.openFull}</summary>
-                        <div className="zhaowu-unified-fold__body">
-                          {section.body.slice(1).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-                        </div>
-                      </details>
-                    ) : null}
-                  </div>
-                ) : (
-                  <details className="zhaowu-unified-fold" data-report-fold>
-                    <summary>
-                      <span className="zhaowu-unified-fold__step">{String(index + 1).padStart(2, "0")}</span>
-                      <h4>{section.title}</h4>
-                      {section.teaser || section.body[0] ? <span className="zhaowu-unified-fold__teaser">{section.teaser ?? section.body[0]}</span> : null}
-                    </summary>
-                    <div className="zhaowu-unified-fold__body">
-                      {index === 1 ? <SongComicReportInsert dayMaster={foundation.dayMaster} locale={locale} /> : null}
-                      {section.groups?.length
-                        ? section.groups.map((group) => (
-                          <div className="zhaowu-unified-fold__group" key={group.title}>
-                            <h5>{group.title}</h5>
-                            {group.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-                          </div>
-                        ))
-                        : section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-                    </div>
-                  </details>
-                )}
-              </article>
-            ))}
-          </div>
-        </>
-      ) : mode === "comic" ? (
-        <ComicLiteReport sections={sections} dayMaster={foundation.dayMaster} locale={locale} copy={copy} />
+        <div className="zhaowu-unified-report-flow" data-report-mode="formal">
+          {formalStages.map((section, index) => (
+            <article key={section.title} data-formal-stage={index + 1}>
+              <h4>{section.title}</h4>
+              {index === 1 ? <SongComicReportInsert dayMaster={dayMaster} locale={locale} /> : null}
+              {section.groups?.length ? section.groups.map(group => (
+                <div key={group.title}><h5>{group.title}</h5>{group.body.map(line => <p key={line}>{line}</p>)}</div>
+              )) : section.body.map(line => <p key={line}>{line}</p>)}
+            </article>
+          ))}
+        </div>
+      ) : mode === "terms" ? terms
+        : mode === "comic" ? (
+        <ComicLiteReport sections={sections} dayMaster={dayMaster} locale={locale} copy={copy} />
       ) : (
         <SpecialistHub birth={birth} locale={locale} copy={copy} />
       )}
-      <SongComicShareCard dayMaster={foundation.dayMaster} locale={locale} />
+      <SongComicShareCard dayMaster={dayMaster} locale={locale} />
     </section>
   );
 }
@@ -458,7 +412,7 @@ function ComicLiteReport({
   locale: Locale;
   copy: ReturnType<typeof reportCopy>;
 }) {
-  const stem = dayMaster?.trim()?.[0] || "壬";
+  const stem = dayMaster;
 
   return (
     <section className="zhaowu-comic-lite" data-report-mode="comic-lite" aria-label={copy.comicMode}>
@@ -484,14 +438,7 @@ function ComicLiteReport({
             <div className="zhaowu-comic-lite__copy">
               <h5>{section.title}</h5>
               <p className="zhaowu-comic-lite__caption">{section.body[0]}</p>
-              {section.body.length > 1 ? (
-                <details>
-                  <summary><span className="when-closed">{copy.openFull}</span><span className="when-open">{copy.closeFull}</span></summary>
-                  <div className="zhaowu-comic-lite__more">
-                    {section.body.slice(1).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-                  </div>
-                </details>
-              ) : null}
+              {section.body.slice(1).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
             </div>
           </article>
         ))}

@@ -47,3 +47,13 @@ test('birthplace DST conversion is independent of the device timezone',async()=>
   const run=zone=>execFileSync(process.execPath,['--import','tsx','--input-type=module','-e',code],{cwd:new URL('../',import.meta.url),env:{...process.env,TZ:zone},encoding:'utf8'});
   assert.equal(run('UTC'),run('America/Los_Angeles'));
 });
+
+test("the free technical reference retains pillar details without repeating the board", () => {
+  const chart = buildChart(input);
+  const html = renderToStaticMarkup(createElement(BaziChartContent, { chart, locale: "en", referenceOnly: true, showHeader: false }));
+  assert.doesNotMatch(html, /data-bazi-chart|class="zhaowu-pillar-grid"/);
+  assert.match(html, /<details[^>]*><summary>Chart details<\/summary>/);
+  assert.match(html, /Hidden stems/);
+  assert.match(html, /Stem relationship/);
+  assert.match(html, /Ten-year luck cycles/);
+});
