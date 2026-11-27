@@ -120,15 +120,15 @@ test("all selected skins show the matching painting on report cover surfaces onl
 // This checks readable foreground/background pairs rather than a copied palette.
 const { default: postcss } = await import('postcss');
 const skinRoots = [css, readFileSync('src/theme-skins-sets.css', 'utf8'), full].map(text => postcss.parse(text));
-function tokensForSkin(skin) {
-  const attributes = { 'data-zws': skin.id, 'data-zws-mode': skin.mode, ...(skin.mode === 'dark' ? {'data-zw-theme':'night'} : {}), lang:'zh-Hant' };
+function tokensForSkin(skin, preview = false) {
+  const attributes = { [preview ? 'data-owner-theme-card' : 'data-zws']: skin.id, 'data-zws-mode': skin.mode, ...(skin.mode === 'dark' ? {'data-zw-theme':'night'} : {}), lang:'zh-Hant' };
   const vars = {}, ranks = {};
   let order = 0;
   for (const root of skinRoots) root.walkRules(rule => {
     order++;
     for (const selector of rule.selector.split(',')) {
       const sel = selector.trim();
-      if (!/^html(?:\[[^\]]+\])+$/.test(sel)) continue;
+      if (!(preview ? /^(?:\[[^\]]+\])+$/ : /^html(?:\[[^\]]+\])+$/).test(sel)) continue;
       const attrs = [...sel.matchAll(/\[([\w-]+)(?:(\^=|=)["']([^"']+)["'])?\]/g)];
       if (!attrs.every(([,name,operator,value]) => name in attributes && (!operator || (operator === '=' ? attributes[name] === value : attributes[name].startsWith(value))))) continue;
       for (const decl of rule.nodes.filter(n => n.type === 'decl' && n.prop.startsWith('--'))) {
@@ -177,14 +177,40 @@ function contrast(a, b) {
   const luminance = rgb => rgb.map(v => v <= .04045 ? v/12.92 : ((v+.055)/1.055)**2.4).reduce((n,v,i) => n+v*[.2126,.7152,.0722][i],0);
   const la=luminance(a), lb=luminance(b); return (Math.max(la,lb)+.05)/(Math.min(la,lb)+.05);
 }
-test('every actual skin palette keeps body, muted copy and primary actions readable', () => {
+test('all CSS skins meet 4.5:1 in both modes and owner cards use the published palette', () => {
+  const defined = new Set();
+  for (const root of skinRoots) root.walkRules(rule => {
+    for (const match of rule.selector.matchAll(/\[data-zws="([^"]+)"\]/g)) defined.add(match[1]);
+  });
+  assert.deepEqual(defined, new Set(ids.map(skin => skin.id)));
+  for (const skin of ids) {
+    for (const mode of ['light', 'dark']) {
+      const vars = tokensForSkin({ ...skin, mode });
+      const paper = colour(vars['--zws-page'], vars);
+      const ink = colour(vars['--zws-ink'], vars);
+      const white = [1, 1, 1];
+      assert.equal(contrast(paper, white) > contrast(ink, white), mode === 'dark', skin.id + ' ' + mode);
+      const pairs = [['--zws-on-accent', '--zws-action-bg'], ['--zws-on-accent', '--zws-btn-bg']];
+      for (const paper of ['--zws-page', '--zws-surface', '--zws-surface-soft']) {
+        pairs.push(['--zws-ink', paper], ['--zws-soft', paper]);
+      }
+      const preview = mode === skin.mode ? tokensForSkin(skin, true) : null;
+      for (const [fg, bg] of pairs) {
+        const label = [skin.id, mode, fg, bg].join(' ');
+        const ratio = contrast(colour(vars[fg], vars), colour(vars[bg], vars));
+        assert.ok(ratio >= 4.5, label + ' ' + ratio.toFixed(2));
+        if (preview) for (const key of [fg, bg]) {
+          assert.deepEqual(colour(preview[key], preview), colour(vars[key], vars), label);
+        }
+      }
+    }
+  }
+});
+
+test('each skin keeps its catalog painting and frame', () => {
   for (const skin of ids) {
     const vars = tokensForSkin(skin);
     assert.ok(vars['--zws-art']?.includes(skin.hero), `${skin.id}: rendered art must match the catalog preview`);
-    for (const [fg, bg] of [['--zws-ink','--zws-surface'],['--zws-soft','--zws-surface'],['--zws-ink','--zws-surface-soft'],['--zws-on-accent','--zws-action-bg']]) {
-      const ratio = contrast(colour(vars[fg],vars),colour(vars[bg],vars));
-      assert.ok(ratio >= 4.5, `${skin.id}: ${fg} / ${bg} contrast ${ratio.toFixed(2)}`);
-    }
     const sydneySeason = ['sydney-jacaranda', 'southern-summer', 'southern-autumn', 'southern-winter'].includes(skin.id);
     if (skin.id.startsWith('solar-')) {
       assert.equal(vars['--zws-card-orn'], 'none', `${skin.id} stays a still solar skin`);
@@ -211,7 +237,11 @@ test('curated themes keep visibly different page palettes instead of one shared 
   const registry = readFileSync("src/lib/theme-skins.ts", "utf8");
   const curatedBlock = registry.match(/CURATED_SKIN_CATALOG:[\s\S]*?= \[([\s\S]*?)\] as const;/)?.[1] ?? "";
   const curatedIds = [...curatedBlock.matchAll(/\{ id: "([a-z-]+)", family:/g)].map((match) => match[1]);
-  const pages = curatedIds.map((id) => tokensForSkin(ids.find((skin) => skin.id === id))['--zws-page']);
+  const pages = curatedIds.map((id) => {
+    const vars = tokensForSkin(ids.find((skin) => skin.id === id));
+    const ref = /^var\((--[\w-]+)\)$/.exec(vars['--zws-page'] ?? '');
+    return ref ? vars[ref[1]] : vars['--zws-page'];
+  });
   assert.equal(curatedIds.length, 11);
   assert.equal(new Set(pages).size, curatedIds.length);
   assert.doesNotMatch(full, /html\[data-zws\]:not\(\[data-zws-mode="dark"\]\)\s*\{[^}]*--zws-page/s);
