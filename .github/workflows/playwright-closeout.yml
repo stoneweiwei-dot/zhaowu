@@ -1,0 +1,88 @@
+name: Playwright closeout
+on:
+  pull_request:
+    paths: ['src/**', 'e2e/**', 'playwright.config.ts', 'package*.json', '.github/workflows/playwright-closeout.yml']
+permissions:
+  contents: read
+jobs:
+  suite:
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [branch, main]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      CI: 'true'
+      VITE_SUPABASE_URL: http://127.0.0.1:9
+      VITE_SUPABASE_PUBLISHABLE_KEY: offline-placeholder
+      PLAYWRIGHT_JSON_OUTPUT_NAME: results.json
+      PLAYWRIGHT_HTML_OPEN: never
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.target == 'main' && 'main' || github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium webkit
+      - run: npm run build
+      - run: npx playwright test --reporter=json,html
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: closeout-${{ matrix.target }}
+          path: |
+            results.json
+            playwright-report/
+          if-no-files-found: error
+  summary:
+    needs: suite
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: closeout-*
+          path: reports
+      - name: 比較測試結果
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const output = [];
+          function report(target) {
+            const data = JSON.parse(fs.readFileSync('reports/closeout-' + target + '/results.json', 'utf8'));
+            const red = new Set();
+            function visit(suite, titles) {
+              const path = [...titles, suite.title];
+              for (const spec of suite.specs ?? []) {
+                for (const test of spec.tests) {
+                  if (test.status === 'unexpected') {
+                    red.add(JSON.stringify([spec.file, test.projectName, ...path, spec.title]));
+                  }
+                }
+              }
+              for (const child of suite.suites ?? []) visit(child, path);
+            }
+            for (const suite of data.suites) visit(suite, []);
+            const {expected, unexpected, skipped, flaky} = data.stats;
+            output.push('| ' + [target, expected, unexpected, skipped, flaky].join(' | ') + ' |');
+            return red;
+          }
+          output.push('| 版本 | 通過 | 失敗 | 略過 | 重試後通過 |', '|---|---:|---:|---:|---:|');
+          const branch = report('branch');
+          const main = report('main');
+          for (const [heading, keys] of [
+            ['分支新增的紅', [...branch].filter(key => !main.has(key))],
+            ['main 本來就紅', [...main]],
+          ]) {
+            output.push('', '### ' + heading, '');
+            for (const key of keys.sort()) output.push('    ' + JSON.parse(key).join(' › ').replace(/[\r\n]/g, ' '));
+            if (!keys.length) output.push('無');
+          }
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, output.join('\n') + '\n');
+          NODE
