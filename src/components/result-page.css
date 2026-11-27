@@ -140,3 +140,9 @@
   background: transparent !important;
   color: var(--result-ink);
 }
+
+/* Reading paragraphs use the full column; `pretty` balancing left short CJK lines on iPhone. */
+#birth-form #bazi.zw-result-v2 .zw-result-paper :is(p, li) { text-wrap: wrap; }
+/* Romanised pillars (English) stay on one line per stem/branch. */
+#birth-form #bazi.zw-result-v2 .zw-result-pillars [data-element] { white-space: nowrap; word-break: keep-all; overflow-wrap: normal; }
+#birth-form #bazi.zw-result-v2:lang(en) .zw-result-pillars [data-element] { font-size: clamp(1rem, 4.6vw, 1.4rem); }
