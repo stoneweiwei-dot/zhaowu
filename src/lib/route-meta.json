@@ -1554,6 +1554,48 @@
         "title": "ZHAOWU Hepan · Yuanfen Index | BaZi Pair",
         "description": "Dalawang birth record, sabay na ikinumpara: tatlong BaZi pair reading lang ang may puntos; ang Zi Wei, numerology, Western at Vedic astrology, One-Palm, Seven Luminaries at palmistry ay wala pang pair method kaya hindi binibigyan ng puntos. Ang index ay para sa sanggunian lamang."
       }
+    },
+    "/yunyi-shenxiang": {
+      "zh-Hant": {
+        "title": "雲衣神相圖錄",
+        "description": "按卷瀏覽封神人物、九歌神靈與四時畫像。"
+      },
+      "zh-Hans": {
+        "title": "云衣神相图录",
+        "description": "按卷浏览封神人物、九歌神灵与四时画像。"
+      },
+      "en": {
+        "title": "Yunyi Shenxiang gallery",
+        "description": "Browse portraits from the Investiture of the Gods, Nine Songs and four seasons."
+      },
+      "ja": {
+        "title": "雲衣神相図録",
+        "description": "封神演義の人物、九歌の神々、四季を描いた肖像を巻ごとに閲覧できます。"
+      },
+      "ko": {
+        "title": "운의신상 도록",
+        "description": "봉신연의의 인물과 구가의 신들, 사계절의 초상을 권별로 살펴보세요."
+      },
+      "hi": {
+        "title": "युनयी शेनशियांग चित्रावली",
+        "description": "देवताओं, नौ गीतों और चार ऋतुओं के चित्र खंडों में देखें।"
+      },
+      "th": {
+        "title": "หอภาพหยุนอีเสินเซี่ยง",
+        "description": "ชมภาพบุคคลจากห้องสิน เทพแห่งเก้าบทเพลง และภาพสี่ฤดูตามเล่ม"
+      },
+      "id": {
+        "title": "Galeri Yunyi Shenxiang",
+        "description": "Telusuri potret tokoh, dewa Sembilan Nyanyian, dan empat musim per jilid."
+      },
+      "vi": {
+        "title": "Họa tập Vân Y Thần Tướng",
+        "description": "Xem chân dung nhân vật Phong Thần, thần linh Cửu Ca và bốn mùa theo từng quyển."
+      },
+      "fil": {
+        "title": "Galeriya ng Yunyi Shenxiang",
+        "description": "Tingnan ang mga larawan ng mga diyos at apat na panahon sa bawat tomo."
+      }
     }
   }
 }
