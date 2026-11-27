@@ -26,11 +26,12 @@ test("release page carries bilingual content and never hardcodes a commit SHA", 
   assert.doesNotMatch(route, /[a-f0-9]{40}/i);
 });
 
-test("SITE_RELEASE_FALLBACK and PUBLIC_CHANGELOG include r228 and recent official updates without internal jargon", () => {
-  assert.match(stats, /version:\s*"ZW-WEB-2026\.11\.11-r228"/);
-  assert.match(stats, /updateNumber:\s*228/);
-  assert.match(stats, /summary:\s*\{[\s\S]*"zh-Hant":[\s\S]*"zh-Hans":[\s\S]*en:/);
-  assert.match(stats, /details:\s*\{[\s\S]*"zh-Hant":[\s\S]*"zh-Hans":[\s\S]*en:/);
+test("release fallback uses the generated build ID and preserves the historical changelog", async () => {
+  const { ZHAOWU_BUILD_RELEASE } = await import("../lib/release-id.js");
+  const { ZHAOWU_RELEASE } = await import("../lib/zhaowu-verification.js");
+  assert.equal(ZHAOWU_RELEASE, ZHAOWU_BUILD_RELEASE);
+  assert.match(stats, /version: ZHAOWU_BUILD_RELEASE/);
+  assert.ok(stats.includes('exec(ZHAOWU_BUILD_RELEASE)?.[1] ?? 0'));
   for (const id of [
     "2026-11-11-sky-visits-updates",
     "2026-11-09-sky-solar-system",

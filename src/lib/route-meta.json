@@ -1554,6 +1554,90 @@
         "title": "ZHAOWU Hepan · Yuanfen Index | BaZi Pair",
         "description": "Dalawang birth record, sabay na ikinumpara: tatlong BaZi pair reading lang ang may puntos; ang Zi Wei, numerology, Western at Vedic astrology, One-Palm, Seven Luminaries at palmistry ay wala pang pair method kaya hindi binibigyan ng puntos. Ang index ay para sa sanggunian lamang."
       }
+    },
+    "/yunyi-shenxiang": {
+      "zh-Hant": {
+        "title": "雲衣神相圖錄",
+        "description": "按卷瀏覽封神人物、九歌神靈與四時畫像。"
+      },
+      "zh-Hans": {
+        "title": "云衣神相图录",
+        "description": "按卷浏览封神人物、九歌神灵与四时画像。"
+      },
+      "en": {
+        "title": "Yunyi Shenxiang gallery",
+        "description": "Browse portraits from the Investiture of the Gods, Nine Songs and four seasons."
+      },
+      "ja": {
+        "title": "雲衣神相図録",
+        "description": "封神演義の人物、九歌の神々、四季を描いた肖像を巻ごとに閲覧できます。"
+      },
+      "ko": {
+        "title": "운의신상 도록",
+        "description": "봉신연의의 인물과 구가의 신들, 사계절의 초상을 권별로 살펴보세요."
+      },
+      "hi": {
+        "title": "युनयी शेनशियांग चित्रावली",
+        "description": "देवताओं, नौ गीतों और चार ऋतुओं के चित्र खंडों में देखें।"
+      },
+      "th": {
+        "title": "หอภาพหยุนอีเสินเซี่ยง",
+        "description": "ชมภาพบุคคลจากห้องสิน เทพแห่งเก้าบทเพลง และภาพสี่ฤดูตามเล่ม"
+      },
+      "id": {
+        "title": "Galeri Yunyi Shenxiang",
+        "description": "Telusuri potret tokoh, dewa Sembilan Nyanyian, dan empat musim per jilid."
+      },
+      "vi": {
+        "title": "Họa tập Vân Y Thần Tướng",
+        "description": "Xem chân dung nhân vật Phong Thần, thần linh Cửu Ca và bốn mùa theo từng quyển."
+      },
+      "fil": {
+        "title": "Galeriya ng Yunyi Shenxiang",
+        "description": "Tingnan ang mga larawan ng mga diyos at apat na panahon sa bawat tomo."
+      }
+    },
+    "/pricing": {
+      "zh-Hant": {
+        "title": "命書價目",
+        "description": "免費排盤，按系統單次付費解鎖完整版命書。"
+      },
+      "zh-Hans": {
+        "title": "命书价目",
+        "description": "免费排盘，按系统单次付费解锁完整版命书。"
+      },
+      "en": {
+        "title": "Report prices",
+        "description": "Create a free chart and unlock the full report with a one-time payment."
+      },
+      "ja": {
+        "title": "鑑定料金",
+        "description": "無料で命盤を作成し、完全版は一度の支払いで利用できます。"
+      },
+      "ko": {
+        "title": "보고서 가격",
+        "description": "무료로 명반을 만들고 한 번의 결제로 전체 보고서를 열 수 있습니다."
+      },
+      "hi": {
+        "title": "रिपोर्ट की कीमतें",
+        "description": "मुफ़्त कुंडली बनाएँ और एक बार भुगतान करके पूरी रिपोर्ट पढ़ें।"
+      },
+      "th": {
+        "title": "ราคารายงาน",
+        "description": "ผูกดวงฟรีและชำระครั้งเดียวเพื่ออ่านรายงานฉบับเต็ม"
+      },
+      "id": {
+        "title": "Harga laporan",
+        "description": "Buat bagan gratis dan bayar sekali untuk membaca laporan lengkap."
+      },
+      "vi": {
+        "title": "Giá bản luận giải",
+        "description": "Lập lá số miễn phí và trả phí một lần để đọc bản đầy đủ."
+      },
+      "fil": {
+        "title": "Presyo ng ulat",
+        "description": "Gumawa ng libreng chart at magbayad nang isang beses para sa buong ulat."
+      }
     }
   }
 }

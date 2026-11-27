@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/route-meta";
 import { useDisplayLanguage } from "@/lib/display-language";
 import { customerChrome } from "@/lib/customer-chrome";
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
@@ -10,7 +11,7 @@ import { CuratedVideoShelf } from "@/components/curated-video-shelf";
 import { RealityPatchSection } from "@/components/2012-reality-patch-section";
 import { trackConversion } from "@/lib/observability/conversion-telemetry";
 
-export const Route = createFileRoute("/knowledge")({ component: KnowledgePage });
+export const Route = createFileRoute("/knowledge")({ head: pageHead, component: KnowledgePage });
 
 function tr(_locale: Locale, hant: string, hans: string, en: string) {
   return customerChrome(hant, hans, en);

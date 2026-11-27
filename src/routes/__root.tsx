@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/route-meta";
 import { createRootRoute, Link, Outlet, type ErrorComponentProps } from "@tanstack/react-router";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
@@ -43,6 +44,7 @@ export function PublicRouteError({ reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRoute({
+  head: pageHead,
   notFoundComponent: PublicNotFound,
   errorComponent: PublicRouteError,
   component: () => (

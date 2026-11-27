@@ -33,7 +33,7 @@ test("question sheet is concise and explicitly answer-first", () => {
 
 test("hero offers one quiet birth-book entry that opens the existing form instead of a second flow", () => {
   assert.match(tree, /id: 'form'[\s\S]*title: t\('我的命盤', '我的命盘', 'My chart'\)/);
-  assert.match(tree, /section: 'form'/);
+  assert.match(tree, /id: 'start'[\s\S]*?children: \[\s*\{ kind: 'action', section: 'form', title: t\('開始免費排盤'/);
   assert.match(painted, /data-home-birth-entry/);
   assert.match(painted, /to="\/sample-report"/);
   assert.match(painted, /href="#home-guide"/);

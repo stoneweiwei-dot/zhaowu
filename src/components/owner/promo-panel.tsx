@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import {
   PROMO_SYSTEMS,
+  PROMO_ERROR_TEXT,
   createPromoCode,
   listPromoCodes,
   promoErrorText,
@@ -51,6 +52,9 @@ export function PromoPanel() {
 
   function submit(event: FormEvent) {
     event.preventDefault();
+    if (busy) return;
+    const code = customCode.trim();
+    if (code && !/^[a-z0-9-]{3,64}$/i.test(code)) { setError(PROMO_ERROR_TEXT.BAD_CODE); return; }
     const maxCount = max.trim() === "" ? null : Number(max);
     if (maxCount !== null && (!Number.isInteger(maxCount) || maxCount < 1 || maxCount > 100000)) { setError("名額須為 1 至 100000 的整數，或留空代表不限名額。"); return; }
     const dayCount = days.trim() === "" ? null : Number(days);
@@ -62,7 +66,7 @@ export function PromoPanel() {
         maxRedemptions: maxCount,
         expiresAt: dayCount === null ? null : new Date(Date.now() + dayCount * 86_400_000).toISOString(),
         note: note.trim(),
-        ...(customCode.trim() ? { code: customCode.trim() } : {}),
+        ...(code ? { code } : {}),
       });
       setCreated(row); setCopiedCode(""); setNote(""); setCustomCode("");
     });

@@ -1,3 +1,5 @@
+import { visitContext } from "./visit-context";
+import { ZHAOWU_BUILD_RELEASE } from "../../lib/release-id.js";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 
 const VISITOR_KEY = "zhaowu.visitor.v1";
@@ -90,32 +92,16 @@ export function formatCumulativeVisits(total: number, language: string): string 
 }
 
 export const SITE_RELEASE_FALLBACK = {
-  version: "ZW-WEB-2026.11.11-r228",
-  updateNumber: 228,
-  publishedAt: "2026-11-11T00:00:00.000Z",
-  latestSummary: "精簡此時天象頁面並保留太陽系互動示意圖，頁尾僅保留累計到訪人次徽章（含既有基數 2,444）並隱藏其他公開閱讀計數，同時補齊近期網站更新紀錄。",
+  version: ZHAOWU_BUILD_RELEASE,
+  updateNumber: Number(/-r(\d+)$/.exec(ZHAOWU_BUILD_RELEASE)?.[1] ?? 0),
+  publishedAt: null,
+  latestSummary: "發布資訊待更新。",
   summary: {
-    "zh-Hant": "精簡此時天象頁面並保留太陽系互動示意圖，頁尾僅保留累計到訪人次徽章（含既有基數 2,444）並隱藏其他公開閱讀計數，同時補齊近期網站更新紀錄。",
-    "zh-Hans": "精简此时天象页面并保留太阳系互动示意图，页尾仅保留累计到访人次徽章（含既有基数 2,444）并隐藏其他公开阅读计数，同时补齐近期网站更新记录。",
-    en: "Streamlined The Sky Now around the interactive solar system illustration, kept only the cumulative visit badge in the footer (including the 2,444 historical base) while hiding other public view counts, and brought the public release log up to date."
+    "zh-Hant": "發布資訊待更新。",
+    "zh-Hans": "发布信息待更新。",
+    en: "Release notes are pending.",
   },
-  details: {
-    "zh-Hant": [
-      "此時天象保留上方太陽系互動示意圖，移除下方重複的天象運行轉盤，讓星象重點與觀測紀錄更清晰。",
-      "頁尾僅保留累計到訪人次徽章（既有基數 2,444 加最新統計），隱藏頁首今日／累計瀏覽與文章閱讀計數等其他公開計數，並依繁中、簡中與英文自然格式化。",
-      "更新紀錄頁補齊首頁四主塊收合、九語切換選單、悉尼自動七十二候、手機縮放滑動提示與站主 Face ID 穩定性等近期正式更新。"
-    ],
-    "zh-Hans": [
-      "此时天象保留上方太阳系互动示意图，移除下方重复的天象运行转盘，让星象重点与观测记录更清晰。",
-      "页尾仅保留累计到访人次徽章（既有基数 2,444 加最新统计），隐藏页首今日／累计浏览与文章阅读计数等其他公开计数，并依繁中、简中与英文自然格式化。",
-      "更新记录页补齐首页四主块收合、九语切换菜单、悉尼自动七十二候、手机缩放滑动提示与站主 Face ID 稳定性等近期正式更新。"
-    ],
-    en: [
-      "Kept the upper interactive solar system illustration on The Sky Now and removed the lower duplicate motion dial for cleaner reading.",
-      "Kept only the cumulative visit badge in the footer (combining the 2,444 historical base with live counts in locale-appropriate formats) and hid header visit counts and article view counts from public display.",
-      "Updated the public change log with the collapsible four-block homepage, nine-language switcher, Sydney auto 72 micro-seasons panel, mobile zoom/swipe cues and owner Face ID sign-in improvements."
-    ]
-  }
+  details: { "zh-Hant": [], "zh-Hans": [], en: [] },
 } as const;
 
 function fallbackStats(): PublicSiteStats {
@@ -185,7 +171,7 @@ export async function recordVisit() {
   const res = await publicFetch(`${SUPABASE_URL}/rest/v1/rpc/zhaowu_record_visit`, {
     method: "POST",
     headers: publicHeaders({ Prefer: "return=minimal" }),
-    body: JSON.stringify({ p_visitor_key: key }),
+    body: JSON.stringify({ p_visitor_key: key, ...visitContext(window.location.pathname, document.referrer, navigator.userAgent, navigator.maxTouchPoints) }),
   });
   if (!res.ok) throw new Error(`Visit counter failed: HTTP ${res.status}`);
 }

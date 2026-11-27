@@ -1,0 +1,142 @@
+{
+  "/account": {
+    "zh-Hant": {
+      "title": "站主管理台",
+      "description": "管理昭梧內容與站主工作項目。"
+    },
+    "zh-Hans": {
+      "title": "站主管理台",
+      "description": "管理昭梧内容与站主工作项目。"
+    },
+    "en": {
+      "title": "Owner console",
+      "description": "Manage Zhaowu content and owner tasks."
+    }
+  },
+  "/auth/callback": {
+    "zh-Hant": {
+      "title": "登入驗證",
+      "description": "確認登入結果並返回昭梧帳戶。"
+    },
+    "zh-Hans": {
+      "title": "登录验证",
+      "description": "确认登录结果并返回昭梧账户。"
+    },
+    "en": {
+      "title": "Sign-in verification",
+      "description": "Check sign-in progress and return to your account."
+    }
+  },
+  "/gallery": {
+    "zh-Hant": {
+      "title": "素材管理",
+      "description": "整理昭梧的文章插畫、圖片與影音素材。"
+    },
+    "zh-Hans": {
+      "title": "素材管理",
+      "description": "整理昭梧的文章插画、图片与影音素材。"
+    },
+    "en": {
+      "title": "Media library",
+      "description": "Organise illustrations, images and video in the owner media library."
+    }
+  },
+  "/history": {
+    "zh-Hant": {
+      "title": "我的報告",
+      "description": "查看已儲存的命盤與歷次解讀。"
+    },
+    "zh-Hans": {
+      "title": "我的报告",
+      "description": "查看已保存的命盘与历次解读。"
+    },
+    "en": {
+      "title": "My reports",
+      "description": "Reopen saved charts and readings in your report history."
+    }
+  },
+  "/login": {
+    "zh-Hant": {
+      "title": "登入昭梧",
+      "description": "登入昭梧帳戶以閱讀已儲存的報告。"
+    },
+    "zh-Hans": {
+      "title": "登录昭梧",
+      "description": "登录昭梧账户以阅读已保存的报告。"
+    },
+    "en": {
+      "title": "Sign in to Zhaowu",
+      "description": "Sign in to continue reading your saved reports."
+    }
+  },
+  "/member": {
+    "zh-Hant": {
+      "title": "會員中心",
+      "description": "查看昭梧會員資料與帳戶選項。"
+    },
+    "zh-Hans": {
+      "title": "会员中心",
+      "description": "查看昭梧会员资料与账户选项。"
+    },
+    "en": {
+      "title": "Member centre",
+      "description": "View Zhaowu membership details and account options."
+    }
+  },
+  "/social": {
+    "zh-Hant": {
+      "title": "社群發佈",
+      "description": "查看站主的社群發佈與排程入口。"
+    },
+    "zh-Hans": {
+      "title": "社群发布",
+      "description": "查看站主的社群发布与排程入口。"
+    },
+    "en": {
+      "title": "Social publishing",
+      "description": "Find the owner workspace for social publishing and scheduling."
+    }
+  },
+  "/tianji-dual": {
+    "zh-Hant": {
+      "title": "天機雙相",
+      "description": "探索同一個人在不同處境中的兩種自然反應。"
+    },
+    "zh-Hans": {
+      "title": "天机双相",
+      "description": "探索同一个人在不同处境中的两种自然反应。"
+    },
+    "en": {
+      "title": "Two natural responses",
+      "description": "Explore how one person responds in two different situations."
+    }
+  },
+  "/tianji-xinggong": {
+    "zh-Hant": {
+      "title": "天機星宮",
+      "description": "從十二宮的提問探索自己的天機星。"
+    },
+    "zh-Hans": {
+      "title": "天机星宫",
+      "description": "从十二宫的提问探索自己的天机星。"
+    },
+    "en": {
+      "title": "Tianji star palaces",
+      "description": "Explore your Tianji star through questions about the twelve palaces."
+    }
+  },
+  "/yunyi-shenxiang": {
+    "zh-Hant": {
+      "title": "雲衣神相圖錄",
+      "description": "按卷瀏覽封神人物、九歌神靈與四時畫像。"
+    },
+    "zh-Hans": {
+      "title": "云衣神相图录",
+      "description": "按卷浏览封神人物、九歌神灵与四时画像。"
+    },
+    "en": {
+      "title": "Yunyi Shenxiang gallery",
+      "description": "Browse portraits from the Investiture of the Gods, Nine Songs and four seasons."
+    }
+  }
+}

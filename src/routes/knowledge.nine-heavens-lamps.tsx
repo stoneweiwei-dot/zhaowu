@@ -1,7 +1,8 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
 
-export const Route = createFileRoute("/knowledge/nine-heavens-lamps")({ component: LampsParable });
+export const Route = createFileRoute("/knowledge/nine-heavens-lamps")({ head: pageHead, component: LampsParable });
 type Copy = [string, string, string];
 const t = (locale: Locale, value: Copy) => value[locale === "en" ? 2 : locale === "zh-Hans" ? 1 : 0];
 

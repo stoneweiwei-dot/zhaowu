@@ -67,7 +67,7 @@ const PAYMENT_LINKS: Record<ReportSystemId, string> = {
   numerology: "https://buy.stripe.com/dRm00jgtpgPL1tN2X02sM0w",
 };
 
-const BUNDLE_PAYMENT_LINK = "https://buy.stripe.com/3cI5kD6SP42Zc8rfJM2sM0J"; // 藏書六系統套裝 2026-11-24
+const BUNDLE_PAYMENT_LINK = "https://buy.stripe.com/28EcN55OL5731tN1SW2sM0K"; // 藏書六系統套裝 A$39.90 (plink_1UgCyHFAzopdCCaxmKlvAkVT), 2026-11-27; replaces the US$26.90 link 3cI5kD6SP42Zc8rfJM2sM0J
 
 type Verification = {
   ok?: boolean;

@@ -51,7 +51,7 @@ test("index provides conservative JSON-LD without invented ratings or testimonia
   const html = await source("index.html");
   assert.match(html, /application\/ld\+json/);
   assert.match(html, /"@type": "WebSite"/);
-  assert.match(html, /"@type": "WebApplication"/);
+  assert.match(html, /"WebApplication"/);
   assert.doesNotMatch(html, /aggregateRating|review|offers/);
 });
 

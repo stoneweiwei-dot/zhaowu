@@ -19,5 +19,5 @@ test("r192 isolates homepage sections behind localized fail-open boundaries", as
 test("r192 saved-birth structure preview cannot crash the home route", async () => {
   const form = await source("src/components/analysis-form.tsx");
   assert.match(form, /try \{ return analyzeStructure\(previewChart\); \} catch \{ return null; \}/);
-  assert.match(form, /chartDetailsOpen \? \(/);
+  assert.match(form, /readingUnlocked \? <>\s*\{foundationValues \? <UnifiedBirthReport/);
 });

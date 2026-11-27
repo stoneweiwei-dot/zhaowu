@@ -4,7 +4,7 @@ import { mkdtempSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { LANGUAGES, LANGUAGE_PREFIXES, languagePath, parseLanguagePath, createLanguageRewrite } from '../src/lib/language-routing.js';
-import { readRouteMeta, buildRouteHtml } from './build-route-html.mjs';
+import { readRouteMeta, buildRouteHtml, clientRouteMeta, escapeHtmlAttribute } from './build-route-html.mjs';
 import { renderSitemap } from './build-sitemap.mjs';
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const meta = readRouteMeta();
@@ -35,11 +35,20 @@ test('every static document contains exact localized SEO, reciprocal 11 alternat
   try {
     writeFileSync(join(dir, 'index.html'), read('index.html'));
     const written = buildRouteHtml(dir);
-    assert.equal(written.length, 330);
-    assert.equal(Object.keys(meta.routes).length, 33);
+    assert.equal(written.length, (Object.keys(meta.routes).length + Object.keys(clientRouteMeta).length) * LANGUAGES.length);
+    for (const [path, entries] of Object.entries(clientRouteMeta)) {
+      const html = readFileSync(join(dir, path, 'index.html'), 'utf8');
+      assert.ok(html.includes('<title>' + entries['zh-Hant'].title + '</title>'), path);
+      assert.equal((html.match(/<h1\b/g) ?? []).length, 1, path);
+      assert.equal(html.includes('name="robots" content="noindex,nofollow"'), path !== '/yunyi-shenxiang', path);
+    }
+    const gallery = readFileSync(join(dir, "yunyi-shenxiang/index.html"), "utf8");
+    assert.ok(gallery.includes("趙公明借剪入戰"));
+    assert.ok(gallery.includes("/articles/yunyi-shenxiang/35.webp"));
     // Static documents remain on disk ahead of the host fallback rewrites.
     assert.ok(written.includes("/en/about"));
     assert.ok(written.includes("/ja/knowledge/true-solar-time"));
+    const editorial = JSON.parse(read("src/lib/route-static-summaries.json"));
     const summaries = ['/sample-report', '/mythic-atlas', '/guaili-luanshen', '/knowledge/nine-heavens-lamps'];
     for (const path of Object.keys(meta.routes)) for (const language of LANGUAGES) {
       const publicPath = languagePath(path, language);
@@ -59,14 +68,19 @@ test('every static document contains exact localized SEO, reciprocal 11 alternat
         assert.match(body, /<p data-static-lead>[^<]+<\/p>/);
         const summary = body.match(/<section data-static-summary>([\s\S]*?)<\/section>/)[1];
         assert.equal((summary.match(/<p>/g) ?? []).length, 2);
-        assert.ok(summary.replace(/<[^>]*>/g, '').length > 240, `${publicPath}: substantial editorial body`);
+        assert.deepEqual(
+          [...summary.matchAll(/<p>([\s\S]*?)<\/p>/g)].map(match => match[1]),
+          editorial[path][language].map(escapeHtmlAttribute), publicPath,
+        );
+
       }
     }
     assert.ok(!written.some(p => p.startsWith('/xx/') || p.startsWith('/zh-hant/')));
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
-test('sitemap method B covers 330 URLs with reciprocal alternates and stays reproducible', () => {
+test('sitemap method B covers all public URLs with reciprocal alternates and stays reproducible', () => {
   const xml = read('public/sitemap.xml');
+  assert.ok(xml.includes('<loc>https://zhao-wu.com/hepan</loc>'));
   assert.equal(renderSitemap(meta, xml), xml);
   assert.match(xml, /xmlns:xhtml="http:\/\/www.w3.org\/1999\/xhtml"/);
   const blocks = [...xml.matchAll(/<url>([\s\S]*?)<\/url>/g)];

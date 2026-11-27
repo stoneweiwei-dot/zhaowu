@@ -85,10 +85,10 @@ for (const width of [320, 390]) {
     await page.goto('/?zw_entry=home',{waitUntil:'networkidle'});
     await expect(page.locator('html')).toHaveAttribute('data-zws-term','立冬');
     await expect(page.locator('html')).toHaveAttribute('data-zws-hemisphere','south');
-    await expect(page.locator('.zw-stage')).toHaveCSS('background-image', /sydney-jacaranda-summer/);
+    await expect(page.locator('.zw-stage')).toHaveCSS('background-image', /start-winter-2026/);
     await expect(page.locator('[data-home-birth-entry]')).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
-    expect((await page.request.get('/theme-skins/southern/sydney-jacaranda-summer.webp')).status()).toBe(200);
+    expect((await page.request.get('/theme-skins/southern/start-winter-2026.webp')).status()).toBe(200);
     await page.screenshot({path:`test-results/south-winter-${width}.png`});
   });
 }
@@ -101,7 +101,7 @@ for (const [instant, phase, image] of [
   test(`northern Start of Winter displays ${phase} at 390px`, async ({page}) => {
     await page.setViewportSize({width:390,height:844});
     await page.clock.install({time:new Date(instant)});
-    await page.addInitScript(() => localStorage.setItem('zhaowu.locale', 'zh-Hant'));
+    await page.addInitScript(() => localStorage.setItem('zhaowu.display-language', 'zh-Hant'));
     await page.route('**/api/owner-data?view=site-skin', r => r.fulfill({json:{skin:'solar-auto',configured:true}}));
     await page.route('**/api/zhaowu-capabilities?mode=visitor-hemisphere', r => r.fulfill({json:{hemisphere:'north'}}));
     await page.goto('/?zw_entry=home',{waitUntil:'networkidle'});
@@ -125,7 +125,7 @@ for (const [instant, skin, phase, image] of [
   test(`seasonal theme ${phase} on narrow screens`, async ({page}) => {
     await page.setViewportSize({width:390,height:844});
     await page.clock.install({time:new Date(instant)});
-    await page.addInitScript(() => localStorage.setItem('zhaowu.locale', 'zh-Hant'));
+    await page.addInitScript(() => localStorage.setItem('zhaowu.display-language', 'zh-Hant'));
     await page.route('**/api/owner-data?view=site-skin', r => r.fulfill({json:{skin:'solar-auto',configured:true}}));
     await page.route('**/api/zhaowu-capabilities?mode=visitor-hemisphere', r => r.fulfill({json:{hemisphere:'north'}}));
     await page.goto('/?zw_entry=home',{waitUntil:'networkidle'});

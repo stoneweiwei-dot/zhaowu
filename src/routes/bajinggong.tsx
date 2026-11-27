@@ -1,9 +1,10 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
 import { MythicImageViewer } from "./-mythic-image-viewer";
 import "./bajinggong.css";
 
-export const Route = createFileRoute("/bajinggong")({ component: BajinggongPage });
+export const Route = createFileRoute("/bajinggong")({ head: pageHead, component: BajinggongPage });
 
 type Three = readonly [string, string, string];
 const t = (value: Three, locale: Locale) => locale === "en" ? value[2] : locale === "zh-Hans" ? value[1] : value[0];

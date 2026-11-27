@@ -21,6 +21,8 @@ const PAYMENT_LINKS = Object.freeze({
   plink_1UP3oqFAzopdCCaxqwVUMqQZ: { product: "system", system: "numerology", amount: 990, amounts: { usd: 990, aud: 1490, cny: 6800 } },
   // 2026-11-24 藏書六系統套裝（A$39.90 / US$26.90 / ¥168）。
   plink_1UfFodFAzopdCCaxGspp7VGQ: { product: "bundle", system: null, amount: 2690, amounts: { usd: 2690, aud: 3990, cny: 16800 } },
+  // 2026-11-27 A$39.90 bundle link (Stone). The US$26.90 link above stays registered for already-open checkouts.
+  plink_1UgCyHFAzopdCCaxmKlvAkVT: { product: "bundle", system: null, amount: 3990, amounts: { aud: 3990, usd: [] } },
   plink_1UNco8FAzopdCCaxNMJ9EbUo: { product: "system", system: "ziwei", amount: 499 },
   plink_1UNcoFFAzopdCCaxZFDm86Ni: { product: "system", system: "qizheng", amount: 499 },
   plink_1UNcoMFAzopdCCax4OxJPpiR: { product: "system", system: "western", amount: 499 },

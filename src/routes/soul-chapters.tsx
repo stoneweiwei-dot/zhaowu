@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/route-meta";
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
@@ -12,7 +13,7 @@ import {
 import "@/soul-chapters.css";
 import { SoulVolumeGallery } from "@/components/soul-volume-gallery";
 
-export const Route = createFileRoute("/soul-chapters")({ component: SoulChaptersPage });
+export const Route = createFileRoute("/soul-chapters")({ head: pageHead, component: SoulChaptersPage });
 
 function useCopy(locale: Locale) {
   if (locale === "en") {

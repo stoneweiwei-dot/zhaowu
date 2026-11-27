@@ -1,30 +1,44 @@
 import { test, expect } from '@playwright/test';
 
+// The PWA service worker would answer chart-artwork.js before page.route can abort it (WebKit), so block it for these tests.
+test.use({ serviceWorkers: 'block' });
+
+test.setTimeout(90_000); // CI runners cold-start Vite on the first test; keep every test in this file clear of the 30s default
+
 test('dated observation distinguishes current from archived and links to its source', async ({ page }) => {
   await page.clock.setFixedTime(new Date('2026-11-12T01:00:00Z'));
   await page.goto('/sky-events');
   const observation = page.locator('details#sky-observation-record');
   await expect(observation).not.toHaveAttribute('open', '');
-  await observation.locator('summary').first().click();
-  const brief = observation.locator('.sky-observation-brief');
+  const brief = page.locator('#sky-week .sky-observation-brief');
   await expect(brief.locator('time')).toHaveAttribute('datetime', '2026-11-12');
   await expect(brief.getByRole('status')).not.toContainText(/not yet|尚未/i);
-  await page.clock.setFixedTime(new Date('2026-11-13T01:00:00Z'));
+  await page.clock.setFixedTime(new Date('2026-11-15T01:00:00Z'));
   await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
   await expect(brief.getByRole('status')).toContainText(/not yet|尚未/i);
-  await expect(brief.locator('time')).toHaveAttribute('datetime', '2026-11-12');
+  await expect(brief.locator('time')).toHaveAttribute('datetime', '2026-11-14');
   await brief.getByRole('link').click();
   await expect(page).toHaveURL(/#sky-observation-record$/);
   await expect(page.locator('#sky-observation-record .daily-sky')).toBeVisible();
+});
+
+test('weekly card hides expired copy and uses the next dated snapshot when available', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2026-11-23T01:00:00Z'));
+  await page.goto('/sky-events');
+  const card = page.locator('#sky-week');
+  await expect(card.getByRole('status')).toHaveText(/待更新|Awaiting/);
+  await expect(card.locator('time, .sky-observation-brief-moon')).toHaveCount(0);
+  await page.clock.setFixedTime(new Date('2026-11-27T01:00:00Z'));
+  await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+  await expect(card.locator('time')).toHaveText('2026-11-27');
+  await expect(card).toContainText('93.8%');
 });
 
 test('summary stays readable at mobile and desktop widths in each language', async ({ page }) => {
   test.setTimeout(90_000);
   await page.clock.setFixedTime(new Date('2026-11-13T01:00:00Z'));
   await page.goto('/sky-events');
-  const observation = page.locator('details#sky-observation-record');
-  await observation.locator('summary').first().click();
-  const brief = observation.locator('.sky-observation-brief');
+  const brief = page.locator('#sky-week .sky-observation-brief');
   for (const width of [320, 390, 430, 1440]) {
     await page.setViewportSize({ width, height: 844 });
     for (const theme of ['day', 'night']) {
@@ -32,7 +46,7 @@ test('summary stays readable at mobile and desktop widths in each language', asy
       for (const option of await page.locator('[data-language-switcher]').first().getByRole('radio').all()) {
         await option.click();
         await expect(brief.getByRole('status')).toBeVisible();
-        await expect(brief.locator('time')).toHaveText('2026-11-12');
+        await expect(brief.locator('time')).toHaveText('2026-11-13');
         expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
         const box = await brief.getByRole('link').boundingBox();
         expect(box!.height).toBeGreaterThanOrEqual(44);
@@ -72,6 +86,7 @@ test('interpretive-first reading and upper SkyUniverse work while lower SkyCurre
 });
 
 test('upper SkyUniverse controls and legend render cleanly without lower SkyCurrentMotion or horizontal overflow', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2026-11-04T01:00:00Z'));
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/sky-events');
   const universe = page.locator('.sky-universe-section');
@@ -114,6 +129,6 @@ test('failed chart loading leaves the dated observation readable', async ({ page
   await universe.scrollIntoViewIfNeeded();
   await expect(universe.getByRole('status')).toContainText(/暫時無法顯示|暂时无法显示|unavailable/);
   const record = page.locator('details#sky-observation-record');
-  await record.locator('summary').click();
+  await record.locator('summary').first().click();
   await expect(record.locator('.daily-sky')).toBeVisible();
 });

@@ -1,7 +1,7 @@
 import { authenticateOwner, ownerAuthHeaders } from "../lib/owner-auth.js";
 import { ownerSupabaseUrl } from "../lib/owner-supabase-origin.js";
 import { isValidOwnerSecret } from "../lib/owner-session-cookie.js";
-import { readPublishedSiteSkin, readPublishedSiteSkinFromSettings, validSiteSkin } from "../lib/owner-site-skin-public.js";
+import { readPublishedSiteSkin, readPublishedSiteSkinFromSettings, validVisitorSkins, validSiteSkin } from "../lib/owner-site-skin-public.js";
 
 export { isValidOwnerSecret };
 
@@ -170,8 +170,10 @@ function retryableSiteSkinStatus(status) {
  * Uses the existing Supabase service role server-side; no browser secrets,
  * public write grants, schema changes, or extra Vercel functions.
  */
-export async function publishSiteSkinFallback(skin, env = process.env, fetchImpl = fetch) {
+export async function publishSiteSkinFallback(skin, env = process.env, fetchImpl = fetch, allowedSkins) {
   if (!validSiteSkin(skin)) return { status: 400, body: { ok: false, error: "UNKNOWN_SITE_SKIN" } };
+  if (allowedSkins !== undefined && !validVisitorSkins(allowedSkins)) return { status: 400, body: { ok: false, error: "INVALID_VISITOR_SKINS" } };
+  const policy = allowedSkins === undefined ? {} : { allowedSkins };
   const key = String(env.SUPABASE_SERVICE_ROLE_KEY || "").trim();
   if (!key) return { status: 503, body: { ok: false, error: "SITE_SKIN_SERVICE_NOT_CONFIGURED" } };
   const updatedAt = new Date().toISOString();
@@ -188,7 +190,7 @@ export async function publishSiteSkinFallback(skin, env = process.env, fetchImpl
       },
       body: JSON.stringify({
         key: "published_site_skin_v1",
-        value: { skin, updatedAt },
+        value: { skin, updatedAt, ...policy },
         public_read: true,
         updated_at: updatedAt,
       }),
@@ -196,9 +198,10 @@ export async function publishSiteSkinFallback(skin, env = process.env, fetchImpl
     });
     if (!response.ok) return { status: 503, body: { ok: false, error: "SHARED_SKIN_WRITE_FAILED" } };
     const rows = await response.json();
-    if (!Array.isArray(rows) || rows[0]?.value?.skin !== skin)
+    if (!Array.isArray(rows) || rows[0]?.value?.skin !== skin ||
+        (allowedSkins !== undefined && JSON.stringify(rows[0]?.value?.allowedSkins) !== JSON.stringify(allowedSkins)))
       return { status: 503, body: { ok: false, error: "SHARED_SKIN_VERIFY_FAILED" } };
-    return { status: 200, body: { ok: true, skin, updatedAt } };
+    return { status: 200, body: { ok: true, skin, updatedAt, ...policy } };
   } catch {
     return { status: 503, body: { ok: false, error: "SHARED_SKIN_FALLBACK_UNAVAILABLE" } };
   }
@@ -215,8 +218,12 @@ export async function handleOwnerData(req, res, parsedPayload) {
       }
       if (view !== "site-skin") return json(res, 405, { ok: false, error: "METHOD_NOT_ALLOWED" });
       try {
-        const record = await readPublishedSiteSkinFromSettings().catch(() => null) ?? await readPublishedSiteSkin();
-        return json(res, 200, { ok: true, ...record });
+        let settingsAvailable = true;
+        const record = await readPublishedSiteSkinFromSettings().catch(() => {
+          settingsAvailable = false;
+          return null;
+        }) ?? await readPublishedSiteSkin();
+        return json(res, 200, { ok: true, ...record, settingsAvailable });
       } catch {
         return json(res, 503, { ok: false, error: "SHARED_SKIN_TEMPORARILY_UNAVAILABLE" });
       }
@@ -239,6 +246,11 @@ export async function handleOwnerData(req, res, parsedPayload) {
     // the server-only bridge secret, and authenticateOwner checks the device.
     if (ownerUpstreamFunction(action) === ARTICLE_FUNCTION && owner.kind !== "secret") {
       return json(res, 403, { ok: false, error: "OWNER_PASSWORD_REQUIRED" });
+    }
+    // The legacy Edge action stores only the default. Store both fields in one authenticated upsert.
+    if (action === "site-skin.publish" && payload.allowedSkins !== undefined) {
+      const result = await publishSiteSkinFallback(payload.skin, process.env, fetch, payload.allowedSkins);
+      return json(res, result.status, result.body);
     }
     const sendUpstream = () => postOwnerUpstream(action, payload, owner, serverBridgeSecret);
     let upstream;

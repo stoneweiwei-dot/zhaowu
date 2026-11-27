@@ -1,14 +1,17 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useI18n, type Locale } from "@/lib/i18n";
+import storyCopy from "@/lib/yunyi-story.json";
 import "./yunyi-shenxiang.css";
 import "./-mythic-image-viewer.css";
 
-export const Route = createFileRoute("/yunyi-shenxiang")({ component: YunyiShenxiangPage });
+export const Route = createFileRoute("/yunyi-shenxiang")({ head: pageHead, component: YunyiShenxiangPage });
 
 type Copy = readonly [string, string, string];
 type Work = { n: number; title: Copy; note?: Copy; variants?: number[]; id?: string };
 const c = (value: Copy, locale: Locale) => value[locale === "en" ? 2 : locale === "zh-Hans" ? 1 : 0];
+const story: Copy = [storyCopy["zh-Hant"], storyCopy["zh-Hans"], storyCopy.en];
 const work = (n: number, hant: string, hans = hant, en = hant, note?: Copy, variants?: number[], id?: string): Work => ({ n, title: [hant, hans, en], note, variants, id });
 const tomes: { id: string; title: Copy; intro: Copy; works: Work[] }[] = [
   { id: "volume-1", title: ["封神人物", "封神人物", "Investiture of the Gods"], intro: ["人物異版仍歸在同一條目；畫像意象與小說情節分開閱讀。", "人物异版仍归在同一条目；画像意象与小说情节分开阅读。", "Related versions stay together. Artistic imagery is distinguished from the novel's events."], works: [
@@ -55,7 +58,7 @@ function YunyiShenxiangPage() {
     </header>
     <section id="story-sanxiao" className="yunyi-story">
       <p className="yunyi-kicker">{text("故事線一　｜　封神人物","故事线一　｜　封神人物","STORY THREAD · INVESTITURE")}</p><h2>{text("金蛟剪未歸","金蛟剪未归","The Golden Scissors Never Returned")}</h2>
-      <p>{text("趙公明借剪入戰，卻沒能親手還剪。交回三仙島姊妹手上的，是一件故人的道袍，裡面包著他借走的金蛟剪。三霄原可不下山，故事轉向，恰恰就在她們打開那件衣裳之後。","赵公明借剪入战，却没能亲手还剪。交回三仙岛姐妹手上的，是一件故人的道袍，里面包着他借走的金蛟剪。三霄原可不下山，故事转向，恰恰就在她们打开那件衣裳之后。","Zhao Gongming borrowed the Golden Scissors for battle but never returned them himself. His sisters receive his robe, with the borrowed treasure wrapped inside. Their story turns when they unfold it.")}</p>
+      <p>{c(story, locale)}</p>
       <div className="yunyi-story-links"><a href="#lu-ya">{text("陸壓獻計","陆压献计","Lu Ya's stratagem")}</a><a href="#plate-28">{text("趙公明借剪","赵公明借剪","Zhao Gongming borrows the scissors")}</a><a href="#plate-35">{text("雲霄至商營","云霄至商营","Yunxiao arrives")}</a><a href="#plate-36">{text("瓊霄入戰","琼霄入战","Qiongxiao enters battle")}</a><a href="#plate-37">{text("碧霄守陣","碧霄守阵","Bixiao holds the formation")}</a><a href="#story-sanxiao-end">{text("尾聲","尾声","Aftermath")}</a></div>
     </section>
     <nav id="gallery" className="yunyi-volumes" aria-label={text("三卷目錄","三卷目录","Three volumes")}>

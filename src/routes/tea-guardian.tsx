@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/route-meta";
 import { useMemo, useState, type FormEvent } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { TeaPortraitCard } from "@/components/tea-guardian-report";
@@ -7,7 +8,7 @@ import { useAppStore } from "@/lib/store";
 import { readBirthDraft, draftToAnalyzeSlice } from "@/lib/birth-draft";
 import { buildChart } from "@/lib/bazi/chart";
 
-export const Route = createFileRoute("/tea-guardian")({ component: TeaGuardianPage });
+export const Route = createFileRoute("/tea-guardian")({ head: pageHead, component: TeaGuardianPage });
 
 type QuizOption = { value: string; label: Record<Locale, string> };
 type QuizQuestion = { key: keyof TeaQuizAnswers; title: Record<Locale, string>; options: QuizOption[] };

@@ -17,7 +17,7 @@ const now = 1_800_000_000_000;
 
 test("sealed cookie never contains the owner secret and round-trips", () => {
   const value = ownerCookieValue(SECRET, { env, now });
-  assert.ok(value.startsWith("v1."));
+  assert.ok(value.startsWith("v3."));
   assert.ok(!value.includes(SECRET));
   assert.ok(!Buffer.from(value.slice(3), "base64url").includes(Buffer.from(SECRET)));
   assert.equal(ownerSecretFromCookieValue(value, { env, now, isValid }), SECRET);
@@ -92,4 +92,14 @@ test("no api handler keeps its own copy of the owner key hash or plain-cookie ch
     assert.doesNotMatch(source, /OWNER_KEY_SHA256/, `${file} still embeds the key hash`);
     assert.doesNotMatch(source, /encodeURIComponent\(secret\)/, `${file} still writes the plain secret into the cookie`);
   }
+});
+
+test("rotating the configured hash invalidates an existing password session", async () => {
+  const { createHash, randomBytes } = await import("node:crypto");
+  const credential = randomBytes(32).toString("hex");
+  const config = { ...env, ZHAOWU_OWNER_KEY_SHA256: createHash("sha256").update(credential).digest("hex") };
+  const cookie = ownerCookieValue(credential, { env: config, now });
+  assert.ok(ownerSecretFromCookieValue(cookie, { env: config, now }) === credential);
+  config.ZHAOWU_OWNER_KEY_SHA256 = randomBytes(32).toString("hex");
+  assert.equal(ownerSecretFromCookieValue(cookie, { env: config, now }), "");
 });

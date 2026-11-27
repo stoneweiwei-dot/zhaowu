@@ -1,11 +1,8 @@
 import assert from "node:assert/strict";
-import { access, readFile } from "node:fs/promises";
+import { access, readdir, readFile } from "node:fs/promises";
 import test from "node:test";
 
-// The release number is declared ONCE in src/lib/site-stats.ts. This test derives it from
-// there instead of hardcoding it, so a release bump never requires editing test files and
-// concurrent PRs no longer collide on test literals. Drift is still caught: the footer
-// fallback, updateNumber, runtime verification constant and change report must all agree.
+// Formal release reports retain their numbered IDs independently of ordinary SHA builds.
 const stats = await readFile(new URL("../src/lib/site-stats.ts", import.meta.url), "utf8");
 const verification = await readFile(new URL("../lib/zhaowu-verification.js", import.meta.url), "utf8");
 const shell = await readFile(new URL("../src/components/site-shell.tsx", import.meta.url), "utf8");
@@ -13,15 +10,23 @@ const indexHtml = await readFile(new URL("../index.html", import.meta.url), "utf
 const manifest = await readFile(new URL("../public/manifest.webmanifest", import.meta.url), "utf8");
 const agents = await readFile(new URL("../AGENTS.md", import.meta.url), "utf8");
 
-const version = stats.match(/version:\s*"(ZW-WEB-\d{4}\.\d{2}\.\d{2}-r(\d+))"/);
-const updateNumber = stats.match(/updateNumber:\s*(\d+)/);
-const reportPath = version ? `docs/change-reports/${version[1]}.md` : null;
+const ref = process.env.ZHAOWU_RELEASE_ID || (process.env.GITHUB_REF_TYPE === "tag" ? process.env.GITHUB_REF_NAME : "");
+const label = (ref ?? "").replace(/^(?:release-|v)/, "");
+const numbered = /^ZW-WEB-\d{4}\.\d{2}\.\d{2}-r\d+$/;
+let release = label;
+if (!numbered.test(label)) {
+  const n = /^r?(\d+)$/.exec(label)?.[1];
+  assert.ok(n, "Supply the formal release ID or a numbered release tag");
+  const reports = await readdir(new URL("../docs/change-reports/", import.meta.url));
+  const matches = reports.map(name => name.replace(/\.md$/, "")).filter(name => numbered.test(name) && name.endsWith(`-r${n}`));
+  assert.equal(matches.length, 1, "The tagged release must have exactly one matching report");
+  release = matches[0];
+}
+const reportPath = `docs/change-reports/${release}.md`;
 
-test("public footer always exposes current release and cumulative update count", () => {
-  assert.ok(version, "SITE_RELEASE_FALLBACK.version must be ZW-WEB-YYYY.MM.DD-rN");
-  assert.ok(updateNumber, "SITE_RELEASE_FALLBACK.updateNumber must be declared");
-  assert.equal(Number(version[2]), Number(updateNumber[1]), "rN in version must equal updateNumber");
-  assert.ok(verification.includes(`ZHAOWU_RELEASE = "${version[1]}"`), "lib/zhaowu-verification.js must match site-stats.ts");
+test("public footer and verification use the generated build identity", () => {
+  assert.match(stats, /version: ZHAOWU_BUILD_RELEASE/);
+  assert.match(verification, /ZHAOWU_BUILD_RELEASE as ZHAOWU_RELEASE/);
   assert.match(shell, /data-site-release/);
   assert.match(shell, /正式版本序號/);
   assert.match(shell, /data-latest-change-report/);
@@ -44,7 +49,7 @@ test("every production frontend change requires a matching change report", async
     assert.fail(`missing ${reportPath} for current release`);
   });
   const report = await readFile(new URL(`../${reportPath}`, import.meta.url), "utf8");
-  assert.ok(report.includes(`# 昭梧更新報告｜${version[1]}`), `${reportPath} heading must name ${version[1]}`);
+  assert.ok(report.includes(`# 昭梧更新報告｜${release}`), `${reportPath} heading must name ${release}`);
   assert.match(report, /## 本次改動/);
   assert.match(report, /## 為什麼改/);
   assert.match(report, /## 影響範圍/);

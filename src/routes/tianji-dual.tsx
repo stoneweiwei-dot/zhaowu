@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { calculateDualDestiny, type DualDestinyResult, type DualDirection } from "@/lib/dual-destiny";
@@ -18,7 +19,7 @@ import {
 import "@/tianji-dual.css";
 import { requireOwnerRoute } from "@/lib/auth/owner-route";
 
-export const Route = createFileRoute("/tianji-dual")({ beforeLoad: requireOwnerRoute, component: TianjiDualPage });
+export const Route = createFileRoute("/tianji-dual")({ head: pageHead, beforeLoad: requireOwnerRoute, component: TianjiDualPage });
 
 const COPY = {
   "zh-Hant": {

@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { FormEvent, useEffect, useState } from "react";
 import { BrandSeal } from "@/components/brand-seal";
@@ -14,7 +15,7 @@ function ownerText(locale: string, hant: string, hans: string, en: string) {
 
 const LOGIN_BACKDROP = "/hero-gallery/dragon-scholar.webp";
 
-export const Route = createFileRoute("/login")({ component: LoginPage });
+export const Route = createFileRoute("/login")({ head: pageHead, component: LoginPage });
 
 function LoginPage() {
   const { t, locale } = useI18n();

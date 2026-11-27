@@ -4,10 +4,14 @@ import type { Locale } from "@/lib/i18n";
 import { chartTerm, emptyBranches, ganzhiLabel, pillarName } from "@/lib/bazi/presentation";
 import { SITE_RELEASE_FALLBACK } from "@/lib/site-stats";
 
-async function copyPlainText(text: string) {
+export async function copyPlainText(text: string) {
   if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text);
-    return;
+    try {
+      await navigator.clipboard.writeText(text);
+      return;
+    } catch {
+      // Some embedded browsers expose the API but only allow document copying.
+    }
   }
   const textarea = document.createElement("textarea");
   textarea.value = text;
@@ -16,9 +20,11 @@ async function copyPlainText(text: string) {
   textarea.style.opacity = "0";
   document.body.appendChild(textarea);
   textarea.select();
-  const ok = document.execCommand("copy");
-  textarea.remove();
-  if (!ok) throw new Error("copy failed");
+  try {
+    if (!document.execCommand("copy")) throw new Error("copy failed");
+  } finally {
+    textarea.remove();
+  }
 }
 
 function aiReadablePackage(chart: Chart, locale: Locale) {
@@ -151,30 +157,22 @@ export function ChartTrustPanel({ chart, locale }: { chart: Chart; locale: Local
   }
 
   return (
-    <section className="zhaowu-chart-trust" data-chart-trust-panel aria-labelledby="zhaowu-chart-trust-title">
-      <header>
-        <h3 id="zhaowu-chart-trust-title">{copy.title}</h3>
-        <button type="button" className="zhaowu-chart-copy" data-chart-ai-copy onClick={() => void onCopy()}>
-          {copied === "ok" ? copy.copied : copied === "failed" ? copy.failed : copy.copyButton}
-        </button>
-      </header>
-
-      <div className="zhaowu-chart-trust-details">
-        <details>
-          <summary>{copy.audit}</summary>
-          <dl>
-            <div><dt>{copy.civil}</dt><dd>{chart.civilStamp || "—"}</dd></div>
-            <div><dt>{copy.solar}</dt><dd>{chart.trueSolarStamp || "—"}</dd></div>
-            <div><dt>{copy.timezone}</dt><dd>{chart.timezone}</dd></div>
-            <div><dt>{copy.source}</dt><dd>{chart.provenance || "ZHAOWU deterministic chart engine"}</dd></div>
-            <div><dt>{copy.review}</dt><dd>{chart.birthTimeReview.required ? copy.reviewNeeded : copy.reviewClear}</dd></div>
-          </dl>
-          <h4>{copy.verify}</h4>
-          <p>{copy.gateBody}</p>
-          <p>{copy.compareBody}</p>
-          <p className="zhaowu-chart-trust-version"><strong>{SITE_RELEASE_FALLBACK.version}</strong> · <a href="/updates">{copy.updates} ›</a></p>
-        </details>
-      </div>
-    </section>
+    <details className="zhaowu-chart-trust" data-chart-trust-panel>
+      <summary>{copy.audit}</summary>
+      <button type="button" className="zhaowu-chart-copy" data-chart-ai-copy onClick={() => void onCopy()}>
+        {copied === "ok" ? copy.copied : copied === "failed" ? copy.failed : copy.copyButton}
+      </button>
+      <dl>
+        <div><dt>{copy.civil}</dt><dd>{chart.civilStamp || "—"}</dd></div>
+        <div><dt>{copy.solar}</dt><dd>{chart.trueSolarStamp || "—"}</dd></div>
+        <div><dt>{copy.timezone}</dt><dd>{chart.timezone}</dd></div>
+        <div><dt>{copy.source}</dt><dd>{chart.provenance || "ZHAOWU deterministic chart engine"}</dd></div>
+        <div><dt>{copy.review}</dt><dd>{chart.birthTimeReview.required ? copy.reviewNeeded : copy.reviewClear}</dd></div>
+      </dl>
+      <h4>{copy.verify}</h4>
+      <p>{copy.gateBody}</p>
+      <p>{copy.compareBody}</p>
+      <p className="zhaowu-chart-trust-version"><strong>{SITE_RELEASE_FALLBACK.version}</strong> · <a href="/updates">{copy.updates} ›</a></p>
+    </details>
   );
 }

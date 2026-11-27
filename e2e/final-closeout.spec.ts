@@ -17,28 +17,29 @@ async function noOverflow(page: Page) {
 
 test("flow: birth, single book, answer and restored birth remain usable", async ({ page }) => {
   await isolate(page);
-  await page.goto("/", { waitUntil: "domcontentloaded" });
-  await page.getByRole("button", { name: "命書", exact: true }).click();
+  await page.addInitScript(() => localStorage.setItem("zhaowu.report-access-sessions.v1", JSON.stringify(["cs_test_mobilecomic123456789"])));
+  await page.route("**/functions/v1/stripe-checkout?**", route => route.fulfill({ json: { ok: true, paid: true, pending: false, product: "system", system: "bazi" } }));
+  await page.goto("/#birth-form");
+  await page.locator("#birth-gender").selectOption("male");
   for (const [field, value] of Object.entries({ year: "1988", month: "10", day: "4", hour: "4", minute: "40" })) {
     await page.locator(`#birth-${field}`).fill(value);
   }
   await page.locator("#birth-city").click();
   await page.locator('#birth-city-results [role="option"]').first().click();
-  await page.getByRole("button", { name: "保存並生成昭梧命書", exact: true }).click();
+  await page.getByRole("button", { name: "生成我的命書", exact: true }).click();
   await expect(page.locator("#bazi [data-bazi-chart]")).toBeVisible();
   const pillar = await page.locator('#bazi [data-pillar="year"] strong').textContent();
-  await page.locator("#bazi .zhaowu-bazi-full-details > summary").click();
   await expect(page.locator("[data-unified-birth-report]")).toHaveCount(1);
   await expect(page.locator("[data-unified-birth-report]")).toBeVisible();
+  await page.locator("#bazi .zw-flow-next").click();
   await page.locator("#analysis-question").fill("這份工作我應該繼續還是離開？");
   await page.getByRole("button", { name: "開始分析這個問題", exact: true }).click();
   await expect(page.locator("[data-primary-answer]")).toBeVisible();
   await expect(page.locator("[data-next-action]")).toBeVisible();
   await noOverflow(page);
-  await page.reload({ waitUntil: "domcontentloaded" });
-  await page.getByRole("button", { name: "命書", exact: true }).click();
+  await page.goto("/#birth-form");
+  await page.reload();
   await expect(page.locator('#bazi [data-pillar="year"] strong')).toHaveText(pillar!);
-  await page.locator("#bazi .zhaowu-bazi-full-details > summary").click();
   await expect(page.locator("[data-specialist-hub]")).toHaveCount(0);
   await page.getByRole("button", { name: "六大系統", exact: true }).click();
   await expect(page.locator("[data-specialist-node]")).toHaveCount(6);
