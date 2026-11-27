@@ -1,6 +1,4 @@
-# AI-training crawlers only (search/answer-engine bots stay allowed): content is copyright ZHAOWU (see /copyright).
-User-agent: GPTBot
-User-agent: ClaudeBot
+# Block training-only agents. Search and answer retrieval are allowed below.
 User-agent: anthropic-ai
 User-agent: CCBot
 User-agent: Google-Extended
@@ -14,8 +12,14 @@ Disallow: /
 # actually seen by search bots; a robots.txt Disallow would hide that signal.
 # Only non-HTML endpoints stay disallowed.
 User-agent: *
+User-agent: Googlebot
+User-agent: OAI-SearchBot
+User-agent: GPTBot
+User-agent: PerplexityBot
+User-agent: ClaudeBot
 Allow: /
 Disallow: /auth/
 Disallow: /api/
+Disallow: /admin
 
 Sitemap: https://zhao-wu.com/sitemap.xml
