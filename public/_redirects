@@ -22,7 +22,6 @@
 /zh-Hans/* /zh-hans/:splat 301
 /zh-Hant / 301
 /zh-Hant/* /:splat 301
-/pricing /sample-report 301
 /articles /knowledge 301
 /articles/ /knowledge 301
 /today / 301
@@ -48,11 +47,19 @@
 /social/* /index.html 200
 /mythic-atlas / 200
 /mythic-atlas/* /index.html 200
-/yunyi-shenxiang / 200
+/yunyi-shenxiang /yunyi-shenxiang/index.html 200
 /yunyi-shenxiang/* / 200
 /tianji-dual / 200
 /tianji-dual/* / 200
 /tianji-xinggong / 200
 /tianji-xinggong/* / 200
-# Serve generated public route HTML and the root robots.txt, sitemap.xml and llms.txt as static files.
+/zh-hans/* /zh-hans/ 200
+/en/* /en/ 200
+/ja/* /ja/ 200
+/ko/* /ko/ 200
+/hi/* /hi/ 200
+/th/* /th/ 200
+/id/* /id/ 200
+/vi/* /vi/ 200
+/fil/* /fil/ 200
 /* /index.html 200
