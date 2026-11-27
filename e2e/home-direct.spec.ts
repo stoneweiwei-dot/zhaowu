@@ -5,7 +5,7 @@ test('homepage entrances and scene at mobile and desktop sizes', async ({ page }
     await page.setViewportSize({ width, height: width === 1440 ? 900 : 844 });
     await page.goto('/?zw_entry=home', { waitUntil: 'networkidle' });
     await expect(page.locator('[data-home-birth-entry]')).toBeVisible();
-    await expect(page.locator('[data-home-card]')).toHaveCount(4);
+    await expect(page.locator('[data-home-card]')).toHaveCount(5);
     for (const card of await page.locator('[data-home-card]').all()) {
       await expect(card).toHaveAttribute('data-open', 'false');
       await expect(card.locator('.zw-entry')).toBeVisible();
@@ -20,15 +20,27 @@ test('homepage entrances and scene at mobile and desktop sizes', async ({ page }
     })));
     expect(new Set(cards.map(c => c.background)).size).toBe(1);
     expect(new Set(cards.map(c => c.text)).size).toBe(1);
-    expect(new Set(cards.map(c => c.wash)).size).toBe(4);
-    expect(new Set(cards.map(c => c.title)).size).toBe(4);
+    expect(new Set(cards.map(c => c.wash)).size).toBe(5);
+    expect(new Set(cards.map(c => c.title)).size).toBe(5);
     await page.screenshot({path:`test-results/home-${width}.png`});
     await page.locator('[data-home-card] .zw-entry').nth(1).scrollIntoViewIfNeeded();
     console.log('scroll state', await page.locator('[data-home-card] .zw-entry').nth(1).evaluate(el => { const out=[]; for(let n: Element | null=el;n;n=n.parentElement){const e=n as HTMLElement;out.push([e.tagName,e.className,e.scrollTop,e.scrollHeight,e.clientHeight,getComputedStyle(e).overflowY]);} return out; }));
     await expect.poll(() => page.evaluate(() => Number(getComputedStyle(document.documentElement).getPropertyValue('--zw-veil')))).toBeGreaterThan(0.15);
     await expect.poll(() => page.evaluate(() => Number(getComputedStyle(document.documentElement).getPropertyValue('--zw-veil')))).toBeLessThanOrEqual(0.46);
     await page.screenshot({path:`test-results/guide-${width}.png`});
-    // The four blocks start collapsed; open “My chart” to reveal its free-chart action.
+    const flow = page.locator('[data-home-card="wuxing"]');
+    const homeUrl = page.url();
+    await flow.locator('.zw-entry').click();
+    await expect(page).toHaveURL(homeUrl);
+    await expect(flow.locator('a[href*="daily-colors"]')).toBeVisible();
+    await flow.locator('.ph-tree-branch-tile').click();
+    await expect(flow.locator('a[href*="tea-guardian"]')).toBeVisible();
+    for (const target of await flow.locator('button:visible, a:visible').all()) {
+      const box = await target.boundingBox();
+      expect(box?.height).toBeGreaterThanOrEqual(44);
+      expect(box?.width).toBeGreaterThanOrEqual(44);
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
     await page.locator('[data-home-card="form"] .zw-entry').click();
     await expect(page.locator('[data-home-card="form"]')).toHaveAttribute('data-open', 'true');
     await page.getByRole('button', { name: /開始免費排盤|开始免费排盘|Start my free chart/ }).first().click();
@@ -40,13 +52,14 @@ test('homepage supports all three languages', async ({ page }) => {
   await page.setViewportSize({width:390,height:844});
   await page.goto('/?zw_entry=home', {waitUntil:'networkidle'});
   const toggle = page.locator('.zw-langpick__toggle');
-  for (const [language, title] of [['繁體中文', '我的命盤'], ['简体中文', '我的命盘'], ['English', 'My chart']]) {
+  for (const [language, title, flowTitle] of [['繁體中文', '我的命盤', '五行流轉'], ['简体中文', '我的命盘', '五行流转'], ['English', 'My chart', 'Five Elements Flow']]) {
     await expect(page.locator('[data-language-switcher]')).toHaveAttribute('data-open', 'false');
     await toggle.click();
     await expect(page.locator('[data-language-switcher]')).toHaveAttribute('data-open', 'true');
     await page.getByRole('radio', {name:language, exact:true}).click();
     await expect(page.locator('[data-language-switcher]')).toHaveAttribute('data-open', 'false');
     await expect(page.locator('[data-home-card="form"] .zw-entry strong')).toHaveText(title);
+    await expect(page.locator('[data-home-card="wuxing"] .zw-entry strong')).toHaveText(flowTitle);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
   }
 });

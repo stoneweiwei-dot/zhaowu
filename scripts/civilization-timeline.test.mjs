@@ -37,10 +37,10 @@ test('civilization article appears in existing three-language Articles catalog w
 
 test('Today sky is directly visible within the second guidance step, preserving sky route', () => {
   const file = readFileSync(navPath, 'utf8');
-  const today = file.split("id: 'today'")[1].split("id: 'quiz'")[0];
+  const today = file.split("id: 'today'")[1].split("id: 'wuxing', icon:")[0];
   assert.match(today, /href: '\/sky-events', title: t\('今日星象', '今日星象', 'Today’s sky & astrology'\)/);
-  assert.match(today, /href: '\/daily-colors'/);
-  assert.ok(today.indexOf("href: '/sky-events'") < today.indexOf("href: '/daily-colors'"), 'sky is the first direct child link');
-  assert.doesNotMatch(today, /id: 'branch'/, 'sky is not tucked behind another accordion');
-  assert.match(file, /id: 'today'/);
+  assert.deepEqual([...today.matchAll(/href: '([^']+)'/g)].map(match => match[1]), ["/sky-events"]);
+  assert.doesNotMatch(today, /kind: 'branch'/, 'sky is a direct child link');
+  const wuxing = file.split("id: 'wuxing', icon:")[1].split("id: 'quiz', icon:")[0];
+  assert.match(wuxing, /primary: \{ kind: 'link', href: '\/daily-colors', title: t\('每日幸運色', '每日幸运色', 'Colour of the day'\)/);
 });

@@ -9,53 +9,45 @@ async function dismissInstallPromptIfVisible(page: Page) {
   if (await button.isVisible().catch(() => false)) await button.click();
 }
 
-test.describe("iPhone Safari 390px Four Portals Navigation and View Switching", () => {
+test.describe("iPhone Safari 390px Homepage Navigation and View Switching", () => {
   test.use({
     viewport: { width: 390, height: 844 },
   });
 
-  test("homepage renders four big portals and allows switching between dedicated views and returning home", async ({ page }) => {
+  test("homepage renders five accordion cards and allows switching between dedicated views and returning home", async ({ page }) => {
     await makeAppOfflineSafe(page);
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await dismissInstallPromptIfVisible(page);
 
-    // Initial state: one birth ticket (single start) + three explore portals
-    const birthTicket = page.locator("[data-home-birth-entry]");
-    await expect(birthTicket).toBeVisible();
-    await expect(page.locator("[data-home-card='form']")).toHaveCount(0);
-    const portalForm = birthTicket;
-    const portalToday = page.locator("[data-home-card='today']");
-    const portalQuiz = page.locator("[data-home-card='quiz']");
-    const portalNotes = page.locator("[data-home-card='notes']");
+    const cards = page.locator("[data-home-card]");
+    const today = page.locator("[data-home-card='today']");
+    const flow = page.locator("[data-home-card='wuxing']");
+    await expect(page.locator("[data-home-birth-entry]")).toBeVisible();
+    await expect(cards).toHaveCount(5);
+    for (const card of await cards.all()) await expect(card.locator(".zw-entry")).toBeVisible();
 
-    await expect(portalForm).toBeVisible();
-    await expect(portalToday).toBeVisible();
-    await expect(portalQuiz).toBeVisible();
-    await expect(portalNotes).toBeVisible();
-
-    // 1. Click Today portal -> switches to dedicated today view
-    await portalToday.click();
+    await today.locator(".zw-entry").click();
+    await today.getByRole("button", { name: /看今天的黃曆|看今天的黄历|Open today’s almanac/ }).click();
     await expect(page.locator("[data-subview-header]")).toBeVisible();
     await expect(page.locator("#home-today-guide")).toBeVisible();
-    await expect(portalToday).toHaveCount(0); // main portals hidden in dedicated view
+    await expect(cards).toHaveCount(0); // main portals hidden in dedicated view
 
     // Click back to home
     const backBtn = page.locator("[data-subview-back]");
     await expect(backBtn).toBeVisible();
     await backBtn.click();
 
-    // Verify returned to home: four cards visible again
-    await expect(portalForm).toBeVisible();
-    await expect(portalToday).toBeVisible();
-
-    // 2. Click Quiz portal -> switches to dedicated quiz view
-    await portalQuiz.click();
+    await expect(cards).toHaveCount(5);
+    await expect(today).toBeVisible();
+    await flow.locator(".zw-entry").click();
+    await flow.locator(".ph-tree-branch-tile").click();
+    await flow.getByRole("button", { name: /五行香氣譜|五行香气谱|Scent map/ }).click();
     await expect(page.locator("[data-subview-header]")).toBeVisible();
     await expect(page.locator(".zhaowu-home-fun-grid")).toBeVisible();
 
     // Return to home again
     await page.locator("[data-subview-back]").click();
-    await expect(portalQuiz).toBeVisible();
+    await expect(page.locator("[data-home-card='quiz']")).toBeVisible();
   });
 
   test("direct URL hash #today opens dedicated today view immediately", async ({ page }) => {

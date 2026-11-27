@@ -5,23 +5,21 @@ import { test } from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("homepage renders the birth form inline plus three secondary portal cards", async () => {
+test("homepage renders the birth form inline and five grouped navigation cards", async () => {
   const home = await source("src/routes/index.tsx");
 
-  // 2026-10-12 owner: one home entry. The birth form renders on the home page
-  // itself; only today / quiz / notes remain as portal cards below it.
-  assert.match(home, /data-home-birth-entry/);
-  assert.match(home, /activeSection === null \|\| activeSection === "form"/);
+  const painted = await source("src/components/painted-home.tsx");
+  const tree = await source("src/components/home-tree.tsx");
+  assert.match(home, /activeSection === null && <PaintedHome/);
+  assert.match(painted, /data-home-birth-entry[\s\S]*?<AnalysisForm \/>/);
   const form = await source("src/components/analysis-form.tsx");
   assert.match(form, /<JourneySteps/);
   assert.doesNotMatch(home, /data-home-steps/);
   assert.match(home, /<AnalysisForm \/>/);
-  assert.match(home, /data-home-card=\{id\}/);
-  assert.match(home, /NAV_ITEMS: \{ id: Exclude<Section, "form">;/);
-  assert.doesNotMatch(home, /\{ id: "form",\s+artSrc/);
-  assert.match(home, /id: "today"/);
-  assert.match(home, /id: "quiz"/);
-  assert.match(home, /id: "notes"/);
+  assert.match(painted, /<HomeTree t=\{t\} onOpen=\{onOpen\}/);
+  assert.match(tree, /data-home-card=\{node.id\}/);
+  assert.match(tree, /data-home-blocks="5"/);
+  assert.match(home, /type Section = "form" \| "today" \| "quiz" \| "notes"/);
 
   // Dedicated view switching condition
   assert.match(home, /activeSection === "today"/);
