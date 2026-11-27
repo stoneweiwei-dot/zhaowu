@@ -46,6 +46,7 @@
 /gallery/* / 200
 /social / 200
 /social/* /index.html 200
+/mythic-atlas / 200
 /mythic-atlas/* /index.html 200
 /yunyi-shenxiang / 200
 /yunyi-shenxiang/* / 200
