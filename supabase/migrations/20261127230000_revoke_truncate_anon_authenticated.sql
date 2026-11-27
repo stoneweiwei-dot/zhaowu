@@ -1,0 +1,11 @@
+REVOKE TRUNCATE ON TABLE public.background_assets FROM anon, authenticated;
+REVOKE TRUNCATE ON TABLE public.background_music_assets FROM anon, authenticated;
+REVOKE TRUNCATE ON TABLE public.daily_usage FROM anon, authenticated;
+REVOKE TRUNCATE ON TABLE public.gallery_analysis_runs FROM anon, authenticated;
+REVOKE TRUNCATE ON TABLE public.gallery_asset_knowledge FROM anon, authenticated;
+REVOKE TRUNCATE ON TABLE public.gallery_assets FROM anon, authenticated;
+REVOKE TRUNCATE ON TABLE public.owner_sessions FROM anon, authenticated;
+REVOKE TRUNCATE ON TABLE public.release_history FROM anon, authenticated;
+REVOKE TRUNCATE ON TABLE public.report_requests FROM anon, authenticated;
+REVOKE TRUNCATE ON TABLE public.site_settings FROM anon, authenticated;
+REVOKE TRUNCATE ON TABLE public.site_visits FROM anon, authenticated;

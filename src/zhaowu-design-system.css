@@ -10576,3 +10576,11 @@ html body #root .zhaowu-home-sheet-shell #bazi .zhaowu-bazi-preview > details.zh
   box-shadow: none !important;
 }
 html body #root .zhaowu-home-sheet-shell #bazi .zhaowu-bazi-preview > details.zhaowu-chart-details > summary { color: #26372f !important; }
+
+@media (max-width: 420px) {
+  #zhaowu-main-content:has([data-auspicious-atlas]) + .zhaowu-site-utility-dock {
+    position: relative;
+    inset: auto;
+    margin: 0 1rem 1rem;
+  }
+}
