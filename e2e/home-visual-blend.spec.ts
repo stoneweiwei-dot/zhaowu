@@ -15,8 +15,14 @@ for (const width of [390, 320]) {
     await expect(shell.locator(".zhaowu-site-utility-dock")).toHaveCSS("position", "relative");
     await expect(home.locator(".zw-stage")).toHaveCSS("position", "absolute");
     await expect(home.locator(".zw-stage")).toHaveCSS("mask-image", /gradient/);
-    await expect(home.locator(".zw-bajinggong-feature-link img")).toHaveCSS("mask-image", /gradient/);
-    const containers = home.locator(".zw-bajinggong-feature-link, .ph-tree-tile:has(img), .ph-tree-branch-tile");
+    await home.locator('[data-home-card="notes"] .zw-entry').click();
+    await home.locator('[aria-controls="ph-tree-branch-galleries"]').click();
+    const painting = home.locator('#ph-tree-branch-galleries a[href$="/bajinggong"] img');
+    await expect(painting).toBeVisible();
+    await expect(painting).toHaveAttribute("src", "/bajinggong/01-hanhai-cangming.webp");
+    await expect.poll(() => painting.evaluate(img => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+    await expect(painting).toHaveCSS("mask-image", /gradient/);
+    const containers = home.locator(".ph-tree-tile:has(img), .ph-tree-branch-tile");
     for (const container of await containers.all()) {
       const blended = await container.evaluate(el => {
         const style = getComputedStyle(el);

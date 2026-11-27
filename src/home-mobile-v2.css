@@ -929,10 +929,6 @@ html body #root .zw-painted-home.zw-v2-home .zw-season-context {
   padding-top: 10px;
   padding-bottom: 14px;
 }
-html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature {
-  margin: 16px auto 24px;
-  padding-inline: 16px;
-}
 html body #root .zw-painted-home.zw-v2-home .ph-bottom-nav {
   margin-top: 12px;
 }
@@ -953,9 +949,6 @@ html body #root .zw-painted-home.zw-v2-home .ph-bottom-nav {
       边距 28→16、导览顶边距 10→4；(c) 八景宫下面到工具钮之前：八景
       宫底边距 24→12、节气注脚底边距 14→8、底导航顶边距 12→6、dock
       底边距 80→40（dock 已是 in-flow，底边距只是留白）。
-   3. 八景宫还是实色淡奶油块：.zw-bajinggong-feature-link 的底是
-      rgba(250,247,238,.36)，在淡画上看就是实色块——改透明，跟生辰
-      面板一样字直接落画上，hover 只留 .12 淡洗，上下细线保留。
    4. 1920px 下置中的“昭梧 ZHAOWU” logo 跟顶上导览连结（首页／建立
       命书／我的报告／怎么用）重叠，1019px 不重叠。根因：>=900px 时
       顶栏和导览都是 720px 置中盒、同一 y 带（top:12-14px），logo 也
@@ -975,9 +968,6 @@ html body #root .zw-painted-home.zw-v2-home .ph-bottom-nav {
   }
   html body #root .zw-painted-home.zw-v2-home .zw-home-birth-desk-container {
     max-width: 880px;
-  }
-  html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature {
-    width: min(100%, 1080px);
   }
 }
 
@@ -999,9 +989,6 @@ html body #root .zw-painted-home.zw-v2-home .ph-tree {
 }
 
 /* 2c. 八景宫 → 工具钮 */
-html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature {
-  margin-bottom: 12px;
-}
 html body #root .zw-painted-home.zw-v2-home .zw-season-context {
   padding-bottom: 8px;
 }
@@ -1056,15 +1043,6 @@ html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-utility-dock[data-
   }
 }
 
-/* 3. 八景宫去底，扁平透画 */
-html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature-link {
-  background: transparent !important;
-  background-image: none !important;
-}
-html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature-link:hover,
-html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature-link:focus-visible {
-  background: rgba(250, 247, 238, .12) !important;
-}
 
 @media (max-width: 767px) {
   /* The shell is the scrollport. Paint one scene at the top of its content. */
@@ -1091,12 +1069,12 @@ html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature-link:focus-vi
   html body #root .zw-painted-home.zw-v2-home :is(.zw-v2-season, .zw-v2-discover) {
     position: static;
   }
-  html body #root .zw-painted-home.zw-v2-home :is(.zw-v2-wordmark, .ph-tree-tile, .ph-tree-branch-tile, .zw-bajinggong-feature-link) {
+  html body #root .zw-painted-home.zw-v2-home :is(.zw-v2-wordmark, .ph-tree-tile, .ph-tree-branch-tile) {
     min-height: 44px;
     border: 0 !important;
     box-shadow: none;
   }
-  html body #root .zw-painted-home.zw-v2-home :is(.ph-tree-tile, .ph-tree-branch-tile, .zw-bajinggong-feature-link) > img {
+  html body #root .zw-painted-home.zw-v2-home :is(.ph-tree-tile, .ph-tree-branch-tile) > img {
     border: 0;
     border-radius: 0;
     box-shadow: none;
@@ -1131,3 +1109,115 @@ html[data-zws-mode="dark"] body #root .zw-painted-home.zw-v2-home .zw-veil {
     padding: 0 180px 0 8px !important;
   }
 }
+
+/* Each section contributes a button and its controlled panel to the same grid. */
+html body #root .zw-painted-home.zw-v2-home .ph-tree {
+  box-sizing: border-box;
+  max-width: 760px;
+}
+.ph-tree .ph-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.ph-grid > [data-home-card] { display: contents; }
+.ph-grid > [data-home-card="form"] { --cell-accent: #b5483a; }
+.ph-grid > [data-home-card="wuxing"] { --cell-accent: #3f7f6f; }
+.ph-grid > [data-home-card="quiz"] { --cell-accent: #c59a3c; }
+.ph-grid > [data-home-card="notes"] { --cell-accent: #2f4a66; }
+
+html body #root #home-guide .ph-cell {
+  --cell-paper: var(--ph-paper);
+  --cell-ink: var(--ph-ink);
+  --cell-stroke: color-mix(in srgb, var(--cell-accent) 80%, var(--cell-ink));
+  position: relative;
+  box-sizing: border-box;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+  min-height: 84px;
+  padding: 8px 1px 6px;
+  border: 1px solid color-mix(in srgb, var(--ph-accent) 30%, var(--cell-paper));
+  border-radius: 16px;
+  background: var(--cell-paper);
+  color: var(--cell-ink) !important;
+  text-align: center;
+  cursor: pointer;
+}
+html[data-zws-mode="dark"] body #root #home-guide .ph-cell {
+  --cell-paper: var(--zws-page, var(--ph-paper));
+  --cell-ink: var(--zws-ink, var(--ph-ink));
+  --cell-stroke: color-mix(in srgb, var(--cell-accent) 55%, var(--cell-ink));
+}
+#home-guide .ph-cell strong {
+  color: var(--cell-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+  font: 700 13px/1.2 var(--zw-font-heading, serif);
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+#home-guide .ph-cell:lang(en) strong {
+  font-family: "Times New Roman", serif;
+  letter-spacing: -.025em;
+}
+#home-guide .ph-cell-badge {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--cell-accent) 14%, var(--cell-paper));
+}
+#home-guide .ph-cell-badge svg { width: 29px; height: 29px; color: var(--cell-stroke); }
+html body #root #home-guide .ph-cell > :is(.zw-season-mark, .ph-jacaranda-mark) {
+  position: absolute;
+  inset: 3px 3px auto auto;
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  color: var(--cell-stroke);
+}
+#home-guide .ph-cell:focus-visible { outline: 2px solid var(--cell-stroke); outline-offset: 2px; }
+html body #root #home-guide .ph-cell[aria-expanded="true"] { border-color: var(--cell-stroke); }
+#home-guide .ph-cell[aria-expanded="true"] .ph-cell-badge {
+  background: var(--cell-stroke);
+}
+#home-guide .ph-cell[aria-expanded="true"] .ph-cell-badge svg { color: var(--cell-paper); }
+#home-guide .ph-cell[aria-expanded="true"]::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: calc(50% - 5px);
+  border: 5px solid transparent;
+  border-top-color: var(--cell-stroke);
+}
+html body #root #home-guide .ph-grid .ph-tree-body {
+  order: 999;
+  grid-column: 1 / -1;
+  min-width: 0;
+  margin-inline: 0;
+  padding-inline: 0;
+  border-inline: 0;
+}
+@media (max-width: 359px) {
+  .ph-tree .ph-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 700px) {
+  html body #root #home-guide .ph-cell {
+    justify-self: center;
+    max-width: 132px;
+    min-height: 104px;
+    padding-block: 12px;
+    gap: 7px;
+  }
+  #home-guide .ph-cell-badge { width: 52px; height: 52px; }
+  #home-guide .ph-cell-badge svg { width: 34px; height: 34px; }
+  #home-guide .ph-cell strong { font-size: 14px; }
+}
+
+/* Keep text rows full width and collapsed groups out of the tile grid. */
+html body #root .zw-painted-home.zw-v2-home .ph-tree-tiles[hidden] { display: none; }
+html body #root .zw-painted-home.zw-v2-home .ph-tree-wide { grid-column: 1 / -1; }
