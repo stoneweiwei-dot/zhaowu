@@ -56,6 +56,7 @@ export async function loadOwnerMusic(): Promise<OwnerMusicState> {
 const UPLOAD_ERROR_DETAIL_MAX = 120;
 
 function uploadError(body: Record<string, unknown>, status?: number) {
+  if (body.error === "MUSIC_WRITE_UNCONFIGURED") return "音樂上傳缺少設定。只需請助理設定 ZHAOWU_OWNER_MUSIC_GITHUB_TOKEN，再試一次。";
   if (body.error === "AUDIO_TOO_LARGE") return "音檔仍超過安全上傳大小，請裁短曲目後再試。";
   if (body.error === "UNSUPPORTED_AUDIO") return "這個音檔無法轉成網站播放格式。請改用 MP3 或 M4A。";
   if (body.error === "OWNER_REQUIRED") return "站主登入狀態已失效，請重新登入。";

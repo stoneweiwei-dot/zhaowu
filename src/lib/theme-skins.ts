@@ -209,6 +209,28 @@ export function readSkinId(): string {
 /** Public site visual state. Local storage is migration-only, never a visitor override. */
 let syncSerial = 0;
 let pendingPublishes = 0;
+let publishedDefault = SITE_DEFAULT_SKIN;
+let visitorSkins: string[] = [];
+let policyReady = false;
+const visitorChoiceKey = "zhaowu.skin.visitor-choice.v1";
+
+function applyVisitorChoice() {
+  let choice: string | null = null;
+  try {
+    choice = localStorage.getItem(visitorChoiceKey);
+    if (choice && !visitorSkins.includes(choice)) localStorage.removeItem(visitorChoiceKey);
+  } catch { /* storage unavailable */ }
+  applySkin(choice && visitorSkins.includes(choice) ? choice : publishedDefault);
+}
+
+export function chooseVisitorSkin(id: string) {
+  if (!policyReady || (id && !visitorSkins.includes(id))) return;
+  try {
+    if (id) localStorage.setItem(visitorChoiceKey, id);
+    else localStorage.removeItem(visitorChoiceKey);
+  } catch { /* usable for this page */ }
+  applySkin(id || publishedDefault);
+}
 let migrationAttempted = false;
 
 export function applySkin(id: string, persist = false) {
@@ -284,10 +306,18 @@ export async function refreshSharedSkin(): Promise<string | null> {
       response = await fetch("/api/owner-session?view=site-skin", { cache: "no-store", credentials: "same-origin" });
     }
     if (!response.ok) return null; // keep last known skin if the setting service is unavailable
-    const payload = await response.json() as { skin?: unknown; configured?: boolean };
+    const payload = await response.json() as { skin?: unknown; configured?: boolean; settingsAvailable?: boolean; allowedSkins?: unknown };
     const selected = payload.skin === "none" ? "none" : typeof payload.skin === "string" && skinById(payload.skin) ? payload.skin : null;
     if (selected === null || token !== syncSerial) return null;
 
+    if (payload.settingsAvailable === false) {
+      // A fallback theme file has no visitor policy. Keep the saved preference for recovery.
+      policyReady = false;
+      visitorSkins = [];
+      publishedDefault = selected;
+      applySkin(selected);
+      return selected;
+    }
     // One-time migration: if no shared selection exists yet, publish the owner's
     // existing phone selection after the SERVER confirms the owner cookie.
     if (payload.configured === false && !migrationAttempted) {
@@ -303,25 +333,30 @@ export async function refreshSharedSkin(): Promise<string | null> {
       }
     }
     if (token !== syncSerial) return null;
-    applySkin(selected);
+    publishedDefault = selected;
+    visitorSkins = Array.isArray(payload.allowedSkins) ? payload.allowedSkins.filter((id): id is string => typeof id === "string" && (id === "none" || id === SEASONAL_AUTO_ID || SKINS.some(s => s.id === id))) : [];
+    policyReady = true;
+    applyVisitorChoice();
     rememberPublishedSkin(selected);
     return selected;
   } catch { return null; }
 }
 
 /** Server requires a valid owner cookie and same-origin POST. Never silently fall back to local-only styling. */
-export async function publishSkin(id: string): Promise<void> {
+export async function publishSkin(id: string, allowedSkins?: string[]): Promise<void> {
   const chosen = id === "" || id === "none" ? "none" : id === SEASONAL_AUTO_ID ? SEASONAL_AUTO_ID : skinById(id)?.id;
   if (!chosen) throw new Error("未知主題，不能發佈。");
   const token = ++syncSerial;
   pendingPublishes += 1;
+  const list = allowedSkins ?? (visitorSkins.length ? visitorSkins : undefined);
+  const body = JSON.stringify({ action: "site-skin.publish", skin: chosen, ...(list ? { allowedSkins: list } : {}) });
   try {
     let response = await fetch("/api/owner-data", {
       method: "POST",
       cache: "no-store",
       credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "site-skin.publish", skin: chosen }),
+      body,
     });
     // Some production versions omit /api/owner-data from the deployed function manifest.
     // Only a missing route (404) retries the exact same authenticated operation through
@@ -330,14 +365,18 @@ export async function publishSkin(id: string): Promise<void> {
       response = await fetch("/api/owner-session", {
         method: "POST", cache: "no-store", credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "site-skin.publish", skin: chosen }),
+        body,
       });
     }
     if (!response.ok) throw new Error(response.status === 401 ? "站主登入已失效，請重新登入。" : `全站主題尚未儲存（HTTP ${response.status}），請稍後重試。`);
-    const data = await response.json() as { ok?: boolean; skin?: string };
-    if (!data.ok || data.skin !== chosen) throw new Error("無法確認全站主題已更新。");
+    const data = await response.json() as { ok?: boolean; skin?: string; allowedSkins?: string[] };
+    if (!data.ok || data.skin !== chosen || (list && JSON.stringify(data.allowedSkins) !== JSON.stringify(list))) throw new Error("無法確認全站主題已更新。");
     if (token === syncSerial) {
+      publishedDefault = chosen;
+      visitorSkins = list ?? [];
+      policyReady = true;
       applySkin(chosen, true);
+      if (visitorSkins.length) applyVisitorChoice();
       rememberPublishedSkin(chosen);
     }
   } finally {
@@ -390,5 +429,5 @@ export function useSkin() {
     window.addEventListener(SKIN_EVENT, sync);
     return () => window.removeEventListener(SKIN_EVENT, sync);
   }, []);
-  return { id, skin: skinById(id), apply: publishSkin };
+  return { id, skin: skinById(id), apply: publishSkin, publishedDefault, visitorSkins, policyReady };
 }

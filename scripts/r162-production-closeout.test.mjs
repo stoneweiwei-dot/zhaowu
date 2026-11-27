@@ -65,10 +65,8 @@ test("r162 database hardening remains present under the current release", async 
   const stats = await source("src/lib/site-stats.ts");
   const verification = await source("lib/zhaowu-verification.js");
   const migration = await source("supabase/migrations/20260919075644_restrict_customer_classic_passage_rpc.sql");
-  // Release number is derived from site-stats.ts (single source); never hardcode it here.
-  const version = stats.match(/version:\s*"(ZW-WEB-\d{4}\.\d{2}\.\d{2}-r\d+)"/)?.[1];
-  assert.ok(version, "site-stats.ts must declare SITE_RELEASE_FALLBACK.version");
-  assert.ok(verification.includes(`"${version}"`), `lib/zhaowu-verification.js must match ${version}`);
+  assert.match(stats, /version: ZHAOWU_BUILD_RELEASE/);
+  assert.match(verification, /ZHAOWU_BUILD_RELEASE as ZHAOWU_RELEASE/);
   assert.match(migration, /revoke all on function public\.get_customer_classic_passage\(jsonb\) from public, anon, authenticated/i);
   assert.match(migration, /grant execute .* service_role/i);
 });

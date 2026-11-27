@@ -163,3 +163,9 @@ test("promo owner defaults and renewal controls remain safe on unlimited codes",
   assert.ok(panel.includes("!code.active && cannotReactivate"));
   assert.doesNotMatch(panel, /maxRedemptions: \(code\.maxRedemptions \?\?/);
 });
+
+test("custom code validation runs before the owner create request", () => {
+  const panel = readFileSync(new URL("../src/components/owner/promo-panel.tsx", import.meta.url), "utf8");
+  assert.ok(panel.includes("!/^[a-z0-9-]{3,64}$/i.test(code)"));
+  assert.ok(panel.indexOf("setError(PROMO_ERROR_TEXT.BAD_CODE)") < panel.indexOf("await createPromoCode("));
+});

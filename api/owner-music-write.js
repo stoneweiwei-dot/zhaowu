@@ -240,6 +240,9 @@ export default async function handler(req, res) {
 
     return json(res, 405, { ok: false });
   } catch (error) {
+    if (error?.code === "MUSIC_WRITE_UNCONFIGURED") {
+      return json(res, 503, { ok: false, error: error.code, detail: error.message });
+    }
     return json(res, 500, {
       ok: false,
       error: "OWNER_MUSIC_WRITE_FAILED",
