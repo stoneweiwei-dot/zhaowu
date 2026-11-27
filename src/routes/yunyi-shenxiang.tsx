@@ -1,10 +1,11 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useI18n, type Locale } from "@/lib/i18n";
 import "./yunyi-shenxiang.css";
 import "./-mythic-image-viewer.css";
 
-export const Route = createFileRoute("/yunyi-shenxiang")({ component: YunyiShenxiangPage });
+export const Route = createFileRoute("/yunyi-shenxiang")({ head: pageHead, component: YunyiShenxiangPage });
 
 type Copy = readonly [string, string, string];
 type Work = { n: number; title: Copy; note?: Copy; variants?: number[]; id?: string };

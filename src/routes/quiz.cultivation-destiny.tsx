@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/route-meta";
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { buildChart } from "@/lib/bazi/chart";
@@ -6,7 +7,7 @@ import { formatSharedBirthRecord, readSharedBirthRecord, type SharedBirthRecord 
 import { deriveCultivationDestiny, type CultivationDestiny } from "@/lib/fun-tests/cultivation-destiny";
 import { QuizShareButton } from "@/components/quiz-share-button";
 
-export const Route = createFileRoute("/quiz/cultivation-destiny")({ component: CultivationDestinyQuiz });
+export const Route = createFileRoute("/quiz/cultivation-destiny")({ head: pageHead, component: CultivationDestinyQuiz });
 
 const MBTI_OPTIONS = [
   "", "INTJ", "INTP", "ENTJ", "ENTP", "INFJ", "INFP", "ENFJ", "ENFP",

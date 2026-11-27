@@ -1,9 +1,10 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AuspiciousGallerySection } from "@/components/auspicious-gallery-section";
 import { CuratedVideoShelf } from "@/components/curated-video-shelf";
 import { useI18n } from "@/lib/i18n";
 
-export const Route = createFileRoute("/auspicious-atlas")({ component: AuspiciousAtlasPage });
+export const Route = createFileRoute("/auspicious-atlas")({ head: pageHead, component: AuspiciousAtlasPage });
 
 function AuspiciousAtlasPage() {
   const { locale } = useI18n();

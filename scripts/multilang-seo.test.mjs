@@ -4,7 +4,7 @@ import { mkdtempSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { LANGUAGES, LANGUAGE_PREFIXES, languagePath, parseLanguagePath, createLanguageRewrite } from '../src/lib/language-routing.js';
-import { readRouteMeta, buildRouteHtml } from './build-route-html.mjs';
+import { readRouteMeta, buildRouteHtml, clientRouteMeta } from './build-route-html.mjs';
 import { renderSitemap } from './build-sitemap.mjs';
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const meta = readRouteMeta();
@@ -35,8 +35,13 @@ test('every static document contains exact localized SEO, reciprocal 11 alternat
   try {
     writeFileSync(join(dir, 'index.html'), read('index.html'));
     const written = buildRouteHtml(dir);
-    assert.equal(written.length, 330);
-    assert.equal(Object.keys(meta.routes).length, 33);
+    assert.equal(written.length, (Object.keys(meta.routes).length + Object.keys(clientRouteMeta).length) * LANGUAGES.length);
+    for (const [path, entries] of Object.entries(clientRouteMeta)) {
+      const html = readFileSync(join(dir, path, 'index.html'), 'utf8');
+      assert.ok(html.includes('<title>' + entries['zh-Hant'].title + '</title>'), path);
+      assert.equal((html.match(/<h1\b/g) ?? []).length, 1, path);
+      assert.equal(html.includes('name="robots" content="noindex,nofollow"'), path !== '/yunyi-shenxiang', path);
+    }
     // Static documents remain on disk ahead of the host fallback rewrites.
     assert.ok(written.includes("/en/about"));
     assert.ok(written.includes("/ja/knowledge/true-solar-time"));

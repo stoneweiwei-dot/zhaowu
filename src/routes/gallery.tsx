@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { OwnerGalleryManager } from "@/components/owner-gallery-manager";
@@ -6,7 +7,7 @@ import { OwnerLoginVisualsManager } from "@/components/owner-login-visuals-manag
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
 
-export const Route = createFileRoute("/gallery")({ component: GalleryPage });
+export const Route = createFileRoute("/gallery")({ head: pageHead, component: GalleryPage });
 
 type MediaView = "login" | "content";
 
@@ -16,7 +17,7 @@ function GalleryPage() {
   const [view, setView] = useState<MediaView>("content");
   const tx = (hant: string, hans: string, en: string) => locale === "en" ? en : locale === "zh-Hans" ? hans : hant;
 
-  if (isPending) return <div className="mx-auto h-52 max-w-3xl animate-pulse rounded-xl bg-cream/70" />;
+  if (isPending) return <div className="mx-auto h-52 max-w-3xl animate-pulse rounded-xl bg-cream/70"><h1 className="sr-only">{tx("素材管理", "素材管理", "Media library")}</h1></div>;
   if (!user) return <main className="mx-auto max-w-xl"><section className="seal-border rounded-xl bg-cream/95 p-6"><h1 className="font-display text-3xl">{tx("請先登入站主帳號", "请先登录站主账号", "Owner sign-in required")}</h1><Link to="/login" className="mt-5 inline-flex min-h-11 items-center rounded-full bg-cinnabar px-5 text-cream">{tx("登入", "登录", "Sign in")}</Link></section></main>;
   if (!user.isOwner) return <main className="mx-auto max-w-xl"><section className="seal-border rounded-xl bg-cream/95 p-6"><h1 className="font-display text-3xl">{tx("圖庫管理僅限站主", "图库管理仅限站主", "Gallery administration is owner-only")}</h1><Link to="/account" className="mt-5 inline-flex min-h-11 items-center rounded-full border border-line bg-paper px-5">← {tx("帳戶", "账户", "Account")}</Link></section></main>;
 

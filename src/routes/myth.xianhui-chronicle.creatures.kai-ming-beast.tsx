@@ -1,9 +1,10 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 import content from "@/lib/kaiming-content.json";
 import "./kaiming.css";
 
-export const Route = createFileRoute("/myth/xianhui-chronicle/creatures/kai-ming-beast")({ component: KaimingPage });
+export const Route = createFileRoute("/myth/xianhui-chronicle/creatures/kai-ming-beast")({ head: pageHead, component: KaimingPage });
 
 // 共用資料供瀏覽器及靜態頁讀取，避免搜尋結果與內文不一致。
 function KaimingPage() {

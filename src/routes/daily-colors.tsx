@@ -1,7 +1,8 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { DailyColorsModule } from "@/components/daily-colors-module";
 
-export const Route = createFileRoute("/daily-colors")({ component: DailyColorsPage });
+export const Route = createFileRoute("/daily-colors")({ head: pageHead, component: DailyColorsPage });
 
 function DailyColorsPage() {
   return (

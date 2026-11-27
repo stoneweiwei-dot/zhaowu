@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/route-meta";
 import { useDisplayLanguage } from "@/lib/display-language";
 import { customerChrome } from "@/lib/customer-chrome";
 import { buildDecisionReportModel } from "@/lib/report/decision-report-model";
@@ -16,7 +17,7 @@ import {
   type SpecialistHistoryKind,
 } from "@/lib/specialist-history";
 
-export const Route = createFileRoute("/history")({ component: HistoryPage });
+export const Route = createFileRoute("/history")({ head: pageHead, component: HistoryPage });
 
 function tr(_locale: Locale, hant: string, hans: string, en: string) {
   return customerChrome(hant, hans, en);

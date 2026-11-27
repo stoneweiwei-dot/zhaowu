@@ -1,14 +1,15 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { useI18n } from "@/lib/i18n";
-export const Route = createFileRoute("/social")({ component: SocialPublisherPage });
+export const Route = createFileRoute("/social")({ head: pageHead, component: SocialPublisherPage });
 /** Legacy link retained without the broken in-site OAuth/publisher. */
 export function SocialPublisherPage({ embedded = false }: { embedded?: boolean }) {
   const { locale } = useI18n();
   const { user, isPending } = useCurrentUserState();
   const title = locale === "en" ? "Social publishing" : locale === "zh-Hans" ? "社群发布" : "社群發佈";
   const body = locale === "en" ? "Publishing and scheduling are now managed in Metricool." : locale === "zh-Hans" ? "发布与排程已改由 Metricool 管理。" : "發佈與排程已改由 Metricool 管理。";
-  if (isPending) return <main className="mx-auto max-w-xl p-5" role="status">Loading…</main>;
+  if (isPending) return <main className="mx-auto max-w-xl p-5" role="status"><h1 className="sr-only">{title}</h1>Loading…</main>;
   if (!user?.isOwner) return <main className="mx-auto max-w-xl space-y-3 p-5"><h1 className="font-display text-2xl">{title}</h1><p>{locale === "en" ? "Owner access required." : locale === "zh-Hans" ? "仅供站主使用。" : "僅供站主使用。"}</p><Link to="/login" className="underline">{locale === "en" ? "Sign in" : "站主登入"}</Link></main>;
   const Container = embedded ? "div" : "main";
   return <Container className="mx-auto max-w-xl space-y-4 p-5" data-external-social-handoff>

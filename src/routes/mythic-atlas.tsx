@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/route-meta";
 import { CuratedVideoShelf } from "@/components/curated-video-shelf";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
@@ -10,7 +11,7 @@ import { MythicImageViewer } from "./-mythic-image-viewer";
 import "./-mythic-atlas-guaili.css";
 import "./mythic-atlas.css";
 
-export const Route = createFileRoute("/mythic-atlas")({ component: MythicAtlasPage });
+export const Route = createFileRoute("/mythic-atlas")({ head: pageHead, component: MythicAtlasPage });
 
 function Plate({ index, locale, priority = false }: { index: number; locale: Locale; priority?: boolean }) {
   const art = ARTWORKS[index - 1];
@@ -108,7 +109,7 @@ function MythicAtlasPage() {
     <section className="hq-section" id="paintings">
       <div className="hq-section-heading"><span>卷四</span><h2>{tr(COPY.paintings, locale)}</h2><p>{tr(COPY.imageNotice, locale)}</p></div>
       <div className="hq-gallery-feature"><Plate index={selectedPlate + 1} locale={locale} /><div><p className="hq-kicker">{tr(COPY.plate, locale)}</p><h3>{tr(ARTWORKS[selectedPlate].title, locale)}</h3><p>{tr(ARTWORKS[selectedPlate].note, locale)}</p><p className="hq-gallery-source">{tr(COPY.inspiredBy, locale)}：{tr(ARTWORKS[selectedPlate].source, locale)}</p></div></div>
-      <div className="hq-thumbnails" aria-label={tr(COPY.selectPlate, locale)}>{ARTWORKS.map((art, index) => <button key={art.file} type="button" className={selectedPlate === index ? "is-active" : ""} aria-pressed={selectedPlate === index} onClick={() => setSelectedPlate(index)}><img src={mythicWebThumb("originals", art.file)} alt="" width={94} height={167} loading="lazy" /><span>{String(index + 1).padStart(2, "0")}</span></button>)}</div>
+      <div className="hq-thumbnails" aria-label={tr(COPY.selectPlate, locale)}>{ARTWORKS.map((art, index) => <button key={art.file} type="button" className={selectedPlate === index ? "is-active" : ""} aria-pressed={selectedPlate === index} onClick={() => setSelectedPlate(index)}><img src={mythicWebThumb("originals", art.file)} alt={tr(art.title, locale)} width={94} height={167} loading="lazy" /><span>{String(index + 1).padStart(2, "0")}</span></button>)}</div>
     </section>
 
     <section className="hq-section" id="bajinggong">

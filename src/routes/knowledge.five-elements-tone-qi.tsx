@@ -1,7 +1,9 @@
+import { pageHead } from "@/lib/route-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18n, type Locale } from "@/lib/i18n";
 
 export const Route = createFileRoute("/knowledge/five-elements-tone-qi")({
+  head: pageHead,
   component: FiveElementsToneQiArticle,
 });
 
