@@ -38,8 +38,8 @@ test('civilization article appears in existing three-language Articles catalog w
 test('Five Elements Flow leads with the almanac, then sky and daily colours', () => {
   const file = readFileSync(navPath, 'utf8');
   const flow = file.split("      id: 'wuxing',")[1].split("      id: 'quiz',")[0];
-  const direct = flow.split("kind: 'branch'")[0];
-  assert.match(direct, /primary: \{ kind: 'action', section: 'today', title: t\('看今天的黃曆', '看今天的黄历', 'Open today’s almanac'\)/);
+  const direct = flow.split("id: 'today-guide'")[1].split("id: 'element-lore'")[0];
+  assert.match(direct, /kind: 'action', section: 'today', title: t\('看今天的黃曆', '看今天的黄历', 'Open today’s almanac'\)/);
   assert.match(direct, /href: '\/sky-events', title: t\('今日星象', '今日星象', 'Today’s sky & astrology'\)/);
   assert.match(direct, /href: '\/daily-colors', title: t\('每日幸運色', '每日幸运色', 'Colour of the day'\)/);
   assert.deepEqual([...direct.matchAll(/(?:section|href): '([^']+)'/g)].map(match => match[1]), ['today', '/sky-events', '/daily-colors']);

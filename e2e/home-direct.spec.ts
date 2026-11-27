@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('homepage entrances and scene at mobile and desktop sizes', async ({ page }) => {
+  test.setTimeout(120000);
   for (const width of [320, 390, 1440]) {
     await page.setViewportSize({ width, height: width === 1440 ? 900 : 844 });
     await page.goto('/?zw_entry=home', { waitUntil: 'networkidle' });
@@ -52,7 +53,7 @@ test('homepage entrances and scene at mobile and desktop sizes', async ({ page }
     })).toBe(true);
     await expect(flow.locator('a[href*="sky-events"]')).toBeVisible();
     await expect(flow.locator('a[href*="daily-colors"]')).toBeVisible();
-    await flow.locator('.ph-tree-branch-tile').click();
+    await flow.locator('[aria-controls="ph-tree-branch-element-lore"]').click();
     await expect(flow.locator('a[href*="tea-guardian"]')).toBeVisible();
     for (const target of await flow.locator('button:visible, a:visible').all()) {
       const box = await target.boundingBox();
@@ -60,11 +61,31 @@ test('homepage entrances and scene at mobile and desktop sizes', async ({ page }
       expect(box?.width).toBeGreaterThanOrEqual(44);
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+    await page.locator('[data-home-card="notes"] .zw-entry').click();
+    const notes = page.locator('#ph-tree-panel-notes');
+    await notes.locator('[aria-controls="ph-tree-branch-galleries"]').click();
+    await expect(notes.locator('#ph-tree-branch-galleries a[href$="/bajinggong"]')).toBeVisible();
+    await expect(page.locator('section.zw-bajinggong-feature')).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+    for (const section of ['form', 'wuxing', 'quiz', 'notes']) {
+      const card = page.locator('[data-home-card="' + section + '"]');
+      if (await card.getAttribute('data-open') !== 'true') await card.locator('.zw-entry').click();
+      for (const toggle of await card.locator('.ph-tree-branch-tile').all()) {
+        if (await toggle.getAttribute('aria-expanded') === 'false') await toggle.click();
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+      for (const leaf of await card.locator('.ph-tree-branch > ul a, .ph-tree-branch > ul button').all()) {
+        await expect(leaf).toBeVisible();
+        const bounds = await leaf.boundingBox();
+        expect(bounds!.x).toBeGreaterThanOrEqual(0);
+        expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width + 1);
+      }
+    }
     await page.locator('[data-home-card="form"] .zw-entry').click();
     await expect(page.locator('[data-home-card="form"]')).toHaveAttribute('data-open', 'true');
     await expect(panel).toBeHidden();
     await expect(page.locator('[data-home-card][data-open="true"]')).toHaveCount(1);
-    await page.getByRole('button', { name: /開始免費排盤|开始免费排盘|Start my free chart/ }).first().click();
+    await page.locator('#ph-tree-panel-form').getByRole('button', { name: /開始免費排盤|开始免费排盘|Start my free chart/ }).click();
     await expect(page.locator('[data-home-card]')).toHaveCount(0);
   }
 });
@@ -73,7 +94,11 @@ test('homepage supports all three languages', async ({ page }) => {
   await page.setViewportSize({width:390,height:844});
   await page.goto('/?zw_entry=home', {waitUntil:'networkidle'});
   const toggle = page.locator('.zw-langpick__toggle');
-  for (const [language, title, flowTitle] of [['繁體中文', '我的命盤', '五行流轉'], ['简体中文', '我的命盘', '五行流转'], ['English', 'My chart', 'Five Elements Flow']]) {
+  for (const [language, title, flowTitle, galleryTitle, paintingTitle] of [
+    ['繁體中文', '我的命盤', '五行流轉', '看畫集', '八景宮 · 九景圖志'],
+    ['简体中文', '我的命盘', '五行流转', '看画集', '八景宫 · 九景图志'],
+    ['English', 'My chart', 'Five Elements Flow', 'View galleries', 'Nine Visions of Bajinggong'],
+  ]) {
     await expect(page.locator('[data-language-switcher]')).toHaveAttribute('data-open', 'false');
     await toggle.click();
     await expect(page.locator('[data-language-switcher]')).toHaveAttribute('data-open', 'true');
@@ -81,6 +106,12 @@ test('homepage supports all three languages', async ({ page }) => {
     await expect(page.locator('[data-language-switcher]')).toHaveAttribute('data-open', 'false');
     await expect(page.locator('[data-home-card="form"] .zw-entry strong')).toHaveText(title);
     await expect(page.locator('[data-home-card="wuxing"] .zw-entry strong')).toHaveText(flowTitle);
+    const notes = page.locator('[data-home-card="notes"]');
+    if (await notes.getAttribute('data-open') === 'false') await notes.locator('.zw-entry').click();
+    const galleries = notes.locator('[aria-controls="ph-tree-branch-galleries"]');
+    await expect(galleries.locator('strong')).toHaveText(galleryTitle);
+    if (await galleries.getAttribute('aria-expanded') === 'false') await galleries.click();
+    await expect(notes.locator('a[href$="/bajinggong"] strong')).toHaveText(paintingTitle);
     for (const title of await page.locator('.ph-cell strong').all()) {
       expect(await title.evaluate(el => {
         const box = el.getBoundingClientRect();

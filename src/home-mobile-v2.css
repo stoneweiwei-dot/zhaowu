@@ -929,10 +929,6 @@ html body #root .zw-painted-home.zw-v2-home .zw-season-context {
   padding-top: 10px;
   padding-bottom: 14px;
 }
-html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature {
-  margin: 16px auto 24px;
-  padding-inline: 16px;
-}
 html body #root .zw-painted-home.zw-v2-home .ph-bottom-nav {
   margin-top: 12px;
 }
@@ -953,9 +949,6 @@ html body #root .zw-painted-home.zw-v2-home .ph-bottom-nav {
       边距 28→16、导览顶边距 10→4；(c) 八景宫下面到工具钮之前：八景
       宫底边距 24→12、节气注脚底边距 14→8、底导航顶边距 12→6、dock
       底边距 80→40（dock 已是 in-flow，底边距只是留白）。
-   3. 八景宫还是实色淡奶油块：.zw-bajinggong-feature-link 的底是
-      rgba(250,247,238,.36)，在淡画上看就是实色块——改透明，跟生辰
-      面板一样字直接落画上，hover 只留 .12 淡洗，上下细线保留。
    4. 1920px 下置中的“昭梧 ZHAOWU” logo 跟顶上导览连结（首页／建立
       命书／我的报告／怎么用）重叠，1019px 不重叠。根因：>=900px 时
       顶栏和导览都是 720px 置中盒、同一 y 带（top:12-14px），logo 也
@@ -975,9 +968,6 @@ html body #root .zw-painted-home.zw-v2-home .ph-bottom-nav {
   }
   html body #root .zw-painted-home.zw-v2-home .zw-home-birth-desk-container {
     max-width: 880px;
-  }
-  html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature {
-    width: min(100%, 1080px);
   }
 }
 
@@ -999,9 +989,6 @@ html body #root .zw-painted-home.zw-v2-home .ph-tree {
 }
 
 /* 2c. 八景宫 → 工具钮 */
-html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature {
-  margin-bottom: 12px;
-}
 html body #root .zw-painted-home.zw-v2-home .zw-season-context {
   padding-bottom: 8px;
 }
@@ -1056,15 +1043,6 @@ html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-utility-dock[data-
   }
 }
 
-/* 3. 八景宫去底，扁平透画 */
-html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature-link {
-  background: transparent !important;
-  background-image: none !important;
-}
-html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature-link:hover,
-html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature-link:focus-visible {
-  background: rgba(250, 247, 238, .12) !important;
-}
 
 @media (max-width: 767px) {
   /* The shell is the scrollport. Paint one scene at the top of its content. */
@@ -1091,12 +1069,12 @@ html body #root .zw-painted-home.zw-v2-home .zw-bajinggong-feature-link:focus-vi
   html body #root .zw-painted-home.zw-v2-home :is(.zw-v2-season, .zw-v2-discover) {
     position: static;
   }
-  html body #root .zw-painted-home.zw-v2-home :is(.zw-v2-wordmark, .ph-tree-tile, .ph-tree-branch-tile, .zw-bajinggong-feature-link) {
+  html body #root .zw-painted-home.zw-v2-home :is(.zw-v2-wordmark, .ph-tree-tile, .ph-tree-branch-tile) {
     min-height: 44px;
     border: 0 !important;
     box-shadow: none;
   }
-  html body #root .zw-painted-home.zw-v2-home :is(.ph-tree-tile, .ph-tree-branch-tile, .zw-bajinggong-feature-link) > img {
+  html body #root .zw-painted-home.zw-v2-home :is(.ph-tree-tile, .ph-tree-branch-tile) > img {
     border: 0;
     border-radius: 0;
     box-shadow: none;
@@ -1239,3 +1217,7 @@ html body #root #home-guide .ph-grid .ph-tree-body {
   #home-guide .ph-cell-badge svg { width: 34px; height: 34px; }
   #home-guide .ph-cell strong { font-size: 14px; }
 }
+
+/* Keep text rows full width and collapsed groups out of the tile grid. */
+html body #root .zw-painted-home.zw-v2-home .ph-tree-tiles[hidden] { display: none; }
+html body #root .zw-painted-home.zw-v2-home .ph-tree-wide { grid-column: 1 / -1; }

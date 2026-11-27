@@ -40,7 +40,7 @@ test.describe("iPhone Safari 390px Homepage Navigation and View Switching", () =
     await expect(cards).toHaveCount(4);
     await expect(flow.locator(".zw-entry")).toBeVisible();
     await flow.locator(".zw-entry").click();
-    await flow.locator(".ph-tree-branch-tile").click();
+    await flow.locator('[aria-controls="ph-tree-branch-element-lore"]').click();
     await flow.getByRole("button", { name: /五行香氣譜|五行香气谱|Scent map/ }).click();
     await expect(page.locator("[data-subview-header]")).toBeVisible();
     await expect(page.locator(".zhaowu-home-fun-grid")).toBeVisible();

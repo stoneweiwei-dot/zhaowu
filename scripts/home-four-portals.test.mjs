@@ -18,6 +18,7 @@ test("homepage renders the birth form inline and four grouped navigation cells",
   assert.match(home, /<AnalysisForm \/>/);
   assert.match(painted, /<HomeTree t=\{t\} onOpen=\{onOpen\}/);
   assert.match(tree, /data-home-card=\{node.id\}/);
+  assert.match(tree, /<Branch key=\{group.id\} branch=\{group\} initiallyOpen=\{index === 0\}/);
   assert.match(tree, /data-home-blocks="4"/);
   assert.match(home, /type Section = "form" \| "today" \| "quiz" \| "notes"/);
 
