@@ -18,14 +18,22 @@ test('JSON-LD parses and includes WebSite, WebApplication and FAQPage with 4 que
   const html = read('index.html');
   const raw = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1];
   const data = JSON.parse(raw);
-  const types = data['@graph'].map((n) => n['@type']);
-  assert.deepEqual(types, ['WebSite', 'WebApplication', 'FAQPage']);
-  assert.equal(data['@graph'][2].mainEntity.length, 4);
+  const types = data['@graph'].flatMap((n) => n['@type']);
+  assert.deepEqual(types, ['Organization', 'WebSite', 'SoftwareApplication', 'WebApplication', 'FAQPage']);
+  assert.equal(data['@graph'].find(n => n['@type'] === 'FAQPage').mainEntity.length, 4);
 });
 
 test('robots.txt and sitemap.xml agree: private routes crawlable with edge noindex, sitemap url declared, listed paths exist as routes', () => {
   const robots = read('public/robots.txt');
   assert.match(robots, /Sitemap: https:\/\/zhao-wu\.com\/sitemap\.xml/);
+  const groups = robots.trim().split(/\n\s*\n/);
+  for (const agent of ['*', 'Googlebot', 'OAI-SearchBot', 'GPTBot', 'PerplexityBot', 'ClaudeBot']) {
+    const matches = groups.filter(group => group.split(/\r?\n/).includes('User-agent: ' + agent));
+    assert.equal(matches.length, 1, agent);
+    assert.match(matches[0], /^Allow: \/$/m);
+    assert.doesNotMatch(matches[0], /^Disallow: \/$/m);
+    assert.match(matches[0], /^Disallow: \/api\/$/m);
+  }
   // Private HTML routes must stay crawlable so their X-Robots-Tag: noindex header is
   // actually read by search bots; robots.txt Disallow would hide that signal.
   for (const p of ['/login', '/account', '/member', '/history', '/gallery', '/social']) {
@@ -42,7 +50,8 @@ test('robots.txt and sitemap.xml agree: private routes crawlable with edge noind
   }
   const sitemap = read('public/sitemap.xml');
   const locs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => parseLanguagePath(m[1].replace('https://zhao-wu.com', '') || '/').rest);
-  assert.ok(locs.includes('/'));
+  assert.ok(locs.includes('/') && locs.includes('/hepan'));
+  for (const path of ['/pricing', '/yunyi-shenxiang']) assert.ok(locs.includes(path));
   const tree = read('src/routeTree.gen.ts');
   for (const p of locs.filter((x) => x !== '/')) assert.ok(tree.includes(`'${p}'`) || tree.includes(`"${p}"`), `route ${p} missing from routeTree`);
 });

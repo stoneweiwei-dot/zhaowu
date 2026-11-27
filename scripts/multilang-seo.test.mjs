@@ -68,16 +68,17 @@ test('every static document contains exact localized SEO, reciprocal 11 alternat
         assert.match(body, /<p data-static-lead>[^<]+<\/p>/);
         const summary = body.match(/<section data-static-summary>([\s\S]*?)<\/section>/)[1];
         assert.equal((summary.match(/<p>/g) ?? []).length, 2);
-        for (const paragraph of editorial[path][language]) {
-          assert.ok(paragraph.trim().length > 0 && summary.includes(escapeHtmlAttribute(paragraph)), publicPath);
-        }
+        assert.deepEqual(
+          [...summary.matchAll(/<p>([\s\S]*?)<\/p>/g)].map(match => match[1]),
+          editorial[path][language].map(escapeHtmlAttribute), publicPath,
+        );
 
       }
     }
     assert.ok(!written.some(p => p.startsWith('/xx/') || p.startsWith('/zh-hant/')));
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
-test('sitemap method B covers 330 URLs with reciprocal alternates and stays reproducible', () => {
+test('sitemap method B covers all public URLs with reciprocal alternates and stays reproducible', () => {
   const xml = read('public/sitemap.xml');
   assert.ok(xml.includes('<loc>https://zhao-wu.com/hepan</loc>'));
   assert.equal(renderSitemap(meta, xml), xml);

@@ -78,12 +78,24 @@ function selfHostFfmpegCore(): Plugin {
   };
 }
 
+let verification: string | undefined;
+
 export default defineConfig({
   base: "/",
   define: {
     __ZHAOWU_RELEASE_ID__: JSON.stringify(RELEASE_ID),
   },
   plugins: [
+    {
+      name: "google-site-verification",
+      apply: "build",
+      configResolved(config) { verification = config.env.VITE_GOOGLE_SITE_VERIFICATION?.trim(); },
+      transformIndexHtml() {
+        if (verification && /^[A-Za-z0-9_-]+$/.test(verification)) {
+          return [{ tag: "meta", attrs: { name: "google-site-verification", content: verification }, injectTo: "head" }];
+        }
+      },
+    },
     writeGeneratedPublicAssets(),
     selfHostFfmpegCore(),
     tailwindcss(),
