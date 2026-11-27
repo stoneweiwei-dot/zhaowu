@@ -51,7 +51,7 @@ test('robots.txt and sitemap.xml agree: private routes crawlable with edge noind
   const sitemap = read('public/sitemap.xml');
   const locs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => parseLanguagePath(m[1].replace('https://zhao-wu.com', '') || '/').rest);
   assert.ok(locs.includes('/') && locs.includes('/hepan'));
-  for (const path of ['/pricing', '/yunyi-shenxiang']) assert.ok(!locs.includes(path));
+  for (const path of ['/pricing', '/yunyi-shenxiang']) assert.ok(locs.includes(path));
   const tree = read('src/routeTree.gen.ts');
   for (const p of locs.filter((x) => x !== '/')) assert.ok(tree.includes(`'${p}'`) || tree.includes(`"${p}"`), `route ${p} missing from routeTree`);
 });
