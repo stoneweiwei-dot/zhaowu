@@ -3,6 +3,8 @@ import { test, expect } from '@playwright/test';
 // The PWA service worker would answer chart-artwork.js before page.route can abort it (WebKit), so block it for these tests.
 test.use({ serviceWorkers: 'block' });
 
+test.setTimeout(90_000); // CI runners cold-start Vite on the first test; keep every test in this file clear of the 30s default
+
 test('dated observation distinguishes current from archived and links to its source', async ({ page }) => {
   await page.clock.setFixedTime(new Date('2026-11-12T01:00:00Z'));
   await page.goto('/sky-events');
@@ -54,7 +56,6 @@ test('summary stays readable at mobile and desktop widths in each language', asy
 });
 
 test('interpretive-first reading and upper SkyUniverse work while lower SkyCurrentMotion is absent', async ({ page }, testInfo) => {
-  test.setTimeout(90_000); // slow CI runners: this test opens and closes the science details and takes a full-page screenshot
   await page.clock.setFixedTime(new Date('2026-11-04T01:00:00Z'));
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/sky-events');
