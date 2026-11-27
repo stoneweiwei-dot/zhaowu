@@ -4,12 +4,12 @@ import { useI18n, type Locale } from '@/lib/i18n';
 import { chartTerm, emptyBranches, ganzhiLabel, pillarName, UNKNOWN_TIME_COPY } from '@/lib/bazi/presentation';
 
 /** Presentation only: every value comes from the same immutable report snapshot. */
-export function BaziChart({ chart, showHeader = true, expandDetails = false }: { chart: Chart; showHeader?: boolean; expandDetails?: boolean }) {
+export function BaziChart({ chart, showHeader = true, expandDetails = false, referenceOnly = false }: { chart: Chart; showHeader?: boolean; expandDetails?: boolean; referenceOnly?: boolean }) {
   const { locale } = useI18n();
-  return <BaziChartContent chart={chart} locale={locale} showHeader={showHeader} expandDetails={expandDetails} />;
+  return <BaziChartContent chart={chart} locale={locale} showHeader={showHeader} expandDetails={expandDetails} referenceOnly={referenceOnly} />;
 }
 
-export function BaziChartContent({ chart, locale, showHeader = true, expandDetails = false }: { chart: Chart; locale: Locale; showHeader?: boolean; expandDetails?: boolean }) {
+export function BaziChartContent({ chart, locale, showHeader = true, expandDetails = false, referenceOnly = false }: { chart: Chart; locale: Locale; showHeader?: boolean; expandDetails?: boolean; referenceOnly?: boolean }) {
   const en = locale === 'en';
   const hans = locale === 'zh-Hans';
   const c = en
@@ -65,18 +65,12 @@ export function BaziChartContent({ chart, locale, showHeader = true, expandDetai
   const elementColor: Record<string, string> = { 木: "#315e50", 火: "#a7352b", 土: "#9b7745", 金: "#756f64", 水: "#1d3550" };
   const review = chart.birthTimeReview;
 
-  return (
-    <article className="zhaowu-bazi-chart seal-border" aria-label={c.title} data-bazi-chart>
-      {showHeader ? <header>
-        <p className="zhaowu-section-kicker">ZHAOWU · BAZI</p>
-        <h2>{c.title}</h2>
-        <p>{c.lead}</p>
-      </header> : null}
+  const timingNotes = <>
       <p data-true-solar-line>
-        {locale === "en" ? `True solar time ${chart.trueSolarStamp} · clock time ${chart.civilStamp}` : `真太陽時 ${chart.trueSolarStamp} · 鐘錶時間 ${chart.civilStamp}`}
+        {locale === "en" ? `True solar time ${chart.trueSolarStamp} · clock time ${chart.civilStamp}` : hans ? `真太阳时 ${chart.trueSolarStamp} · 钟表时间 ${chart.civilStamp}` : `真太陽時 ${chart.trueSolarStamp} · 鐘錶時間 ${chart.civilStamp}`}
       </p>
       {chart.timeUnknown ? <p className="zhaowu-time-warning">{UNKNOWN_TIME_COPY[locale]}</p> : null}
-      {chart.locationFallback ? <p className="zhaowu-time-warning" data-location-fallback>{c.fallbackNote}</p> : null}
+      {chart.locationFallback && !referenceOnly ? <p className="zhaowu-time-warning" data-location-fallback>{c.fallbackNote}</p> : null}
       {review?.required && review.civil && review.trueSolar ? (
         <aside className="zhaowu-time-warning" data-birth-time-review="needs-verification">
           <strong>{c.verifyTitle}</strong>
@@ -89,6 +83,17 @@ export function BaziChartContent({ chart, locale, showHeader = true, expandDetai
           <small>{c.verifyNote}</small>
         </aside>
       ) : null}
+  </>;
+
+  return (
+    <article className="zhaowu-bazi-chart seal-border" aria-label={c.title} data-bazi-chart={referenceOnly ? undefined : true}>
+      {showHeader ? <header>
+        <p className="zhaowu-section-kicker">ZHAOWU · BAZI</p>
+        <h2>{c.title}</h2>
+        <p>{c.lead}</p>
+      </header> : null}
+      {!referenceOnly ? <>
+        {timingNotes}
       <MobileScrollContainer hint="chart" ariaLabel={c.title}>
         <div className="zhaowu-pillar-grid">
         {chart.pillars.map((p) => (
@@ -113,14 +118,17 @@ export function BaziChartContent({ chart, locale, showHeader = true, expandDetai
         ))}
         </div>
       </MobileScrollContainer>
+      </> : null}
       <details className="zhaowu-chart-details" open={expandDetails || undefined}>
         <summary>{c.more}</summary>
+        {referenceOnly ? timingNotes : null}
         <MobileScrollContainer hint="chart" ariaLabel={c.more}>
           <div className="zhaowu-pillar-detail-grid">
           {chart.pillars.map((p) => (
             <section key={p.key}>
               <h3>{pillarName(p.key, locale)}</h3>
               <dl>
+                {referenceOnly ? <><dt>{c.role}</dt><dd>{ready(p) ? chartTerm(p.shiShenGan, locale) : "—"}</dd></> : null}
                 <dt>{c.hidden}</dt>
                 <dd>
                   {ready(p)

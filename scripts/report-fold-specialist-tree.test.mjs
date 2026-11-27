@@ -7,10 +7,11 @@ const pages = await readFile(new URL("../src/components/paid-report-pages.tsx", 
 const home = await readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
 const css = await readFile(new URL("../src/zhaowu-design-system.css", import.meta.url), "utf8");
 
-test("core destiny-book sections are folded by default (no `open` attribute) with a teaser", () => {
-  assert.match(unified, /<details className="zhaowu-unified-fold" data-report-fold>/);
-  assert.match(unified, /zhaowu-unified-fold__teaser/);
-  assert.doesNotMatch(unified, /<details className="zhaowu-unified-fold"[^>]*\bopen\b/);
+test("the full Destiny Book renders every formal stage without disclosures", () => {
+  const formal = unified.slice(unified.indexOf('data-report-mode="formal"'), unified.indexOf(') : mode === "terms"'));
+  assert.match(formal, /formalStages\.map/);
+  assert.match(formal, /section\.body\.map/);
+  assert.doesNotMatch(formal, /<details\b/);
 });
 
 test("specialist hub mounts only in the selected systems mode", () => {
@@ -34,7 +35,7 @@ test("the home page keeps specialist entrances inside the report and links to ea
   assert.doesNotMatch(unified, /data-specialist-link/);
   assert.match(unified, /zhaowu-specialist-free-link/);
   assert.match(unified, /SPECIALIST_ROUTES/);
-  assert.match(unified, /href=\{entry\.route\}/);
+  assert.match(unified, /to=\{entry\.route\}/);
   assert.doesNotMatch(unified, /<ReportAccessGate/);
 });
 

@@ -666,7 +666,7 @@ html body #root .zw-painted-home.zw-v2-home :is(.zhaowu-bazi-stage, .zhaowu-cust
    their own backgrounds; the panel's own border is gone too, so the desk
    has no card edge left at all. */
 html body #root .zw-painted-home.zw-v2-home #birth-form :is(#bazi, #customer-record, #question-stage),
-html body #root .zw-painted-home.zw-v2-home #birth-form :is(#bazi, #customer-record, #question-stage) *:not(input):not(select):not(textarea):not(button):not(a):not(img) {
+html body #root .zw-painted-home.zw-v2-home #birth-form :is(#bazi, #customer-record, #question-stage):not(.zw-result-v2) *:not(input):not(select):not(textarea):not(button):not(a):not(img) {
   background: transparent !important;
   background-image: none !important;
   box-shadow: none !important;
@@ -759,7 +759,7 @@ html body #root .zw-painted-home.zw-v2-home #birth-form button[type="submit"] {
   color: var(--ph-ink, #273b34) !important;
 }
 /* 八字图鉴小卡（#bazi 里的可点格）：白底圆角 → 透明细线框 */
-html body #root .zw-painted-home.zw-v2-home #birth-form #bazi button {
+html body #root .zw-painted-home.zw-v2-home #birth-form #bazi:not(.zw-result-v2) button {
   background: transparent !important;
   background-image: none !important;
   border: 1px solid rgba(70, 58, 40, .25) !important;

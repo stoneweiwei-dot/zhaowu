@@ -25,6 +25,7 @@ async function expectNoOverlap(page: Page, upperSelector: string, lowerSelector:
 }
 
 async function fillKnownBirthData(page: Page) {
+  await page.locator("#birth-gender").selectOption("unspecified");
   await page.locator("#birth-year").fill("1988");
   await page.locator("#birth-month").fill("10");
   await page.locator("#birth-day").fill("4");
@@ -77,7 +78,7 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.getByRole("dialog", { name: "把昭梧存到手機桌面", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "顯示 iPhone 保存步驟", exact: true })).toBeVisible();
     await page.locator("#birth-form").scrollIntoViewIfNeeded();
-    await expect(page.locator('#birth-form button[type="submit"]')).toHaveText("保存並生成昭梧命書");
+    await expect(page.locator('#birth-form button[type="submit"]')).toHaveText("生成我的命書");
     await expectMobileViewportHealthy(page);
   });
 
@@ -106,24 +107,20 @@ test.describe("iPhone Safari core customer flow", () => {
         city: { name: "Sydney", display: "Sydney", country: "AU", timezone: "Australia/Sydney", latitude: -33.87, longitude: 151.21 },
       }));
     });
-    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await page.goto("/#birth-form", { waitUntil: "domcontentloaded" });
 
     const yearPillar = page.locator('#bazi [data-pillar="year"] strong');
     await expect(page.locator("#bazi [data-bazi-chart]")).toBeVisible();
-    await expect(page.locator("#question-stage")).toBeVisible();
-    const fullDetails = page.locator("#bazi > .zhaowu-bazi-preview > .zhaowu-bazi-full-details");
-    await expect(fullDetails).not.toHaveAttribute("open", "");
-    await expect(page.locator("[data-unified-birth-report]")).toBeHidden();
-    await expect(page.locator("[data-specialist-link]")).toHaveCount(0);
+    await expect(page.locator("#bazi [data-plain-item]")).toHaveCount(2);
+    await expect(page.locator("#bazi [data-unified-birth-report]")).toHaveCount(0);
+    await expect(page.locator("#bazi [data-bazi-reading-locked]")).toBeVisible();
     await page.locator(".zhaowu-header-mode-toggle > button").nth(1).click();
-    await expect(page.locator(".zhaowu-bazi-stage-head .zhaowu-section-lead")).toHaveCount(0);
-    await fullDetails.locator(":scope > summary").click();
-    await expect(page.locator("[data-unified-birth-report] article p").first()).toHaveCSS("color", "rgb(43, 41, 36)");
+    await expect(page.locator("#bazi [data-plain-item] p").first()).toHaveCSS("color", "rgb(48, 44, 37)");
     const before = await yearPillar.textContent();
 
     await page.getByRole("button", { name: "修改資料", exact: true }).first().click();
     await page.locator("#birth-year").fill("1989");
-    await page.getByRole("button", { name: "保存並生成昭梧命書", exact: true }).click();
+    await page.getByRole("button", { name: "生成我的命書", exact: true }).click();
     await expect(yearPillar).not.toHaveText(before ?? "");
     await expect(page.locator("#bazi [data-home-bazi-explanation]")).toBeVisible();
     await expectMobileViewportHealthy(page);
@@ -187,7 +184,9 @@ test.describe("iPhone Safari core customer flow", () => {
 
   test("Birth save reveals the real chart before the question, then the answer leads", async ({ page }) => {
     await makeAppOfflineSafe(page);
-    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await page.addInitScript(() => localStorage.setItem("zhaowu.report-access-sessions.v1", JSON.stringify(["cs_test_mobilecomic123456789"])));
+    await page.route("**/functions/v1/stripe-checkout?**", route => route.fulfill({ json: { ok: true, paid: true, pending: false, product: "system", system: "bazi" } }));
+    await page.goto("/#birth-form", { waitUntil: "domcontentloaded" });
     await dismissInstallPrompt(page);
     await fillKnownBirthData(page);
 
@@ -195,7 +194,7 @@ test.describe("iPhone Safari core customer flow", () => {
     const firstCity = page.locator('#birth-city-results [role="option"]').first();
     await expect(firstCity).toBeVisible();
     await firstCity.click();
-    await page.getByRole("button", { name: "保存並生成昭梧命書", exact: true }).click();
+    await page.getByRole("button", { name: "生成我的命書", exact: true }).click();
 
     await expect(page.locator(".zhaowu-birth-summary")).toBeVisible();
     await expect(page.locator("#bazi [data-bazi-chart]")).toBeVisible();
@@ -203,22 +202,12 @@ test.describe("iPhone Safari core customer flow", () => {
     await expect(page.locator("#bazi [data-pillar=month]")).toBeVisible();
     await expect(page.locator("#bazi [data-pillar=day]")).toBeVisible();
     await expect(page.locator("#bazi [data-pillar=time]")).toBeVisible();
-    await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("日主");
-    await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("月令");
-    await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("旺衰底盤");
-    await expect(page.locator("#bazi [data-home-bazi-explanation]")).toContainText("格局方向");
-    const fullChartDetails = page.locator("#bazi .zhaowu-bazi-full-details");
-    await expect(fullChartDetails).not.toHaveAttribute("open", "");
-    await expect(page.locator("[data-unified-birth-report]")).toBeHidden();
-    await fullChartDetails.locator(":scope > summary").click();
-    await expect(page.locator("[data-unified-birth-report]")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "你的昭梧命書", exact: true })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "沿著這份命書，繼續問你真正關心的事", exact: true })).toBeVisible();
-    const sectionOrder = await page.evaluate(() => ["customer-record", "bazi", "question-stage"].map((id) => document.getElementById(id)?.getBoundingClientRect().top ?? -1));
-    expect(sectionOrder[0]).toBeLessThan(sectionOrder[1]);
-    expect(sectionOrder[1]).toBeLessThan(sectionOrder[2]);
-    const readable = await page.locator("#bazi [data-home-bazi-explanation] dd").first().evaluate((node) => Number.parseFloat(getComputedStyle(node).fontSize));
-    expect(readable).toBeGreaterThanOrEqual(14);
+    await expect(page.locator("#bazi-title-01")).toContainText("我的八字命盤");
+    await expect(page.locator("#bazi .zw-result-facts").first()).toContainText("月令");
+    await expect(page.locator("#bazi [data-unified-birth-report]")).toBeVisible();
+    const readable = await page.locator("#bazi [data-plain-item] p").first().evaluate(node => parseFloat(getComputedStyle(node).fontSize));
+    expect(readable).toBeGreaterThanOrEqual(15);
+    await page.locator("#bazi .zw-flow-next").click();
     await expect(page.locator("#analysis-question")).toBeVisible();
     await page.locator("#analysis-question").fill("這份工作我應該繼續還是離開？");
     await page.getByRole("button", { name: "開始分析這個問題", exact: true }).click();
