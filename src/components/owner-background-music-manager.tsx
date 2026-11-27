@@ -242,7 +242,7 @@ export function OwnerBackgroundMusicManager() {
         {percent != null ? <div className="mt-4 border-y border-line/60 py-3" aria-live="polite"><div className="flex items-center justify-between gap-3 text-xs text-ink-soft"><span>{stage || c.processing}</span><span>{percent}%</span></div><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-paper-deep"><span className="block h-full bg-wood transition-[width]" style={{ width: `${percent}%` }} /></div></div> : null}
         {message ? <p role="status" className="mt-4 break-words line-clamp-3 border-l-2 border-cinnabar/55 pl-3 text-sm leading-6 text-cinnabar">{message}</p> : null}
         {errorMessage ? <div className="mt-4 border-l-2 border-cinnabar/55 pl-3">
-          <p role="alert" className="text-sm leading-6 text-cinnabar">{c.operationFailed}</p>
+          <p role="alert" className="text-sm leading-6 text-cinnabar">{errorMessage.includes("ZHAOWU_OWNER_MUSIC_GITHUB_TOKEN") ? errorMessage : c.operationFailed}</p>
           <details className="mt-1 text-xs text-ink-soft"><summary className="cursor-pointer py-2">{c.errorDetails}</summary><p className="break-words leading-5 [overflow-wrap:anywhere]">{errorMessage}</p></details>
         </div> : null}
         <div data-owner-bulk-toolbar="music" className="mt-4 flex flex-wrap items-center gap-1.5 border-y border-line/70 py-2.5">

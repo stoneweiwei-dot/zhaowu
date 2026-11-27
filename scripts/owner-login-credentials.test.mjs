@@ -80,3 +80,13 @@ test("owner pair opens a session; tester pair never does", { skip: !(OWNER_EMAIL
   assert.equal((await post({ email: TESTER_EMAIL, secret: OWNER_SECRET })).status, 401);
   assert.equal(sha(OWNER_SECRET) === sha(TESTER_SECRET), false);
 });
+
+test("repeated failed attempts lock one source and return a retry interval", async () => {
+  const { default: login } = await import("../api/owner-login.js");
+  const req = { method: "POST", headers: {}, socket: { remoteAddress: "192.0.2.10" }, body: {} };
+  for (let i = 0; i < 8; i++) assert.equal((await login(req)).status, 401);
+  const blocked = await login(req);
+  assert.equal(blocked.status, 429);
+  assert.ok(Number(blocked.headers.get("Retry-After")) > 0);
+  assert.equal((await login({ ...req, socket: { remoteAddress: "192.0.2.11" } })).status, 401);
+});

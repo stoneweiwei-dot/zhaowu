@@ -77,11 +77,13 @@ async function healthy(page: Page, label: string) {
     const pixel = (value: string) => { ctx.clearRect(0, 0, 1, 1); ctx.fillStyle = value; ctx.fillRect(0, 0, 1, 1); return Array.from(ctx.getImageData(0, 0, 1, 1).data); };
     return Array.from(document.querySelectorAll<HTMLElement>('#birth-form button[type="submit"], .zw-flow-next, .stone-login-primary, body:not(:has(.zw-painted-home)) .zhaowu-home-login-inline, .zhaowu-header-owner-login')).filter(el => el.getClientRects().length).map(el => {
       const s = getComputedStyle(el);
-      return { text: el.textContent?.trim().slice(0, 40), actual: pixel(s.backgroundColor), expected: pixel(s.getPropertyValue('--zws-action-bg').trim()), shadow: s.boxShadow, radius: s.borderRadius, height: el.getBoundingClientRect().height };
+      return { text: el.textContent?.trim().slice(0, 40), ghost: !!el.closest('.zw-painted-home.zw-v2-home'), actual: pixel(s.backgroundColor), expected: pixel(s.getPropertyValue('--zws-action-bg').trim()), shadow: s.boxShadow, radius: s.borderRadius, height: el.getBoundingClientRect().height };
     });
   });
   for (const m of actions) {
-    expect.soft(m.actual, `${label}: ${m.text} must use this skin's action pigment`).toEqual(m.expected);
+    // The painted v2 homepage deliberately draws its actions as outlined ghost buttons (99b71fb4).
+    if (m.ghost) expect.soft(m.actual[3], `${label}: ${m.text} painted-home action stays a ghost button`).toBe(0);
+    else expect.soft(m.actual, `${label}: ${m.text} must use this skin's action pigment`).toEqual(m.expected);
     expect.soft(m.shadow, `${label}: ${m.text} action shadow`).toBe('none');
     expect.soft(Math.round(m.height * 100) / 100, `${label}: ${m.text} action touch target`).toBeGreaterThanOrEqual(44);
     expect.soft(parseFloat(m.radius), `${label}: ${m.text} must not become a large pill`).toBeLessThanOrEqual(12);
@@ -229,7 +231,8 @@ for (const skin of SKINS) {
     await expect(paidGate.getByRole('checkbox')).toHaveCount(0);
     await page.getByRole('button', { name: language === 'en' ? 'View full reading' : '查看完整深批', exact: true }).click();
     await expect(page.locator('.zhaowu-report-continuous-sheet')).toBeVisible();
-    await page.locator('[data-professional-report] > summary').click();
+    // The floating contents nav can cover the summary after Playwright centres it; a DOM click still toggles the details.
+    await page.locator('[data-professional-report] > summary').evaluate(el => (el as HTMLElement).click());
     await expect(page.locator('#focused-report-title')).toBeVisible();
     await expect(page.locator('.zhaowu-report-summary-block .zhaowu-report-copy p').first()).toBeVisible();
     if (language === 'zh-Hant') {

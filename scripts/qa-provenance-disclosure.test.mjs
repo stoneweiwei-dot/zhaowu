@@ -27,7 +27,7 @@ test("fixed offer verdict is disclosed as a decision framework, not a chart conc
   const result = await run("老闆說可能升我但薪水不變，我又有另一個 offer，留還是走？");
   const answer = buildComplexDeterministicAnswer(result);
   assert.ok(answer);
-  // The owner-accepted verdict wording stays exactly as locked by r228.
+  // The owner-accepted verdict wording stays unchanged across releases.
   assert.match(answer.verdict, /^先留，不急著走。/);
   assert.equal(answer.verdictBasis, "decision-framework");
   assert.ok(answer.basisNote.length > 0);

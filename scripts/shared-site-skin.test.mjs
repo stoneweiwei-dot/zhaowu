@@ -54,7 +54,7 @@ test("owner write is cookie gated, same-origin only and the UI never reports loc
   assert.doesNotMatch(skin, /localStorage\.setItem\(SKIN_KEY/);
   assert.match(api, /view !== "site-skin"/);
   assert.match(api, /action === "site-skin.publish"/);
-  assert.match(manager, /await apply\(next\)/);
+  assert.match(manager, /await apply\(next, allowed\)/);
   assert.match(shell, /refreshSharedSkin\(\)/);
 });
 
@@ -65,6 +65,7 @@ import vm from "node:vm";
 
 function skinClient(fetcher) {
   const attrs = new Map();
+  const storage = new Map();
   const context = vm.createContext({
     fetch: fetcher, Event,
     // Browser-only imports are stubbed for VM execution; production imports remain unchanged.
@@ -79,7 +80,7 @@ function skinClient(fetcher) {
       getAttribute: (key) => attrs.get(key) ?? null,
     }, querySelector: () => null },
     window: { dispatchEvent() {} },
-    localStorage: { removeItem() {} },
+    localStorage: { getItem: k => storage.get(k) ?? null, setItem: (k,v) => storage.set(k,v), removeItem: k => storage.delete(k) },
   });
   const source = readFileSync("src/lib/theme-skins.ts", "utf8")
     .replace(/^import .* from ['"][^'"]+['"];?\r?\n/gm, "");
@@ -144,4 +145,18 @@ test("theme publication uses the existing authenticated Edge bridge instead of G
   assert.doesNotMatch(api, /saveSharedSiteSkin/);
   assert.match(edge, /case "site-skin.publish": return publishSiteSkin/);
   assert.match(edge, /from\("site_settings"\)\.upsert/);
+});
+
+test("visitors may select only published choices and lose a revoked choice on refresh", async () => {
+  let allowedSkins = ["verdant-rain"];
+  const client = skinClient(async () => ({ ok: true, json: async () => ({ skin: "pastel-koi", allowedSkins }) }));
+  await client.run("refreshSharedSkin()");
+  client.run('chooseVisitorSkin("verdant-mist")');
+  assert.equal(client.attrs.get("data-zws"), "pastel-koi");
+  client.run('chooseVisitorSkin("verdant-rain")');
+  await client.run("refreshSharedSkin()");
+  assert.equal(client.attrs.get("data-zws"), "verdant-rain");
+  allowedSkins = [];
+  await client.run("refreshSharedSkin()");
+  assert.equal(client.attrs.get("data-zws"), "pastel-koi");
 });

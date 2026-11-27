@@ -23,7 +23,7 @@ test("capabilities release equals release.json after a build-time write", async 
     const response = await handler(new Request("https://example.test/api/zhaowu-capabilities"));
     const body = await response.json();
     assert.equal(body.release, released);
-    assert.match(body.ledgerRelease, /^ZW-WEB-\d{4}\.\d{2}\.\d{2}-r\d+$/);
+    assert.equal(body.ledgerRelease, released);
   } finally {
     files.forEach((f, i) => writeFileSync(f, backup[i], "utf8"));
   }

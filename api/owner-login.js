@@ -61,6 +61,19 @@ async function readJsonBody(req) {
   return {};
 }
 
+// Per warm instance. Trust the hosting platform's client address, never a submitted account name.
+const failures = new Map();
+const loginWindowMs = 15 * 60_000;
+
+function failedAttempts(req, now) {
+  const address = (process.env.VERCEL === "1" && headerValue(req, "x-vercel-forwarded-for")) || req.socket?.remoteAddress || "local";
+  for (const [key, entry] of failures) {
+    if (entry.until > now) break;
+    failures.delete(key);
+  }
+  return { address, entry: failures.get(address) };
+}
+
 export default async function handler(req, res) {
   try {
     if ((req.method || "GET") !== "POST") return json(res, 405, { ok: false });
@@ -70,7 +83,19 @@ export default async function handler(req, res) {
     const account = body?.email ?? req.body?.email ?? "";
     // Public demo credential: confirms the sign-in flow works but issues no cookie and grants no access.
     if (isPublicTestCredential(account, secret)) return json(res, 200, { ok: true, mode: "tester" });
-    if (!isValidOwnerAccount(account) || !isValidOwnerSecret(secret)) return json(res, 401, { ok: false, error: "INVALID_OWNER_CREDENTIAL" });
+    const now = Date.now();
+    const { address, entry } = failedAttempts(req, now);
+    if (entry?.count >= 8 || (!entry && failures.size >= 4096)) {
+      const until = entry?.until ?? failures.values().next().value.until;
+      return json(res, 429, { ok: false, error: "RATE_LIMITED" }, { "Retry-After": String(Math.max(1, Math.ceil((until - now) / 1000))) });
+    }
+    const validAccount = isValidOwnerAccount(account);
+    const validSecret = isValidOwnerSecret(secret);
+    if (!validAccount || !validSecret) {
+      failures.set(address, { count: (entry?.count ?? 0) + 1, until: entry?.until ?? now + loginWindowMs });
+      return json(res, 401, { ok: false, error: "INVALID_OWNER_CREDENTIAL" });
+    }
+    failures.delete(address);
     const cookie = ownerSetCookie(secret);
     return json(res, 200, { ok: true }, { "Set-Cookie": cookie });
   } catch (error) {

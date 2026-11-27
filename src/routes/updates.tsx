@@ -32,7 +32,7 @@ function UpdatesPage() {
     return () => { active = false; };
   }, []);
 
-  const currentFallback = release.version === SITE_RELEASE_FALLBACK.version;
+  const currentFallback = release.latestSummary === SITE_RELEASE_FALLBACK.latestSummary;
   const fallbackLanguage = language === "en" ? "en" : language === "zh-Hans" ? "zh-Hans" : "zh-Hant";
   const fallbackSummary = SITE_RELEASE_FALLBACK.summary[fallbackLanguage];
   const englishSummary = currentFallback
@@ -78,8 +78,8 @@ function UpdatesPage() {
       <section className="zhaowu-updates-card" aria-labelledby="current-release-title">
         <p className="zhaowu-updates-label" id="current-release-title">{currentLabel}</p>
         <div className="zhaowu-updates-version-row">
-          <strong>{release.version}</strong>
-          <span>{displayText(language, `正式版本序號 ${release.updateNumber}`, `正式版本序号 ${release.updateNumber}`, `Release number ${release.updateNumber}`, `更新 ${release.updateNumber}`, `업데이트 ${release.updateNumber}`, `अपडेट ${release.updateNumber}`)}</span>
+          <strong className="break-all">{release.version}</strong>
+          {release.updateNumber > 0 ? <span>{displayText(language, `正式版本序號 ${release.updateNumber}`, `正式版本序号 ${release.updateNumber}`, `Release number ${release.updateNumber}`, `更新 ${release.updateNumber}`, `업데이트 ${release.updateNumber}`, `अपडेट ${release.updateNumber}`)}</span> : null}
         </div>
         {published ? <time dateTime={release.publishedAt ?? undefined}>{published}</time> : null}
         <ul>{details.map((item) => <li key={item}>{item}</li>)}</ul>

@@ -32,7 +32,7 @@ import { runLocalHousekeeping } from "@/lib/local-housekeeping";
 import { resolveReportAccess } from "@/lib/report-access";
 import { routeMetaFor, routeMetaForLanguage, ROUTE_META_PATHS } from "@/lib/route-meta";
 import { applyBrandTheme, hydrateBrandTheme, NIGHT_MODE_ENABLED, useBrandTheme } from "@/lib/brand-theme";
-import { applySkin, readSkinId, hydrateSkin, refreshSharedSkin } from "@/lib/theme-skins";
+import { applySkin, readSkinId, hydrateSkin, refreshSharedSkin, chooseVisitorSkin, useSkin, skinById } from "@/lib/theme-skins";
 import { backgroundPublicUrl, chooseDailyBackground, listPublicBackgrounds } from "@/lib/background-assets";
 import { trackConversion } from "@/lib/observability/conversion-telemetry";
 import "@/legal-pages.css";
@@ -66,7 +66,7 @@ function updateMeta(selector: string, content: string) {
 
 function releaseSummaryForLanguage(summary: string, version: string, language: DisplayLanguage) {
   if (language === "zh-Hans") {
-    return version === SITE_RELEASE_FALLBACK.version
+    return summary === SITE_RELEASE_FALLBACK.latestSummary
       ? SITE_RELEASE_FALLBACK.summary["zh-Hans"]
       : toSimplifiedCustomerText(summary);
   }
@@ -249,6 +249,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const { language, setLanguage } = useDisplayLanguage();
   const { user, isPending } = useCurrentUserState();
   const { night } = useBrandTheme();
+  const { id: activeSkin, publishedDefault, visitorSkins } = useSkin();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isHome = pathname === "/";
   const isLogin = pathname === "/login" || pathname === "/auth/callback";
@@ -458,7 +459,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <div className="zhaowu-header-shell mx-auto max-w-5xl px-3 py-2 sm:px-4">
             {!isOwnerWorkspace && !isHome ? (
               <div className="mb-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-b border-line/50 pb-1 text-[11px] leading-4 text-ink-mute" data-site-status-strip>
-                <span data-site-release>{stats.version} · {updateLabel} {stats.updateNumber}{releaseDate ? ` · ${releaseDate}` : ""}</span>
+                <span data-site-release className="min-w-0 break-all">{stats.version}{stats.updateNumber > 0 ? ` · ${updateLabel} ${stats.updateNumber}` : ""}{releaseDate ? ` · ${releaseDate}` : ""}</span>
                 <Link to="/updates" className="zhaowu-latest-update-link" data-latest-change-report aria-label={`${latestLabel}：${releaseSummary}`}>
                   <span>{latestLabel}</span><span aria-hidden="true">›</span>
                 </Link>
@@ -513,6 +514,21 @@ export function SiteShell({ children }: { children: ReactNode }) {
       {!isOwnerWorkspace ? <SiteUtilityDock /> : null}
 
       {!isLogin && !isOwnerWorkspace ? <footer className="zhaowu-site-footer zhaowu-site-footer--minimal relative z-10 mx-auto max-w-5xl px-4 pb-8 pt-2 text-center">
+        {visitorSkins.some(id => id !== publishedDefault) && (
+          <label className="mx-auto mb-3 flex max-w-sm flex-wrap items-center justify-center gap-2 text-sm text-ink">
+            {displayShellText(language, "主題", "主题", "Theme", "テーマ", "테마", "थीम")}
+            <select className="min-h-11 max-w-full rounded-lg border border-line bg-paper px-3"
+              value={activeSkin === publishedDefault ? "" : activeSkin}
+              onChange={event => chooseVisitorSkin(event.target.value)}>
+              <option value="">{displayShellText(language, "全站預設", "全站默认", "Site default", "サイト既定", "기본 테마", "डिफ़ॉल्ट")}</option>
+              {visitorSkins.filter(id => id !== publishedDefault).map(id => {
+                const skin = skinById(id);
+                const label = id === "solar-auto" ? displayShellText(language, "七十二候・自動", "七十二候・自动", "Automatic pentads", "七十二候", "칠십이후", "मौसमी") : skin ? (language === "zh-Hant" ? skin.zh : language === "zh-Hans" ? skin.hans : skin.en) : displayShellText(language, "素紙", "素纸", "Plain paper", "和紙", "한지", "सादा काग़ज़");
+                return <option key={id} value={id}>{label}</option>;
+              })}
+            </select>
+          </label>
+        )}
         <div className="zhaowu-footer-top-links" data-footer-status-strip>
           {isHome ? (
             <Link to="/updates" className="zhaowu-latest-update-link" data-latest-change-report aria-label={`${latestLabel}：${releaseSummary}`}>

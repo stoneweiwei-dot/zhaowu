@@ -48,3 +48,16 @@ test("site skin fallback refuses false success from REST service", async () => {
   assert.equal(mismatched.status, 503);
   assert.equal(mismatched.body.error, "SHARED_SKIN_VERIFY_FAILED");
 });
+
+test("visitor policy validates IDs and verifies both fields of the saved row", async () => {
+  const unexpected = () => { throw new Error("unexpected write"); };
+  for (const list of [null, ["unknown"], ["none", "none"]]) {
+    assert.equal((await publishSiteSkinFallback("none", env, unexpected, list)).status, 400);
+  }
+  const allowed = ["pastel-koi", "solar-auto"];
+  const echo = async (_url, init) => ({ ok: true, json: async () => [JSON.parse(init.body)] });
+  const result = await publishSiteSkinFallback("none", env, echo, allowed);
+  assert.deepEqual(result.body.allowedSkins, allowed);
+  const dropped = async () => ({ ok: true, json: async () => [{ value: { skin: "none" } }] });
+  assert.equal((await publishSiteSkinFallback("none", env, dropped, allowed)).status, 503);
+});
