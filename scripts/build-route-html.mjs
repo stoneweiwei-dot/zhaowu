@@ -157,6 +157,14 @@ export function renderKaimingStatic(origin) {
 
 /** Route path -> renderer returning { main, jsonLd }. Routes not listed keep the homepage static shell. */
 export const STATIC_PAGES = {
+  "/yunyi-shenxiang": (_origin, language) => {
+    const story = JSON.parse(readFileSync(join(ROOT, "src/lib/yunyi-story.json"), "utf8"));
+    const entry = clientRouteMeta["/yunyi-shenxiang"][language];
+    return {
+      main: `<main class="zw-static-shell" lang="${language}"><h1>${esc(entry.title)}</h1><p>${esc(entry.description)}</p><figure><img src="/articles/yunyi-shenxiang/35.webp" width="360" alt=""><figcaption>${esc(story[language])}</figcaption></figure></main>`,
+      jsonLd: null,
+    };
+  },
   "/knowledge/true-solar-time": renderTrueSolarStatic,
   "/myth/xianhui-chronicle/creatures/kai-ming-beast": renderKaimingStatic,
 };

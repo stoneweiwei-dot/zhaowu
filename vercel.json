@@ -300,14 +300,13 @@
       ],
       "destination": "https://zhao-wu.com/:path*",
       "permanent": true
-    },
-    {
-      "source": "/pricing",
-      "destination": "/sample-report",
-      "permanent": true
     }
   ],
   "rewrites": [
+    {
+      "source": "/yunyi-shenxiang",
+      "destination": "/yunyi-shenxiang/index.html"
+    },
     {
       "source": "/api/gallery-ingest-finalize",
       "destination": "https://gyisxbkjzvdretbqzeuw.supabase.co/functions/v1/gallery-ingest-finalize"

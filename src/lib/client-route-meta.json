@@ -124,5 +124,19 @@
       "title": "Tianji star palaces",
       "description": "Explore your Tianji star through questions about the twelve palaces."
     }
+  },
+  "/yunyi-shenxiang": {
+    "zh-Hant": {
+      "title": "雲衣神相圖錄",
+      "description": "按卷瀏覽封神人物、九歌神靈與四時畫像。"
+    },
+    "zh-Hans": {
+      "title": "云衣神相图录",
+      "description": "按卷浏览封神人物、九歌神灵与四时画像。"
+    },
+    "en": {
+      "title": "Yunyi Shenxiang gallery",
+      "description": "Browse portraits from the Investiture of the Gods, Nine Songs and four seasons."
+    }
   }
 }

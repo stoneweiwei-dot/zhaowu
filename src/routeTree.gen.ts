@@ -30,6 +30,7 @@ import { Route as MythicAtlasRouteImport } from './routes/mythic-atlas'
 import { Route as NumerologyRouteImport } from './routes/numerology'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as QizhengRouteImport } from './routes/qizheng'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as SampleReportRouteImport } from './routes/sample-report'
 import { Route as SkyEventsRouteImport } from './routes/sky-events'
 import { Route as SocialRouteImport } from './routes/social'
@@ -160,6 +161,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const QizhengRoute = QizhengRouteImport.update({
   id: '/qizheng',
   path: '/qizheng',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SampleReportRoute = SampleReportRouteImport.update({
@@ -321,6 +327,7 @@ export interface FileRoutesByFullPath {
   '/numerology': typeof NumerologyRoute
   '/privacy': typeof PrivacyRoute
   '/qizheng': typeof QizhengRoute
+  '/pricing': typeof PricingRoute
   '/sample-report': typeof SampleReportRoute
   '/sky-events': typeof SkyEventsRoute
   '/social': typeof SocialRoute
@@ -370,6 +377,7 @@ export interface FileRoutesByTo {
   '/numerology': typeof NumerologyRoute
   '/privacy': typeof PrivacyRoute
   '/qizheng': typeof QizhengRoute
+  '/pricing': typeof PricingRoute
   '/sample-report': typeof SampleReportRoute
   '/sky-events': typeof SkyEventsRoute
   '/social': typeof SocialRoute
@@ -420,6 +428,7 @@ export interface FileRoutesById {
   '/numerology': typeof NumerologyRoute
   '/privacy': typeof PrivacyRoute
   '/qizheng': typeof QizhengRoute
+  '/pricing': typeof PricingRoute
   '/sample-report': typeof SampleReportRoute
   '/sky-events': typeof SkyEventsRoute
   '/social': typeof SocialRoute
@@ -471,6 +480,7 @@ export interface FileRouteTypes {
     | '/numerology'
     | '/privacy'
     | '/qizheng'
+    | '/pricing'
     | '/sample-report'
     | '/sky-events'
     | '/social'
@@ -520,6 +530,7 @@ export interface FileRouteTypes {
     | '/numerology'
     | '/privacy'
     | '/qizheng'
+    | '/pricing'
     | '/sample-report'
     | '/sky-events'
     | '/social'
@@ -569,6 +580,7 @@ export interface FileRouteTypes {
     | '/numerology'
     | '/privacy'
     | '/qizheng'
+    | '/pricing'
     | '/sample-report'
     | '/sky-events'
     | '/social'
@@ -619,6 +631,7 @@ export interface RootRouteChildren {
   NumerologyRoute: typeof NumerologyRoute
   PrivacyRoute: typeof PrivacyRoute
   QizhengRoute: typeof QizhengRoute
+  PricingRoute: typeof PricingRoute
   SampleReportRoute: typeof SampleReportRoute
   SkyEventsRoute: typeof SkyEventsRoute
   SocialRoute: typeof SocialRoute
@@ -786,6 +799,13 @@ declare module '@tanstack/react-router' {
       path: '/qizheng'
       fullPath: '/qizheng'
       preLoaderRoute: typeof QizhengRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sample-report': {
@@ -1031,6 +1051,7 @@ const rootRouteChildren: RootRouteChildren = {
   NumerologyRoute: NumerologyRoute,
   PrivacyRoute: PrivacyRoute,
   QizhengRoute: QizhengRoute,
+  PricingRoute: PricingRoute,
   SampleReportRoute: SampleReportRoute,
   SkyEventsRoute: SkyEventsRoute,
   SocialRoute: SocialRoute,

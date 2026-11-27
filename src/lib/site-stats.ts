@@ -1,3 +1,4 @@
+import { visitContext } from "./visit-context";
 import { ZHAOWU_BUILD_RELEASE } from "../../lib/release-id.js";
 import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase-config";
 
@@ -170,7 +171,7 @@ export async function recordVisit() {
   const res = await publicFetch(`${SUPABASE_URL}/rest/v1/rpc/zhaowu_record_visit`, {
     method: "POST",
     headers: publicHeaders({ Prefer: "return=minimal" }),
-    body: JSON.stringify({ p_visitor_key: key }),
+    body: JSON.stringify({ p_visitor_key: key, ...visitContext(window.location.pathname, document.referrer, navigator.userAgent, navigator.maxTouchPoints) }),
   });
   if (!res.ok) throw new Error(`Visit counter failed: HTTP ${res.status}`);
 }
