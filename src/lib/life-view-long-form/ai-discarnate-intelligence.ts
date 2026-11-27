@@ -1,11 +1,5 @@
 import type { LifeViewArticle } from "@/lib/life-view";
 
-// The nine exact PNG originals were uploaded to the existing public zhaowu-gallery
-// and verified on 2026-10-23 against the original SHA-256 hashes (9/9 identical).
-// Use the established same-origin Supabase proxy to serve the real raster bytes.
-// No SVG/CSS re-drawing, expiring media links, or runtime image generation.
-const imageBase = "/sb/storage/v1/object/public/zhaowu-gallery/articles/ai-discarnate-intelligence-20261022";
-
 const sections = {
   "zh-Hant": [
     "01｜對話從「AI 像在召喚惡魔」這個比喻開始。講者描述一種熟悉的故事：畫好五芒星、準備聖水的人相信自己能控制被召來的存在，最後卻失控。這是影片的恐懼敘事，不是已證明的超自然事件。本文九幅插圖均為生成影像，人物面容是藝術再現，並非現場照片。",
@@ -42,54 +36,6 @@ const sections = {
   ]
 } as const;
 
-const artAlt = [
-  [
-    "人工智慧與無形意識：九圖雙語總覽",
-    "人工智能与无形意识：九图双语总览",
-    "AI and disembodied intelligence: bilingual cover"
-  ],
-  [
-    "馬斯克與召喚惡魔的風險比喻",
-    "马斯克与召唤恶魔的风险比喻",
-    "Elon Musk and the summoning-the-demon analogy"
-  ],
-  [
-    "人造機器與無形智慧面對面",
-    "人造机器与无形智慧面对面",
-    "Constructed machine facing an imagined disembodied mind"
-  ],
-  [
-    "圖靈與數學神諭的計算模型",
-    "图灵与数学神谕的计算模型",
-    "Alan Turing and the mathematical oracle"
-  ],
-  [
-    "克勞利與無肉身智慧的概念",
-    "克劳利与无肉身智慧的概念",
-    "Aleister Crowley and discarnate intelligence"
-  ],
-  [
-    "人工智慧研究與靈性觀點的對照",
-    "人工智能研究与灵性观点的对照",
-    "AI research and competing philosophical views"
-  ],
-  [
-    "智能、意識與靈體載體的三種主張",
-    "智能、意识与灵体载体的三种主张",
-    "Three claims: intelligence consciousness and spirits"
-  ],
-  [
-    "人工智慧影響資訊與社會的實際風險",
-    "人工智能影响信息与社会的实际风险",
-    "Real-world risks of AI information and social influence"
-  ],
-  [
-    "三位代表人物與人工智慧的最終討論",
-    "三位代表人物与人工智能的最终讨论",
-    "Final discussion with Musk, Turing and Crowley illustrations"
-  ]
-] as const;
-
 export const AI_DISCARNATE_INTELLIGENCE_ARTICLE: LifeViewArticle = {
   id: "ai-discarnate-intelligence-20261023",
   publishedAt: "2026-10-23",
@@ -108,10 +54,7 @@ export const AI_DISCARNATE_INTELLIGENCE_ARTICLE: LifeViewArticle = {
     "zh-Hans": sections["zh-Hans"].join("\n\n"),
     en: sections.en.join("\n\n"),
   },
-  illustrations: artAlt.map(([hant,hans,en], index) => ({
-    src: `${imageBase}/${String(index+1).padStart(2, "0")}.png`,
-    afterParagraph: index + 1,
-    alt: { "zh-Hant": hant, "zh-Hans": hans, en },
-    display: "wide" as const, // full-width, intrinsic 941:1672 aspect ratio, no cropping
-  })),
+  // Gallery originals for this essay are missing from storage.
+  // Prefer no image over a mismatched picture; list and paragraph text stay readable.
+  illustrations: [],
 };
