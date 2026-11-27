@@ -5,7 +5,7 @@ import { test } from "node:test";
 const root = new URL("../", import.meta.url);
 const source = (path) => readFile(new URL(path, root), "utf8");
 
-test("homepage renders the birth form inline and five grouped navigation cards", async () => {
+test("homepage renders the birth form inline and four grouped navigation cells", async () => {
   const home = await source("src/routes/index.tsx");
 
   const painted = await source("src/components/painted-home.tsx");
@@ -18,7 +18,7 @@ test("homepage renders the birth form inline and five grouped navigation cards",
   assert.match(home, /<AnalysisForm \/>/);
   assert.match(painted, /<HomeTree t=\{t\} onOpen=\{onOpen\}/);
   assert.match(tree, /data-home-card=\{node.id\}/);
-  assert.match(tree, /data-home-blocks="5"/);
+  assert.match(tree, /data-home-blocks="4"/);
   assert.match(home, /type Section = "form" \| "today" \| "quiz" \| "notes"/);
 
   // Dedicated view switching condition

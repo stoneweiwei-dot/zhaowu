@@ -35,12 +35,12 @@ test('civilization article appears in existing three-language Articles catalog w
   assert.match(registry, /CIVILIZATION_TIMELINE_2025_2030_ARTICLE,/);
 });
 
-test('Today sky is directly visible within the second guidance step, preserving sky route', () => {
+test('Five Elements Flow leads with the almanac, then sky and daily colours', () => {
   const file = readFileSync(navPath, 'utf8');
-  const today = file.split("id: 'today'")[1].split("id: 'wuxing', icon:")[0];
-  assert.match(today, /href: '\/sky-events', title: t\('今日星象', '今日星象', 'Today’s sky & astrology'\)/);
-  assert.deepEqual([...today.matchAll(/href: '([^']+)'/g)].map(match => match[1]), ["/sky-events"]);
-  assert.doesNotMatch(today, /kind: 'branch'/, 'sky is a direct child link');
-  const wuxing = file.split("id: 'wuxing', icon:")[1].split("id: 'quiz', icon:")[0];
-  assert.match(wuxing, /primary: \{ kind: 'link', href: '\/daily-colors', title: t\('每日幸運色', '每日幸运色', 'Colour of the day'\)/);
+  const flow = file.split("      id: 'wuxing',")[1].split("      id: 'quiz',")[0];
+  const direct = flow.split("kind: 'branch'")[0];
+  assert.match(direct, /primary: \{ kind: 'action', section: 'today', title: t\('看今天的黃曆', '看今天的黄历', 'Open today’s almanac'\)/);
+  assert.match(direct, /href: '\/sky-events', title: t\('今日星象', '今日星象', 'Today’s sky & astrology'\)/);
+  assert.match(direct, /href: '\/daily-colors', title: t\('每日幸運色', '每日幸运色', 'Colour of the day'\)/);
+  assert.deepEqual([...direct.matchAll(/(?:section|href): '([^']+)'/g)].map(match => match[1]), ['today', '/sky-events', '/daily-colors']);
 });

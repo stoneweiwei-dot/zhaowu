@@ -5,7 +5,7 @@ test('homepage entrances and scene at mobile and desktop sizes', async ({ page }
     await page.setViewportSize({ width, height: width === 1440 ? 900 : 844 });
     await page.goto('/?zw_entry=home', { waitUntil: 'networkidle' });
     await expect(page.locator('[data-home-birth-entry]')).toBeVisible();
-    await expect(page.locator('[data-home-card]')).toHaveCount(5);
+    await expect(page.locator('[data-home-card]')).toHaveCount(4);
     for (const card of await page.locator('[data-home-card]').all()) {
       await expect(card).toHaveAttribute('data-open', 'false');
       await expect(card.locator('.zw-entry')).toBeVisible();
@@ -15,13 +15,21 @@ test('homepage entrances and scene at mobile and desktop sizes', async ({ page }
     const cards = await page.locator('[data-home-card] .zw-entry').evaluateAll(entries => entries.map(c => ({
       background: getComputedStyle(c).backgroundColor,
       text: getComputedStyle(c.querySelector('strong')!).webkitTextFillColor,
-      wash: getComputedStyle(c.querySelector('.ph-tree-wash')!).backgroundImage,
+      badge: getComputedStyle(c.querySelector('.ph-cell-badge')!).backgroundColor,
       title: c.querySelector('strong')!.textContent?.trim(),
+      top: c.getBoundingClientRect().top,
+      width: c.getBoundingClientRect().width,
+      height: c.getBoundingClientRect().height,
     })));
     expect(new Set(cards.map(c => c.background)).size).toBe(1);
     expect(new Set(cards.map(c => c.text)).size).toBe(1);
-    expect(new Set(cards.map(c => c.wash)).size).toBe(5);
-    expect(new Set(cards.map(c => c.title)).size).toBe(5);
+    expect(new Set(cards.map(c => c.badge)).size).toBe(4);
+    expect(new Set(cards.map(c => c.title)).size).toBe(4);
+    expect(new Set(cards.map(c => c.top)).size).toBe(width === 320 ? 2 : 1);
+    for (const cell of cards) {
+      expect(cell.width).toBeGreaterThanOrEqual(44);
+      expect(cell.height).toBeGreaterThanOrEqual(44);
+    }
     await page.screenshot({path:`test-results/home-${width}.png`});
     await page.locator('[data-home-card] .zw-entry').nth(1).scrollIntoViewIfNeeded();
     console.log('scroll state', await page.locator('[data-home-card] .zw-entry').nth(1).evaluate(el => { const out=[]; for(let n: Element | null=el;n;n=n.parentElement){const e=n as HTMLElement;out.push([e.tagName,e.className,e.scrollTop,e.scrollHeight,e.clientHeight,getComputedStyle(e).overflowY]);} return out; }));
@@ -32,6 +40,17 @@ test('homepage entrances and scene at mobile and desktop sizes', async ({ page }
     const homeUrl = page.url();
     await flow.locator('.zw-entry').click();
     await expect(page).toHaveURL(homeUrl);
+    const panel = flow.locator('#ph-tree-panel-wuxing');
+    await expect(flow.locator('.zw-entry')).toHaveAttribute('aria-controls', 'ph-tree-panel-wuxing');
+    await expect(panel).toBeVisible();
+    expect(await panel.evaluate(el => {
+      const grid = el.closest('.ph-grid')!;
+      const bounds = grid.getBoundingClientRect();
+      const rect = el.getBoundingClientRect();
+      return Math.abs(rect.width - bounds.width) < 1 &&
+        [...grid.querySelectorAll('.ph-cell')].every(cell => cell.getBoundingClientRect().bottom <= rect.top);
+    })).toBe(true);
+    await expect(flow.locator('a[href*="sky-events"]')).toBeVisible();
     await expect(flow.locator('a[href*="daily-colors"]')).toBeVisible();
     await flow.locator('.ph-tree-branch-tile').click();
     await expect(flow.locator('a[href*="tea-guardian"]')).toBeVisible();
@@ -43,6 +62,8 @@ test('homepage entrances and scene at mobile and desktop sizes', async ({ page }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
     await page.locator('[data-home-card="form"] .zw-entry').click();
     await expect(page.locator('[data-home-card="form"]')).toHaveAttribute('data-open', 'true');
+    await expect(panel).toBeHidden();
+    await expect(page.locator('[data-home-card][data-open="true"]')).toHaveCount(1);
     await page.getByRole('button', { name: /開始免費排盤|开始免费排盘|Start my free chart/ }).first().click();
     await expect(page.locator('[data-home-card]')).toHaveCount(0);
   }
@@ -60,6 +81,14 @@ test('homepage supports all three languages', async ({ page }) => {
     await expect(page.locator('[data-language-switcher]')).toHaveAttribute('data-open', 'false');
     await expect(page.locator('[data-home-card="form"] .zw-entry strong')).toHaveText(title);
     await expect(page.locator('[data-home-card="wuxing"] .zw-entry strong')).toHaveText(flowTitle);
+    for (const title of await page.locator('.ph-cell strong').all()) {
+      expect(await title.evaluate(el => {
+        const box = el.getBoundingClientRect();
+        const cell = el.closest('button')!.getBoundingClientRect();
+        return box.height <= 2 * parseFloat(getComputedStyle(el).lineHeight) + 1 &&
+          box.left >= cell.left && box.right <= cell.right;
+      })).toBe(true);
+    }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
   }
 });

@@ -12,21 +12,19 @@ export type TreeNode = {
   id: HomeSection;
   title: string;
   hint: string;
-  art: string;
-  icon: 'reports' | 'calendar' | 'cycle' | 'insight' | 'articles';
   /** First child inside the opened node, when the block has a lead action. */
   primary?: TreeLeaf;
   items: (TreeLeaf | TreeBranch)[];
 };
 
 /**
- * Five plain-language entrances → expandable branches → real pages.
+ * Four plain-language entrances → expandable branches → real pages.
  * Only public, ungated pages are listed (professional charts stay behind their own access gate).
  */
 export function homeTree(t: T): TreeNode[] {
   return [
     {
-      id: 'form', icon: 'reports', art: '/art/scene-koi-rider-v1.webp',
+      id: 'form',
       title: t('我的命盤', '我的命盘', 'My chart'),
       hint: t('免費・免登入・約 1 分鐘', '免费・免登录・约 1 分钟', 'Free · no sign-in · about 1 minute'),
       primary: { kind: 'action', section: 'form', title: t('開始免費排盤', '开始免费排盘', 'Start my free chart'), hint: t('免費 · 免登入 · 約 1 分鐘', '免费 · 免登录 · 约 1 分钟', 'Free · no sign-in · about 1 minute') },
@@ -37,20 +35,13 @@ export function homeTree(t: T): TreeNode[] {
       ],
     },
     {
-      id: 'today', icon: 'calendar', art: '/art/scene-lotus-boat-v1.webp',
-      title: t('今日指引', '今日指引', 'Today’s guide'),
-      hint: t('黃曆與今日星象，一次看清。', '黄历与今日星象，一次看清。', 'Almanac and today’s sky, clearly grouped.'),
+      id: 'wuxing',
+      title: t('五行流轉', '五行流转', 'Five Elements Flow'),
+      hint: t('黃曆、星象、色彩與五行。', '黄历、星象、色彩与五行。', 'Almanac, sky, colours and the five elements.'),
       primary: { kind: 'action', section: 'today', title: t('看今天的黃曆', '看今天的黄历', 'Open today’s almanac'), hint: t('宜忌、節氣與今日提醒', '宜忌、节气与今日提醒', 'Dos and don’ts, solar terms and daily guidance'), thumb: '/today/almanac-lotus-v1.webp' },
       items: [
         { kind: 'link', href: '/sky-events', title: t('今日星象', '今日星象', 'Today’s sky & astrology'), hint: t('星辰形象、當週天象與占星解讀，直接進入', '星辰形象、当周天象与占星解读，直接进入', 'Sky events, weekly outlook and astrology in one tap'), thumb: '/sky-universe/cosmic-nebula.webp' },
-      ],
-    },
-    {
-      id: 'wuxing', icon: 'cycle', art: '/art/zhaowu-yunshui-changsui-v1.webp',
-      title: t('五行流轉', '五行流转', 'Five Elements Flow'),
-      hint: t('從每日幸運色，探索五行的聲音、香氣與滋味。', '从每日幸运色，探索五行的声音、香气与滋味。', 'Explore the five elements through daily colours, sound, scent and taste.'),
-      primary: { kind: 'link', href: '/daily-colors', title: t('每日幸運色', '每日幸运色', 'Colour of the day'), hint: t('今天穿什麼顏色比較順。', '今天穿什么颜色比较顺。', 'Which colour to wear today.'), thumb: '/home-tiles/daily-colors.webp' },
-      items: [
+        { kind: 'link', href: '/daily-colors', title: t('每日幸運色', '每日幸运色', 'Colour of the day'), hint: t('今天穿什麼顏色比較順。', '今天穿什么颜色比较顺。', 'Which colour to wear today.'), thumb: '/home-tiles/daily-colors.webp' },
         { kind: 'branch', id: 'wuxing', title: t('五行', '五行', 'Five elements'), hint: t('色、音、味、氣、功能與飲食', '色、音、味、气、功能与饮食', 'Colour, tone, taste, qi, function and food'), thumb: '/articles/list-thumbs/five-elements-as-movement.webp', children: [
           { kind: 'link', href: '/knowledge/five-elements-tone-qi', title: t('五行五色、五音與五氣', '五行五色、五音与五气', 'Five elements, colours, tones and qi'), hint: t('五色、五音、五味、五氣、五功能與五色飲食，一篇看完。', '五色、五音、五味、五气、五功能与五色饮食，一篇看完。', 'Colours, tones, tastes, qi, functions and the five-colour diet in one article.') },
           { kind: 'link', href: '/fun-tests?test=element', title: t('五行功能測驗', '五行功能测验', 'Five-element function quiz'), hint: t('看現在最想加強哪一種功能', '看现在最想加强哪一种功能', 'Which function you most want to build') },
@@ -61,7 +52,7 @@ export function homeTree(t: T): TreeNode[] {
       ],
     },
     {
-      id: 'quiz', icon: 'insight', art: '/art/scene-osmanthus-tea-v1.webp',
+      id: 'quiz',
       title: t('趣味測驗', '趣味测验', 'Quizzes'),
       hint: t('幾分鐘，看見另一面的自己。', '几分钟，看见另一面的自己。', 'A few minutes to meet another side of you.'),
       items: [
@@ -73,20 +64,14 @@ export function homeTree(t: T): TreeNode[] {
         { kind: 'branch', id: 'state', title: t('看看你的狀態', '看看你的状态', 'How you are now'), hint: t('現在卡在哪、最想補什麼', '现在卡在哪、最想补什么', 'Where you are stuck, what you need'), thumb: '/home-tiles/quiz-state.webp', children: [
           { kind: 'link', href: '/fun-tests/earth-online', title: t('地球 Online · 古籍攻略', '地球 Online · 古籍攻略', 'Earth Online'), hint: t('8 題看你卡在哪一關，推薦古籍', '8 题看你卡在哪一关，推荐古籍', '8 questions on where you are stuck') },
           { kind: 'link', href: '/quiz/six-realms', title: t('六道習氣測驗', '六道习气测验', 'Six habits quiz'), hint: t('看目前最明顯的日常慣性', '看目前最明显的日常惯性', 'Your most visible everyday habit') },
-          { kind: 'link', href: '/quiz/five-element-overdrive', title: t('五行優勢內耗測驗', '五行优势内耗测验', 'Strength overuse quiz'), hint: t('10 個情境，看哪種優勢被你用成內耗', '10 个情境，看哪种优势被你用成内耗', '10 scenes — which strength you overuse') },
-          { kind: 'link', href: '/fun-tests?test=element', title: t('五行功能測驗', '五行功能测验', 'Five-element function quiz'), hint: t('看現在最想加強哪一種功能', '看现在最想加强哪一种功能', 'Which function you most want to build') },
         ] },
         { kind: 'branch', id: 'brand', title: t('品牌原型', '品牌原型', 'Brand archetypes'), hint: t('讓品牌有鮮明的性格', '让品牌有鲜明的性格', 'Find a clear brand voice'), thumb: '/home-tiles/quiz-brand.webp', children: [
           { kind: 'link', href: '/brand-archetypes.html', title: t('品牌十二原型 · 定位測評', '品牌十二原型 · 定位测评', 'Twelve Brand Archetypes'), hint: t('序、尋、證、聯；十二題找出品牌主副原型', '序、寻、证、联；十二题找出品牌主副原型', 'Twelve brand scenarios, primary and supporting archetypes') },
         ] },
-        { kind: 'branch', id: 'life', title: t('生活小測', '生活小测', 'Everyday'), hint: t('香氣與茶，輕鬆玩', '香气与茶，轻松玩', 'Scent and tea, just for fun'), thumb: '/home-tiles/quiz-life.webp', children: [
-          { kind: 'action', section: 'quiz', title: t('五行香氣譜', '五行香气谱', 'Scent map'), hint: t('看嗅覺偏好與五行的文化象意', '看嗅觉偏好与五行的文化象意', 'Scent preferences and their cultural meaning') },
-          { kind: 'link', href: '/tea-guardian', title: t('七題找到適合的茶', '七题找到适合的茶', 'Find your tea'), hint: t('七個問題，配一款適合你的茶', '七个问题，配一款适合你的茶', 'Seven questions, one tea') },
-        ] },
       ],
     },
     {
-      id: 'notes', icon: 'articles', art: '/art/scene-butterfly-dream-v1.webp',
+      id: 'notes',
       title: t('文章與知識', '文章与知识', 'Articles & knowledge'),
       hint: t('慢慢讀：文章、短札與小知識。', '慢慢读：文章、短札与小知识。', 'Slow reading: essays, notes and short explainers.'),
       items: [
@@ -177,24 +162,38 @@ function JacarandaMark({ section }: { section: HomeSection }) {
   </svg>;
 }
 
-/** Five top-level blocks. All start collapsed; a tap reveals that block’s existing pages. */
+function CellIcon({ section }: { section: HomeSection }) {
+  return <span className="ph-cell-badge" aria-hidden="true">
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      {section === 'form' && <path d="M3 7q7-2 13 2 6-4 13-2v18q-7-2-13 2-6-4-13-2zM16 9v18M7 12v7m5-6v7m8-7v7m5-8v7" />}
+      {section === 'wuxing' && <FivePhaseMark />}
+      {section === 'quiz' && <path d="M16 3l3.5 9.5L29 16l-9.5 3.5L16 29l-3.5-9.5L3 16l9.5-3.5z" />}
+      {section === 'notes' && <path d="M4 7q6-2 12 2 6-4 12-2v17q-6-2-12 2-6-4-12-2zM16 9v17M8 12l4 1m-4 4 4 1m8-5 4-1m-4 6 4-1" />}
+    </svg>
+  </span>;
+}
+
 export function HomeTree({ t, onOpen }: { t: T; onOpen: (s: HomeSubview) => void }) {
   const [open, setOpen] = useState<HomeSection | null>(null);
-  return <nav id="home-guide" className="ph-tree" data-home-tree data-home-blocks="5" aria-label={t('網站導覽', '网站导览', 'Site guide')}>
-    {homeTree(t).map(node => {
-      const isOpen = open === node.id;
-      const panelId = `ph-tree-panel-${node.id}`;
-      return <section key={node.id} className="ph-tree-node" data-open={isOpen ? 'true' : 'false'} data-home-card={node.id}>
-        <button type="button" className="ph-tree-primary zw-entry" aria-expanded={isOpen} aria-controls={panelId} onClick={() => setOpen(isOpen ? null : node.id)}>
-          <span className="ph-tree-wash" aria-hidden="true" style={{ backgroundImage: `url("${node.art}")` }} />
-          <SeasonalMark section={node.id} /><JacarandaMark section={node.id} /><span><strong>{node.title}</strong><small>{node.hint}</small></span><i aria-hidden>{isOpen ? '−' : '+'}</i>
-        </button>
-        <div className="ph-tree-body" id={panelId} hidden={!isOpen}><ul className="ph-tree-tiles">
-          {node.primary ? <li key={node.primary.title}><Tile leaf={node.primary} onOpen={onOpen} /></li> : null}
-          {node.items.map(item => item.kind === 'branch'
-            ? <Branch key={item.id} branch={item} onOpen={onOpen} />
-            : <li key={item.title}><Tile leaf={item} onOpen={onOpen} /></li>)}
-        </ul></div>
-      </section>;
-    })}  </nav>;
+  return <nav id="home-guide" className="ph-tree" data-home-tree data-home-blocks="4" aria-label={t('網站導覽', '网站导览', 'Site guide')}>
+    <div className="ph-grid">
+      {homeTree(t).map(node => {
+        const isOpen = open === node.id;
+        const panelId = `ph-tree-panel-${node.id}`;
+        return <section key={node.id} className="ph-tree-node" data-open={isOpen ? 'true' : 'false'} data-home-card={node.id}>
+          <button type="button" className="zw-entry ph-cell" title={node.hint} aria-expanded={isOpen} aria-controls={panelId} onClick={() => setOpen(isOpen ? null : node.id)}>
+            <CellIcon section={node.id} />
+            <strong>{node.title}</strong>
+            <SeasonalMark section={node.id} /><JacarandaMark section={node.id} />
+          </button>
+          <div className="ph-tree-body" id={panelId} hidden={!isOpen}><ul className="ph-tree-tiles">
+            {node.primary ? <li key={node.primary.title}><Tile leaf={node.primary} onOpen={onOpen} /></li> : null}
+            {node.items.map(item => item.kind === 'branch'
+              ? <Branch key={item.id} branch={item} onOpen={onOpen} />
+              : <li key={item.title}><Tile leaf={item} onOpen={onOpen} /></li>)}
+          </ul></div>
+        </section>;
+      })}
+    </div>
+  </nav>;
 }
