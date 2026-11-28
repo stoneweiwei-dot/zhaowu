@@ -53,7 +53,6 @@ export function ConsoleOverview({ reports, hasMoreReports, reportsLoading, onNav
           ))}
         </div>
       </details>
-      <a href="https://app.metricool.com/" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center rounded-md border border-line bg-cream/95 px-4 text-sm text-ink">社群排程：Metricool</a>
     </div>
   );
 }
