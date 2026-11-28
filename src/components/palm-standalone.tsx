@@ -6,6 +6,7 @@ import { Link } from "@tanstack/react-router";
 import { BirthDataNotice } from "@/components/birth-data-notice";
 import { CityPicker } from "@/components/city-picker";
 import { useI18n, type Locale } from "@/lib/i18n";
+import { parentRelationship } from "@/lib/palm/parent-relationship";
 import { buildPalm } from "@/lib/yizhangjing/engine";
 import { buildPalmSynthesis, palmDaoTone, presentLunarLabel, presentPalmPalace, splitPalmMeaning } from "@/lib/palm/standalone-presentation";
 import { saveSpecialistHistory } from "@/lib/specialist-history";
@@ -170,6 +171,7 @@ export function PalmStandalone() {
   };
 
   const synthesis = result ? buildPalmSynthesis(result.palaces, locale) : null;
+  const parents = result ? parentRelationship(result, locale) : null;
   const personalBirth = result ? readSharedBirthRecord() : null;
 
   return (
@@ -268,6 +270,22 @@ export function PalmStandalone() {
 
           <div className="space-y-5 px-5 pb-5 sm:px-8 sm:pb-8">
             <div data-natal-chart="past"><ChartTable title={locale === "en" ? "Four-palace chart" : locale === "zh-Hans" ? "一掌经 · 四宫命盘表" : "一掌經 · 四宮命盤表"} headers={[locale === "en" ? "Life" : "世次", locale === "en" ? "Branch" : locale === "zh-Hans" ? "宫支" : "宮支", locale === "en" ? "Star" : "星曜", locale === "en" ? "Path" : "六道"]} rows={result.palaces.map(p => { const item=presentPalmPalace(p,locale);return [item.lifeLabel,item.zhi,item.star,item.dao]; })}/></div>
+
+            {parents && (
+              <article aria-labelledby="palm-parents-title" className="rounded-2xl border border-[#b99755]/35 bg-paper/65 p-4 sm:p-5">
+                <p className="text-xs font-semibold text-cinnabar">{parents.source}</p>
+                <h3 id="palm-parents-title" className="mt-1 font-display text-xl font-semibold text-ink">{parents.title}</h3>
+                <dl className="mt-4 space-y-3">
+                  {parents.fields.map(([label, value]) => (
+                    <div key={label}>
+                      <dt className="text-xs font-semibold text-cinnabar">{label}</dt>
+                      <dd className="mt-1 text-sm leading-7 text-ink-soft">{value}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <p className="mt-4 border-t border-line/60 pt-3 text-xs leading-6 text-ink-mute">{parents.closing}</p>
+              </article>
+            )}
 
             <ReportAccessGate
               system="palm"
