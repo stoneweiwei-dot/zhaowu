@@ -200,7 +200,7 @@ async function main() {
   if (!plan.length) throw new Error('No approved channels enabled');
   if (action==='check') {
     const results=await inspectPlan({plan,token:process.env.BUFFER_API_KEY});
-    console.log(JSON.stringify({mode:'check',liveWrites:false,results,limitations:['Buffer only; check Metricool and existing schedules separately','Instagram media URL, actual image dimensions and automatic-publishing capability require independent verification']},null,2));
+    console.log(JSON.stringify({mode:'check',liveWrites:false,results,limitations:['Buffer only; check existing schedules on other channels separately','Instagram media URL, actual image dimensions and automatic-publishing capability require independent verification']},null,2));
     if (results.some(r=>r.existing)) throw new Error('Existing Buffer post found; preflight blocked');
     return;
   }

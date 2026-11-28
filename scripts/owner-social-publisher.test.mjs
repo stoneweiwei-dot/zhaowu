@@ -277,7 +277,7 @@ test("owner endpoint is protected, consolidated, and stays within the Hobby func
   assert.ok(apiFiles.length <= 12);
 });
 
-test("owner console retires broken in-site publishing and hands off to Metricool", async () => {
+test("owner console retires broken in-site publishing and keeps scheduling outside the overview", async () => {
   const account = await source("src/routes/account.tsx");
   const overview = await source("src/components/owner/console-overview.tsx");
   const route = await source("src/routes/social.tsx");
@@ -285,10 +285,9 @@ test("owner console retires broken in-site publishing and hands off to Metricool
   assert.doesNotMatch(account, /<AutopublishPanel/);
   assert.doesNotMatch(account, /"autopublish"/);
   assert.doesNotMatch(overview, /readAutopublishOverview/);
-  assert.match(overview, /https:\/\/app\.metricool\.com\//);
   assert.match(route, /data-external-social-handoff/);
   assert.match(route, /user\?\.isOwner/);
-  assert.match(route, /https:\/\/app\.metricool\.com\//);
+  assert.match(route, /https:\/\/publish\.buffer\.com\//);
   assert.doesNotMatch(route, /startThreadsConnection|publishOwnerSocialPost/);
   assert.equal(vercel.crons, undefined);
 });
@@ -303,7 +302,7 @@ test("legacy /social keeps a safe owner-only external publishing handoff", async
   const route = await source("src/routes/social.tsx");
   assert.match(route, /createFileRoute\("\/social"\)/);
   assert.match(route, /user\?\.isOwner/);
-  assert.match(route, /https:\/\/app\.metricool\.com\//);
+  assert.match(route, /https:\/\/publish\.buffer\.com\//);
   assert.doesNotMatch(route, /META_.*ACCESS_TOKEN|data-owner-social-publisher/);
 });
 
