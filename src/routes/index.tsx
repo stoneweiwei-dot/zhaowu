@@ -282,7 +282,7 @@ function Home() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const BIRTH_HASHES = ["#birth-form", "#analysis", "#analysisForm", "#birth-year", "#form"];
-    const TODAY_HASHES = ["#today", "#home-today-guide", "#almanac"];
+    const TODAY_HASHES = ["#today", "#home-today-guide", "#almanac", "#spirit-slip"];
     const QUIZ_HASHES = ["#quiz", "#fun-tests", "#tests"];
     const NOTES_HASHES = ["#notes", "#life-view", "#guanshi"];
 

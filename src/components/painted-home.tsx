@@ -10,6 +10,7 @@ import { HomeTree } from '@/components/home-tree';
 import { CuratedVideoShelf } from '@/components/curated-video-shelf';
 import { AnalysisForm } from '@/components/analysis-form';
 import '@/home-mobile-v2.css';
+import '@/wuling-home.css';
 
 type Section = 'form' | 'today' | 'quiz' | 'notes';
 /** Skins whose painting is clean enough to show at full strength behind the home title. */
@@ -42,7 +43,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
   // Every skin shows ITS OWN painting; the koi painting is only the no-skin / pastel-koi default.
   const art = skin?.hero || (dark ? '/theme-skins/reference-dragon.webp' : '/theme-skins/reference-koi.webp');
   // Keep published, owner-selected paintings; replace the disliked flute/default hero with an existing Song-style mist painting.
-  const editorialArt = !skin || (!seasonalAuto && /flute/i.test(skin.id)) ? '/theme-skins/verdant-mist-art.webp' : art.endsWith('/option-still-valley.webp') ? art.replace('/option-still-valley.webp', '/option-still-valley-home.webp') : art;
+  const editorialArt = !skin || (!seasonalAuto && /flute/i.test(skin.id)) ? '/theme-skins/bamboo-falls-art.webp' : art.endsWith('/option-still-valley.webp') ? art.replace('/option-still-valley.webp', '/option-still-valley-home.webp') : art;
   useEffect(() => {
     const shell = document.querySelector<HTMLElement>('#root > .zhaowu-home-sheet-shell:not(.zhaowu-login-shell)');
     const update = () => {
@@ -67,47 +68,45 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
   } as CSSProperties;
   return <section className="zw-painted-home zw-v2-home" data-home-v2 data-composition={layout} data-reference-art={!skin || FULL_PAINTING_HOMES.has(skin.id) || !!seasonalPackForSkin(skin.id)} data-tone={dark ? 'dark' : 'light'} style={style}>
     <div className="zw-stage" aria-hidden="true" /><div className="zw-veil" aria-hidden="true" />
-    <section className="zw-v2-hero" aria-labelledby="zw-v2-title">
-      <header className="zw-v2-masthead">
-        <Link className="zw-v2-wordmark" to="/" aria-label="昭梧 ZHAOWU">
-          <img
-            src="/brand-ui/header-gourd-wordmark-r113-144.webp"
-            srcSet="/brand-ui/header-gourd-wordmark-r113-144.webp 144w, /brand-ui/header-gourd-wordmark-r113-288.webp 288w"
-            sizes="48px"
-            alt=""
-            width={48}
-            height={48}
-            decoding="async"
-          />
-          <span><strong>昭梧</strong><small>Z H A O W U</small></span>
-        </Link>
-        <svg className="zw-season-mark" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="18" cy="11" r="4"/><path d="M18 3v2m0 12v2M10 11H8m20 0h-2M9 23h15a4 4 0 0 0-4-5 6 6 0 0 0-10 1 3 3 0 0 0-1 4z"/>
-          <g className="zw-south-spring" strokeWidth="1"><circle cx="26" cy="26" r="1.1"/><path d="M26 22.6c.7 1.1.7 2 .1 3-.6-1-.6-1.9-.1-3zm0 6.8c-.7-1.1-.7-2-.1-3 .6 1 .6 1.9.1 3zM22.8 24.2c1.2.6 1.8 1.2 1.9 2.2-1.3-.1-2-1-1.9-2.2zm6.4 0c-1.2.6-1.8 1.2-1.9 2.2 1.3-.1 2-1 1.9-2.2zM23.4 28.6c1-.6 1.8-.6 2.6 0-1 .5-1.8.5-2.6 0z"/></g>
-          <g className="zw-south-summer" strokeWidth="1"><path d="M21 25c1.2-1.4 2.4-1.4 3.6 0s2.4 1.4 3.6 0 2.4-1.4 3.6 0M21 28.2c1.2-1.4 2.4-1.4 3.6 0s2.4 1.4 3.6 0 2.4-1.4 3.6 0"/></g>
-          <g className="zw-south-autumn" strokeWidth="1"><path d="M21 29.2 24 23l2 3.2 2.2-5.4L31 29.2z"/></g>
-          <g className="zw-south-winter" strokeWidth="1"><path d="M23 30c.4-3 1.6-5.2 2.2-8.2 1.6 1.8 3.6 2.2 5.6 1.2M24.2 30c1.4-.6 2.8-2.6 2.4-5.4"/></g>
-        </svg>
-        <svg className="ph-jacaranda-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-          <circle cx="20" cy="20" r="18" stroke="currentColor" strokeOpacity=".45" />
-          <circle cx="20" cy="20" r="6" stroke="currentColor"/><path d="M20 9v3M20 28v3M9 20h3M28 20h3M12 12l2 2M26 26l2 2M28 12l-2 2M14 26l-2 2" stroke="currentColor" strokeLinecap="round"/>
-          <path d="M20 2.5c-2 2-2 3.5 0 4.5 2-1 2-2.5 0-4.5Z" fill="currentColor" />
-        </svg>
+    <div className="wl-scroll">
+      <header className="wl-mast">
+        <Link className="wl-brand" to="/" aria-label="昭梧 ZHAOWU"><b aria-hidden="true">昭梧</b>昭 梧</Link>
+        <details className="wl-menu">
+          <summary aria-label={t('網站選單','网站菜单','Site menu')}><span aria-hidden="true">☰</span></summary>
+          <nav aria-label={t('主要導覽','主要导航','Main navigation')}>
+            <Link to="/">{t('首頁','首页','Home')}</Link>
+            <a href="#birth-form">{t('免費排盤','免费排盘','Free birth chart')}</a>
+            <a href="#today">{t('今日指引','今日指引','Daily guide')}</a>
+            <a href="#quiz">{t('趣味測驗','趣味测验','Quizzes')}</a>
+            <a href="#notes">{t('文章與知識','文章与知识','Articles and knowledge')}</a>
+            <Link to="/history">{t('我的報告','我的报告','My reports')}</Link>
+            <button type="button" onClick={event => {
+              event.currentTarget.closest('details')?.removeAttribute('open');
+              window.dispatchEvent(new Event('zhaowu:open-guide'));
+            }}>{t('怎麼用','怎么用','How to use Zhaowu')}</button>
+          </nav>
+        </details>
       </header>
+      <section className="wl-hero" aria-labelledby="zw-v2-title">
+        <p className="wl-caption">{t('霧 嶺 聽 泉','雾 岭 听 泉','Mist on the ridge')}</p>
+        <h1 id="zw-v2-title">{t('昭梧','昭梧','Zhaowu')}<small className="zw-season-mark" aria-hidden="true">聽泉</small></h1>
+        <p className="wl-motto">{t('觀天之道・悟人之心','观天之道・悟人之心','Read the sky, understand the heart.')}</p>
+        <p>{t('從一份生辰，讀自己的命書。','从一份生辰，读自己的命书。','Begin your reading with your birth chart.')}<br/>{t('循今日節氣，尋日常的指引。','循今日节气，寻日常的指引。','Find daily guidance in the turning seasons.')}</p>
+        <a href="#wl-portals" className="wl-explore">{t('開始探索','开始探索','Explore')} <span aria-hidden="true">›</span></a>
+      </section>
+      <nav id="wl-portals" aria-label={t('四個入口','四个入口','Explore Zhaowu')}>
+        {[
+          ['#today', t('今日指引','今日指引','Daily guide'), t('讀今日黃曆','读今日黄历','Read the almanac'), t('看節氣宜忌','看节气宜忌','Follow the seasons'), '/today/almanac-lotus-v1.webp'],
+          ['/sample-report', t('深度解讀','深度解读','In-depth reading'), t('翻閱命書示例','翻阅命书示例','Open a sample report'), t('細看解讀脈絡','细看解读脉络','Trace the interpretation'), '/theme-skins/verdant-pavilion-art.webp'],
+          ['#birth-form', t('命書','命书','Destiny book'), t('錄入生辰','录入生辰','Enter your birth details'), t('免費讀核心解讀','免费读核心解读','Read your free insights'), '/home-tiles/my-reports.webp'],
+          ['#spirit-slip', t('靈籤','灵签','Spirit slip'), t('展讀今日籤文','展读今日签文','Read today’s verse'), t('留一念自省','留一念自省','Take time to reflect'), '/today/spirit-slip-song-mineral-v1.webp'],
+        ].map(([href,title,first,second,image]) => <a href={href} key={href} style={{'--tile-art': `url("${image}")`} as CSSProperties}>
+          <strong>{title}</strong><span>{first}<br/>{second}</span><i aria-hidden="true">↗</i>
+        </a>)}
+      </nav>
+      <p className="wl-colophon">{t('山水有相，心自有答','山水有相，心自有答','In quiet landscapes, the heart finds its answer.')}</p>
       <HomeTree t={t} onOpen={onOpen} />
-      <div className="zw-v2-opening">
-        <p className="zw-v2-eyebrow">{t('東方時間文化 · 個人命書', '东方时间文化 · 个人命书', 'EASTERN TIME CULTURE · PERSONAL DESTINY BOOK')}</p>
-        <h1 id="zw-v2-title">
-          <span>{t('讓天時有形，', '让天时有形，', 'Give time a form.')}</span>
-          <span>{t('讓命理可讀。', '让命理可读。', 'Make destiny readable.')}</span>
-        </h1>
-        <p className="zw-v2-intro">{t(
-          '從一份生辰開始，免登入排盤，先讀免費核心解讀；再慢慢探索昭梧的文章、原創圖錄與每日指引。',
-          '从一份生辰开始，无需登录即可排盘，先阅读免费的核心解读；再慢慢探索昭梧的文章、原创图鉴与每日指引。',
-          'Start with your birth details to create a chart without signing in and read your free core insights. Then explore ZHAOWU’s essays, original art collections and daily guide.'
-        )}</p>
-        {/* ── 昭梧生辰案台（第一屏實體直接呈現） ── */}
-        <section className="zw-home-birth-desk-container" data-home-birth-entry aria-label={t('昭梧生辰案台', '昭梧生辰案台', 'ZHAOWU Birth Desk')}>
+      <section className="zw-home-birth-desk-container" data-home-birth-entry aria-label={t('昭梧生辰案台', '昭梧生辰案台', 'ZHAOWU Birth Desk')}>
           <div className="zw-hero-secondary-panel zhaowu-home-stage zhaowu-home-stage--primary relative">
             <AnalysisForm />
           </div>
@@ -116,10 +115,9 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
         <div className="zw-v2-actions">
           <Link className="zw-v2-sample" to="/sample-report">{t('先看公開命書示例', '先看公开命书示例', 'View a sample report')} <span aria-hidden="true">›</span></Link>
         </div>
-      </div>
       {(seasonalAuto || frostOnly || selectedPhase) && <p className="zw-v2-season">{seasonalAuto ? `${locale === 'en' ? seasonalAuto.term.en : locale === 'zh-Hans' ? seasonalAuto.term.hans : seasonalAuto.term.zh} · ${seasonalAuto.hou[locale]}` : selectedPhase && selectedTerm ? `${locale === 'en' ? selectedTerm.en : locale === 'zh-Hans' ? selectedTerm.hans : selectedTerm.zh} · ${selectedPhase.name[locale]}` : `${t('霜降', '霜降', 'Frost’s Descent')} · ${frostOnly!.name[locale]}`}</p>}
       {selectedPhase && <p className="zw-winter-quote">{selectedPhase.quote[locale]} <span>STONE 原創</span></p>}
-    </section>
+    </div>
     {(seasonalAuto || frostOnly) && <p className="zw-season-context" data-seasonal-note data-solar-hou={seasonalAuto ? seasonalAuto.houIndex + 1 : undefined}>{t('節氣為中國傳統名稱；畫作依粗略半球位置調整，位置不明沿用原畫，並非當地天氣預報。', '节气为中国传统名称；画作依粗略半球位置调整，位置不明沿用原画，并非当地天气预报。', 'Traditional Chinese seasonal names; existing artwork follows approximate hemisphere when available, not local weather.')}{seasonalAuto && (locale === 'en' ? ` Pentad ${houNumber} / 72 · Sydney calendar schedule.` : ` 第 ${houNumber} / 72 候 · 悉尼節氣日程。`)}</p>}
     <CuratedVideoShelf placement="home" />
     <nav className="ph-bottom-nav" aria-label={t('頁面導覽','页面导航','Page navigation')}><Link to="/" aria-current="page"><BrandIcon name="home"/><span>{t('首頁','首页','Home')}</span></Link><button onClick={() => onOpen('form')}><BrandIcon name="reports"/><span>{t('命盤','命盘','Chart')}</span></button><button onClick={() => onOpen('today')}><BrandIcon name="calendar"/><span>{t('指引','指引','Today')}</span></button><Link to="/history"><BrandIcon name="account"/><span>{t('我的','我的','Account')}</span></Link></nav>

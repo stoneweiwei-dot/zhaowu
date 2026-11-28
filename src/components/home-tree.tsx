@@ -140,11 +140,11 @@ export function homeTree(t: T): TreeNode[] {
   ];
 }
 
-function Leaf({ leaf, onOpen }: { leaf: TreeLeaf; onOpen: (s: HomeSubview) => void }) {
+function Leaf({ leaf, onOpen, textOnly = false }: { leaf: TreeLeaf; textOnly?: boolean; onOpen: (s: HomeSubview) => void }) {
   const isChartAction = leaf.kind === 'action' && leaf.section === 'form';
   const className = leaf.thumb ? 'ph-tree-tile' : isChartAction ? 'ph-tree-tile-cta' : 'ph-tree-leaf';
   const body = <>
-    {leaf.thumb && <img src={leaf.thumb} alt={leaf.kind === 'link' ? leaf.alt ?? '' : ''} loading="lazy" />}
+    {!textOnly && leaf.thumb && <img src={leaf.thumb} alt={leaf.kind === 'link' ? leaf.alt ?? '' : ''} loading="lazy" />}
     <span><strong>{leaf.title}</strong><small>{leaf.hint}</small></span>
     {!leaf.thumb && <i aria-hidden>›</i>}
   </>;
@@ -176,7 +176,7 @@ export function HomeTree({ t, onOpen }: { t: T; onOpen: (s: HomeSubview) => void
   const daily = nodes.flatMap(node => node.groups).find(group => group.id === 'today-guide');
   return <nav id="home-guide" className="zw-study-guide" data-home-tree aria-label={t('網站導覽', '网站导览', 'Site guide')}>
     <div className="zw-daily-entries">
-      {daily?.children.map(leaf => <Leaf key={leaf.kind === 'link' ? leaf.href : leaf.section} leaf={leaf} onOpen={onOpen} />)}
+      {daily?.children.map(leaf => <Leaf textOnly key={leaf.kind === 'link' ? leaf.href : leaf.section} leaf={leaf} onOpen={onOpen} />)}
     </div>
     <details className="zw-study">
       <summary><img src="/theme-skins/verdant-mist-art.webp" alt="" />

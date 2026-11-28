@@ -1,0 +1,106 @@
+/* The existing skin supplies the seasonal painting. The reading surface stays warm paper. */
+html body #root .zw-painted-home.zw-v2-home:has(.wl-scroll) {
+  background: #f7f3e8 !important;
+}
+.wl-scroll {
+  --wl-ink: #243f38;
+  --wl-line: #c6b68e;
+  position: relative;
+  isolation: isolate;
+  color: var(--wl-ink);
+  padding: 0 clamp(14px, 4vw, 60px) 2rem;
+  font-family: "Noto Serif TC", Georgia, serif;
+}
+.wl-scroll::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 auto;
+  height: clamp(480px, 75svh, 760px);
+  background: radial-gradient(ellipse at 50% 45%, #fff9e9e8, #faf5e581 32%, transparent 72%),
+    url("/theme-skins/bamboo-falls-art.webp") 50% 48% / cover no-repeat;
+  mask-image: linear-gradient(black 64%, transparent);
+}
+.wl-mast { display:flex; justify-content:space-between; align-items:center; min-height:58px; position:relative; z-index:2; }
+.wl-brand, .wl-menu summary { min-height:44px; display:inline-flex; align-items:center; }
+.wl-brand { gap:9px; font-size:19px; color:#283b32; font-weight:700; }
+.wl-brand b, #zw-v2-title .zw-season-mark {
+  display:inline-grid; place-items:center; color:#fff5df; background:#954433;
+  border-radius:2px 4px 2px 3px; font-family:serif; transform:rotate(-3deg);
+}
+.wl-brand b { width:32px; height:32px; font-size:13px; }
+.wl-menu { position:relative; margin-right:78px; }
+.wl-menu summary { justify-content:center; min-width:44px; cursor:pointer; font-size:23px; list-style:none; }
+.wl-menu summary::-webkit-details-marker { display:none; }
+.wl-menu nav { position:absolute; right:0; width:max-content; min-width:160px; padding:8px 16px; background:#fcf8ec; border:1px solid var(--wl-line); }
+.wl-menu a { display:flex; align-items:center; min-height:44px; border-bottom:1px solid #ded4b9; }
+html body #root:has(.wl-scroll) .zw-langpick button.zw-langpick__toggle {
+  min-height:44px!important; background:#faf6eae6!important; box-shadow:none!important; border:0!important; border-radius:2px!important;
+}
+html body #root:has(.wl-scroll) .zw-langpick .zw-langpick__toggle span { color:#344b40!important; }
+html body #root:has(.wl-scroll) .zw-langpick__toggle svg { display:none; }
+.wl-hero { min-height:clamp(322px,46svh,480px); text-align:center; display:grid; justify-items:center; align-content:center; gap:10px; }
+.wl-hero p { margin:0; font-size:14px; line-height:1.7; }
+.wl-hero .wl-caption { letter-spacing:.22em; font-size:12px; }
+.wl-hero h1 { margin:0; position:relative; font:500 clamp(52px,10vw,90px)/1.15 "Noto Serif TC",Georgia,serif; letter-spacing:.1em; color:#775928; text-shadow:0 1px 2px #fff8e8; }
+html body #root .wl-hero #zw-v2-title .zw-season-mark { display:inline-grid; position:absolute; right:-18px; top:3px; width:15px; height:29px; font:12px/1 serif; letter-spacing:0; margin:0; }
+.wl-hero .wl-motto { font-size:clamp(18px,3vw,25px); }
+.wl-explore { display:inline-flex; align-items:center; gap:20px; min-height:44px; margin-top:6px; padding:0 21px; border:1px solid #ab955f; border-radius:5px; background:#fffaebed; }
+#wl-portals { margin:auto; max-width:910px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; scroll-margin-top:64px; }
+#wl-portals a { position:relative; isolation:isolate; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; gap:12px; min-height:132px; padding:15px; border:1px solid var(--wl-line); border-radius:5px; background:#faf6e9; color:var(--wl-ink); }
+#wl-portals a::before { content:""; position:absolute; z-index:-1; inset:0; background:var(--tile-art) center / cover; opacity:.46; mask-image:linear-gradient(108deg,transparent,#0005 42%,black); }
+#wl-portals strong { max-width:calc(100% - 20px); font:600 clamp(18px,3vw,25px)/1.2 "Noto Serif TC",Georgia,serif; }
+#wl-portals span { font-size:14px; line-height:1.5; }
+#wl-portals i { position:absolute; top:12px; right:10px; width:20px; text-align:center; line-height:18px; border:1px solid #ad9e78; border-radius:50%; font-style:normal; }
+.wl-colophon { margin:18px auto 30px; text-align:center; font-size:13px; letter-spacing:.14em; }
+.wl-scroll .zw-home-birth-desk-container, .wl-scroll .zw-v2-actions { max-width:48rem; margin:1rem auto; }
+html body #root .wl-scroll .zw-home-birth-desk-container { background:#faf6eb; border:1px solid var(--wl-line); padding:clamp(12px,2vw,28px); border-radius:3px; box-shadow:none; }
+html body #root .wl-scroll #birth-form :is(input,select,textarea) { border:1px solid #baa984!important; background:#fffaf0!important; color:#293f37!important; min-height:44px; }
+html body #root .wl-scroll #birth-form button[type=submit] { background:#913e30!important; color:#fffaf0!important; border-radius:4px!important; box-shadow:none!important; min-height:44px; }
+.wl-scroll .zw-v2-sample { display:inline-flex; min-height:44px; align-items:center; }
+@media(min-width:760px) { #wl-portals { grid-template-columns:repeat(4,minmax(0,1fr)); } #wl-portals a { min-height:156px; } }
+
+/* Leave part of the seasonal scene visible through the mountainside wash. */
+.wl-scroll::after {
+  content:""; position:absolute; z-index:-1; pointer-events:none; inset:0 0 auto auto;
+  width:46%; height:clamp(400px,62svh,650px);
+  background:var(--zw-scene) 80% 35% / cover;
+  mask-image:radial-gradient(ellipse at right top,#000b,transparent 72%);
+}
+html body #root:has(.wl-scroll) .zhaowu-site-header { position:absolute!important; top:0!important; height:0!important; }
+html body #root:has(.wl-scroll) .zw-journey-nav { display:none!important; }
+html body #root:has(.wl-scroll) .wl-menu button { min-height:44px; text-align:start; }
+html body #root .wl-scroll .wl-hero h1#zw-v2-title {
+  font:500 clamp(52px,10vw,88px)/1.12 "Noto Serif TC",Georgia,serif!important;
+  color:#745723!important; -webkit-text-fill-color:#745723!important;
+  padding:0!important; margin:0!important; text-shadow:0 1px 3px #fff7df!important;
+}
+html body #root .wl-scroll h1#zw-v2-title::after { display:none!important; }
+html body #root .wl-scroll h1#zw-v2-title small { -webkit-text-fill-color:#fff5df!important; text-shadow:none!important; }
+html body #root #wl-portals a { background-color:#faf6e9!important; border-color:#bdac82!important; box-shadow:none!important; }
+html body #root .wl-scroll .zw-daily-entries .ph-tree-tile { min-height:56px; border-radius:2px; justify-content:center; }
+
+.wl-hero { position:relative; isolation:isolate; }
+.wl-hero::before, .wl-hero::after {
+  content:""; position:absolute; z-index:-1; pointer-events:none;
+  background-repeat:no-repeat; background-size:contain; opacity:.62;
+}
+.wl-hero::before {
+  right:2%; top:0; width:clamp(55px,13vw,115px); aspect-ratio:1;
+  background-image:url("/ornaments/generated/dragon.webp");
+}
+.wl-hero::after {
+  left:2%; bottom:6%; width:clamp(44px,11vw,85px); aspect-ratio:1;
+  background-image:url("/ornaments/generated/crane.webp");
+}
+.wl-colophon::after {
+  content:""; display:block; height:24px; margin:auto; width:min(200px,60%);
+  background:url("/theme-skins/verdant-mist-art.webp") center 52% / 100% auto;
+  opacity:.32; mask-image:radial-gradient(ellipse,#000 8%,transparent 72%);
+}
+.wl-caption::after {
+  content:""; position:absolute; z-index:-1; pointer-events:none;
+  right:0; bottom:0; width:clamp(46px,14vw,90px); aspect-ratio:1;
+  background:url("/ornaments/generated/lotus.webp") center / contain no-repeat;
+  opacity:.62;
+}
