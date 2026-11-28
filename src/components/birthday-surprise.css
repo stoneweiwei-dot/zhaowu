@@ -1,0 +1,38 @@
+.birthday-surprise {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--zws-divider, rgba(50,76,66,.18));
+  background: var(--zws-surface, #fffdf8);
+  color: var(--zws-ink, #27241f);
+  padding: 22px;
+  box-shadow: 0 5px 18px rgba(35,48,45,.035);
+}
+.birthday-countdown-label,.birthday-letter-kicker { color: var(--zws-accent, #315e50); font-family: var(--zw-font-heading, "Songti TC", serif); font-size: 19px; letter-spacing: .08em; }
+.birthday-countdown > a { display: inline-flex; margin-top: 8px; min-height: 44px; align-items: center; color: var(--zws-accent, #315e50); text-decoration: underline; text-underline-offset: 3px; }
+.birthday-year-preview { margin-top: 10px; border-top: 1px solid var(--zws-divider, rgba(50,76,66,.18)); padding-top: 12px; }
+.birthday-year-preview h3 { font-family: var(--zw-font-heading, "Songti TC", serif); font-size: 17px; }
+.birthday-year-preview h3 span,.birthday-placeholder { color: var(--zws-soft, #5a554c); font: 11px/1.6 var(--zw-font-body, sans-serif); letter-spacing: .06em; }
+.birthday-year-preview p,.birthday-letter-body { margin-top: 9px; color: var(--zws-soft, #4a5953); font-size: 14px; line-height: 1.9; }
+.birthday-letter h2 { margin-top: 3px; font: 600 23px/1.45 var(--zw-font-heading, "Songti TC", serif); }
+.birthday-letter-body { font: 15px/2 var(--zw-font-heading, "Songti TC", serif); }
+.birthday-signature { margin-top: 14px; text-align: right; color: #315e50; font: 15px var(--zw-font-heading, "Songti TC", serif); }
+.birthday-share-button,.birthday-opening button { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; margin-top: 15px; border: 1px solid #315e50; background: #315e50; padding: 0 16px; color: #fffaf0; cursor: pointer; }
+.birthday-card-preview { display: block; width: min(100%, 280px); height: auto; margin: 18px auto 0; border: 1px solid rgba(160,134,88,.45); }
+.birthday-opening { position: absolute; z-index: 2; inset: 0; display: grid; place-content: center; justify-items: center; gap: 10px; min-height: 360px; background: #fffaf0; text-align: center; animation: birthday-reveal 2s ease both; }
+.birthday-envelope { position: relative; width: 172px; height: 118px; overflow: hidden; border: 1px solid #a08658; background: #f4ead9; box-shadow: 0 8px 22px rgba(35,48,45,.08); }
+.birthday-envelope::before { position: absolute; inset: -1px 0 25px; content: ""; background: #eee1c8; clip-path: polygon(0 0,100% 0,50% 72%); border-bottom: 1px solid #a08658; transform-origin: top; animation: birthday-flap 1.9s ease both; }
+.birthday-letter-sheet { position: absolute; left: 18px; right: 18px; top: 25px; height: 78px; display: grid; place-items: center; color: #a08658; background: #fffdf8; animation: birthday-letter-rise 1.9s ease both; }
+.birthday-opening p { margin: 2px 0 0; font-family: var(--zw-font-heading, "Songti TC", serif); }
+.birthday-petals { color: #a08658; animation: birthday-fall 1.9s ease-in both; }
+@keyframes birthday-reveal { 0%,88% { opacity: 1; } 100% { opacity: 0; pointer-events: none; } }
+@keyframes birthday-flap { 0%,20% { transform: rotateX(0); } 65%,100% { transform: rotateX(180deg); } }
+@keyframes birthday-letter-rise { 0%,20% { transform: translateY(24px); } 72%,100% { transform: translateY(-11px); } }
+@keyframes birthday-fall { from { transform: translateY(-22px); opacity: 0; } 25% { opacity: 1; } to { transform: translateY(44px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .birthday-opening,.birthday-opening * { animation: none !important; } }
+@media (max-width: 480px) { .birthday-surprise { padding: 17px; } }
+@media (max-width: 480px) {
+  .birthday-surprise.birthday-countdown {
+    padding-right: calc(17px + 120px);
+    padding-bottom: calc(17px + 72px + env(safe-area-inset-bottom, 0px));
+  }
+}

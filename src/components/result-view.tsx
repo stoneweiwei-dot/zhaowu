@@ -34,6 +34,7 @@ import {
 import { directAnswerCoversQuestion } from "@/lib/qa/answer-quality";
 import { foodPreferenceAnswer } from "@/lib/report/food-preference-answer";
 import { watchReportAccess } from "@/lib/report-access-watch";
+import { BirthdaySurprise } from "@/components/birthday-surprise";
 
 const RESULT_COPY = {
   "zh-Hant": { syncFailed: "內容已完成，但雲端同步暫時失敗；畫面內容不受影響。", fullFailed: "補充內容暫時未能生成。", saved: "完整報告已保存。", saveFailed: "保存失敗。", saving: "保存中…", updateSaved: "更新已保存報告", fullGenerate: "補充", fullGenerating: "整理中…", imageReady: "個人命象已生成並保存。", imageMatched: "已為你配對並保存圖庫命象。", imageLoadFailed: "命象圖未能載入；文字內容不受影響。", next: "下一步", evidence: "命盤與天干地支圖", evidenceLead: "", decree: "命理解讀", chartDetail: "展開命盤與人物詳解" },
@@ -255,6 +256,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   return (
     <section id="result" className="zhaowu-result-flow space-y-5 zw-result-v2" data-answer-first-r144="true">
       {checkoutSuccess && unlocked ? <p className="rounded-lg border border-wood/30 bg-wood/5 p-4 text-sm leading-6 text-ink" role="status" data-checkout-success>{locale === "en" ? "Full access confirmed. Your complete report is open. This is a one-time unlock, not a subscription." : locale === "zh-Hans" ? "完整权限已确认／完整报告已经开放／本次为单次解锁，不是订阅。" : "完整權限已確認／完整報告已經開放／本次為單次解鎖，不是訂閱。"}</p> : null}
+      <BirthdaySurprise result={result} />
       <article className="zhaowu-result-card seal-border rounded-xl bg-cream/95 p-5 sm:p-7">
         <p className="text-xs tracking-[0.28em] text-cinnabar">{t("resultQ")}</p>
         <h2 className="mt-2 font-display text-2xl">{question}</h2>
