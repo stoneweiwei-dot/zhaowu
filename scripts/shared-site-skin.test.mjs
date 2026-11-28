@@ -67,7 +67,7 @@ function skinClient(fetcher) {
   const attrs = new Map();
   const storage = new Map();
   const context = vm.createContext({
-    fetch: fetcher, Event,
+    fetch: fetcher, Event, AbortSignal,
     // Browser-only imports are stubbed for VM execution; production imports remain unchanged.
     FROST_SKIN_ID: "solar-frost-descent", WINTER_SKIN_ID: "solar-start-winter", SEASONAL_AUTO_ID: "solar-auto",
     seasonalPackForSkin: () => null,
@@ -159,4 +159,20 @@ test("visitors may select only published choices and lose a revoked choice on re
   allowedSkins = [];
   await client.run("refreshSharedSkin()");
   assert.equal(client.attrs.get("data-zws"), "pastel-koi");
+});
+
+test("theme reader supports the Vite anon alias and server-only credentials for the single public row", async () => {
+  const { readPublishedSiteSkinFromSettings } = await import("../lib/owner-site-skin-public.js");
+  for (const name of ["VITE_SUPABASE_ANON_KEY", "SUPABASE_SERVICE_ROLE_KEY"]) {
+    const result = await readPublishedSiteSkinFromSettings(async (input, init) => {
+      const url = new URL(input);
+      assert.equal(url.origin, "http://localhost");
+      assert.equal(url.searchParams.get("key"), "eq.published_site_skin_v1");
+      assert.equal(url.searchParams.get("public_read"), "eq.true");
+      assert.equal(init.headers.apikey, "fixture-only");
+      assert.ok(init.signal instanceof AbortSignal);
+      return { ok: true, json: async () => [{ value: { skin: "none", allowedSkins: ["pastel-koi"] } }] };
+    }, { SUPABASE_URL: "http://localhost", [name]: "fixture-only" });
+    assert.deepEqual(result.allowedSkins, ["pastel-koi"]);
+  }
 });

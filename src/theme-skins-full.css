@@ -1761,3 +1761,41 @@ html[data-zws]:not([data-zws^="solar-"]):not([data-zws^="southern-"]):not([data-
   height: var(--zws-rule-h, 2px) !important;
   background: var(--zws-rule, var(--zws-gold)) !important;
 }
+
+/* Owner controls keep a 44px touch target and a small, consistent footprint. */
+[data-owner-theme-skins] .theme-card-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  min-height: 44px;
+  padding: .25rem .9rem;
+  border: 1px solid #47746e;
+  border-radius: 999px;
+  background: #fffaf0;
+  color: #204f50;
+  font-size: .875rem;
+  font-weight: 600;
+}
+[data-owner-theme-card] .theme-card-action { margin-top: .65rem; }
+[data-owner-theme-skins] .theme-card-action[data-state="active"] {
+  background: #e3f0e8;
+  color: #24593f;
+  border-color: #70977b;
+}
+[data-owner-theme-skins] .theme-card-action[data-state="error"] {
+  background: #fff7f1;
+  color: #933a29;
+  border-color: #a94e37;
+}
+[data-owner-theme-skins] .theme-card-action:focus-visible { outline: 2px solid #22546c; outline-offset: 2px; }
+.theme-saving-spinner {
+  width: .85rem;
+  height: .85rem;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .theme-saving-spinner { animation: spin .8s linear infinite; }
+}

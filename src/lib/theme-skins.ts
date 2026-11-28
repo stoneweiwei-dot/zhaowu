@@ -212,6 +212,8 @@ let pendingPublishes = 0;
 let publishedDefault = SITE_DEFAULT_SKIN;
 let visitorSkins: string[] = [];
 let policyReady = false;
+let policyLoadFailed = false;
+const SKIN_REQUEST_TIMEOUT_MS = 15_000;
 const visitorChoiceKey = "zhaowu.skin.visitor-choice.v1";
 
 function applyVisitorChoice() {
@@ -299,20 +301,23 @@ function legacyOwnerChoice(): string | null {
 export async function refreshSharedSkin(): Promise<string | null> {
   if (typeof window === "undefined" || pendingPublishes > 0) return null;
   const token = ++syncSerial;
+  const signal = AbortSignal.timeout(SKIN_REQUEST_TIMEOUT_MS);
   try {
-    let response = await fetch("/api/owner-data?view=site-skin", { cache: "no-store", credentials: "same-origin" });
+    let response = await fetch("/api/owner-data?view=site-skin", { cache: "no-store", credentials: "same-origin", signal });
     // Read-only fallback: mirror the publish route recovery without changing stored preferences.
     if (response.status === 404) {
-      response = await fetch("/api/owner-session?view=site-skin", { cache: "no-store", credentials: "same-origin" });
+      response = await fetch("/api/owner-session?view=site-skin", { cache: "no-store", credentials: "same-origin", signal });
     }
-    if (!response.ok) return null; // keep last known skin if the setting service is unavailable
+    if (!response.ok) throw new Error("Theme settings unavailable");
     const payload = await response.json() as { skin?: unknown; configured?: boolean; settingsAvailable?: boolean; allowedSkins?: unknown };
     const selected = payload.skin === "none" ? "none" : typeof payload.skin === "string" && skinById(payload.skin) ? payload.skin : null;
-    if (selected === null || token !== syncSerial) return null;
+    if (token !== syncSerial) return null;
+    if (selected === null) throw new Error("Invalid theme settings");
 
     if (payload.settingsAvailable === false) {
       // A fallback theme file has no visitor policy. Keep the saved preference for recovery.
       policyReady = false;
+      policyLoadFailed = true;
       visitorSkins = [];
       publishedDefault = selected;
       applySkin(selected);
@@ -324,7 +329,7 @@ export async function refreshSharedSkin(): Promise<string | null> {
       const saved = legacyOwnerChoice();
       if (saved !== null) {
         migrationAttempted = true;
-        const auth = await fetch("/api/owner-session", { cache: "no-store", credentials: "same-origin" })
+        const auth = await fetch("/api/owner-session", { cache: "no-store", credentials: "same-origin", signal })
           .then((r) => r.ok ? r.json() as Promise<{ authenticated?: boolean }> : null)
           .catch(() => null);
         if (auth?.authenticated === true && token === syncSerial) {
@@ -336,10 +341,18 @@ export async function refreshSharedSkin(): Promise<string | null> {
     publishedDefault = selected;
     visitorSkins = Array.isArray(payload.allowedSkins) ? payload.allowedSkins.filter((id): id is string => typeof id === "string" && (id === "none" || id === SEASONAL_AUTO_ID || SKINS.some(s => s.id === id))) : [];
     policyReady = true;
+    policyLoadFailed = false;
     applyVisitorChoice();
     rememberPublishedSkin(selected);
     return selected;
-  } catch { return null; }
+  } catch {
+    if (token === syncSerial) {
+      policyReady = false;
+      policyLoadFailed = true;
+      window.dispatchEvent(new Event(SKIN_EVENT));
+    }
+    return null;
+  }
 }
 
 /** Server requires a valid owner cookie and same-origin POST. Never silently fall back to local-only styling. */
@@ -348,6 +361,7 @@ export async function publishSkin(id: string, allowedSkins?: string[]): Promise<
   if (!chosen) throw new Error("未知主題，不能發佈。");
   const token = ++syncSerial;
   pendingPublishes += 1;
+  const signal = AbortSignal.timeout(SKIN_REQUEST_TIMEOUT_MS);
   const list = allowedSkins ?? (visitorSkins.length ? visitorSkins : undefined);
   const body = JSON.stringify({ action: "site-skin.publish", skin: chosen, ...(list ? { allowedSkins: list } : {}) });
   try {
@@ -356,7 +370,7 @@ export async function publishSkin(id: string, allowedSkins?: string[]): Promise<
       cache: "no-store",
       credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
-      body,
+      signal, body,
     });
     // Some production versions omit /api/owner-data from the deployed function manifest.
     // Only a missing route (404) retries the exact same authenticated operation through
@@ -365,7 +379,7 @@ export async function publishSkin(id: string, allowedSkins?: string[]): Promise<
       response = await fetch("/api/owner-session", {
         method: "POST", cache: "no-store", credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
-        body,
+        signal, body,
       });
     }
     if (!response.ok) throw new Error(response.status === 401 ? "站主登入已失效，請重新登入。" : `全站主題尚未儲存（HTTP ${response.status}），請稍後重試。`);
@@ -375,6 +389,7 @@ export async function publishSkin(id: string, allowedSkins?: string[]): Promise<
       publishedDefault = chosen;
       visitorSkins = list ?? [];
       policyReady = true;
+      policyLoadFailed = false;
       applySkin(chosen, true);
       if (visitorSkins.length) applyVisitorChoice();
       rememberPublishedSkin(chosen);
@@ -427,7 +442,8 @@ export function useSkin() {
     // The same selected id can now resolve to a new phase's artwork and copy.
     const sync = () => render(value => value + 1);
     window.addEventListener(SKIN_EVENT, sync);
+    sync(); // Catch a request that settled between render and subscription.
     return () => window.removeEventListener(SKIN_EVENT, sync);
   }, []);
-  return { id, skin: skinById(id), apply: publishSkin, publishedDefault, visitorSkins, policyReady };
+  return { id, skin: skinById(id), apply: publishSkin, publishedDefault, visitorSkins, policyReady, policyLoadFailed };
 }
