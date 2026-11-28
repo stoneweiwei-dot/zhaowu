@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>昭梧 · 畫卷即介面 v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:"LXGW WenKai";font-weight:400;font-display:block;src:url("fonts/kai-v2.woff2") format("woff2");}
+:root{
+  --paper:#f5f1e6; --ink:#1f2d29; --ink2:#465650; --mute:#6c7468;
+  --jade:#2f6355; --teal:#4b8478; --navy:#27405a; --seal:#b03a2c; --gold:#b8913f;
+  --serif:"Noto Serif TC","Songti TC",serif; --kai:"LXGW WenKai","Noto Serif TC",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--paper);color:var(--ink)}
+body{font-family:var(--serif);font-size:15px;line-height:1.8;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+input,button{font:inherit;color:inherit;background:none;border:0;outline:0;border-radius:0}
+
+.scroll{position:relative;overflow:hidden;min-height:100vh;background:var(--paper)}
+/* paper grain over everything, extremely quiet */
+.scroll::after{content:"";position:absolute;inset:0;z-index:9;pointer-events:none;opacity:.05;mix-blend-mode:multiply;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ===== the painting: one continuous scroll, no panels ===== */
+.art{position:absolute;left:0;right:0;pointer-events:none;background-image:url("assets/scroll-art.jpg");background-repeat:no-repeat;z-index:0}
+.art-sky{top:0;height:1150px;background-size:100% auto;background-position:center top;
+  -webkit-mask-image:linear-gradient(180deg,#000 52%,transparent 100%);mask-image:linear-gradient(180deg,#000 52%,transparent 100%)}
+.art-mtn{top:760px;height:1650px;background-size:100% auto;background-position:center -760px;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 24%,#000 80%,transparent 100%),linear-gradient(90deg,transparent 22%,rgba(0,0,0,.55) 46%,#000 68%);
+  -webkit-mask-composite:source-in;
+  mask-image:linear-gradient(180deg,transparent 0,#000 24%,#000 80%,transparent 100%),linear-gradient(90deg,transparent 22%,rgba(0,0,0,.55) 46%,#000 68%);
+  mask-composite:intersect}
+.art-low{display:none}
+.wutong{position:absolute;z-index:1;pointer-events:none}
+
+/* ===== header: signature and hanging title-slips, all written on the painting ===== */
+header{position:relative;z-index:3;min-height:150px;display:flex;align-items:flex-start;padding:26px 56px 0 64px}
+.sig{display:flex;align-items:flex-start;gap:12px}
+.sig img{width:30px;margin-top:4px;opacity:.95}
+.sig .zh{writing-mode:vertical-rl;font-weight:700;font-size:2.1rem;letter-spacing:.22em;line-height:1.1;color:var(--ink)}
+.sig .en{writing-mode:vertical-rl;font-size:.6rem;letter-spacing:.42em;color:var(--mute);margin-top:6px}
+.seal{display:inline-flex;align-items:center;justify-content:center;background:var(--seal);color:#fbf1e2;filter:url(#rough);font-weight:700;line-height:1.05}
+.sig .seal{writing-mode:vertical-rl;width:26px;height:44px;font-size:.78rem;letter-spacing:.08em;margin-top:3px;font-family:var(--kai);font-weight:400}
+.slips{display:flex;gap:26px;margin:-26px 64px 0 auto}
+.slip{position:relative;padding-top:20px;writing-mode:vertical-rl;letter-spacing:.34em;font-size:1rem;color:var(--ink2)}
+.slip::before{content:"";position:absolute;top:0;left:50%;width:1px;height:12px;background:var(--gold);transform:translateX(-50%)}
+.slip::after{content:"";position:absolute;top:11px;left:50%;width:6px;height:6px;border-radius:50%;background:var(--seal);transform:translateX(-50%)}
+.slip.on{color:var(--ink);font-weight:600}
+.lang{font-size:.92rem;letter-spacing:.1em;color:var(--ink2);display:flex;align-items:center;gap:8px}
+.ring{position:relative;display:inline-block;padding:0 7px;color:var(--ink);font-weight:600}
+.ring::before{content:"";position:absolute;inset:-4px -3px;border:1.6px solid var(--seal);border-radius:52% 46% 50% 48%/48% 54% 46% 52%;transform:rotate(-5deg)}
+
+main{position:relative;z-index:2;padding:0 64px 40px}
+
+/* ===== entries: painted vignettes that dissolve into the paper, title written beside ===== */
+.entries{display:flex;gap:18px;align-items:flex-start;max-width:1100px}
+.entry{display:flex;align-items:flex-start;gap:6px}
+.entry img,.wuxia .wt{mix-blend-mode:multiply}
+.entry img{width:215px;height:auto;margin-right:-14px}
+.entry .t{white-space:nowrap;writing-mode:vertical-rl;font-weight:700;font-size:1.3rem;letter-spacing:.2em;color:var(--jade);margin-top:30px}
+.entry .d{white-space:nowrap;writing-mode:vertical-rl;font-family:var(--kai);font-size:.82rem;letter-spacing:.14em;color:var(--ink2);margin-top:46px;line-height:1.5}
+.entry.e2{margin-top:28px}.entry.e3{margin-top:8px}
+.wuxia{display:flex;align-items:center;gap:8px;margin:0 0 0 150px}
+.wuxia h3{font-weight:700;font-size:1.9rem;letter-spacing:.34em;color:var(--jade)}
+.wuxia p{font-family:var(--kai);font-size:.9rem;color:var(--ink2);letter-spacing:.1em;margin-top:2px}
+.wuxia .plus{margin-left:18px;font-size:1.1rem;color:var(--seal);font-weight:700}
+.wuxia .plus.ring::before{inset:-6px -2px}
+
+/* ===== hero ===== */
+.hero{margin-top:34px;max-width:640px;position:relative}
+.eyebrow{font-family:var(--kai);font-size:.95rem;letter-spacing:.1em;color:var(--ink2)}
+.eyebrow::before{content:"— ";color:var(--seal)}
+h1{font-size:3.1rem;font-weight:700;line-height:1.32;letter-spacing:.07em;margin-top:8px}
+h1 span{display:block}
+.brush{display:block;width:96px;height:6px;margin:14px 0 14px;background:var(--seal);filter:url(#rough);border-radius:3px 1px 4px 2px/2px 3px 2px 3px;transform:rotate(-1deg)}
+.lead{font-family:var(--kai);font-size:1.12rem;line-height:2;max-width:34rem;color:var(--ink)}
+.hero .seal.big{position:absolute;left:440px;top:92px;writing-mode:vertical-rl;width:40px;height:68px;font-size:1.1rem;letter-spacing:.1em;font-family:var(--kai);font-weight:400}
+
+/* steps along a gilded ruled line */
+.steps{position:relative;display:flex;gap:46px;margin-top:30px;padding-bottom:10px;max-width:420px;list-style:none;font-size:1rem;letter-spacing:.14em;border-bottom:1px solid rgba(184,145,63,.65)}
+.steps li{position:relative;color:var(--mute)}
+.steps li em{font-style:normal;font-size:.8rem;margin-right:6px}
+.steps li.on{color:var(--ink);font-weight:600}
+.steps li.on::after{content:"";position:absolute;left:0;bottom:-15px;width:9px;height:9px;border-radius:50%;background:var(--seal)}
+
+/* ===== the form: a ruled sheet written on the painting ===== */
+.form{margin-top:30px;max-width:600px}
+.kick{font-family:var(--kai);font-size:.85rem;letter-spacing:.2em;color:var(--mute)}
+h2{font-size:2.15rem;font-weight:700;letter-spacing:.2em;margin:2px 0 10px;display:flex;align-items:center;gap:14px}
+.notice{font-size:.84rem;line-height:1.9;color:var(--ink2);margin-bottom:6px}
+.notice a{color:var(--seal);border-bottom:1px solid var(--seal)}
+.row{display:flex;align-items:baseline;gap:10px;padding:11px 0 8px;border-bottom:1px solid rgba(184,145,63,.5);flex-wrap:wrap}
+.row .lbl{font-family:var(--kai);font-size:.9rem;color:var(--ink2);letter-spacing:.08em;min-width:7.2em}
+.fld{display:inline-flex;align-items:baseline;gap:6px;font-family:var(--kai);color:var(--ink2);font-size:.95rem}
+.fld input{width:5.4em;border-bottom:1px solid rgba(31,45,41,.55);text-align:center;padding:0 2px 1px;font-size:1rem}
+.fld.s input{width:3.6em}.fld.w input{width:22em;max-width:100%;text-align:left}
+.dot{display:inline-flex;align-items:center;gap:8px;font-family:var(--kai);font-size:.98rem;color:var(--ink2)}
+.dot i{display:inline-block;width:16px;height:16px;border-radius:50%;border:1.3px solid rgba(31,45,41,.6);position:relative;flex:0 0 auto}
+.dot.on{color:var(--ink);font-weight:600}
+.dot.on i{border-color:var(--seal)}
+.dot.on i::after{content:"";position:absolute;inset:3.5px;border-radius:50%;background:var(--seal)}
+.hint{font-family:var(--kai);font-size:.82rem;color:var(--mute);padding:6px 0 0}
+.pick{font-family:var(--kai);font-size:.98rem;color:var(--ink)}
+.pick b{font-weight:400;color:var(--seal);margin-left:8px}
+.more{padding:14px 0 4px;font-size:.95rem;color:var(--jade);font-weight:600;display:flex;align-items:center;gap:9px}
+.more i{width:8px;height:8px;border-radius:50%;background:var(--seal)}
+.stamp{margin-top:24px;display:inline-flex;align-items:center;justify-content:center;padding:13px 30px 12px;font-weight:700;font-size:1.08rem;letter-spacing:.34em;position:relative}
+.stamp::after{content:"";position:absolute;inset:4px;border:1px solid rgba(251,241,226,.7)}
+
+/* ===== colophon ===== */
+footer{position:relative;z-index:2;padding:30px 64px 56px;display:flex;gap:70px;align-items:flex-start;margin-top:20px}
+.poem{display:flex;gap:16px;align-items:flex-start}
+.poem .col{writing-mode:vertical-rl;letter-spacing:.3em;line-height:1.5}
+.poem .a{font-size:1.15rem;font-weight:600}
+.poem .b{font-family:var(--kai);font-size:.95rem;color:var(--ink2)}
+.poem .seal{writing-mode:vertical-rl;width:26px;height:50px;font-size:.78rem;font-family:var(--kai);font-weight:400;letter-spacing:.1em;margin-top:6px}
+.notes{max-width:520px;font-size:.8rem;line-height:1.95;color:var(--ink2)}
+.notes p{margin-bottom:6px}
+.util{display:flex;gap:28px;margin:12px 0}
+.links{font-size:.92rem;color:var(--ink2);line-height:2.1}
+.links a{border-bottom:1px solid rgba(184,145,63,.7);margin-right:6px}
+.links .sep{color:var(--gold);margin:0 8px}
+.visits{font-size:.84rem;color:var(--mute);letter-spacing:.06em}
+.copy{margin-top:8px;font-size:.76rem;letter-spacing:.12em;color:var(--mute)}
+
+@media (max-width:760px){
+  body{font-size:14.5px}
+  .art-sky{height:900px;background-size:215% auto;background-position:70% 0;-webkit-mask-image:linear-gradient(180deg,#000 50%,transparent 100%);mask-image:linear-gradient(180deg,#000 50%,transparent 100%)}
+  .art-mtn{top:560px;height:1120px;background-size:240% auto;background-position:78% -420px;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 26%,#000 74%,transparent 100%),linear-gradient(90deg,transparent 30%,rgba(0,0,0,.5) 62%,#000 90%);
+    mask-image:linear-gradient(180deg,transparent 0,#000 26%,#000 74%,transparent 100%),linear-gradient(90deg,transparent 30%,rgba(0,0,0,.5) 62%,#000 90%)}
+  .art-low{display:block;bottom:0;height:640px;background-size:200% auto;background-position:8% 100%;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,transparent 38%,#000 92%);mask-image:linear-gradient(180deg,transparent 0,transparent 38%,#000 92%)}
+  header{min-height:132px;padding:20px 16px 0 16px}
+  .sig{gap:8px}.sig .zh{font-size:1.6rem}.sig img{width:22px}.sig .en{display:none}
+  .slips{gap:12px;margin:-20px 14px 0 auto}.slip{font-size:.86rem;letter-spacing:.24em}
+  .lang{font-size:.82rem;gap:4px}
+  main{padding:0 22px 20px}
+  .entries{gap:6px;justify-content:space-between}
+  .entry{flex-direction:column;align-items:center;width:33.3%;gap:0;text-align:center}
+  .entry img{width:128px;margin:0 -8px -10px}
+  .entry .t,.entry .d{writing-mode:horizontal-tb;margin:0;white-space:normal}
+  .entry .t{font-size:.98rem;letter-spacing:.08em}
+  .entry .d{font-size:.7rem;letter-spacing:.02em;line-height:1.5;margin-top:3px}
+  .entry.e2,.entry.e3{margin-top:0}.entry.e2{margin-top:14px}
+  .wuxia{margin:10px 0 0 0;gap:2px}
+  .wuxia h3{font-size:1.4rem;letter-spacing:.16em;white-space:nowrap}.wuxia .wt{width:150px!important}.wuxia p{font-size:.78rem}
+  .hero{margin-top:26px}
+  h1{font-size:2.15rem}
+  .lead{font-size:1.02rem}
+  .hero .seal.big{left:auto;right:6px;top:70px;width:32px;height:54px;font-size:.9rem}
+  .steps{gap:30px;margin-top:24px}
+  h2{font-size:1.75rem}
+  .row .lbl{min-width:100%}
+  .fld.w input{width:16em}
+  footer{flex-direction:column;gap:20px;padding:20px 22px 46px}
+  .poem{flex-direction:row}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="3" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter></svg>
+
+<div class="scroll">
+  <div class="art art-sky"></div>
+  <div class="art art-mtn"></div>
+  <div class="art art-low"></div>
+
+  <header>
+    <a class="sig" href="#" aria-label="昭梧 ZHAOWU">
+      <img src="assets/gourd-only.png" alt="">
+      <span class="zh">昭梧</span>
+      <span class="en">ZHAOWU</span>
+      <span class="seal">小雪</span>
+    </a>
+    <nav class="slips" aria-label="主要">
+      <a class="slip on" href="#">首頁</a>
+      <a class="slip" href="#">建立命書</a>
+      <a class="slip" href="#">我的報告</a>
+      <a class="slip" href="#">怎麼用</a>
+    </nav>
+    <div class="lang"><span class="ring">中</span><span>/</span><span>EN</span></div>
+  </header>
+
+  <main>
+    <section class="entries">
+      <a class="entry e1" href="#"><img src="assets/v-lotus.webp" alt=""><span class="t">看今天的運勢</span><span class="d">宜忌、節氣與今日提醒</span></a>
+      <a class="entry e2" href="#"><img src="assets/v-cloud.webp" alt=""><span class="t">今日星象</span><span class="d">本週天象與占星解讀</span></a>
+      <a class="entry e3" href="#"><img src="assets/v-colors.webp" alt=""><span class="t">每日幸運色</span><span class="d">今天穿什麼顏色比較順。</span></a>
+    </section>
+    <a class="wuxia" href="#">
+      <img class="wt" src="assets/v-wutong.webp" alt="" style="width:200px;margin-right:-10px">
+      <div><h3>梧下文房</h3><p>命盤、五行、測驗與文章</p></div>
+      <span class="plus ring">＋</span>
+    </a>
+
+    <section class="hero">
+      <p class="eyebrow">東方時間文化 · 個人命書</p>
+      <h1><span>讓天時有形，</span><span>讓命理可讀。</span></h1>
+      <i class="brush"></i>
+      <p class="lead">從一份生辰開始，免登入排盤，先讀免費核心解讀；再慢慢探索昭梧的文章、原創圖錄與每日指引。</p>
+      <span class="seal big">昭梧</span>
+    </section>
+
+    <ol class="steps">
+      <li class="on"><em>1</em>填資料</li><li><em>2</em>看命書</li><li><em>3</em>問問題</li>
+    </ol>
+
+    <section class="form" aria-labelledby="ft">
+      <p class="kick">第一步 · 出生資料</p>
+      <h2 id="ft">錄入生辰</h2>
+      <p class="notice">完成命盤後，生辰與盤面摘要會儲存於伺服器，用於提供及改善命盤服務；僅管理員可查看。你可來信要求刪除。請只輸入你本人或已同意者的資料。<a href="#">隱私權政策</a></p>
+      <div class="row"><span class="lbl">時間校正由系統自動完成</span><span class="more" style="padding:0;font-weight:400;color:var(--jade)"><i></i>校時說明</span></div>
+      <div class="row"><span class="fld"><input aria-label="年">年</span><span class="fld s"><input aria-label="月">月</span><span class="fld s"><input aria-label="日">日</span></div>
+      <div class="row"><span class="lbl">性別（排大運）</span><span class="dot on"><i></i>乾造 (男)</span><span class="dot" style="margin-left:18px"><i></i>坤造 (女)</span></div>
+      <div class="row"><span class="lbl">出生時間</span><span class="dot"><i></i>時間不確定，時柱與命宮留白</span></div>
+      <p class="hint">不知道或只記得大概時間，請勾選後繼續。</p>
+      <div class="row"><span class="fld"><span>時 0–23</span><input aria-label="時"></span><span class="fld" style="margin-left:26px"><span>分 0–59</span><input aria-label="分"></span></div>
+      <div class="row"><span class="lbl" style="min-width:0">這個出生時間從哪裡來？</span><span class="pick">家人記憶（精確到時辰）<b>﹀</b></span></div>
+      <div class="row"><span class="lbl" style="min-width:0">出生城市／國家</span><span class="fld w"><input placeholder="請輸入出生城市與國家" aria-label="出生城市／國家"></span></div>
+      <div class="more"><i></i>補充資料（選填）</div>
+      <button class="seal stamp" type="button">生成我的命書</button>
+    </section>
+  </main>
+
+  <footer>
+    <div class="poem">
+      <span class="seal">原創</span>
+      <p class="col b">STONE</p>
+      <p class="col a">各安其位，才聽得見內心的秩序。</p>
+      <p class="col b">小雪 · 天氣上升地氣下降</p>
+    </div>
+    <div>
+      <p class="notes">節氣為中國傳統名稱；畫作依粗略半球位置調整，位置不明沿用原畫，並非當地天氣預報。 第 65 / 72 候 · 悉尼節氣日程。</p>
+      <div class="util"><span class="dot"><i></i>音樂</span><span class="dot"><i></i>導覽</span></div>
+      <p class="links"><a href="#">最新更新</a><span class="sep">·</span><a href="#">站主登入</a></p>
+      <p class="visits">3,216 累計訪客　2026/11/29</p>
+      <p class="links" style="margin-top:6px">免費排盤，先看核心解讀</p>
+      <p class="links"><a href="#">隱私權政策</a><a href="#">服務條款</a><a href="#">版權聲明</a></p>
+      <p class="links"><a href="#">會員登入／註冊</a></p>
+      <p class="links" style="font-size:.84rem">我的報告 · 無需註冊，報告會加密保存在這台裝置的瀏覽器</p>
+      <p class="copy">昭梧 ZHAOWU　© 2026 昭梧 ZHAOWU</p>
+    </div>
+  </footer>
+</div>
+</body>
+</html>
