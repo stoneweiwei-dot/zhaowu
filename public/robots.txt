@@ -1,9 +1,6 @@
-# Block training-only agents. Search and answer retrieval are allowed below.
-User-agent: anthropic-ai
+# Block CCBot, Bytespider, and cohere-ai. Allow search and retrieval as listed below.
 User-agent: CCBot
-User-agent: Google-Extended
 User-agent: Bytespider
-User-agent: Applebot-Extended
 User-agent: cohere-ai
 Disallow: /
 
@@ -17,6 +14,9 @@ User-agent: OAI-SearchBot
 User-agent: GPTBot
 User-agent: PerplexityBot
 User-agent: ClaudeBot
+User-agent: Google-Extended
+User-agent: anthropic-ai
+User-agent: Applebot-Extended
 Allow: /
 Disallow: /auth/
 Disallow: /api/

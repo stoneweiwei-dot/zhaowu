@@ -27,7 +27,7 @@ test('robots.txt and sitemap.xml agree: private routes crawlable with edge noind
   const robots = read('public/robots.txt');
   assert.match(robots, /Sitemap: https:\/\/zhao-wu\.com\/sitemap\.xml/);
   const groups = robots.trim().split(/\n\s*\n/);
-  for (const agent of ['*', 'Googlebot', 'OAI-SearchBot', 'GPTBot', 'PerplexityBot', 'ClaudeBot']) {
+  for (const agent of ['*', 'Googlebot', 'OAI-SearchBot', 'GPTBot', 'PerplexityBot', 'ClaudeBot', 'Google-Extended', 'anthropic-ai', 'Applebot-Extended']) {
     const matches = groups.filter(group => group.split(/\r?\n/).includes('User-agent: ' + agent));
     assert.equal(matches.length, 1, agent);
     assert.match(matches[0], /^Allow: \/$/m);
