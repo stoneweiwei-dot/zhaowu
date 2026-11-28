@@ -81,7 +81,20 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
           />
           <span><strong>昭梧</strong><small>Z H A O W U</small></span>
         </Link>
+        <svg className="zw-season-mark" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="18" cy="11" r="4"/><path d="M18 3v2m0 12v2M10 11H8m20 0h-2M9 23h15a4 4 0 0 0-4-5 6 6 0 0 0-10 1 3 3 0 0 0-1 4z"/>
+          <g className="zw-south-spring" strokeWidth="1"><circle cx="26" cy="26" r="1.1"/><path d="M26 22.6c.7 1.1.7 2 .1 3-.6-1-.6-1.9-.1-3zm0 6.8c-.7-1.1-.7-2-.1-3 .6 1 .6 1.9.1 3zM22.8 24.2c1.2.6 1.8 1.2 1.9 2.2-1.3-.1-2-1-1.9-2.2zm6.4 0c-1.2.6-1.8 1.2-1.9 2.2 1.3-.1 2-1 1.9-2.2zM23.4 28.6c1-.6 1.8-.6 2.6 0-1 .5-1.8.5-2.6 0z"/></g>
+          <g className="zw-south-summer" strokeWidth="1"><path d="M21 25c1.2-1.4 2.4-1.4 3.6 0s2.4 1.4 3.6 0 2.4-1.4 3.6 0M21 28.2c1.2-1.4 2.4-1.4 3.6 0s2.4 1.4 3.6 0 2.4-1.4 3.6 0"/></g>
+          <g className="zw-south-autumn" strokeWidth="1"><path d="M21 29.2 24 23l2 3.2 2.2-5.4L31 29.2z"/></g>
+          <g className="zw-south-winter" strokeWidth="1"><path d="M23 30c.4-3 1.6-5.2 2.2-8.2 1.6 1.8 3.6 2.2 5.6 1.2M24.2 30c1.4-.6 2.8-2.6 2.4-5.4"/></g>
+        </svg>
+        <svg className="ph-jacaranda-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <circle cx="20" cy="20" r="18" stroke="currentColor" strokeOpacity=".45" />
+          <circle cx="20" cy="20" r="6" stroke="currentColor"/><path d="M20 9v3M20 28v3M9 20h3M28 20h3M12 12l2 2M26 26l2 2M28 12l-2 2M14 26l-2 2" stroke="currentColor" strokeLinecap="round"/>
+          <path d="M20 2.5c-2 2-2 3.5 0 4.5 2-1 2-2.5 0-4.5Z" fill="currentColor" />
+        </svg>
       </header>
+      <HomeTree t={t} onOpen={onOpen} />
       <div className="zw-v2-opening">
         <p className="zw-v2-eyebrow">{t('東方時間文化 · 個人命書', '东方时间文化 · 个人命书', 'EASTERN TIME CULTURE · PERSONAL DESTINY BOOK')}</p>
         <h1 id="zw-v2-title">
@@ -106,9 +119,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
       </div>
       {(seasonalAuto || frostOnly || selectedPhase) && <p className="zw-v2-season">{seasonalAuto ? `${locale === 'en' ? seasonalAuto.term.en : locale === 'zh-Hans' ? seasonalAuto.term.hans : seasonalAuto.term.zh} · ${seasonalAuto.hou[locale]}` : selectedPhase && selectedTerm ? `${locale === 'en' ? selectedTerm.en : locale === 'zh-Hans' ? selectedTerm.hans : selectedTerm.zh} · ${selectedPhase.name[locale]}` : `${t('霜降', '霜降', 'Frost’s Descent')} · ${frostOnly!.name[locale]}`}</p>}
       {selectedPhase && <p className="zw-winter-quote">{selectedPhase.quote[locale]} <span>STONE 原創</span></p>}
-      <a className="zw-v2-discover" href="#home-guide">{t('往下探索昭梧', '继续探索昭梧', 'Discover more of ZHAOWU')} <span aria-hidden="true">↓</span></a>
     </section>
-    <HomeTree t={t} onOpen={onOpen} />
     {(seasonalAuto || frostOnly) && <p className="zw-season-context" data-seasonal-note data-solar-hou={seasonalAuto ? seasonalAuto.houIndex + 1 : undefined}>{t('節氣為中國傳統名稱；畫作依粗略半球位置調整，位置不明沿用原畫，並非當地天氣預報。', '节气为中国传统名称；画作依粗略半球位置调整，位置不明沿用原画，并非当地天气预报。', 'Traditional Chinese seasonal names; existing artwork follows approximate hemisphere when available, not local weather.')}{seasonalAuto && (locale === 'en' ? ` Pentad ${houNumber} / 72 · Sydney calendar schedule.` : ` 第 ${houNumber} / 72 候 · 悉尼節氣日程。`)}</p>}
     <CuratedVideoShelf placement="home" />
     <nav className="ph-bottom-nav" aria-label={t('頁面導覽','页面导航','Page navigation')}><Link to="/" aria-current="page"><BrandIcon name="home"/><span>{t('首頁','首页','Home')}</span></Link><button onClick={() => onOpen('form')}><BrandIcon name="reports"/><span>{t('命盤','命盘','Chart')}</span></button><button onClick={() => onOpen('today')}><BrandIcon name="calendar"/><span>{t('指引','指引','Today')}</span></button><Link to="/history"><BrandIcon name="account"/><span>{t('我的','我的','Account')}</span></Link></nav>

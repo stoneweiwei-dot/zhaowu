@@ -1221,3 +1221,18 @@ html body #root #home-guide .ph-grid .ph-tree-body {
 /* Keep text rows full width and collapsed groups out of the tile grid. */
 html body #root .zw-painted-home.zw-v2-home .ph-tree-tiles[hidden] { display: none; }
 html body #root .zw-painted-home.zw-v2-home .ph-tree-wide { grid-column: 1 / -1; }
+
+.zw-study-guide { width:min(100%,48rem); margin:1rem auto; text-align:start; color:#21483e; }
+.zw-daily-entries { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
+.zw-daily-entries .ph-tree-tile { display:flex; flex-direction:column; align-items:stretch; height:100%; padding:0; overflow:hidden; border:1px solid #b9cabe; border-radius:10px; background:#faf7ec; color:#21483e; text-align:start; }
+.zw-daily-entries .ph-tree-tile img { width:100%; height:clamp(64px,18vw,110px); object-fit:cover; }
+.zw-daily-entries .ph-tree-tile span { display:grid; gap:3px; padding:8px; }
+.zw-study-guide strong { font-family:serif; font-size:1rem; line-height:1.3; }
+.zw-study-guide small { display:block; font-size:.75rem; line-height:1.35; }
+.zw-study { margin-top:8px; border:1px solid #acbfb1; border-radius:10px; background:#f9f6eb; overflow:hidden; }
+.zw-study summary { display:flex; align-items:center; gap:12px; cursor:pointer; }
+.zw-study summary img { width:24%; height:72px; object-fit:cover; }
+.zw-study summary::after { content:'＋'; margin-inline:auto 12px; }
+.zw-study[open] summary::after { content:'−'; }
+.zw-study section { padding:12px; }
+.zw-study h3 { margin-bottom:8px; }

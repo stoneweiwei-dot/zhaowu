@@ -34,9 +34,9 @@ html body #root .zw-langpick .zw-langpick__toggle {
      and a border strong enough to read as a control, not a watermark. */
   border: 1.5px solid color-mix(in srgb, var(--color-line, #d8c7a4) 45%, #8a6d2f) !important;
   border-radius: 999px !important;
-  background: var(--color-cream, #fffdf7) !important;
+  background: #205b50 !important;
   box-shadow: 0 1px 2px rgba(71, 61, 47, .35), 0 8px 20px -8px rgba(71, 61, 47, .5) !important;
-  color: var(--color-ink, #23302d) !important;
+  color: #fffaf0 !important;
   font-family: inherit;
   font-size: 15px !important;
   font-weight: 650 !important;
@@ -186,3 +186,10 @@ html[data-zw-theme="night"] body #root .zw-langpick .zw-langpick__track button.z
 @media (prefers-reduced-motion: reduce) {
   html body #root .zw-langpick .zw-langpick__track button.zw-langpick__opt { transition: none; }
 }
+html body #root:has(.zw-painted-home.zw-v2-home) .zhaowu-site-header .zw-langpick {
+  position:fixed;
+  top:max(8px,env(safe-area-inset-top));
+  right:max(12px,env(safe-area-inset-right));
+}
+html body #root .zw-langpick .zw-langpick__toggle span,
+html body #root .zw-langpick .zw-langpick__toggle svg { color:#fffaf0 !important; }

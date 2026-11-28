@@ -35,7 +35,7 @@ export function homeTree(t: T): TreeNode[] {
           ],
         },
         {
-          id: 'reports', title: t('閱讀命書', '阅读命书', 'Read reports'),
+          id: 'reports', title: t('建立命書', '建立命书', 'Build a destiny book'),
           hint: t('重讀報告，對照人生十章', '重读报告，对照人生十章', 'Revisit reports and life chapters'),
           children: [
             { kind: 'link', href: '/history', title: t('我的報告', '我的报告', 'My reports'), hint: t('重讀已存報告', '重读已存报告', 'Revisit saved reports'), thumb: '/home-tiles/my-reports.webp' },
@@ -53,13 +53,13 @@ export function homeTree(t: T): TreeNode[] {
           id: 'today-guide', title: t('查今日', '查今日', 'Check today'),
           hint: t('黃曆、星象與色彩', '黄历、星象与色彩', 'Almanac, sky and daily colour'),
           children: [
-            { kind: 'action', section: 'today', title: t('看今天的黃曆', '看今天的黄历', 'Open today’s almanac'), hint: t('宜忌、節氣與今日提醒', '宜忌、节气与今日提醒', 'Dos and don’ts, solar terms and daily guidance'), thumb: '/today/almanac-lotus-v1.webp' },
-            { kind: 'link', href: '/sky-events', title: t('今日星象', '今日星象', 'Today’s sky & astrology'), hint: t('本週天象與占星解讀', '本周天象与占星解读', 'This week’s sky and astrology'), thumb: '/sky-universe/cosmic-nebula.webp' },
+            { kind: 'action', section: 'today', title: t('看今天的運勢', '看今天的运势', 'Today’s fortune'), hint: t('宜忌、節氣與今日提醒', '宜忌、节气与今日提醒', 'Dos and don’ts, solar terms and daily guidance'), thumb: '/today/almanac-lotus-v1.webp' },
+            { kind: 'link', href: '/sky-events', title: t('今日星象', '今日星象', 'Today’s sky'), hint: t('本週天象與占星解讀', '本周天象与占星解读', 'This week’s sky and astrology'), thumb: '/sky-universe/cosmic-nebula.webp' },
             { kind: 'link', href: '/daily-colors', title: t('每日幸運色', '每日幸运色', 'Colour of the day'), hint: t('今天穿什麼顏色比較順。', '今天穿什么颜色比较顺。', 'Which colour to wear today.'), thumb: '/home-tiles/daily-colors.webp' },
           ],
         },
         {
-          id: 'element-lore', title: t('識五行', '识五行', 'Explore the elements'),
+          id: 'element-lore', title: t('尋五行', '寻五行', 'Explore the elements'),
           hint: t('從色音、香氣與茶入門', '从色音、香气与茶入门', 'Discover colour, sound, scent and tea'),
           thumb: '/articles/list-thumbs/five-elements-as-movement.webp',
           children: [
@@ -171,70 +171,23 @@ function Branch({ branch, initiallyOpen, onOpen }: { branch: TreeBranch; initial
   </li>;
 }
 
-function FivePhaseMark() {
-  return <g stroke="currentColor"><circle cx="16" cy="16" r="7" /><path d="M16 5v4m10.5 3.6-3.8 1.2m-.2 11.1-2.4-3.2m-10.6 3.2 2.4-3.2M5.5 12.6l3.8 1.2" strokeLinecap="round" /></g>;
-}
-
-/** Small seasonal navigation marks, drawn as UI icons rather than artwork. */
-function SeasonalMark({ section }: { section: HomeSection }) {
-  return <svg className="zw-season-mark" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-    {section === 'form' && <><path d="M8 6h13a3 3 0 0 1 3 3v17H11a3 3 0 0 1-3-3zM8 8a2 2 0 0 0-2 2v13a3 3 0 0 0 3 3"/><path d="M12 12h8m-8 4h8m-8 4h5"/></>}
-    {section === 'today' && <><circle cx="18" cy="11" r="4"/><path d="M18 3v2m0 12v2M10 11H8m20 0h-2M9 23h15a4 4 0 0 0-4-5 6 6 0 0 0-10 1 3 3 0 0 0-1 4z"/></>}
-    {section === 'wuxing' && <FivePhaseMark />}
-    {section === 'quiz' && <><path d="M16 5l2.3 7.2L25 15l-6.7 2.7L16 25l-2.4-7.3L7 15l6.6-2.8z"/><path d="M7 5v4m-2-2h4m16 14v4m-2-2h4"/></>}
-    {section === 'notes' && <><path d="M5 8c5-2 8-1 11 2v16c-3-3-6-4-11-2zm22 0c-5-2-8-1-11 2v16c3-3 6-4 11-2z"/><path d="M9 13h3m-3 4h3m8-4h3m-3 4h3"/></>}
-    <g className="zw-south-spring" strokeWidth="1"><circle cx="26" cy="26" r="1.1"/><path d="M26 22.6c.7 1.1.7 2 .1 3-.6-1-.6-1.9-.1-3zm0 6.8c-.7-1.1-.7-2-.1-3 .6 1 .6 1.9.1 3zM22.8 24.2c1.2.6 1.8 1.2 1.9 2.2-1.3-.1-2-1-1.9-2.2zm6.4 0c-1.2.6-1.8 1.2-1.9 2.2 1.3-.1 2-1 1.9-2.2zM23.4 28.6c1-.6 1.8-.6 2.6 0-1 .5-1.8.5-2.6 0z"/></g>
-    <g className="zw-south-summer" strokeWidth="1"><path d="M21 25c1.2-1.4 2.4-1.4 3.6 0s2.4 1.4 3.6 0 2.4-1.4 3.6 0M21 28.2c1.2-1.4 2.4-1.4 3.6 0s2.4 1.4 3.6 0 2.4-1.4 3.6 0"/></g>
-    <g className="zw-south-autumn" strokeWidth="1"><path d="M21 29.2 24 23l2 3.2 2.2-5.4L31 29.2z"/></g>
-    <g className="zw-south-winter" strokeWidth="1"><path d="M23 30c.4-3 1.6-5.2 2.2-8.2 1.6 1.8 3.6 2.2 5.6 1.2M24.2 30c1.4-.6 2.8-2.6 2.4-5.4"/></g>
-  </svg>;
-}
-
-/** A coordinated set of small wayfinding marks for the jacaranda edition.
- * Shown only while the Sydney jacaranda skin is active (see home-mobile-v2.css);
- * the seasonal mark above covers every other season. */
-function JacarandaMark({ section }: { section: HomeSection }) {
-  return <svg className="ph-jacaranda-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-    <circle cx="20" cy="20" r="18" stroke="currentColor" strokeOpacity=".45" />
-    {section === 'form' && <><circle cx="20" cy="20" r="9" stroke="currentColor"/><path d="M20 8v24M8 20h24M14 14l12 12M26 14 14 26" stroke="currentColor" strokeLinecap="round"/></>}
-    {section === 'today' && <><circle cx="20" cy="20" r="6" stroke="currentColor"/><path d="M20 9v3M20 28v3M9 20h3M28 20h3M12 12l2 2M26 26l2 2M28 12l-2 2M14 26l-2 2" stroke="currentColor" strokeLinecap="round"/></>}
-    {section === 'wuxing' && <g transform="translate(4 4)"><FivePhaseMark /></g>}
-    {section === 'quiz' && <><path d="M20 10c1 6 4 9 10 10-6 1-9 4-10 10-1-6-4-9-10-10 6-1 9-4 10-10Z" stroke="currentColor"/><circle cx="29" cy="11" r="1.5" fill="currentColor"/></>}
-    {section === 'notes' && <><path d="M10 12c4-1 7 0 10 2 3-2 6-3 10-2v15c-4-1-7 0-10 2-3-2-6-3-10-2V12ZM20 14v15" stroke="currentColor" strokeLinejoin="round"/><path d="M13 17h4M23 17h4" stroke="currentColor" strokeLinecap="round"/></>}
-    <path d="M20 2.5c-2 2-2 3.5 0 4.5 2-1 2-2.5 0-4.5Z" fill="currentColor" />
-  </svg>;
-}
-
-function CellIcon({ section }: { section: HomeSection }) {
-  return <span className="ph-cell-badge" aria-hidden="true">
-    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-      {section === 'form' && <path d="M3 7q7-2 13 2 6-4 13-2v18q-7-2-13 2-6-4-13-2zM16 9v18M7 12v7m5-6v7m8-7v7m5-8v7" />}
-      {section === 'wuxing' && <FivePhaseMark />}
-      {section === 'quiz' && <path d="M16 3l3.5 9.5L29 16l-9.5 3.5L16 29l-3.5-9.5L3 16l9.5-3.5z" />}
-      {section === 'notes' && <path d="M4 7q6-2 12 2 6-4 12-2v17q-6-2-12 2-6-4-12-2zM16 9v17M8 12l4 1m-4 4 4 1m8-5 4-1m-4 6 4-1" />}
-    </svg>
-  </span>;
-}
-
 export function HomeTree({ t, onOpen }: { t: T; onOpen: (s: HomeSubview) => void }) {
-  const [open, setOpen] = useState<HomeSection | null>(null);
-  return <nav id="home-guide" className="ph-tree" data-home-tree data-home-blocks="4" aria-label={t('網站導覽', '网站导览', 'Site guide')}>
-    <div className="ph-grid">
-      {homeTree(t).map(node => {
-        const isOpen = open === node.id;
-        const panelId = `ph-tree-panel-${node.id}`;
-        return <section key={node.id} className="ph-tree-node" data-open={isOpen ? 'true' : 'false'} data-home-card={node.id}>
-          <button type="button" className="zw-entry ph-cell" title={node.hint} aria-expanded={isOpen} aria-controls={panelId} onClick={() => setOpen(isOpen ? null : node.id)}>
-            <CellIcon section={node.id} />
-            <strong>{node.title}</strong>
-            <SeasonalMark section={node.id} /><JacarandaMark section={node.id} />
-          </button>
-          <div className="ph-tree-body" id={panelId} hidden={!isOpen}><ul className="ph-tree-tiles">
-            {node.groups.map((group, index) =>
-              <Branch key={group.id} branch={group} initiallyOpen={index === 0} onOpen={onOpen} />)}
-          </ul></div>
-        </section>;
-      })}
+  const nodes = homeTree(t);
+  const daily = nodes.flatMap(node => node.groups).find(group => group.id === 'today-guide');
+  return <nav id="home-guide" className="zw-study-guide" data-home-tree aria-label={t('網站導覽', '网站导览', 'Site guide')}>
+    <div className="zw-daily-entries">
+      {daily?.children.map(leaf => <Leaf key={leaf.kind === 'link' ? leaf.href : leaf.section} leaf={leaf} onOpen={onOpen} />)}
     </div>
+    <details className="zw-study">
+      <summary><img src="/theme-skins/verdant-mist-art.webp" alt="" />
+        <span><strong>{t('梧下文房', '梧下文房', 'The Wutong Study')}</strong>
+          <small>{t('命盤、五行、測驗與文章', '命盘、五行、测验与文章', 'Charts, elements, quizzes and readings')}</small></span>
+      </summary>
+      {nodes.map(node => <section key={node.id}>
+        <h3>{node.title}</h3>
+        <ul className="ph-tree-tiles">{node.groups.filter(group => group !== daily).map((group, index) =>
+          <Branch key={group.id} branch={group} initiallyOpen={index === 0} onOpen={onOpen} />)}</ul>
+      </section>)}
+    </details>
   </nav>;
 }

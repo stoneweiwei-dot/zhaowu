@@ -36,7 +36,7 @@ test("hero offers one quiet birth-book entry that opens the existing form instea
   assert.match(tree, /id: 'start'[\s\S]*?children: \[\s*\{ kind: 'action', section: 'form', title: t\('開始免費排盤'/);
   assert.match(painted, /data-home-birth-entry/);
   assert.match(painted, /to="\/sample-report"/);
-  assert.match(painted, /href="#home-guide"/);
+  assert.ok(painted.indexOf("<HomeTree") < painted.indexOf("<AnalysisForm"));
   assert.match(painted, /onOpen\('form'\)/);
   assert.match(home, /openBirthBook/);
   assert.match(home, /document\.getElementById\("birth-form"\)/);
