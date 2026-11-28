@@ -39,8 +39,8 @@ test('Five Elements Flow leads with the almanac, then sky and daily colours', ()
   const file = readFileSync(navPath, 'utf8');
   const flow = file.split("      id: 'wuxing',")[1].split("      id: 'quiz',")[0];
   const direct = flow.split("id: 'today-guide'")[1].split("id: 'element-lore'")[0];
-  assert.match(direct, /kind: 'action', section: 'today', title: t\('看今天的黃曆', '看今天的黄历', 'Open today’s almanac'\)/);
-  assert.match(direct, /href: '\/sky-events', title: t\('今日星象', '今日星象', 'Today’s sky & astrology'\)/);
+  assert.match(direct, /kind: 'action', section: 'today', title: t\('看今天的運勢', '看今天的运势', 'Today’s fortune'\)/);
+  assert.match(direct, /href: '\/sky-events', title: t\('今日星象', '今日星象', 'Today’s sky'\)/);
   assert.match(direct, /href: '\/daily-colors', title: t\('每日幸運色', '每日幸运色', 'Colour of the day'\)/);
   assert.deepEqual([...direct.matchAll(/(?:section|href): '([^']+)'/g)].map(match => match[1]), ['today', '/sky-events', '/daily-colors']);
 });
