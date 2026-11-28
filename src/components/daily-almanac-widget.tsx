@@ -348,6 +348,11 @@ const SLIPS = {
 export function DailyAlmanacWidget({ embedded = false, onExpand }: { embedded?: boolean; onExpand?: () => void }) {
   const { language } = useDisplayLanguage();
   const { locale } = useI18n(); const now = useNow(); const { visitor, requestLocation, requesting, locationError } = useVisitorContext();
+  useEffect(() => {
+    if (embedded && window.location.hash === '#spirit-slip') {
+      document.getElementById('zhaowu-today-spirit-title')?.scrollIntoView({ block: 'center' });
+    }
+  }, [embedded]);
   const [slipOpen, setSlipOpen] = useState(false);
   const [birth, setBirth] = useState<SharedBirthRecord | null>(() => readSharedBirthRecord());
   useEffect(() => {

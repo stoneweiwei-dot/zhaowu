@@ -17,6 +17,9 @@ test('homepage entrances and scene at mobile and desktop sizes', async ({ page }
   for (const width of [320, 390, 1440]) {
     await page.setViewportSize({ width, height: width === 1440 ? 900 : 844 });
     await page.goto(home);
+    const portals = page.locator('#wl-portals a');
+    await expect(portals).toHaveCount(4);
+    await checkLayout(page, portals);
     const daily = page.locator('.zw-daily-entries');
     const study = page.locator('.zw-study');
     const summary = study.locator('summary');
@@ -60,6 +63,30 @@ test('homepage supports all three languages', async ({ page }) => {
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
     if (language !== '简体中文') await expect(toggle).toHaveText('中 / EN');
     await expect(page.locator('.zw-daily-entries strong')).toHaveText([...titles]);
+    const portalTitles = language === 'English'
+      ? ['Daily guide', 'In-depth reading', 'Destiny book', 'Spirit slip']
+      : language === '简体中文' ? ['今日指引', '深度解读', '命书', '灵签'] : ['今日指引', '深度解讀', '命書', '靈籤'];
+    await expect(page.locator('#wl-portals strong')).toHaveText(portalTitles);
     await expect(page.locator('.zw-study summary strong')).toHaveText(studyTitle);
   }
+});
+
+test('the menu opens by keyboard and the four entries reach the existing reading flows', async ({ page }) => {
+  await page.goto(home);
+  const menu = page.locator('.wl-menu');
+  await menu.locator('summary').focus();
+  await page.keyboard.press('Enter');
+  await expect(menu).toHaveJSProperty('open', true);
+  await expect(menu.locator('a[href="/history"]')).toBeVisible();
+  await page.keyboard.press('Enter');
+  await expect(menu).toHaveJSProperty('open', false);
+  await page.locator('.wl-explore').click();
+  const portals = page.locator('#wl-portals');
+  await expect(portals).toBeInViewport();
+  await expect(portals.locator('a').nth(1)).toHaveAttribute('href', '/sample-report');
+  await portals.locator('a[href="#spirit-slip"]').click();
+  await expect(page.locator('#zhaowu-today-spirit-title')).toBeInViewport();
+  await page.goto(home);
+  await portals.locator('a[href="#birth-form"]').click();
+  await expect(page.locator('#birth-form')).toBeVisible();
 });
