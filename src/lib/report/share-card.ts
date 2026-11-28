@@ -285,6 +285,52 @@ export async function renderShareCardPng(model: ShareCardModel): Promise<Blob> {
   return canvasBlob(canvas);
 }
 
+/** Birthday variant keeps the established 1080×1920 canvas and warm-paper artwork treatment. */
+export async function renderBirthdayShareCardPng(model: ShareCardModel): Promise<Blob> {
+  const canvas = document.createElement("canvas");
+  canvas.width = 1080;
+  canvas.height = 1920;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Canvas is unavailable");
+  const serif = '"Noto Serif TC", "Songti TC", "Songti SC", Georgia, serif';
+  const artwork = await loadArtwork(model.artwork, model.artworkFallback);
+  ctx.fillStyle = "#fffaf0";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.strokeStyle = "rgba(160,134,88,.55)";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(42, 42, 996, 1836);
+  ctx.fillStyle = "#315e50";
+  ctx.font = `600 26px ${serif}`;
+  ctx.textAlign = "center";
+  ctx.fillText(model.brand, 540, 124);
+  ctx.fillStyle = "#27241f";
+  ctx.font = `650 72px ${serif}`;
+  ctx.fillText(model.title, 540, 238);
+  ctx.fillStyle = "#5a554c";
+  ctx.font = `500 30px ${serif}`;
+  ctx.fillText(model.subtitle, 540, 296);
+  ctx.fillStyle = "#fffaf0";
+  ctx.fillRect(180, 360, 720, 773);
+  if (artwork?.asset?.id.endsWith("-character")) {
+    drawCharacterImage(ctx, artwork.image, 180, 360, 720, 773);
+  } else if (artwork) {
+    drawCoverImage(ctx, artwork.image, 180, 360, 720, 773, artwork.asset);
+  }
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#4a453b";
+  ctx.font = `400 27px ${serif}`;
+  const textLines = splitText(ctx, model.summary, 820).slice(0, 10);
+  textLines.forEach((line, index) => ctx.fillText(line, 130, 1212 + index * 43));
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#965342";
+  ctx.font = `600 22px ${serif}`;
+  ctx.fillText(model.keywords[0] ?? "Placeholder", 540, 1680);
+  ctx.fillStyle = "#315e50";
+  ctx.font = `600 27px ${serif}`;
+  ctx.fillText(model.watermark, 540, 1770);
+  return canvasBlob(canvas);
+}
+
 /** 在本機產生橫版分享圖；只使用明確列出的日柱及既有關鍵詞。 */
 export async function renderLandscapeShareCardPng(model: ShareCardModel, dayPillar: string, locale: Locale): Promise<Blob> {
   const canvas = document.createElement("canvas");
