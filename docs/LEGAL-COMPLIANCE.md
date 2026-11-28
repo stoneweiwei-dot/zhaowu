@@ -11,7 +11,7 @@
 | 版權聲明 `/copyright` | 同上 | 保護範圍、允許／禁止、第三方材料、侵權通知流程 |
 | 頁腳入口＋ © 行 | `site-shell.tsx` | 所有公開頁可見 |
 | sitemap | `public/sitemap.xml` | 三頁加入 |
-| 擋 AI 訓練爬蟲 | `public/robots.txt` | 只擋 GPTBot／ClaudeBot／CCBot／Google-Extended 等訓練爬蟲；搜尋與答案引擎不擋，不影響推廣 |
+| 擋 AI 訓練爬蟲 | `public/robots.txt` | 只擋 CCBot／Bytespider／cohere-ai；搜尋與答案引擎不擋，不影響推廣 |
 | 聯絡資訊設定點 | `src/lib/legal-config.ts` | **`LEGAL_CONTACT_EMAIL` 目前為空，上線前必須填** |
 
 > 未動：排盤、報告契約、付款、Supabase schema、auth、路由規則。無 runtime 依賴新增。
