@@ -114,7 +114,7 @@ export function LanguageSwitcher<T extends string>({
         onClick={() => setOpen((current) => !current)}
       >
         <BrandIcon name="language" />
-        <span>{active?.label}</span>
+        <span>{value === "zh-Hant" || value === "en" ? "中 / EN" : active?.label}</span>
       </button>
       <div id={listId} className="zw-langpick__track" role="radiogroup" aria-label={label} hidden={!open}>
         {options.map((option, index) => {
