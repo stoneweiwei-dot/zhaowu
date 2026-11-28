@@ -2,7 +2,8 @@ import { useDisplayLanguage } from "@/lib/display-language";
 import { customerChrome } from "@/lib/customer-chrome";
 import { Link } from '@tanstack/react-router';
 import { FROST_SKIN_ID, seasonalPackForSkin, SEASONAL_AUTO_ID, SOLAR_TERMS_24, seasonalState, frostEdition } from '@/lib/seasonal-skins';
-import { useEffect, type CSSProperties } from 'react';
+import { HomeLanguageMount } from "@/components/language-switcher";
+import { useContext, useEffect, type CSSProperties } from 'react';
 import { useSkin, type SkinDef } from '@/lib/theme-skins';
 import { useI18n } from '@/lib/i18n';
 import { BrandIcon } from '@/components/brand-icon';
@@ -26,6 +27,7 @@ export function homeComposition(skin: SkinDef | null): 'scroll' | 'comic' | 'koi
 
 /** Real links and controls over separate art layers; never a screenshot with hotspots. */
 export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) {
+  const languageMount = useContext(HomeLanguageMount);
   const { id, skin } = useSkin();
   const { locale } = useI18n();
   useDisplayLanguage((state) => state.language);
@@ -86,6 +88,7 @@ export function PaintedHome({ onOpen }: { onOpen: (section: Section) => void }) 
             }}>{t('怎麼用','怎么用','How to use Zhaowu')}</button>
           </nav>
         </details>
+        <div ref={languageMount} className="wl-language" />
       </header>
       <section className="wl-hero" aria-labelledby="zw-v2-title">
         <p className="wl-caption">{t('霧 嶺 聽 泉','雾 岭 听 泉','Mist on the ridge')}</p>

@@ -1,5 +1,7 @@
-import { useEffect, useLayoutEffect, useId, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
+import { createContext, useEffect, useLayoutEffect, useId, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { BrandIcon } from "@/components/brand-icon";
+
+export const HomeLanguageMount = createContext<((node: HTMLDivElement | null) => void) | null>(null);
 
 export type LanguageSwitcherOption<T extends string> = {
   value: T;

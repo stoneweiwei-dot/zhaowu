@@ -27,7 +27,8 @@ import {
 import { toSimplifiedCustomerText } from "@/lib/report/reading-locale";
 import { JourneyNavigation } from "@/components/journey-navigation";
 import { SiteUtilityDock } from "@/components/site-utility-dock";
-import { LanguageSwitcher } from "@/components/language-switcher";
+import { createPortal } from "react-dom";
+import { HomeLanguageMount, LanguageSwitcher } from "@/components/language-switcher";
 import { runLocalHousekeeping } from "@/lib/local-housekeeping";
 import { resolveReportAccess } from "@/lib/report-access";
 import { routeMetaFor, routeMetaForLanguage, ROUTE_META_PATHS } from "@/lib/route-meta";
@@ -388,7 +389,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const openGalleryLabel = displayShellText(language, "打開內容與素材管理", "打开内容与素材管理", "Open content and media management", "コンテンツ管理を開く", "콘텐츠 관리를 열기", "कंटेंट प्रबंधन खोलें");
   const dayModeLabel = displayShellText(language, "切換日間模式", "切换日间模式", "Switch to day mode", "昼モードに切り替える", "주간 모드로 전환", "दिन मोड पर जाएँ");
   const nightModeLabel = displayShellText(language, "切換夜間模式", "切换夜间模式", "Switch to night mode", "夜モードに切り替える", "야간 모드로 전환", "रात मोड पर जाएँ");
+  const [languageMount, setLanguageMount] = useState<HTMLDivElement | null>(null);
   const languageVisualLabel = t("language");
+  const languagePicker = <LanguageSwitcher value={language} options={languageOptions} label={languageVisualLabel} onChange={setLanguage} />;
   const skipLabel = displayShellText(language, "跳到主要內容", "跳到主要内容", "Skip to main content", "本文へ移動", "본문으로 이동", "मुख्य सामग्री पर जाएँ");
 
   useEffect(() => {
@@ -487,12 +490,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
             ) : null}
 
             <nav className={`zhaowu-header-nav${isHome ? " is-home-entry-row" : ""}`} aria-label={siteControlsLabel}>
-              <LanguageSwitcher
-                value={language}
-                options={languageOptions}
-                label={languageVisualLabel}
-                onChange={setLanguage}
-              />
+              {isHome && languageMount ? createPortal(languagePicker, languageMount) : languagePicker}
 
               {NIGHT_MODE_ENABLED ? <div className="zhaowu-header-mode-toggle" role="group" aria-label={language === "en" ? "Appearance" : "日夜模式"}>
                 <button type="button" onClick={() => applyBrandTheme("day")} aria-pressed={!night} aria-label={dayModeLabel} data-active={!night ? "true" : "false"}>{displayShellText(language, "日", "日", "Day", "日", "낮", "दिन")}</button>
@@ -509,7 +507,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         key={pathname}
         tabIndex={-1}
         className={`zhaowu-route-fade ${isLogin ? "relative z-10 min-h-dvh" : `zhaowu-app-frame relative z-10 mx-auto max-w-5xl px-4 pb-14 pt-4 sm:pt-8 ${isHome ? "zhaowu-home-app-frame" : ""}`}`}
-      >{children}</div>
+      ><HomeLanguageMount.Provider value={setLanguageMount}>{children}</HomeLanguageMount.Provider></div>
 
       {!isOwnerWorkspace ? <SiteUtilityDock /> : null}
 

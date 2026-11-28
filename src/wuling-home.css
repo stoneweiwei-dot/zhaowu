@@ -29,13 +29,13 @@ html body #root .zw-painted-home.zw-v2-home:has(.wl-scroll) {
   border-radius:2px 4px 2px 3px; font-family:serif; transform:rotate(-3deg);
 }
 .wl-brand b { width:32px; height:32px; font-size:13px; }
-.wl-menu { position:relative; margin-right:78px; }
+.wl-menu { position:relative; margin-left:auto; }
 .wl-menu summary { justify-content:center; min-width:44px; cursor:pointer; font-size:23px; list-style:none; }
 .wl-menu summary::-webkit-details-marker { display:none; }
 .wl-menu nav { position:absolute; right:0; width:max-content; min-width:160px; padding:8px 16px; background:#fcf8ec; border:1px solid var(--wl-line); }
 .wl-menu a { display:flex; align-items:center; min-height:44px; border-bottom:1px solid #ded4b9; }
 html body #root:has(.wl-scroll) .zw-langpick button.zw-langpick__toggle {
-  min-height:44px!important; background:#faf6eae6!important; box-shadow:none!important; border:0!important; border-radius:2px!important;
+  min-height:44px!important; background:#faf6eac9!important; box-shadow:none!important; border:0!important; border-radius:2px!important;
 }
 html body #root:has(.wl-scroll) .zw-langpick .zw-langpick__toggle span { color:#344b40!important; }
 html body #root:has(.wl-scroll) .zw-langpick__toggle svg { display:none; }
@@ -54,9 +54,9 @@ html body #root .wl-hero #zw-v2-title .zw-season-mark { display:inline-grid; pos
 #wl-portals i { position:absolute; top:12px; right:10px; width:20px; text-align:center; line-height:18px; border:1px solid #ad9e78; border-radius:50%; font-style:normal; }
 .wl-colophon { margin:18px auto 30px; text-align:center; font-size:13px; letter-spacing:.14em; }
 .wl-scroll .zw-home-birth-desk-container, .wl-scroll .zw-v2-actions { max-width:48rem; margin:1rem auto; }
-html body #root .wl-scroll .zw-home-birth-desk-container { background:#faf6eb; border:1px solid var(--wl-line); padding:clamp(12px,2vw,28px); border-radius:3px; box-shadow:none; }
-html body #root .wl-scroll #birth-form :is(input,select,textarea) { border:1px solid #baa984!important; background:#fffaf0!important; color:#293f37!important; min-height:44px; }
-html body #root .wl-scroll #birth-form button[type=submit] { background:#913e30!important; color:#fffaf0!important; border-radius:4px!important; box-shadow:none!important; min-height:44px; }
+html body #root .wl-scroll .zw-home-birth-desk-container { background:rgba(253,249,237,.83); border:1px solid var(--wl-line); padding:clamp(12px,2vw,28px); border-radius:3px; box-shadow:none; }
+
+html body #root .wl-scroll #birth-form .zhaowu-analysis-submit-wrap button[type=submit] { background:#913e30!important; color:#fffaf0!important; border-radius:4px!important; box-shadow:none!important; min-height:44px; }
 .wl-scroll .zw-v2-sample { display:inline-flex; min-height:44px; align-items:center; }
 @media(min-width:760px) { #wl-portals { grid-template-columns:repeat(4,minmax(0,1fr)); } #wl-portals a { min-height:156px; } }
 
@@ -103,4 +103,155 @@ html body #root .wl-scroll .zw-daily-entries .ph-tree-tile { min-height:56px; bo
   right:0; bottom:0; width:clamp(46px,14vw,90px); aspect-ratio:1;
   background:url("/ornaments/generated/lotus.webp") center / contain no-repeat;
   opacity:.62;
+}
+/* Keep the book illustration above both lines of copy in every language. */
+#wl-portals a[href="#birth-form"]::before {
+  bottom: auto;
+  height: 42%;
+  background-position: center 25%;
+  mask-image: linear-gradient(to bottom, #0008, transparent);
+}
+
+html body #root .wl-mast .wl-language .zw-langpick {
+  position: relative !important;
+  inset: auto !important;
+}
+html body #root .wl-language .zw-langpick__toggle span { font-size: 13px; }
+html body #root .wl-scroll .zw-home-birth-desk-container {
+  padding: clamp(14px, 3vw, 32px);
+  border-inline: none;
+}
+html body #root .wl-scroll .zw-home-birth-desk-container .zhaowu-home-stage--primary,
+html body #root .wl-scroll #birth-form #customer-record {
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html body #root .wl-scroll #birth-form .zw-flow-progress :is(ol, li, button, span) {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  font-family: inherit;
+}
+html body #root .wl-scroll #birth-form .zw-flow-progress button {
+  border-bottom: 1px solid var(--wl-line) !important;
+  color: #615b4b !important;
+  opacity: 1;
+}
+html body #root .wl-scroll #birth-form .zw-flow-progress button[aria-current="step"] {
+  border-bottom: 2px solid #437267 !important;
+  color: var(--wl-ink) !important;
+}
+html body #root .wl-scroll #birth-form #customer-record :is(input:not([type="checkbox"]), select) {
+  min-height: 44px;
+  min-width: 0;
+  max-width: 100%;
+  padding-inline: 6px;
+  border: 0 !important;
+  border-bottom: 1px solid #ad9868 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--wl-ink) !important;
+  font-family: inherit !important;
+}
+html body #root .wl-scroll #birth-form #customer-record select:not(.sr-only) {
+  appearance: none;
+  padding-right: 26px;
+  background: linear-gradient(45deg, transparent 50%, #76663f 50%) right 12px center / 5px 5px no-repeat,
+    linear-gradient(135deg, #76663f 50%, transparent 50%) right 7px center / 5px 5px no-repeat !important;
+}
+html body #root .wl-scroll #birth-form #time-unknown {
+  appearance: none;
+  flex: none;
+  width: 20px;
+  height: 20px !important;
+  min-height: 20px !important;
+  padding: 0 !important;
+  border: 1px solid #927c50 !important;
+  border-radius: 3px !important;
+  background: #fffaed !important;
+  display: inline-grid;
+  place-content: center;
+}
+html body #root .wl-scroll #birth-form #time-unknown:checked::after {
+  content: "";
+  width: 7px;
+  height: 12px;
+  border: solid #315c50;
+  border-width: 0 2px 2px 0;
+  transform: translateY(-1px) rotate(42deg);
+}
+html body #root .wl-scroll #birth-form #customer-record :is(input, select, button, summary):focus-visible {
+  outline: 2px solid #426e61 !important;
+  outline-offset: 2px;
+}
+html body #root .wl-scroll #birth-form #customer-record .zhaowu-gender-capsules {
+  display: flex;
+  gap: 8px;
+}
+html body #root .wl-scroll #birth-form #customer-record .zhaowu-gender-capsule {
+  min-height: 44px;
+  flex: 1;
+  white-space: nowrap;
+  padding-inline: 8px;
+  border: 1px solid var(--wl-line) !important;
+  border-radius: 4px;
+  background: #fffaed !important;
+  color: var(--wl-ink) !important;
+  font: inherit;
+}
+html body #root .wl-scroll #birth-form #customer-record .zhaowu-gender-capsule.is-active {
+  -webkit-text-fill-color: var(--wl-ink) !important;
+  border-color: #658477 !important;
+  background: #d2e1d5 !important;
+  font-weight: 700;
+}
+html body #root .wl-scroll #birth-form #customer-record details > summary {
+  color: var(--wl-ink);
+  text-decoration: underline #ac9769;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+html body #root .wl-scroll #birth-form .zhaowu-analysis-submit-wrap button[type="submit"] {
+  border: 1px solid #80372b !important;
+  outline: 1px solid #d9b184;
+  outline-offset: -4px;
+}
+html body #root .wl-scroll #home-guide .zw-study {
+  border: 1px solid var(--wl-line);
+  border-radius: 5px;
+  background: rgb(252 248 235 / 88%);
+}
+html body #root .wl-scroll #home-guide .zw-study :is(.ph-tree-branch-tile,.ph-tree-tile,.ph-tree-leaf,.ph-tree-tile-cta) {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border: 0 !important;
+  border-bottom: 1px solid var(--wl-line) !important;
+  border-radius: 0;
+  background: transparent !important;
+  color: var(--wl-ink) !important;
+  box-shadow: none !important;
+  text-align: start;
+}
+html body #root .wl-scroll #home-guide .zw-study .ph-tree-tiles { grid-template-columns: minmax(0, 1fr); }
+html body #root .wl-scroll #home-guide .zw-study .ph-tree-tile > span { padding: 0; }
+html body #root .wl-scroll #home-guide .zw-study img { width: 64px; height: 52px; flex: none; object-fit: cover; }
+
+.wl-scroll .zw-study summary::after, .wl-scroll .zw-study i {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-inline-start: auto;
+  border: 1px solid #ad9e78;
+  border-radius: 50%;
+  color: #49584a;
+  font: normal 14px/1 serif;
 }
